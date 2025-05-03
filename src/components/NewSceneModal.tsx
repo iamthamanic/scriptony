@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,9 +7,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { NewSceneFormData, TimeOfDay, EmotionalSignificance } from '../types';
+import { NewSceneFormData, TimeOfDay, EmotionalSignificance, Scene } from '../types';
 import { timeOfDayOptions, emotionalSignificanceOptions } from '../utils/mockData';
-import { Upload, Clock } from 'lucide-react';
+import { Upload, Clock, Image } from 'lucide-react';
 
 interface NewSceneModalProps {
   isOpen: boolean;
@@ -17,9 +17,10 @@ interface NewSceneModalProps {
   onSubmit: (data: NewSceneFormData) => void;
   projectType: 'movie' | 'series' | 'short';
   lastSceneNumber: number;
+  editScene?: Scene | null;
 }
 
-const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber }: NewSceneModalProps) => {
+const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber, editScene }: NewSceneModalProps) => {
   const [formData, setFormData] = useState<NewSceneFormData>({
     sceneNumber: lastSceneNumber + 1,
     location: '',
@@ -40,6 +41,55 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
   
   const [activeTab, setActiveTab] = useState('basics');
   const [keyframePreview, setKeyframePreview] = useState<string | null>(null);
+
+  // Initialize form data with edit scene data if available
+  useEffect(() => {
+    if (editScene) {
+      setFormData({
+        sceneNumber: editScene.sceneNumber,
+        location: editScene.location,
+        timeOfDay: editScene.timeOfDay,
+        timecodeStart: editScene.timecodeStart,
+        timecodeEnd: editScene.timecodeEnd,
+        visualComposition: editScene.visualComposition,
+        lighting: editScene.lighting,
+        colorGrading: editScene.colorGrading,
+        soundDesign: editScene.soundDesign,
+        specialEffects: editScene.specialEffects,
+        description: editScene.description,
+        dialog: editScene.dialog,
+        transitions: editScene.transitions,
+        productionNotes: editScene.productionNotes,
+        emotionalSignificance: editScene.emotionalSignificance,
+        episodeTitle: editScene.episodeTitle,
+        emotionalNotes: editScene.emotionalNotes,
+      });
+      
+      if (editScene.keyframeImage) {
+        setKeyframePreview(editScene.keyframeImage);
+      }
+    } else {
+      // Reset form data when creating a new scene
+      setFormData({
+        sceneNumber: lastSceneNumber + 1,
+        location: '',
+        timeOfDay: 'day',
+        timecodeStart: '00:00:00',
+        timecodeEnd: '00:00:00',
+        visualComposition: '',
+        lighting: '',
+        colorGrading: '',
+        soundDesign: '',
+        specialEffects: '',
+        description: '',
+        dialog: '',
+        transitions: '',
+        productionNotes: '',
+        emotionalSignificance: 'introduction',
+      });
+      setKeyframePreview(null);
+    }
+  }, [editScene, lastSceneNumber]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -115,11 +165,31 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
     );
   };
 
+  // Keyframe image component to be reused in each tab
+  const KeyframeImagePreview = () => {
+    if (!keyframePreview) return null;
+    
+    return (
+      <div className="mt-4 border rounded-md p-2">
+        <h4 className="text-sm font-medium mb-2 flex items-center gap-1"><Image size={16} /> Keyframe Image</h4>
+        <div className="aspect-video rounded-md overflow-hidden bg-anime-gray-200 max-h-[180px]">
+          <img 
+            src={keyframePreview} 
+            alt="Keyframe preview" 
+            className="w-full h-full object-cover"
+          />
+        </div>
+      </div>
+    );
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-anime-purple">Create New Scene</DialogTitle>
+          <DialogTitle className="text-xl font-bold text-anime-purple">
+            {editScene ? `Edit Scene ${editScene.sceneNumber}` : 'Create New Scene'}
+          </DialogTitle>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
@@ -232,6 +302,45 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
                 </div>
               </div>
               
+              {/* Keyframe image upload in basic info tab */}
+              <div className="space-y-2">
+                <Label htmlFor="keyframeImage">Keyframe Image</Label>
+                <div className="flex flex-col md:flex-row gap-4 items-center">
+                  <div className="w-full md:w-1/2">
+                    <div className="border-2 border-dashed border-border rounded-md p-4 text-center cursor-pointer hover:bg-muted/50 transition-colors">
+                      <Input
+                        id="keyframeImage"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                      />
+                      <Label htmlFor="keyframeImage" className="cursor-pointer flex flex-col items-center justify-center gap-2">
+                        <Upload className="h-8 w-8 text-muted-foreground" />
+                        <span className="text-sm font-medium">
+                          {keyframePreview ? 'Change Image' : 'Upload Keyframe'}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          Upload a concept image, storyboard, or reference
+                        </span>
+                      </Label>
+                    </div>
+                  </div>
+                  
+                  {keyframePreview && (
+                    <div className="w-full md:w-1/2">
+                      <div className="aspect-video rounded-md overflow-hidden bg-anime-gray-200">
+                        <img 
+                          src={keyframePreview} 
+                          alt="Keyframe preview" 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+              
               <div className="pt-4 flex justify-end">
                 <Button
                   type="button"
@@ -311,43 +420,8 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
                 </div>
               </div>
               
-              <div className="space-y-2">
-                <Label htmlFor="keyframeImage">Keyframe Image (Optional)</Label>
-                <div className="flex flex-col md:flex-row gap-4 items-center">
-                  <div className="w-full md:w-1/2">
-                    <div className="border-2 border-dashed border-border rounded-md p-4 text-center cursor-pointer hover:bg-muted/50 transition-colors">
-                      <Input
-                        id="keyframeImage"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        className="hidden"
-                      />
-                      <Label htmlFor="keyframeImage" className="cursor-pointer flex flex-col items-center justify-center gap-2">
-                        <Upload className="h-8 w-8 text-muted-foreground" />
-                        <span className="text-sm font-medium">
-                          {keyframePreview ? 'Change Image' : 'Upload Keyframe'}
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          Upload a concept image, storyboard, or reference
-                        </span>
-                      </Label>
-                    </div>
-                  </div>
-                  
-                  {keyframePreview && (
-                    <div className="w-full md:w-1/2">
-                      <div className="aspect-video rounded-md overflow-hidden bg-anime-gray-200">
-                        <img 
-                          src={keyframePreview} 
-                          alt="Keyframe preview" 
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
+              {/* Add keyframe preview to Visual Design tab */}
+              <KeyframeImagePreview />
               
               <div className="pt-4 flex justify-between">
                 <Button type="button" variant="outline" onClick={() => setActiveTab('basics')}>
@@ -402,6 +476,9 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
                   className="min-h-[100px]"
                 />
               </div>
+              
+              {/* Add keyframe preview to Content tab */}
+              <KeyframeImagePreview />
               
               <div className="pt-4 flex justify-between">
                 <Button type="button" variant="outline" onClick={() => setActiveTab('visual')}>
@@ -463,6 +540,9 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
                 />
               </div>
               
+              {/* Add keyframe preview to Meta tab */}
+              <KeyframeImagePreview />
+              
               <div className="pt-4 flex justify-between">
                 <Button type="button" variant="outline" onClick={() => setActiveTab('content')}>
                   Back
@@ -472,7 +552,7 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
                   disabled={!isFormValid()}
                   className="bg-anime-purple hover:bg-anime-dark-purple"
                 >
-                  Create Scene
+                  {editScene ? 'Update Scene' : 'Create Scene'}
                 </Button>
               </div>
             </TabsContent>
