@@ -19,6 +19,7 @@ const Index = () => {
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(mockProjects[0]?.id || null);
   const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false);
   const [isNewSceneModalOpen, setIsNewSceneModalOpen] = useState(false);
+  const [editingScene, setEditingScene] = useState<Scene | null>(null);
   const [activeView, setActiveView] = useState<"gallery" | "timeline">("gallery");
   
   const { toast } = useToast();
@@ -56,49 +57,103 @@ const Index = () => {
   const handleCreateScene = (data: NewSceneFormData) => {
     if (!selectedProject) return;
     
-    const newScene: Scene = {
-      id: `s${mockScenes.length + projects.flatMap(p => p.scenes).length + 1}`,
-      projectId: selectedProject.id,
-      episodeTitle: data.episodeTitle,
-      sceneNumber: data.sceneNumber,
-      location: data.location,
-      timeOfDay: data.timeOfDay,
-      timecodeStart: data.timecodeStart,
-      timecodeEnd: data.timecodeEnd,
-      visualComposition: data.visualComposition,
-      lighting: data.lighting,
-      colorGrading: data.colorGrading,
-      soundDesign: data.soundDesign,
-      specialEffects: data.specialEffects,
-      keyframeImage: data.keyframeImage ? URL.createObjectURL(data.keyframeImage) : undefined,
-      description: data.description,
-      dialog: data.dialog,
-      transitions: data.transitions,
-      productionNotes: data.productionNotes,
-      emotionalSignificance: data.emotionalSignificance,
-      emotionalNotes: data.emotionalNotes,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-    
-    const updatedProjects = projects.map(project => 
-      project.id === selectedProject.id
-        ? { 
-            ...project, 
-            scenes: [...project.scenes, newScene].sort((a, b) => a.sceneNumber - b.sceneNumber),
-            updatedAt: new Date()
-          }
-        : project
-    );
-    
-    setProjects(updatedProjects);
-    setIsNewSceneModalOpen(false);
-    
-    toast({
-      title: "Scene Created",
-      description: `Scene ${data.sceneNumber} has been added to ${selectedProject.title}.`,
-      duration: 3000,
-    });
+    if (editingScene) {
+      // Update existing scene
+      const updatedScene: Scene = {
+        ...editingScene,
+        episodeTitle: data.episodeTitle,
+        sceneNumber: data.sceneNumber,
+        location: data.location,
+        timeOfDay: data.timeOfDay,
+        timecodeStart: data.timecodeStart,
+        timecodeEnd: data.timecodeEnd,
+        visualComposition: data.visualComposition,
+        lighting: data.lighting,
+        colorGrading: data.colorGrading,
+        soundDesign: data.soundDesign,
+        specialEffects: data.specialEffects,
+        keyframeImage: data.keyframeImage ? URL.createObjectURL(data.keyframeImage) : editingScene.keyframeImage,
+        description: data.description,
+        dialog: data.dialog,
+        transitions: data.transitions,
+        productionNotes: data.productionNotes,
+        emotionalSignificance: data.emotionalSignificance,
+        emotionalNotes: data.emotionalNotes,
+        updatedAt: new Date()
+      };
+      
+      const updatedProjects = projects.map(project => 
+        project.id === selectedProject.id
+          ? { 
+              ...project, 
+              scenes: project.scenes.map(scene => 
+                scene.id === editingScene.id ? updatedScene : scene
+              ).sort((a, b) => a.sceneNumber - b.sceneNumber),
+              updatedAt: new Date()
+            }
+          : project
+      );
+      
+      setProjects(updatedProjects);
+      setIsNewSceneModalOpen(false);
+      setEditingScene(null);
+      
+      toast({
+        title: "Scene Updated",
+        description: `Scene ${data.sceneNumber} has been updated.`,
+        duration: 3000,
+      });
+    } else {
+      // Create new scene with existing logic
+      const newScene: Scene = {
+        id: `s${mockScenes.length + projects.flatMap(p => p.scenes).length + 1}`,
+        projectId: selectedProject.id,
+        episodeTitle: data.episodeTitle,
+        sceneNumber: data.sceneNumber,
+        location: data.location,
+        timeOfDay: data.timeOfDay,
+        timecodeStart: data.timecodeStart,
+        timecodeEnd: data.timecodeEnd,
+        visualComposition: data.visualComposition,
+        lighting: data.lighting,
+        colorGrading: data.colorGrading,
+        soundDesign: data.soundDesign,
+        specialEffects: data.specialEffects,
+        keyframeImage: data.keyframeImage ? URL.createObjectURL(data.keyframeImage) : undefined,
+        description: data.description,
+        dialog: data.dialog,
+        transitions: data.transitions,
+        productionNotes: data.productionNotes,
+        emotionalSignificance: data.emotionalSignificance,
+        emotionalNotes: data.emotionalNotes,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      
+      const updatedProjects = projects.map(project => 
+        project.id === selectedProject.id
+          ? { 
+              ...project, 
+              scenes: [...project.scenes, newScene].sort((a, b) => a.sceneNumber - b.sceneNumber),
+              updatedAt: new Date()
+            }
+          : project
+      );
+      
+      setProjects(updatedProjects);
+      setIsNewSceneModalOpen(false);
+      
+      toast({
+        title: "Scene Created",
+        description: `Scene ${data.sceneNumber} has been added to ${selectedProject.title}.`,
+        duration: 3000,
+      });
+    }
+  };
+
+  const handleEditScene = (scene: Scene) => {
+    setEditingScene(scene);
+    setIsNewSceneModalOpen(true);
   };
 
   const handleExportScenePDF = (scene: Scene) => {
@@ -157,7 +212,10 @@ const Index = () => {
         <div className="animate-fade-in">
           <ProjectHeader 
             project={selectedProject} 
-            onNewScene={() => setIsNewSceneModalOpen(true)} 
+            onNewScene={() => {
+              setEditingScene(null);
+              setIsNewSceneModalOpen(true);
+            }} 
           />
           
           {selectedProject.scenes.length > 0 ? (
@@ -192,13 +250,7 @@ const Index = () => {
                     <SceneCard
                       key={scene.id}
                       scene={scene}
-                      onClick={() => {
-                        toast({
-                          title: "Scene Selected",
-                          description: `Editing Scene ${scene.sceneNumber} will be available in the next version.`,
-                          duration: 3000,
-                        });
-                      }}
+                      onClick={() => handleEditScene(scene)}
                       onExportPDF={() => handleExportScenePDF(scene)}
                     />
                   ))}
@@ -206,13 +258,7 @@ const Index = () => {
               ) : (
                 <TimelineView 
                   scenes={selectedProject.scenes}
-                  onSceneClick={(scene) => {
-                    toast({
-                      title: "Scene Selected",
-                      description: `Editing Scene ${scene.sceneNumber} will be available in the next version.`,
-                      duration: 3000,
-                    });
-                  }}
+                  onSceneClick={(scene) => handleEditScene(scene)}
                 />
               )}
             </div>
@@ -223,7 +269,10 @@ const Index = () => {
                 Start by adding your first scene to {selectedProject.title}
               </p>
               <Button 
-                onClick={() => setIsNewSceneModalOpen(true)}
+                onClick={() => {
+                  setEditingScene(null);
+                  setIsNewSceneModalOpen(true);
+                }}
                 className="bg-anime-purple hover:bg-anime-dark-purple"
               >
                 <FilePlus className="mr-2 h-4 w-4" />
@@ -258,12 +307,19 @@ const Index = () => {
       {selectedProject && (
         <NewSceneModal 
           isOpen={isNewSceneModalOpen} 
-          onClose={() => setIsNewSceneModalOpen(false)} 
+          onClose={() => {
+            setIsNewSceneModalOpen(false);
+            setEditingScene(null);
+          }} 
           onSubmit={handleCreateScene}
           projectType={selectedProject.type}
-          lastSceneNumber={selectedProject.scenes.length > 0 
-            ? Math.max(...selectedProject.scenes.map(s => s.sceneNumber)) 
-            : 0}
+          lastSceneNumber={
+            editingScene ? editingScene.sceneNumber :
+            selectedProject.scenes.length > 0 
+              ? Math.max(...selectedProject.scenes.map(s => s.sceneNumber)) 
+              : 0
+          }
+          editScene={editingScene}
         />
       )}
       
