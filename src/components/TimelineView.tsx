@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Scene } from '../types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CalendarDays, Clock, MapPin } from 'lucide-react';
+import { CalendarDays, Clock, MapPin, Image } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface TimelineViewProps {
@@ -91,19 +91,32 @@ const TimelineView = ({ scenes, onSceneClick }: TimelineViewProps) => {
           {sortedScenes.map((scene) => (
             <div 
               key={scene.id} 
-              className="timeline-item mb-4"
+              className="timeline-item mb-4 cursor-pointer hover:bg-gray-50 p-2 rounded-md"
               onClick={() => onSceneClick(scene)}
             >
               <div className="timeline-dot" />
-              <h3 className="font-medium">
-                Scene {scene.sceneNumber}: {scene.location}
-              </h3>
-              <div className="flex gap-2 mt-1 text-sm text-muted-foreground">
-                <span className="flex items-center gap-1">
-                  <Clock size={14} /> {scene.timecodeStart} - {scene.timecodeEnd}
-                </span>
+              <div className="flex gap-4">
+                {scene.keyframeImage && (
+                  <div className="w-16 h-16 flex-shrink-0">
+                    <img 
+                      src={scene.keyframeImage} 
+                      alt={`Scene ${scene.sceneNumber} keyframe`}
+                      className="w-full h-full object-cover rounded-md"
+                    />
+                  </div>
+                )}
+                <div>
+                  <h3 className="font-medium">
+                    Scene {scene.sceneNumber}: {scene.location}
+                  </h3>
+                  <div className="flex gap-2 mt-1 text-sm text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <Clock size={14} /> {scene.timecodeStart} - {scene.timecodeEnd}
+                    </span>
+                  </div>
+                  <p className="text-sm mt-1 line-clamp-2">{scene.description}</p>
+                </div>
               </div>
-              <p className="text-sm mt-1 line-clamp-2">{scene.description}</p>
             </div>
           ))}
         </TabsContent>
@@ -115,19 +128,32 @@ const TimelineView = ({ scenes, onSceneClick }: TimelineViewProps) => {
               {scenes.map((scene) => (
                 <div 
                   key={scene.id} 
-                  className="timeline-item mb-4"
+                  className="timeline-item mb-4 cursor-pointer hover:bg-gray-50 p-2 rounded-md"
                   onClick={() => onSceneClick(scene)}
                 >
                   <div className="timeline-dot" />
-                  <h4 className="font-medium">
-                    Scene {scene.sceneNumber} ({scene.timeOfDay})
-                  </h4>
-                  <div className="flex gap-2 mt-1 text-sm text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <Clock size={14} /> {scene.timecodeStart} - {scene.timecodeEnd}
-                    </span>
+                  <div className="flex gap-4">
+                    {scene.keyframeImage && (
+                      <div className="w-16 h-16 flex-shrink-0">
+                        <img 
+                          src={scene.keyframeImage} 
+                          alt={`Scene ${scene.sceneNumber} keyframe`}
+                          className="w-full h-full object-cover rounded-md"
+                        />
+                      </div>
+                    )}
+                    <div>
+                      <h4 className="font-medium">
+                        Scene {scene.sceneNumber} ({scene.timeOfDay})
+                      </h4>
+                      <div className="flex gap-2 mt-1 text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                          <Clock size={14} /> {scene.timecodeStart} - {scene.timecodeEnd}
+                        </span>
+                      </div>
+                      <p className="text-sm mt-1 line-clamp-2">{scene.description}</p>
+                    </div>
                   </div>
-                  <p className="text-sm mt-1 line-clamp-2">{scene.description}</p>
                 </div>
               ))}
             </div>
@@ -146,20 +172,31 @@ const TimelineView = ({ scenes, onSceneClick }: TimelineViewProps) => {
               onClick={() => onSceneClick(scene)}
             >
               <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-medium">
-                    Scene {scene.sceneNumber}: {scene.location}
-                  </h3>
-                  <p className="text-xs text-muted-foreground mt-1 capitalize">
-                    {scene.emotionalSignificance}
-                    {scene.emotionalNotes && ` - ${scene.emotionalNotes}`}
-                  </p>
+                <div className="flex gap-4">
+                  {scene.keyframeImage && (
+                    <div className="w-16 h-16 flex-shrink-0">
+                      <img 
+                        src={scene.keyframeImage} 
+                        alt={`Scene ${scene.sceneNumber} keyframe`}
+                        className="w-full h-full object-cover rounded-md"
+                      />
+                    </div>
+                  )}
+                  <div>
+                    <h3 className="font-medium">
+                      Scene {scene.sceneNumber}: {scene.location}
+                    </h3>
+                    <p className="text-xs text-muted-foreground mt-1 capitalize">
+                      {scene.emotionalSignificance}
+                      {scene.emotionalNotes && ` - ${scene.emotionalNotes}`}
+                    </p>
+                    <p className="text-sm mt-2 line-clamp-2">{scene.description}</p>
+                  </div>
                 </div>
                 <span className="text-xs text-muted-foreground flex items-center gap-1">
                   <Clock size={14} /> {scene.timecodeStart}
                 </span>
               </div>
-              <p className="text-sm mt-2 line-clamp-2">{scene.description}</p>
             </div>
           ))}
         </TabsContent>

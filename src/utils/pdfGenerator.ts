@@ -6,161 +6,182 @@ import { jsPDF } from "jspdf";
 export const generateScenePDF = (scene: Scene, project: Project): void => {
   // Create a new PDF document
   const doc = new jsPDF();
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const margin = 20;
-  const contentWidth = pageWidth - margin * 2;
-
-  // Set font styles
-  const titleFont = "helvetica";
-  const bodyFont = "helvetica";
-  const titleFontSize = 16;
-  const subtitleFontSize = 12;
-  const bodyFontSize = 10;
   
-  let yPos = margin;
+  // Set initial y position
+  let y = 20;
   
-  // Header with project and scene info
-  doc.setFont(titleFont, "bold");
-  doc.setFontSize(titleFontSize);
-  doc.text(`${project.title}`, margin, yPos);
-  yPos += 10;
+  // Add project title
+  doc.setFontSize(18);
+  doc.setFont("helvetica", "bold");
+  doc.text(project.title, 105, y, { align: "center" });
+  y += 10;
   
-  doc.setFont(titleFont, "normal");
-  doc.setFontSize(subtitleFontSize);
-  if (scene.episodeTitle) {
-    doc.text(`Episode: ${scene.episodeTitle}`, margin, yPos);
-    yPos += 8;
+  // Add scene number and episode title if it exists
+  doc.setFontSize(14);
+  const sceneTitle = scene.episodeTitle 
+    ? `Scene ${scene.sceneNumber} - ${scene.episodeTitle}` 
+    : `Scene ${scene.sceneNumber}`;
+  doc.text(sceneTitle, 105, y, { align: "center" });
+  y += 15;
+  
+  // Add horizontal line
+  doc.setLineWidth(0.5);
+  doc.line(20, y, 190, y);
+  y += 10;
+  
+  // Scene metadata section
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "bold");
+  doc.text("Scene Information", 20, y);
+  y += 7;
+  doc.setFont("helvetica", "normal");
+  
+  // Create a table for metadata
+  const metadata = [
+    ["Location:", scene.location],
+    ["Time of Day:", scene.timeOfDay],
+    ["Timecode:", `${scene.timecodeStart} - ${scene.timecodeEnd}`],
+    ["Emotional Significance:", scene.emotionalSignificance]
+  ];
+  
+  metadata.forEach((row) => {
+    doc.setFont("helvetica", "bold");
+    doc.text(row[0], 20, y);
+    doc.setFont("helvetica", "normal");
+    doc.text(row[1], 70, y);
+    y += 7;
+  });
+  y += 5;
+  
+  // Add keyframe image if it exists
+  if (scene.keyframeImage) {
+    try {
+      doc.addImage(scene.keyframeImage, "JPEG", 20, y, 80, 45);
+      y += 50;
+    } catch (error) {
+      console.error("Error adding image to PDF:", error);
+      y += 5;
+    }
   }
   
-  doc.text(`Scene: ${scene.sceneNumber} - ${scene.location} (${scene.timeOfDay})`, margin, yPos);
-  yPos += 8;
+  // Add horizontal line
+  doc.setLineWidth(0.5);
+  doc.line(20, y, 190, y);
+  y += 10;
   
-  doc.text(`Timecode: ${scene.timecodeStart} - ${scene.timecodeEnd}`, margin, yPos);
-  yPos += 15;
+  // Visual Details
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "bold");
+  doc.text("Visual Details", 20, y);
+  y += 7;
   
-  // Section: Visual Elements
-  doc.setFont(titleFont, "bold");
-  doc.text("Visual Elements", margin, yPos);
-  yPos += 8;
+  const visualDetails = [
+    { title: "Visual Composition:", content: scene.visualComposition },
+    { title: "Lighting:", content: scene.lighting },
+    { title: "Color Grading:", content: scene.colorGrading },
+    { title: "Sound Design:", content: scene.soundDesign },
+    { title: "Special Effects:", content: scene.specialEffects }
+  ];
   
-  doc.setFont(bodyFont, "normal");
-  doc.setFontSize(bodyFontSize);
-  
-  // Function to add text with word wrap
-  const addText = (text: string, title: string) => {
-    doc.setFont(bodyFont, "bold");
-    doc.text(`${title}: `, margin, yPos);
-    doc.setFont(bodyFont, "normal");
-    
-    // Calculate width of the title to start the text after it
-    const titleWidth = doc.getTextWidth(`${title}: `);
-    
-    // Split the text to fit the page width minus margins and title width
-    const splitText = doc.splitTextToSize(text, contentWidth - titleWidth);
-    
-    // Place first line after the title
-    if (splitText[0]) {
-      doc.text(splitText[0], margin + titleWidth, yPos);
-    }
-    
-    // Place remaining lines with proper indentation
-    if (splitText.length > 1) {
-      for (let i = 1; i < splitText.length; i++) {
-        yPos += 6;
-        doc.text(splitText[i], margin, yPos);
-      }
-    }
-    
-    yPos += 8;
-    
+  visualDetails.forEach((detail) => {
     // Check if we need a new page
-    if (yPos > 270) {
+    if (y > 260) {
       doc.addPage();
-      yPos = margin;
+      y = 20;
     }
-  };
+    
+    doc.setFont("helvetica", "bold");
+    doc.text(detail.title, 20, y);
+    y += 7;
+    doc.setFont("helvetica", "normal");
+    
+    // Split text to fit page width
+    const textLines = doc.splitTextToSize(detail.content, 160);
+    doc.text(textLines, 20, y);
+    y += textLines.length * 7 + 5;
+  });
   
-  // Add visual elements data
-  addText(scene.visualComposition, "Visual Composition");
-  addText(scene.lighting, "Lighting");
-  addText(scene.colorGrading, "Color Grading");
-  addText(scene.soundDesign, "Sound Design");
-  addText(scene.specialEffects, "Special Effects");
-  
-  // Section: Action & Dialog
-  yPos += 4;
-  doc.setFont(titleFont, "bold");
-  doc.setFontSize(subtitleFontSize);
-  doc.text("Action & Dialog", margin, yPos);
-  yPos += 8;
-  
-  doc.setFont(bodyFont, "normal");
-  doc.setFontSize(bodyFontSize);
-  
-  // Description
-  const descriptionLines = doc.splitTextToSize(scene.description, contentWidth);
-  doc.text(descriptionLines, margin, yPos);
-  yPos += descriptionLines.length * 6 + 8;
-  
-  // Check if we need a new page for dialog
-  if (yPos > 240) {
+  // Add horizontal line
+  if (y > 260) {
     doc.addPage();
-    yPos = margin;
+    y = 20;
+  }
+  doc.setLineWidth(0.5);
+  doc.line(20, y, 190, y);
+  y += 10;
+  
+  // Scene Description and Dialog
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "bold");
+  doc.text("Scene Description and Dialog", 20, y);
+  y += 7;
+  doc.setFont("helvetica", "normal");
+  
+  // Split text to fit page width
+  const descriptionLines = doc.splitTextToSize(scene.description, 160);
+  doc.text(descriptionLines, 20, y);
+  y += descriptionLines.length * 7 + 10;
+  
+  // Check if we need a new page
+  if (y > 240) {
+    doc.addPage();
+    y = 20;
   }
   
   // Dialog
   if (scene.dialog) {
-    doc.setFont(bodyFont, "bold");
-    doc.text("Dialog:", margin, yPos);
-    yPos += 8;
-    
-    doc.setFont(bodyFont, "normal");
-    const dialogLines = doc.splitTextToSize(scene.dialog, contentWidth - 10);
-    doc.text(dialogLines, margin + 5, yPos);
-    yPos += dialogLines.length * 6 + 8;
+    doc.setFont("helvetica", "bold");
+    doc.text("Dialog:", 20, y);
+    y += 7;
+    doc.setFont("helvetica", "normal");
+    const dialogLines = doc.splitTextToSize(scene.dialog, 160);
+    doc.text(dialogLines, 20, y);
+    y += dialogLines.length * 7 + 10;
   }
   
-  // Check if we need a new page for transitions
-  if (yPos > 250) {
+  // Check if we need a new page
+  if (y > 240) {
     doc.addPage();
-    yPos = margin;
+    y = 20;
   }
   
   // Transitions
   if (scene.transitions) {
-    addText(scene.transitions, "Transitions");
+    doc.setFont("helvetica", "bold");
+    doc.text("Transitions:", 20, y);
+    y += 7;
+    doc.setFont("helvetica", "normal");
+    const transitionLines = doc.splitTextToSize(scene.transitions, 160);
+    doc.text(transitionLines, 20, y);
+    y += transitionLines.length * 7 + 10;
   }
   
-  // Production Notes & Emotional Significance
-  if (scene.productionNotes || scene.emotionalNotes) {
-    yPos += 4;
-    doc.setFont(titleFont, "bold");
-    doc.setFontSize(subtitleFontSize);
-    doc.text("Production & Meta", margin, yPos);
-    yPos += 8;
-    
-    doc.setFont(bodyFont, "normal");
-    doc.setFontSize(bodyFontSize);
-    
-    if (scene.productionNotes) {
-      addText(scene.productionNotes, "Production Notes");
+  // Production Notes
+  if (scene.productionNotes) {
+    // Check if we need a new page
+    if (y > 240) {
+      doc.addPage();
+      y = 20;
     }
     
-    addText(
-      scene.emotionalSignificance + (scene.emotionalNotes ? `: ${scene.emotionalNotes}` : ""),
-      "Emotional Significance"
-    );
+    doc.setFont("helvetica", "bold");
+    doc.text("Production Notes:", 20, y);
+    y += 7;
+    doc.setFont("helvetica", "normal");
+    const notesLines = doc.splitTextToSize(scene.productionNotes, 160);
+    doc.text(notesLines, 20, y);
+    y += notesLines.length * 7 + 10;
   }
   
-  // Add footer with page numbers
-  const totalPages = doc.internal.getNumberOfPages();
-  for (let i = 1; i <= totalPages; i++) {
+  // Add page numbers
+  const pageCount = (doc as any).internal.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i);
-    doc.setFont(bodyFont, "italic");
-    doc.setFontSize(8);
-    doc.text(`Page ${i} of ${totalPages}`, pageWidth - 30, 285);
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "italic");
+    doc.text(`Page ${i} of ${pageCount}`, 105, 290, { align: "center" });
   }
   
   // Save the PDF
-  doc.save(`${project.title}_Scene_${scene.sceneNumber}.pdf`);
+  doc.save(`${project.title} - Scene ${scene.sceneNumber}.pdf`);
 };
