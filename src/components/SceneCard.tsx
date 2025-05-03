@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { Scene } from '../types';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FilePdf, Edit, Clock } from 'lucide-react';
+import { FileText, Edit, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SceneCardProps {
@@ -81,7 +80,7 @@ const SceneCard = ({ scene, onClick, onExportPDF }: SceneCardProps) => {
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={onExportPDF}>
-            <FilePdf className="h-4 w-4 mr-1" />
+            <FileText className="h-4 w-4 mr-1" />
             PDF
           </Button>
           <Button variant="default" size="sm" onClick={onClick} className="bg-anime-purple hover:bg-anime-dark-purple">
