@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { FilePdf } from 'lucide-react';
+import { FileText } from 'lucide-react';
 import { generateScenePDF } from '../utils/pdfGenerator';
 import { Scene, Project } from '../types';
 import { useToast } from '@/components/ui/use-toast';
@@ -39,7 +39,7 @@ const ScenePdfExport = ({ scene, project }: ScenePdfExportProps) => {
       onClick={handleExport}
       className="flex items-center gap-2"
     >
-      <FilePdf className="h-4 w-4" />
+      <FileText className="h-4 w-4" />
       Export as PDF
     </Button>
   );

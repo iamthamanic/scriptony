@@ -1,7 +1,6 @@
 
 import { Scene, Project } from "../types";
 import { jsPDF } from "jspdf";
-import { Timepoint } from "jspdf";
 
 // This is a utility function that will generate a PDF from a scene
 export const generateScenePDF = (scene: Scene, project: Project): void => {
