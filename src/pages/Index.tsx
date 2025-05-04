@@ -1,28 +1,30 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProjectHeader from "../components/ProjectHeader";
-import SceneCard from "../components/SceneCard";
-import TimelineView from "../components/TimelineView";
 import NewProjectModal from "../components/NewProjectModal";
 import NewSceneModal from "../components/NewSceneModal";
 import ScenePdfExport from "../components/ScenePdfExport";
-import { mockProjects, mockScenes } from "../utils/mockData";
+import { mockProjects } from "../utils/mockData";
 import { Project, Scene, NewProjectFormData, NewSceneFormData } from "../types";
-import { useToast } from "@/components/ui/use-toast";
-import { FilePlus, ListFilter, Calendar, Film } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { FilePlus } from "lucide-react";
+
+// Import the newly created components
+import ProjectSelector from "../components/ProjectSelector";
+import SceneList from "../components/SceneList";
+import EmptyState from "../components/EmptyState";
+
 const Index = () => {
   const [projects, setProjects] = useState<Project[]>(mockProjects);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(mockProjects[0]?.id || null);
   const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false);
   const [isNewSceneModalOpen, setIsNewSceneModalOpen] = useState(false);
   const [editingScene, setEditingScene] = useState<Scene | null>(null);
-  const [activeView, setActiveView] = useState<"gallery" | "timeline">("gallery");
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
+
   const selectedProject = selectedProjectId ? projects.find(p => p.id === selectedProjectId) : null;
+
   const handleCreateProject = (data: NewProjectFormData) => {
     const newProject: Project = {
       id: `p${projects.length + 1}`,
@@ -46,8 +48,10 @@ const Index = () => {
       duration: 3000
     });
   };
+
   const handleCreateScene = (data: NewSceneFormData) => {
     if (!selectedProject) return;
+
     if (editingScene) {
       // Update existing scene
       const updatedScene: Scene = {
@@ -72,11 +76,19 @@ const Index = () => {
         emotionalNotes: data.emotionalNotes,
         updatedAt: new Date()
       };
-      const updatedProjects = projects.map(project => project.id === selectedProject.id ? {
-        ...project,
-        scenes: project.scenes.map(scene => scene.id === editingScene.id ? updatedScene : scene).sort((a, b) => a.sceneNumber - b.sceneNumber),
-        updatedAt: new Date()
-      } : project);
+
+      const updatedProjects = projects.map(project => 
+        project.id === selectedProject.id 
+          ? {
+              ...project,
+              scenes: project.scenes
+                .map(scene => scene.id === editingScene.id ? updatedScene : scene)
+                .sort((a, b) => a.sceneNumber - b.sceneNumber),
+              updatedAt: new Date()
+            } 
+          : project
+      );
+
       setProjects(updatedProjects);
       setIsNewSceneModalOpen(false);
       setEditingScene(null);
@@ -86,9 +98,9 @@ const Index = () => {
         duration: 3000
       });
     } else {
-      // Create new scene with existing logic
+      // Create new scene
       const newScene: Scene = {
-        id: `s${mockScenes.length + projects.flatMap(p => p.scenes).length + 1}`,
+        id: `s${projects.flatMap(p => p.scenes).length + 1}`,
         projectId: selectedProject.id,
         episodeTitle: data.episodeTitle,
         sceneNumber: data.sceneNumber,
@@ -111,11 +123,17 @@ const Index = () => {
         createdAt: new Date(),
         updatedAt: new Date()
       };
-      const updatedProjects = projects.map(project => project.id === selectedProject.id ? {
-        ...project,
-        scenes: [...project.scenes, newScene].sort((a, b) => a.sceneNumber - b.sceneNumber),
-        updatedAt: new Date()
-      } : project);
+
+      const updatedProjects = projects.map(project => 
+        project.id === selectedProject.id 
+          ? {
+              ...project,
+              scenes: [...project.scenes, newScene].sort((a, b) => a.sceneNumber - b.sceneNumber),
+              updatedAt: new Date()
+            } 
+          : project
+      );
+
       setProjects(updatedProjects);
       setIsNewSceneModalOpen(false);
       toast({
@@ -125,21 +143,24 @@ const Index = () => {
       });
     }
   };
+
   const handleEditScene = (scene: Scene) => {
     setEditingScene(scene);
     setIsNewSceneModalOpen(true);
   };
+
   const handleExportScenePDF = (scene: Scene) => {
     if (!selectedProject) return;
 
-    // This will be handled by the ScenePdfExport component
     toast({
       title: "Generating PDF",
       description: `Preparing Scene ${scene.sceneNumber} for export...`,
       duration: 2000
     });
   };
-  return <div className="container mx-auto py-6 px-4 md:px-6">
+
+  return (
+    <div className="container mx-auto py-6 px-4 md:px-6">
       <header className="mb-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
           <div>
@@ -148,83 +169,96 @@ const Index = () => {
               Create, visualize, and organize your anime script scenes
             </p>
           </div>
-          <Button onClick={() => setIsNewProjectModalOpen(true)} className="bg-anime-purple hover:bg-anime-dark-purple transition-colors">
+          <Button 
+            onClick={() => setIsNewProjectModalOpen(true)} 
+            className="bg-anime-purple hover:bg-anime-dark-purple transition-colors"
+          >
             <FilePlus className="mr-2 h-4 w-4" />
             New Project
           </Button>
         </div>
         
-        {projects.length > 0 && <div className="bg-muted/50 p-4 rounded-lg">
-            <h2 className="font-medium mb-3">Select Project:</h2>
-            <div className="flex flex-wrap gap-2">
-              {projects.map(project => <Button key={project.id} variant={selectedProjectId === project.id ? "default" : "outline"} className={selectedProjectId === project.id ? "bg-anime-purple hover:bg-anime-dark-purple" : ""} onClick={() => setSelectedProjectId(project.id)}>
-                  <Film className="mr-2 h-4 w-4" />
-                  {project.title}
-                </Button>)}
-            </div>
-          </div>}
+        {projects.length > 0 && (
+          <ProjectSelector 
+            projects={projects} 
+            selectedProjectId={selectedProjectId} 
+            onSelectProject={setSelectedProjectId} 
+          />
+        )}
       </header>
       
-      {selectedProject ? <div className="animate-fade-in">
-          <ProjectHeader project={selectedProject} onNewScene={() => {
-        setEditingScene(null);
-        setIsNewSceneModalOpen(true);
-      }} />
+      {selectedProject ? (
+        <div className="animate-fade-in">
+          <ProjectHeader 
+            project={selectedProject} 
+            onNewScene={() => {
+              setEditingScene(null);
+              setIsNewSceneModalOpen(true);
+            }} 
+          />
           
-          {selectedProject.scenes.length > 0 ? <div>
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold">Scenes ({selectedProject.scenes.length})</h2>
-                <div className="flex gap-2">
-                  <Button variant={activeView === "gallery" ? "default" : "outline"} size="sm" onClick={() => setActiveView("gallery")} className={activeView === "gallery" ? "bg-anime-purple hover:bg-anime-dark-purple" : ""}>
-                    <ListFilter className="h-4 w-4 mr-2" />
-                    Gallery
-                  </Button>
-                  <Button variant={activeView === "timeline" ? "default" : "outline"} size="sm" onClick={() => setActiveView("timeline")} className={activeView === "timeline" ? "bg-anime-purple hover:bg-anime-dark-purple" : ""}>
-                    <Calendar className="h-4 w-4 mr-2" />
-                    Timeline
-                  </Button>
-                </div>
-              </div>
-              
-              {activeView === "gallery" ? <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {selectedProject.scenes.map(scene => <SceneCard key={scene.id} scene={scene} onClick={() => handleEditScene(scene)} onExportPDF={() => handleExportScenePDF(scene)} />)}
-                </div> : <TimelineView scenes={selectedProject.scenes} onSceneClick={scene => handleEditScene(scene)} />}
-            </div> : <div className="text-center py-16">
-              <h2 className="text-2xl font-bold mb-2">No Scenes Yet</h2>
-              <p className="text-muted-foreground mb-6">
-                Start by adding your first scene to {selectedProject.title}
-              </p>
-              <Button onClick={() => {
-          setEditingScene(null);
-          setIsNewSceneModalOpen(true);
-        }} className="bg-anime-purple hover:bg-anime-dark-purple">
-                <FilePlus className="mr-2 h-4 w-4" />
-                Create First Scene
-              </Button>
-            </div>}
-        </div> : <div className="text-center py-16">
-          <h2 className="text-2xl font-bold mb-2">No Projects Yet</h2>
-          <p className="text-muted-foreground mb-6">
-            Start by creating your first anime project
-          </p>
-          <Button onClick={() => setIsNewProjectModalOpen(true)} className="bg-anime-purple hover:bg-anime-dark-purple">
-            <FilePlus className="mr-2 h-4 w-4" />
-            Create First Project
-          </Button>
-        </div>}
+          {selectedProject.scenes.length > 0 ? (
+            <SceneList 
+              scenes={selectedProject.scenes} 
+              onEditScene={handleEditScene}
+              onExportPDF={handleExportScenePDF}
+            />
+          ) : (
+            <EmptyState
+              title="No Scenes Yet"
+              description={`Start by adding your first scene to ${selectedProject.title}`}
+              buttonText="Create First Scene"
+              onClick={() => {
+                setEditingScene(null);
+                setIsNewSceneModalOpen(true);
+              }}
+            />
+          )}
+        </div>
+      ) : (
+        <EmptyState
+          title="No Projects Yet"
+          description="Start by creating your first anime project"
+          buttonText="Create First Project"
+          onClick={() => setIsNewProjectModalOpen(true)}
+        />
+      )}
       
       {/* Modals */}
-      <NewProjectModal isOpen={isNewProjectModalOpen} onClose={() => setIsNewProjectModalOpen(false)} onSubmit={handleCreateProject} />
+      <NewProjectModal 
+        isOpen={isNewProjectModalOpen} 
+        onClose={() => setIsNewProjectModalOpen(false)} 
+        onSubmit={handleCreateProject} 
+      />
       
-      {selectedProject && <NewSceneModal isOpen={isNewSceneModalOpen} onClose={() => {
-      setIsNewSceneModalOpen(false);
-      setEditingScene(null);
-    }} onSubmit={handleCreateScene} projectType={selectedProject.type} lastSceneNumber={editingScene ? editingScene.sceneNumber : selectedProject.scenes.length > 0 ? Math.max(...selectedProject.scenes.map(s => s.sceneNumber)) : 0} editScene={editingScene} />}
+      {selectedProject && (
+        <NewSceneModal 
+          isOpen={isNewSceneModalOpen} 
+          onClose={() => {
+            setIsNewSceneModalOpen(false);
+            setEditingScene(null);
+          }} 
+          onSubmit={handleCreateScene} 
+          projectType={selectedProject.type} 
+          lastSceneNumber={
+            editingScene 
+              ? editingScene.sceneNumber 
+              : selectedProject.scenes.length > 0 
+                ? Math.max(...selectedProject.scenes.map(s => s.sceneNumber)) 
+                : 0
+          } 
+          editScene={editingScene} 
+        />
+      )}
       
       {/* PDF Export Component (hidden) */}
-      {selectedProject && selectedProject.scenes.map(scene => <div key={scene.id} className="hidden">
+      {selectedProject && selectedProject.scenes.map(scene => (
+        <div key={scene.id} className="hidden">
           <ScenePdfExport scene={scene} project={selectedProject} />
-        </div>)}
-    </div>;
+        </div>
+      ))}
+    </div>
+  );
 };
+
 export default Index;
