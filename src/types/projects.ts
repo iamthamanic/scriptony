@@ -42,6 +42,6 @@ export interface EditProjectFormData {
   genres: Genre[];
   duration: number;
   inspirations: string[];
-  coverImage?: File;
+  coverImage?: File | string;
   narrativeStructure?: NarrativeStructureType;
 }

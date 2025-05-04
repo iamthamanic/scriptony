@@ -1,6 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { Project, Character, Episode, Scene, NewProjectFormData, NewCharacterFormData, NewEpisodeFormData, NewSceneFormData } from "../types";
+import { Project, Character, Episode, Scene, NewProjectFormData, NewCharacterFormData, NewEpisodeFormData, NewSceneFormData, ProjectType, Genre, TimeOfDay, EmotionalSignificance, NarrativeStructureType } from "../types";
 import { toast } from "@/hooks/use-toast";
 import { handleApiError } from "@/utils/apiUtils";
 
@@ -19,13 +19,13 @@ export const fetchUserProjects = async (): Promise<Project[]> => {
     return projectsData.map(dbProject => ({
       id: dbProject.id,
       title: dbProject.title,
-      type: dbProject.type,
+      type: dbProject.type as ProjectType,
       logline: dbProject.logline || '',
-      genres: dbProject.genres || [],
+      genres: (dbProject.genres || []) as Genre[],
       duration: Number(dbProject.duration) || 0,
       inspirations: dbProject.inspirations ? dbProject.inspirations.split(',') : [],
       coverImage: dbProject.cover_image_url,
-      narrativeStructure: dbProject.narrative_structure || 'none',
+      narrativeStructure: (dbProject.narrative_structure || 'none') as NarrativeStructureType,
       scenes: [],  // We'll fetch scenes separately
       characters: [],  // We'll fetch characters separately
       episodes: [],  // We'll fetch episodes separately
@@ -104,7 +104,7 @@ export const fetchProjectDetails = async (projectId: string): Promise<{
       episodeTitle: dbScene.episode_title || undefined,
       sceneNumber: dbScene.scene_number,
       location: dbScene.location,
-      timeOfDay: dbScene.time_of_day,
+      timeOfDay: dbScene.time_of_day as TimeOfDay,
       timecodeStart: dbScene.timecode_start,
       timecodeEnd: dbScene.timecode_end,
       visualComposition: dbScene.visual_composition || '',
@@ -117,7 +117,7 @@ export const fetchProjectDetails = async (projectId: string): Promise<{
       dialog: dbScene.dialog || '',
       transitions: dbScene.transitions || '',
       productionNotes: dbScene.production_notes || '',
-      emotionalSignificance: dbScene.emotional_significance || 'other',
+      emotionalSignificance: dbScene.emotional_significance as EmotionalSignificance || 'other',
       emotionalNotes: dbScene.emotional_notes || '',
       characterIds: dbScene.character_ids || [],
       createdAt: new Date(dbScene.created_at),
@@ -156,6 +156,10 @@ export const createProject = async (projectData: NewProjectFormData): Promise<Pr
       coverImageUrl = urlData.publicUrl;
     }
     
+    // Get the current user
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("User not authenticated");
+    
     // Insert project into database
     const { data, error } = await supabase
       .from('projects')
@@ -167,7 +171,8 @@ export const createProject = async (projectData: NewProjectFormData): Promise<Pr
         duration: projectData.duration.toString(),
         inspirations: projectData.inspirations.join(','),
         cover_image_url: coverImageUrl,
-        narrative_structure: projectData.narrativeStructure || 'none'
+        narrative_structure: projectData.narrativeStructure || 'none',
+        user_id: user.id
       })
       .select()
       .single();
@@ -178,13 +183,13 @@ export const createProject = async (projectData: NewProjectFormData): Promise<Pr
     return {
       id: data.id,
       title: data.title,
-      type: data.type,
+      type: data.type as ProjectType,
       logline: data.logline || '',
-      genres: data.genres || [],
+      genres: (data.genres || []) as Genre[],
       duration: Number(data.duration) || 0,
       inspirations: data.inspirations ? data.inspirations.split(',') : [],
       coverImage: data.cover_image_url,
-      narrativeStructure: data.narrative_structure || 'none',
+      narrativeStructure: data.narrative_structure as NarrativeStructureType || 'none',
       scenes: [],
       characters: [],
       episodes: [],
@@ -206,7 +211,7 @@ export const updateProject = async (projectId: string, projectData: Partial<Proj
     // If there's a new cover image (File object), upload it first
     let coverImageUrl = undefined;
     
-    if (projectData.coverImage instanceof File) {
+    if (projectData.coverImage && typeof projectData.coverImage !== 'string') {
       const fileName = `${Date.now()}_${projectData.coverImage.name}`;
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('project_assets')
@@ -338,7 +343,7 @@ export const updateCharacter = async (characterId: string, characterData: Partia
     // If there's a new avatar (File object), upload it first
     let avatarUrl = undefined;
     
-    if (characterData.avatar instanceof File) {
+    if (characterData.avatar && typeof characterData.avatar !== 'string') {
       const fileName = `${Date.now()}_${characterData.avatar.name}`;
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('project_assets')
@@ -466,7 +471,7 @@ export const updateEpisode = async (episodeId: string, episodeData: Partial<Epis
     // If there's a new cover image (File object), upload it first
     let coverImageUrl = undefined;
     
-    if (episodeData.coverImage instanceof File) {
+    if (episodeData.coverImage && typeof episodeData.coverImage !== 'string') {
       const fileName = `${Date.now()}_${episodeData.coverImage.name}`;
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('project_assets')
@@ -594,7 +599,7 @@ export const createScene = async (projectId: string, sceneData: NewSceneFormData
         episodeTitle: data.episode_title || undefined,
         sceneNumber: data.scene_number,
         location: data.location,
-        timeOfDay: data.time_of_day,
+        timeOfDay: data.time_of_day as TimeOfDay,
         timecodeStart: data.timecode_start,
         timecodeEnd: data.timecode_end,
         visualComposition: data.visual_composition || '',
@@ -607,7 +612,7 @@ export const createScene = async (projectId: string, sceneData: NewSceneFormData
         dialog: data.dialog || '',
         transitions: data.transitions || '',
         productionNotes: data.production_notes || '',
-        emotionalSignificance: data.emotional_significance || 'other',
+        emotionalSignificance: data.emotional_significance as EmotionalSignificance || 'other',
         emotionalNotes: data.emotional_notes || '',
         characterIds: data.character_ids || [],
         createdAt: new Date(data.created_at),
@@ -654,7 +659,7 @@ export const createScene = async (projectId: string, sceneData: NewSceneFormData
         episodeTitle: data.episode_title || undefined,
         sceneNumber: data.scene_number,
         location: data.location,
-        timeOfDay: data.time_of_day,
+        timeOfDay: data.time_of_day as TimeOfDay,
         timecodeStart: data.timecode_start,
         timecodeEnd: data.timecode_end,
         visualComposition: data.visual_composition || '',
@@ -667,7 +672,7 @@ export const createScene = async (projectId: string, sceneData: NewSceneFormData
         dialog: data.dialog || '',
         transitions: data.transitions || '',
         productionNotes: data.production_notes || '',
-        emotionalSignificance: data.emotional_significance || 'other',
+        emotionalSignificance: data.emotional_significance as EmotionalSignificance || 'other',
         emotionalNotes: data.emotional_notes || '',
         characterIds: data.character_ids || [],
         createdAt: new Date(data.created_at),

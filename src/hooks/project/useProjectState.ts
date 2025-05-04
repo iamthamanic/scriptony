@@ -13,7 +13,8 @@ export const useProjectState = () => {
     setSelectedProjectId,
     handleCreateProject,
     handleEditProject,
-    handleDeleteProject
+    handleDeleteProject,
+    isLoading
   } = useProjects();
 
   // Helper function to update projects
@@ -55,7 +56,8 @@ export const useProjectState = () => {
     handleEditEpisode,
     handleDeleteEpisode,
     handleCreateScene,
-    handleDeleteScene
+    handleDeleteScene,
+    isLoading
   };
 };
 
