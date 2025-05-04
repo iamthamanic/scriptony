@@ -1,7 +1,16 @@
+import { Genre, ProjectType, TimeOfDay, EmotionalSignificance, VideoFormat } from "../types";
 
-import { Genre, ProjectType, TimeOfDay, EmotionalSignificance } from "../types";
+export const projectTypes: ProjectType[] = [
+  'movie', 
+  'series', 
+  'short', 
+  'theaterstück', 
+  'hörspiel', 
+  'buch', 
+  'social_video'
+];
 
-export const projectTypes: ProjectType[] = ['movie', 'series', 'short'];
+export const videoFormats: VideoFormat[] = ['shortform', 'longform'];
 
 export const genres: Genre[] = [
   'action',
@@ -44,3 +53,28 @@ export const emotionalSignificanceOptions = emotionalSignificances.map(significa
   value: significance,
   label: significance.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
 }));
+
+export const projectTypeOptions = projectTypes.map(type => {
+  let label;
+  switch(type) {
+    case 'movie': label = 'Film'; break;
+    case 'series': label = 'Serie'; break;
+    case 'short': label = 'Kurzfilm'; break;
+    case 'theaterstück': label = 'Theaterstück'; break;
+    case 'hörspiel': label = 'Hörspiel'; break;
+    case 'buch': label = 'Buch'; break;
+    case 'social_video': label = 'Social Media Video'; break;
+    default: label = type.charAt(0).toUpperCase() + type.slice(1);
+  }
+  return { value: type, label };
+});
+
+export const videoFormatOptions = videoFormats.map(format => {
+  let label;
+  switch(format) {
+    case 'shortform': label = 'Kurzform (TikTok, Reels, Shorts)'; break;
+    case 'longform': label = 'Langform (YouTube)'; break;
+    default: label = format.charAt(0).toUpperCase() + format.slice(1);
+  }
+  return { value: format, label };
+});
