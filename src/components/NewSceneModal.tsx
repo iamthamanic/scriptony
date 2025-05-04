@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { NewSceneFormData, TimeOfDay, EmotionalSignificance, Scene, Character } from '../types';
-import { timesOfDay, emotionalSignificances } from '../utils/constants';
+import { timeOfDayOptions, emotionalSignificanceOptions } from '../utils/constants';
 import { Upload, Clock, Image, Save, Check } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { useToast } from '@/hooks/use-toast';
@@ -316,6 +316,7 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
                 Basic Info
               </AccordionTrigger>
               <AccordionContent className="py-4 space-y-4">
+                {/* Scene number and episode title */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="sceneNumber">Scene Number</Label>
@@ -377,7 +378,7 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
                       <SelectValue placeholder="Select time of day" />
                     </SelectTrigger>
                     <SelectContent>
-                      {timesOfDay.map(option => (
+                      {timeOfDayOptions.map(option => (
                         <SelectItem key={option.value} value={option.value}>
                           {option.label}
                         </SelectItem>
@@ -618,7 +619,7 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
                       <SelectValue placeholder="Select scene significance" />
                     </SelectTrigger>
                     <SelectContent>
-                      {emotionalSignificances.map(option => (
+                      {emotionalSignificanceOptions.map(option => (
                         <SelectItem key={option.value} value={option.value}>
                           {option.label}
                         </SelectItem>
