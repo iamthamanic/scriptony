@@ -47,7 +47,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
       // We'll try to detect potential CORS issues
       console.log("Testing if we have connectivity to Supabase...");
       
-      // Explicitly set redirectTo to ensure consistent behavior
+      // Explicitly set redirectTo to ensure consistent behavior across environments
       const redirectUrl = `${window.location.origin}/auth`;
       console.log("Setting explicit redirectTo URL:", redirectUrl);
       
