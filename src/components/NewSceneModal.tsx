@@ -1,6 +1,6 @@
 
-import React, { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import React, { useState, useEffect, useRef } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -8,9 +8,8 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { NewSceneFormData, TimeOfDay, EmotionalSignificance, Scene } from '../types';
 import { timeOfDayOptions, emotionalSignificanceOptions } from '../utils/mockData';
-import { Upload, Clock, Image, Save, Check, ArrowDown, ArrowUp } from 'lucide-react';
+import { Upload, Clock, Image, Save, Check } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useToast } from '@/components/ui/use-toast';
 
 interface NewSceneModalProps {
@@ -46,6 +45,7 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
   const [autoSaveEnabled, setAutoSaveEnabled] = useState<boolean>(true);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   // Initialize form data with edit scene data if available
@@ -138,6 +138,12 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
     }
   };
 
+  const handleUploadButtonClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(formData);
@@ -188,8 +194,13 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-anime-purple">
-            {editScene ? `Edit Scene ${editScene.sceneNumber}` : 'Create New Scene'}
+            {editScene 
+              ? `Edit Scene ${editScene.sceneNumber}${formData.episodeTitle ? ` - ${formData.episodeTitle}` : ''}` 
+              : 'Create New Scene'}
           </DialogTitle>
+          <DialogDescription>
+            {editScene ? 'Edit the details of your scene' : 'Fill in the details to create a new scene'}
+          </DialogDescription>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
@@ -216,17 +227,22 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
             <div className="flex justify-center mt-2">
               <Input
                 id="keyframeImage"
+                name="keyframeImage"
                 type="file"
                 accept="image/*"
                 onChange={handleImageUpload}
                 className="hidden"
+                ref={fileInputRef}
               />
-              <Label htmlFor="keyframeImage" className="cursor-pointer">
-                <Button type="button" variant="outline" className="flex items-center gap-2">
-                  <Upload className="h-4 w-4" />
-                  {keyframePreview ? 'Change Image' : 'Upload Keyframe'}
-                </Button>
-              </Label>
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={handleUploadButtonClick}
+                className="flex items-center gap-2"
+              >
+                <Upload className="h-4 w-4" />
+                {keyframePreview ? 'Change Image' : 'Upload Keyframe'}
+              </Button>
             </div>
           </div>
           
@@ -305,6 +321,17 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
                     </div>
                   )}
                 </div>
+                
+                {/* Image preview in Basic Info section */}
+                {keyframePreview && (
+                  <div className="mt-2 p-2 bg-muted/30 rounded-md">
+                    <img 
+                      src={keyframePreview} 
+                      alt="Keyframe preview" 
+                      className="max-h-[100px] object-contain mx-auto"
+                    />
+                  </div>
+                )}
                 
                 <div className="space-y-2">
                   <Label htmlFor="location">Location</Label>
@@ -385,6 +412,17 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
                 Visual Design
               </AccordionTrigger>
               <AccordionContent className="py-4 space-y-4">
+                {/* Image preview in Visual Design section */}
+                {keyframePreview && (
+                  <div className="mt-2 p-2 bg-muted/30 rounded-md">
+                    <img 
+                      src={keyframePreview} 
+                      alt="Keyframe preview" 
+                      className="max-h-[100px] object-contain mx-auto"
+                    />
+                  </div>
+                )}
+                
                 <div className="space-y-2">
                   <Label htmlFor="visualComposition">Visual Composition</Label>
                   <Textarea
@@ -458,6 +496,17 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
                 Content
               </AccordionTrigger>
               <AccordionContent className="py-4 space-y-4">
+                {/* Image preview in Content section */}
+                {keyframePreview && (
+                  <div className="mt-2 p-2 bg-muted/30 rounded-md">
+                    <img 
+                      src={keyframePreview} 
+                      alt="Keyframe preview" 
+                      className="max-h-[100px] object-contain mx-auto"
+                    />
+                  </div>
+                )}
+                
                 <div className="space-y-2">
                   <Label htmlFor="description">Scene Description</Label>
                   <Textarea
@@ -503,6 +552,17 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
                 Meta & Notes
               </AccordionTrigger>
               <AccordionContent className="py-4 space-y-4">
+                {/* Image preview in Meta & Notes section */}
+                {keyframePreview && (
+                  <div className="mt-2 p-2 bg-muted/30 rounded-md">
+                    <img 
+                      src={keyframePreview} 
+                      alt="Keyframe preview" 
+                      className="max-h-[100px] object-contain mx-auto"
+                    />
+                  </div>
+                )}
+                
                 <div className="space-y-2">
                   <Label htmlFor="productionNotes">Production Notes</Label>
                   <Textarea
