@@ -1,6 +1,6 @@
 
 import { useToast } from "../../hooks/use-toast";
-import { Episode, NewEpisodeFormData, EditEpisodeFormData } from "../../types";
+import { Episode, EpisodeWithCoverImageFile, NewEpisodeFormData, EditEpisodeFormData } from "../../types";
 import { createEpisode, updateEpisode, deleteEpisode } from "../../services/database";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -47,8 +47,8 @@ export const useEpisodes = (
     });
 
     if (success) {
-      // Create the updated episode
-      const updatedEpisode: Episode = {
+      // Create the updated episode - use EpisodeWithCoverImageFile to allow File type for coverImage
+      const updatedEpisode: EpisodeWithCoverImageFile = {
         ...episodeToEdit,
         title: data.title,
         number: data.number,
@@ -75,7 +75,7 @@ export const useEpisodes = (
         return {
           ...project,
           episodes: project.episodes
-            .map(e => e.id === episodeId ? updatedEpisode : e)
+            .map(e => e.id === episodeId ? updatedEpisode as Episode : e)
             .sort((a, b) => a.number - b.number),
           scenes: updatedScenes,
           updatedAt: new Date()

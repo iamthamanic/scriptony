@@ -45,3 +45,9 @@ export interface EditProjectFormData {
   coverImage?: File | string;
   narrativeStructure?: NarrativeStructureType;
 }
+
+// This is a utility type that helps us handle project coverImage types in hooks
+export interface ProjectWithCoverImageFile extends Project {
+  coverImage?: string | File;
+}
+
