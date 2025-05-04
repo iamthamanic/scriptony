@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import AppHeader from "../components/AppHeader";
 import ProjectSelector from "../components/ProjectSelector";
@@ -6,7 +5,7 @@ import ProjectContent from "../components/ProjectContent";
 import ProjectModals from "../components/ProjectModals";
 import EmptyState from "../components/EmptyState";
 import { Scene, Episode } from "../types";
-import { useProjectState } from "../hooks/useProjectState";
+import { useProjectState } from "../hooks/project/useProjectState";
 
 const Index = () => {
   const {
