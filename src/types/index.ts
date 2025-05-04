@@ -1,3 +1,5 @@
+// Import NarrativeStructureType at the top of the file
+import type { NarrativeStructureType } from './narrativeStructures';
 
 export type ProjectType = 'movie' | 'series' | 'short';
 
@@ -58,9 +60,8 @@ export type CameraPerspective =
   | 'worms-eye'
   | 'other';
 
-// Export NarrativeStructureType from narrativeStructures.ts
-// Using 'export type' to comply with 'isolatedModules' option
-export type { NarrativeStructureType } from './narrativeStructures';
+// Re-export NarrativeStructureType for use throughout the application
+export type { NarrativeStructureType };
 
 export interface Character {
   id: string;
