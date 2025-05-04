@@ -46,8 +46,22 @@ export interface EditProjectFormData {
   narrativeStructure?: NarrativeStructureType;
 }
 
-// This is a utility type that helps us handle project coverImage types in hooks
-export interface ProjectWithCoverImageFile extends Project {
+/**
+ * This type is now aligned with Project but allows File type for coverImage
+ */
+export interface ProjectWithCoverImageFile {
+  id: string;
+  title: string;
+  type: ProjectType;
+  logline: string;
+  genres: Genre[];
+  duration: number;
+  inspirations: string[];
   coverImage?: string | File;
+  scenes: Scene[];
+  characters: Character[];
+  episodes: Episode[];
+  narrativeStructure: NarrativeStructureType;
+  createdAt: Date;
+  updatedAt: Date;
 }
-

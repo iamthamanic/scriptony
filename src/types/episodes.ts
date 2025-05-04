@@ -24,8 +24,16 @@ export interface EditEpisodeFormData {
   coverImage?: File | string;
 }
 
-// This is a utility type that helps us handle episode coverImage types in hooks
-export interface EpisodeWithCoverImageFile extends Episode {
+/**
+ * This type is now aligned with Episode but allows File type for coverImage
+ */
+export interface EpisodeWithCoverImageFile {
+  id: string;
+  projectId: string;
+  title: string;
+  number: number;
+  description: string;
   coverImage?: string | File;
+  createdAt: Date;
+  updatedAt: Date;
 }
-
