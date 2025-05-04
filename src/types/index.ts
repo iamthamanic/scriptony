@@ -9,6 +9,8 @@ export * from './characters';
 export * from './episodes';
 export * from './references';
 export * from './common';
+export * from './worlds';
+export * from './admin';
 
 // Export the types and templates from the new module location
 export type { 

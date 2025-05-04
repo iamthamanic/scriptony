@@ -1,61 +1,53 @@
 
-import React from "react";
-import { useTranslation } from "react-i18next";
+import React from 'react';
 import { Button } from "@/components/ui/button";
-import { FilePlus, Settings } from "lucide-react";
+import { Plus, Settings, Globe } from "lucide-react";
 import Logo from "./Logo";
-import { ThemeToggle } from "./ThemeToggle";
-import LanguageSwitcher from "./LanguageSwitcher";
-import { useAuth } from "@/contexts/AuthContext";
+import { Link } from "react-router-dom";
 
 interface AppHeaderProps {
   onNewProject: () => void;
-  onOpenAccountSettings?: () => void;
-  accountName?: string;
+  onOpenAccountSettings: () => void;
+  accountName: string;
 }
 
-const AppHeader = ({
-  onNewProject,
-  onOpenAccountSettings,
-  accountName = "User"
-}: AppHeaderProps) => {
-  const { t } = useTranslation();
-  const { user } = useAuth();
-  
+const AppHeader = ({ onNewProject, onOpenAccountSettings, accountName }: AppHeaderProps) => {
   return (
-    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-      <div>
-        <div className="flex items-center gap-2">
-          <Logo />
+    <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
+      <div className="flex items-center gap-4">
+        <Logo size="small" />
+        
+        <div className="hidden md:flex gap-4 ml-4">
+          <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">
+            Projekte
+          </Link>
+          <Link to="/worldbuilding" className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
+            <Globe className="h-4 w-4" />
+            Worldbuilding
+          </Link>
         </div>
-        <p className="text-muted-foreground mt-1">
-          <span>{t('common.workspace', { name: accountName })}</span>
-          {user && (
-            <span className="block text-xs mt-1">
-              {t('common.loggedInAs', { email: user.email })}
-            </span>
-          )}
-        </p>
       </div>
+      
       <div className="flex items-center gap-2">
-        <LanguageSwitcher />
-        <ThemeToggle />
-        {onOpenAccountSettings && (
-          <Button 
-            onClick={onOpenAccountSettings} 
-            variant="outline" 
-            className="transition-colors"
-          >
-            <Settings className="mr-2 h-4 w-4" />
-            {t('common.accountSettings')}
-          </Button>
-        )}
-        <Button 
-          onClick={onNewProject} 
-          className="bg-anime-purple hover:bg-anime-dark-purple transition-colors"
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onOpenAccountSettings}
+          className="gap-2"
         >
-          <FilePlus className="mr-2 h-4 w-4" />
-          {t('common.newProject')}
+          <div className="h-5 w-5 rounded-full bg-anime-purple text-xs flex items-center justify-center text-white">
+            {accountName.charAt(0).toUpperCase()}
+          </div>
+          <span className="hidden md:inline">{accountName}</span>
+        </Button>
+        
+        <Button
+          onClick={onNewProject}
+          size="sm"
+          className="bg-anime-purple hover:bg-anime-dark-purple"
+        >
+          <Plus className="h-4 w-4 mr-1.5" />
+          <span>New Project</span>
         </Button>
       </div>
     </div>

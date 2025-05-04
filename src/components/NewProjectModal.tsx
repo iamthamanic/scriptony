@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -5,11 +6,15 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { NewProjectFormData, ProjectType, Genre, VideoFormat } from '../types';
+import { NewProjectFormData, ProjectType, Genre, VideoFormat, World } from '../types';
 import { genreOptions, projectTypeOptions, videoFormatOptions } from '../utils/mockData';
 import { X, Plus, Upload, HelpCircle } from 'lucide-react';
 import { getStructureOptions } from '../types/narrativeStructures';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import WorldSelector from './worlds/WorldSelector';
+import { fetchUserWorlds, createWorld } from '../services/worlds';
+import { useToast } from '@/hooks/use-toast';
+import NewWorldModal from './worlds/NewWorldModal';
 
 interface NewProjectModalProps {
   isOpen: boolean;
@@ -30,6 +35,9 @@ const NewProjectModal = ({ isOpen, onClose, onSubmit }: NewProjectModalProps) =>
   
   const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null);
   const [structureOptions, setStructureOptions] = useState(getStructureOptions('movie'));
+  const [worlds, setWorlds] = useState<World[]>([]);
+  const [isNewWorldModalOpen, setIsNewWorldModalOpen] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     // Update narrative structure options when project type changes
@@ -41,6 +49,22 @@ const NewProjectModal = ({ isOpen, onClose, onSubmit }: NewProjectModalProps) =>
       setFormData(prev => ({ ...prev, narrativeStructure: 'none' }));
     }
   }, [formData.type, formData.videoFormat]);
+  
+  useEffect(() => {
+    if (isOpen) {
+      // Load worlds when modal opens
+      const loadWorlds = async () => {
+        try {
+          const worldsData = await fetchUserWorlds();
+          setWorlds(worldsData);
+        } catch (error) {
+          console.error('Error loading worlds:', error);
+        }
+      };
+      
+      loadWorlds();
+    }
+  }, [isOpen]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -61,8 +85,6 @@ const NewProjectModal = ({ isOpen, onClose, onSubmit }: NewProjectModalProps) =>
   };
 
   const handleNarrativeStructureChange = (value: string) => {
-    const selectedStructure = structureOptions.find(option => option.value === value);
-    
     setFormData(prev => ({ 
       ...prev, 
       narrativeStructure: value as any 
@@ -113,6 +135,31 @@ const NewProjectModal = ({ isOpen, onClose, onSubmit }: NewProjectModalProps) =>
         setCoverImagePreview(reader.result as string);
       };
       reader.readAsDataURL(file);
+    }
+  };
+  
+  const handleWorldSelection = (worldId: string | null) => {
+    setFormData(prev => ({ ...prev, world_id: worldId }));
+  };
+  
+  const handleCreateWorld = async (worldData) => {
+    try {
+      const newWorld = await createWorld(worldData);
+      setWorlds([newWorld, ...worlds]);
+      setFormData(prev => ({ ...prev, world_id: newWorld.id }));
+      setIsNewWorldModalOpen(false);
+      
+      toast({
+        title: 'Welt erstellt',
+        description: `"${worldData.name}" wurde erfolgreich erstellt und mit dem Projekt verknüpft.`
+      });
+    } catch (error) {
+      console.error('Error creating world:', error);
+      toast({
+        title: 'Fehler',
+        description: 'Die Welt konnte nicht erstellt werden.',
+        variant: 'destructive'
+      });
     }
   };
 
@@ -229,6 +276,19 @@ const NewProjectModal = ({ isOpen, onClose, onSubmit }: NewProjectModalProps) =>
             </Select>
             <p className="text-xs text-muted-foreground mt-1">
               {currentStructureDescription}
+            </p>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="worldId">Welt verknüpfen (optional)</Label>
+            <WorldSelector
+              worlds={worlds}
+              selectedWorldId={formData.world_id}
+              onSelectWorld={handleWorldSelection}
+              onCreateWorld={() => setIsNewWorldModalOpen(true)}
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              Verknüpfe dein Projekt mit einer Welt für umfangreiches Worldbuilding.
             </p>
           </div>
           
@@ -369,6 +429,12 @@ const NewProjectModal = ({ isOpen, onClose, onSubmit }: NewProjectModalProps) =>
           </DialogFooter>
         </form>
       </DialogContent>
+      
+      <NewWorldModal
+        isOpen={isNewWorldModalOpen}
+        onClose={() => setIsNewWorldModalOpen(false)}
+        onSubmit={handleCreateWorld}
+      />
     </Dialog>
   );
 };

@@ -13,6 +13,7 @@ import Index from "./pages/Index";
 import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import Worldbuilding from "./pages/Worldbuilding";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,6 +41,11 @@ const App = () => (
               <Route path="/" element={
                 <AuthRoute>
                   <Index />
+                </AuthRoute>
+              } />
+              <Route path="/worldbuilding" element={
+                <AuthRoute>
+                  <Worldbuilding />
                 </AuthRoute>
               } />
               <Route path="/landing" element={<Landing />} />
