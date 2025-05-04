@@ -3,7 +3,7 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Plus, Settings, Globe } from "lucide-react";
 import Logo from "./Logo";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 interface AppHeaderProps {
   onNewProject: () => void;
@@ -12,6 +12,9 @@ interface AppHeaderProps {
 }
 
 const AppHeader = ({ onNewProject, onOpenAccountSettings, accountName }: AppHeaderProps) => {
+  const location = useLocation();
+  const isWorldbuilding = location.pathname === '/worldbuilding';
+  
   return (
     <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
       <div className="flex items-center gap-4">
@@ -19,7 +22,7 @@ const AppHeader = ({ onNewProject, onOpenAccountSettings, accountName }: AppHead
         
         <div className="hidden md:flex gap-4 ml-4">
           <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">
-            Projekte
+            Skript Projekte
           </Link>
           <Link to="/worldbuilding" className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
             <Globe className="h-4 w-4" />
@@ -41,14 +44,25 @@ const AppHeader = ({ onNewProject, onOpenAccountSettings, accountName }: AppHead
           <span className="hidden md:inline">{accountName}</span>
         </Button>
         
-        <Button
-          onClick={onNewProject}
-          size="sm"
-          className="bg-anime-purple hover:bg-anime-dark-purple"
-        >
-          <Plus className="h-4 w-4 mr-1.5" />
-          <span>New Project</span>
-        </Button>
+        {isWorldbuilding ? (
+          <Button
+            onClick={onNewProject}
+            size="sm"
+            className="bg-anime-purple hover:bg-anime-dark-purple"
+          >
+            <Plus className="h-4 w-4 mr-1.5" />
+            <span>Neue Welt</span>
+          </Button>
+        ) : (
+          <Button
+            onClick={onNewProject}
+            size="sm"
+            className="bg-anime-purple hover:bg-anime-dark-purple"
+          >
+            <Plus className="h-4 w-4 mr-1.5" />
+            <span>New Project</span>
+          </Button>
+        )}
       </div>
     </div>
   );
