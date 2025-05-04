@@ -1,9 +1,11 @@
+
 import React from 'react';
 import { Scene } from '../types';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { FileText, Edit, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 interface SceneCardProps {
   scene: Scene;
@@ -58,11 +60,13 @@ const SceneCard = ({ scene, onClick, onExportPDF }: SceneCardProps) => {
         <div className="flex gap-4">
           {scene.keyframeImage && (
             <div className="hidden sm:block w-1/3">
-              <img 
-                src={scene.keyframeImage} 
-                alt={`Scene ${scene.sceneNumber} keyframe`}
-                className="w-full h-24 object-cover rounded-md"
-              />
+              <AspectRatio ratio={16 / 9} className="bg-muted rounded-md overflow-hidden">
+                <img 
+                  src={scene.keyframeImage} 
+                  alt={`Scene ${scene.sceneNumber} keyframe`}
+                  className="w-full h-full object-contain"
+                />
+              </AspectRatio>
             </div>
           )}
           <div className={scene.keyframeImage ? "w-full sm:w-2/3" : "w-full"}>
