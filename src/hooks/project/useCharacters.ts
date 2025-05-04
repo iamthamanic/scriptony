@@ -67,7 +67,11 @@ export const useCharacters = (
       updateProjects(selectedProject.id, (project) => ({
         ...project,
         characters: project.characters.map(c => 
-          c.id === characterId ? (updatedCharacter as unknown as Character) : c
+          c.id === characterId ? ({
+            ...updatedCharacter,
+            // Remove File object before storing in characters array
+            avatar: typeof updatedCharacter.avatar === 'string' ? updatedCharacter.avatar : null
+          } as Character) : c
         ),
         updatedAt: new Date()
       }));

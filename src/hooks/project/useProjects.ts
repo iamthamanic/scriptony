@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Project, ProjectWithCoverImageFile, NewProjectFormData, EditProjectFormData } from "../../types";
 import { useToast } from "../use-toast";
@@ -168,7 +169,7 @@ export const useProjects = () => {
       genres: data.genres,
       duration: data.duration,
       inspirations: data.inspirations,
-      narrativeStructure: data.narrativeStructure
+      narrativeStructure: data.narrativeStructure || selectedProject.narrativeStructure
     };
     
     // Only include coverImage if it's a string (URL) or undefined
@@ -195,7 +196,11 @@ export const useProjects = () => {
       };
 
       const updatedProjects = projects.map(project => 
-        project.id === selectedProject.id ? (updatedProject as unknown as Project) : project
+        project.id === selectedProject.id ? ({
+          ...updatedProject,
+          // Remove File object before storing in projects array
+          coverImage: typeof updatedProject.coverImage === 'string' ? updatedProject.coverImage : null
+        } as Project) : project
       );
 
       setProjects(updatedProjects);
