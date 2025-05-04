@@ -205,7 +205,7 @@ const Auth = () => {
                           <div className="relative">
                             <Input 
                               placeholder="••••••••" 
-                              type={showPassword ? "text" : "password"} 
+                              type={showPassword ? "text" : "password"}
                               {...field} 
                               disabled={loading}
                             />
