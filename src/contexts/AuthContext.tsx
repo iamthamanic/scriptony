@@ -34,6 +34,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     console.log("AuthProvider initializing...");
     let isMounted = true;
     
+    // Log important auth-related browser information
+    console.log("======== AUTH CONTEXT DEBUGGING INFO ========");
+    console.log("Window location:", window.location.href);
+    console.log("Has hash fragment:", !!window.location.hash);
+    console.log("Has auth query params:", 
+      window.location.search.includes('access_token') || 
+      window.location.search.includes('error') ||
+      window.location.search.includes('code')
+    );
+    console.log("==========================================");
+    
     // Set up auth state listener first
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event: AuthChangeEvent, currentSession: Session | null) => {
