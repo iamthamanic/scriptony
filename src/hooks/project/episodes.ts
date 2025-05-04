@@ -58,7 +58,7 @@ export const useEpisodes = (
     // Only include coverImage if it's a string (URL) or undefined
     // File objects will be handled by the updateEpisode function
     if (typeof data.coverImage === 'string' || data.coverImage === undefined) {
-      updateData.coverImage = data.coverImage;
+      updateData.coverImage = typeof data.coverImage === 'string' ? data.coverImage : undefined;
     }
 
     const success = await updateEpisode(episodeId, updateData);
