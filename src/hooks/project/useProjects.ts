@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Project, NewProjectFormData, EditProjectFormData } from "../../types";
+import { Project, NewProjectFormData, EditProjectFormData, EmotionalSignificance } from "../../types";
 import { mockProjects } from "../../utils/mockData";
 import { useToast } from "../use-toast";
 import { narrativeStructureTemplates } from "../../types/narrativeStructures";
@@ -47,7 +47,7 @@ export const useProjects = () => {
             episodeTitle: undefined,
             sceneNumber: sceneTpl.sceneNumber || index + 1,
             location: sceneTpl.location || "",
-            timeOfDay: sceneTpl.timeOfDay || "day",
+            timeOfDay: "day", // Set default timeOfDay since it's required but not in template
             timecodeStart: "00:00:00",
             timecodeEnd: "00:00:00",
             visualComposition: "",
@@ -60,7 +60,7 @@ export const useProjects = () => {
             dialog: "",
             transitions: "",
             productionNotes: "",
-            emotionalSignificance: sceneTpl.emotionalSignificance || "other",
+            emotionalSignificance: (sceneTpl.emotionalSignificance as EmotionalSignificance) || "other",
             characterIds: [],
             createdAt: now,
             updatedAt: now
