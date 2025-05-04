@@ -1,4 +1,6 @@
 
+import type { EmotionalSignificance } from '../common';
+
 /**
  * Core narrative structure types
  */
