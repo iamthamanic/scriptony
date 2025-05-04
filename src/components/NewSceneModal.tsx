@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -6,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { NewSceneFormData, TimeOfDay, EmotionalSignificance, Scene, Character, Episode } from '../types';
+import { NewSceneFormData, Scene, Character, Episode, ProjectType } from '../types';
 import { timeOfDayOptions, emotionalSignificanceOptions } from '../utils/constants';
 import { Upload, Clock, Image, Save, Check } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -17,12 +16,12 @@ interface NewSceneModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: NewSceneFormData) => void;
-  projectType: 'movie' | 'series' | 'short';
+  projectType: ProjectType; // Updated to use the full ProjectType type
   lastSceneNumber: number;
-  editScene?: Scene | null;
-  characters?: Character[];
-  episodes?: Episode[];
-  selectedEpisodeId?: string | null;
+  editScene: Scene | null;
+  characters: Character[];
+  episodes: Episode[];
+  selectedEpisodeId: string | null;
 }
 
 const NewSceneModal = ({ 

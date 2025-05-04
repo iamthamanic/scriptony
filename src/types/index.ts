@@ -1,4 +1,5 @@
 
+
 // Re-export all types from their respective files
 export * from './projects';
 export * from './genres';
@@ -11,5 +12,10 @@ export * from './references';
 export * from './common';
 
 // Export the types and templates from the new module location
-export type { NarrativeStructureType, StructureTemplate } from './narrativeStructures';
+export type { 
+  NarrativeStructureType, 
+  StructureTemplate, 
+  NarrativeStructureOption 
+} from './narrativeStructures';
 export { getStructureOptions, narrativeStructureTemplates } from './narrativeStructures';
+
