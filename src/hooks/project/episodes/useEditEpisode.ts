@@ -19,17 +19,18 @@ export const useEditEpisode = (
       title: data.title,
       number: data.number,
       description: data.description,
-      coverImage: data.coverImage ? URL.createObjectURL(data.coverImage) : episodeToEdit.coverImage,
+      coverImage: data.coverImage && typeof data.coverImage !== 'string' 
+        ? URL.createObjectURL(data.coverImage) 
+        : (typeof data.coverImage === 'string' ? data.coverImage : episodeToEdit.coverImage),
       updatedAt: new Date()
     };
 
     updateProjects(selectedProject.id, (project) => {
-      // Update scenes that reference this episode (by episode title)
+      // Update scenes that reference this episode
       const updatedScenes = project.scenes.map(scene => {
-        if (scene.episodeId === episodeId || scene.episodeTitle === episodeToEdit.title) {
+        if (scene.episodeId === episodeId) {
           return {
             ...scene,
-            episodeId: episodeId,
             episodeTitle: data.title,
             updatedAt: new Date()
           };
@@ -39,9 +40,9 @@ export const useEditEpisode = (
 
       return {
         ...project,
-        episodes: project.episodes.map(e => 
-          e.id === episodeId ? updatedEpisode : e
-        ).sort((a, b) => a.number - b.number),
+        episodes: project.episodes
+          .map(e => e.id === episodeId ? updatedEpisode : e)
+          .sort((a, b) => a.number - b.number),
         scenes: updatedScenes,
         updatedAt: new Date()
       };
