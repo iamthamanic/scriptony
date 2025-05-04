@@ -26,7 +26,7 @@ interface PasswordResetFormProps {
 const PasswordResetForm: React.FC<PasswordResetFormProps> = ({ loading, setLoading, onSuccess }) => {
   const { t } = useTranslation();
 
-  const form = useValidatedForm<PasswordResetFormValues>(passwordResetSchema, {
+  const form = useValidatedForm<PasswordResetFormValues, typeof passwordResetSchema>(passwordResetSchema, {
     defaultValues: {
       email: ""
     }

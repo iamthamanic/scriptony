@@ -29,7 +29,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ loading, setLoading, onFor
   const navigate = useNavigate();
   const { t } = useTranslation();
   
-  const form = useValidatedForm<LoginFormValues>(loginSchema, {
+  const form = useValidatedForm<LoginFormValues, typeof loginSchema>(loginSchema, {
     defaultValues: {
       email: "",
       password: ""
