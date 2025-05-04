@@ -5,7 +5,8 @@ import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertTriangle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface GoogleLoginButtonProps {
   loading: boolean;
@@ -15,6 +16,13 @@ interface GoogleLoginButtonProps {
 const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoading }) => {
   const { t } = useTranslation();
   const [errorDetails, setErrorDetails] = useState<string | null>(null);
+  const [currentURL, setCurrentURL] = useState<string>("");
+  const [showDebugInfo, setShowDebugInfo] = useState<boolean>(false);
+  
+  // Capture initial URL
+  useEffect(() => {
+    setCurrentURL(window.location.href);
+  }, []);
 
   // Log auth settings on component mount for debugging
   useEffect(() => {
@@ -72,6 +80,12 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
           errorMessage = 'Connection to authentication service failed. Possible CORS issue.';
         } else if (errorMessage.includes('redirect_uri_mismatch')) {
           errorMessage = 'Redirect URL mismatch. Check Google Console configuration.';
+        } else if (errorMessage.includes('invalid_client')) {
+          errorMessage = 'Invalid client configuration. Verify Google API credentials.';
+        } else if (errorMessage.includes('unauthorized_client')) {
+          errorMessage = 'Unauthorized client. Verify domain authorization in Google Console.';
+        } else if (error.status === 401 || errorMessage.includes('401')) {
+          errorMessage = 'Authorization failed (401). Check API credentials and domain verification.';
         }
         
         setErrorDetails(errorMessage);
@@ -130,7 +144,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full space-y-2">
       <Button 
         variant="outline" 
         className="w-full flex items-center gap-2" 
@@ -151,9 +165,33 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
       </Button>
       
       {errorDetails && (
-        <div className="mt-2 text-destructive text-sm">
-          <p>Connection error: {errorDetails}</p>
-          <p className="text-xs mt-1">Please verify Google OAuth settings in your Google Cloud Console.</p>
+        <Alert variant="destructive">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>Google Login Error</AlertTitle>
+          <AlertDescription className="text-sm">
+            {errorDetails}
+            <p className="mt-2 text-xs">
+              Please verify Google OAuth settings in Google Cloud Console and Supabase.
+            </p>
+            <Button 
+              variant="link" 
+              className="p-0 h-auto mt-1 text-xs"
+              onClick={() => setShowDebugInfo(!showDebugInfo)}
+            >
+              {showDebugInfo ? "Hide Debug Info" : "Show Debug Info"}
+            </Button>
+          </AlertDescription>
+        </Alert>
+      )}
+      
+      {errorDetails && showDebugInfo && (
+        <div className="mt-2 p-3 bg-muted/50 rounded-md border text-xs font-mono overflow-x-auto">
+          <p><strong>Current URL:</strong> {currentURL}</p>
+          <p><strong>Redirect URL:</strong> {window.location.origin}/auth</p>
+          <p><strong>Supabase Project:</strong> suvxmnrnldfhfwxvkntv.supabase.co</p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            This debugging information may be helpful for configuration troubleshooting.
+          </p>
         </div>
       )}
     </div>
