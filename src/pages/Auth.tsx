@@ -188,7 +188,7 @@ const Auth = () => {
                       <FormItem>
                         <FormLabel>E-Mail</FormLabel>
                         <FormControl>
-                          <Input placeholder="name@example.com" {...field} type="email" disabled={loading} />
+                          <Input placeholder="name@example.com" type="email" {...field} disabled={loading} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -254,7 +254,7 @@ const Auth = () => {
                       <FormItem>
                         <FormLabel>E-Mail</FormLabel>
                         <FormControl>
-                          <Input placeholder="name@example.com" {...field} type="email" disabled={loading} />
+                          <Input placeholder="name@example.com" type="email" {...field} disabled={loading} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -271,7 +271,7 @@ const Auth = () => {
                           <div className="relative">
                             <Input 
                               placeholder="••••••••" 
-                              type={showPassword ? "text" : "password"} 
+                              type={showPassword ? "text" : "password"}
                               {...field} 
                               disabled={loading}
                             />
