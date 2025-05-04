@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ProjectHeader from "../components/ProjectHeader";
@@ -238,6 +237,49 @@ const Index = () => {
     });
   };
 
+  const handleDeleteProject = () => {
+    if (!selectedProjectId) return;
+    
+    const projectToDelete = projects.find(p => p.id === selectedProjectId);
+    if (!projectToDelete) return;
+    
+    const updatedProjects = projects.filter(project => project.id !== selectedProjectId);
+    const nextProjectId = updatedProjects.length > 0 ? updatedProjects[0].id : null;
+    
+    setProjects(updatedProjects);
+    setSelectedProjectId(nextProjectId);
+    
+    toast({
+      title: "Project Deleted",
+      description: `${projectToDelete.title} has been permanently deleted.`,
+      variant: "destructive",
+      duration: 3000
+    });
+  };
+
+  const handleDeleteScene = (scene: Scene) => {
+    if (!selectedProject) return;
+    
+    const updatedProjects = projects.map(project => 
+      project.id === selectedProject.id 
+        ? {
+            ...project,
+            scenes: project.scenes.filter(s => s.id !== scene.id),
+            updatedAt: new Date()
+          } 
+        : project
+    );
+    
+    setProjects(updatedProjects);
+    
+    toast({
+      title: "Scene Deleted",
+      description: `Scene ${scene.sceneNumber} has been permanently deleted.`,
+      variant: "destructive",
+      duration: 3000
+    });
+  };
+
   return (
     <div className="container mx-auto py-6 px-4 md:px-6">
       <header className="mb-8">
@@ -275,7 +317,8 @@ const Index = () => {
               setIsNewSceneModalOpen(true);
             }}
             onEditProject={() => setIsEditProjectModalOpen(true)}
-            onNewCharacter={() => setIsNewCharacterModalOpen(true)} 
+            onNewCharacter={() => setIsNewCharacterModalOpen(true)}
+            onDeleteProject={handleDeleteProject}
           />
           
           {selectedProject.characters.length > 0 && (
@@ -290,6 +333,8 @@ const Index = () => {
               scenes={selectedProject.scenes} 
               onEditScene={handleEditScene}
               onExportPDF={handleExportScenePDF}
+              onDeleteScene={handleDeleteScene}
+              characters={selectedProject.characters}
             />
           ) : (
             <EmptyState
