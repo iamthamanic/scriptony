@@ -15,16 +15,19 @@ export const useEditEpisode = (
     const episodeToEdit = selectedProject.episodes.find(e => e.id === episodeId);
     if (!episodeToEdit) return;
 
-    // Handle file upload if needed
-    let coverImageUrl = data.coverImage;
-    if (data.coverImage instanceof File) {
-      // In a real implementation, you'd upload the file and get a URL
-      coverImageUrl = URL.createObjectURL(data.coverImage);
-    }
+    // Update the episode
+    const updatedEpisode = {
+      ...episodeToEdit,
+      title: data.title,
+      number: data.number,
+      description: data.description,
+      coverImage: data.coverImage,
+      updatedAt: new Date()
+    };
 
-    // Update the episode in the project
+    // Update episodes in the project
     updateProjects(selectedProject.id, (project) => {
-      // Update any scenes that reference this episode
+      // Update scenes that reference this episode
       const updatedScenes = project.scenes.map(scene => {
         if (scene.episodeId === episodeId) {
           return {
@@ -38,19 +41,9 @@ export const useEditEpisode = (
 
       return {
         ...project,
-        episodes: project.episodes.map(e => {
-          if (e.id === episodeId) {
-            return {
-              ...e,
-              title: data.title,
-              number: data.number,
-              description: data.description,
-              coverImage: coverImageUrl as string,
-              updatedAt: new Date()
-            };
-          }
-          return e;
-        }).sort((a, b) => a.number - b.number),
+        episodes: project.episodes
+          .map(e => e.id === episodeId ? updatedEpisode : e)
+          .sort((a, b) => a.number - b.number),
         scenes: updatedScenes,
         updatedAt: new Date()
       };

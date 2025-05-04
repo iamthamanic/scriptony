@@ -5,7 +5,7 @@ export interface Character {
   role: string;
   description: string;
   projectId: string;
-  avatar?: string;
+  avatar?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -29,14 +29,13 @@ export interface EditCharacterFormData {
   avatar?: File | string;
 }
 
-// Modified to NOT extend Character since it has a different type for avatar
 export interface CharacterWithAvatarFile {
   id: string;
   name: string;
   role: string;
   description: string;
   projectId: string;
-  avatar?: string | File;
+  avatar?: string | File | null;
   createdAt: Date;
   updatedAt: Date;
 }

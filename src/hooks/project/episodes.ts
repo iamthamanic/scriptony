@@ -1,5 +1,5 @@
 
-import { useToast } from "../../hooks/use-toast";
+import { useToast } from "../use-toast";
 import { Episode, EpisodeWithCoverImageFile, NewEpisodeFormData, EditEpisodeFormData } from "../../types";
 import { createEpisode, updateEpisode, deleteEpisode } from "../../services/database";
 import { useAuth } from "@/contexts/AuthContext";
@@ -47,7 +47,7 @@ export const useEpisodes = (
     });
 
     if (success) {
-      // Create the updated episode using EpisodeWithCoverImageFile for proper typing
+      // Create the updated episode
       const updatedEpisode: EpisodeWithCoverImageFile = {
         ...episodeToEdit,
         title: data.title,

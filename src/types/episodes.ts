@@ -5,7 +5,7 @@ export interface Episode {
   title: string;
   number: number;
   description: string;
-  coverImage?: string;
+  coverImage?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -24,14 +24,13 @@ export interface EditEpisodeFormData {
   coverImage?: File | string;
 }
 
-// Modified to NOT extend Episode since it has a different type for coverImage
 export interface EpisodeWithCoverImageFile {
   id: string;
   projectId: string;
   title: string;
   number: number;
   description: string;
-  coverImage?: string | File;
+  coverImage?: string | File | null;
   createdAt: Date;
   updatedAt: Date;
 }

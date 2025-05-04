@@ -46,7 +46,7 @@ export const useCharacters = (
     });
 
     if (success) {
-      // Create the updated character using CharacterWithAvatarFile for proper typing
+      // Create the updated character
       const updatedCharacter: CharacterWithAvatarFile = {
         ...characterToEdit,
         name: data.name,
