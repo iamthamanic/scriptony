@@ -14,6 +14,7 @@ export const mockProjects: Project[] = [
     coverImage: "/placeholder.svg",
     scenes: [],
     characters: [],
+    episodes: [],  // Add the missing episodes property
     createdAt: new Date("2025-04-28"),
     updatedAt: new Date("2025-05-01")
   },
@@ -27,6 +28,7 @@ export const mockProjects: Project[] = [
     inspirations: ["Spirited Away", "The Ancient Magus' Bride", "Little Witch Academia"],
     scenes: [],
     characters: [],
+    episodes: [],  // Add the missing episodes property
     createdAt: new Date("2025-03-15"),
     updatedAt: new Date("2025-04-20")
   }
