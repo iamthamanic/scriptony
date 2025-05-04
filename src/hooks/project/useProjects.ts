@@ -196,11 +196,11 @@ export const useProjects = () => {
       };
 
       const updatedProjects = projects.map(project => 
-        project.id === selectedProject.id ? ({
+        project.id === selectedProject.id ? {
           ...updatedProject,
-          // Remove File object before storing in projects array
+          // Ensure coverImage is handled properly for database storage
           coverImage: typeof updatedProject.coverImage === 'string' ? updatedProject.coverImage : null
-        } as Project) : project
+        } as Project : project
       );
 
       setProjects(updatedProjects);

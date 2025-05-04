@@ -81,11 +81,11 @@ export const useEpisodes = (
         return {
           ...project,
           episodes: project.episodes
-            .map(e => e.id === episodeId ? ({
+            .map(e => e.id === episodeId ? {
               ...updatedEpisode,
-              // Remove File object before storing in episodes array
+              // Ensure coverImage is handled properly for database storage
               coverImage: typeof updatedEpisode.coverImage === 'string' ? updatedEpisode.coverImage : null
-            } as Episode) : e)
+            } as Episode : e)
             .sort((a, b) => a.number - b.number),
           scenes: updatedScenes,
           updatedAt: new Date()
