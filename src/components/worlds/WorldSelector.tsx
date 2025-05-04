@@ -23,14 +23,14 @@ const WorldSelector = ({ worlds, selectedWorldId, onSelectWorld, onCreateWorld }
     <div className="flex items-center gap-2">
       <div className="flex-grow">
         <Select
-          value={selectedWorldId || ''}
-          onValueChange={(value) => onSelectWorld(value === '' ? null : value)}
+          value={selectedWorldId || 'none'}
+          onValueChange={(value) => onSelectWorld(value === 'none' ? null : value)}
         >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Keine Welt verknüpft" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Keine Welt verknüpfen</SelectItem>
+            <SelectItem value="none">Keine Welt verknüpfen</SelectItem>
             {worlds.map(world => (
               <SelectItem key={world.id} value={world.id}>
                 <div className="flex items-center gap-2">

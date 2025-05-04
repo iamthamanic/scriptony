@@ -232,14 +232,14 @@ const ShotEditor = ({
             <div>
               <Label htmlFor="cameraPerspective">Camera Perspective (Optional)</Label>
               <Select
-                value={newShot.cameraPerspective || ''}
-                onValueChange={(value) => handleSelectChange('cameraPerspective', value)}
+                value={newShot.cameraPerspective || 'none'}
+                onValueChange={(value) => handleSelectChange('cameraPerspective', value === 'none' ? '' : value)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select perspective" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="none">None</SelectItem>
                   {cameraPerspectiveOptions.map(option => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}
