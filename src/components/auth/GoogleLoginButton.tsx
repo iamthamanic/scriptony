@@ -25,14 +25,17 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
       setLoading(true);
       
       // Generate the redirect URL based on the current origin
-      const redirectTo = `${window.location.origin}/`;
+      // This is where users will be sent AFTER successful authentication
+      const redirectTo = window.location.origin;
       console.log("Starting Google login with redirect URL:", redirectTo);
       
       // Log hostname information for debugging
       console.log("Current hostname:", window.location.hostname);
-      console.log("Is localhost:", window.location.hostname === 'localhost');
+      console.log("Current domain:", window.location.origin);
       
-      // Add explicit scopes to request the minimum needed permissions
+      // Important: Supabase will handle the callback internally through:
+      // https://suvxmnrnldfhfwxvkntv.supabase.co/auth/v1/callback
+      // We just need to specify where to go after the whole flow completes
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
@@ -54,23 +57,28 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
       } else {
         console.log("Redirecting to Google auth URL:", data.url);
         
-        // Parse the URL to check the redirect_uri parameter
+        // Parse the URL for debugging information
         try {
           const urlObj = new URL(data.url);
+          console.log("Auth flow URL:", data.url);
           console.log("Auth URL host:", urlObj.host);
           console.log("Auth URL pathname:", urlObj.pathname);
-          const redirectUri = urlObj.searchParams.get('redirect_uri');
-          console.log("Parsed redirect_uri from URL:", redirectUri);
           
           // Log all query parameters for debugging
+          console.log("Auth URL parameters:");
           urlObj.searchParams.forEach((value, key) => {
-            console.log(`Query param: ${key} = ${value}`);
+            // Don't log the entire token for security reasons
+            if (key === 'access_token' || key === 'refresh_token') {
+              console.log(`Query param: ${key} = [TOKEN HIDDEN]`);
+            } else {
+              console.log(`Query param: ${key} = ${value}`);
+            }
           });
         } catch (e) {
           console.error("Could not parse URL:", e);
         }
         
-        // Force redirect using window.location for more reliable navigation
+        // Direct the user to Google's authentication page
         window.location.href = data.url;
       }
     } catch (error: any) {
