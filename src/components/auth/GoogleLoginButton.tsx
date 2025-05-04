@@ -28,6 +28,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
           redirectTo: redirectTo,
           queryParams: {
             prompt: 'select_account', // Force account selection even when already signed in
+            access_type: 'offline',   // Get refresh token for server side use
           }
         }
       });
@@ -41,6 +42,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
       } else {
         console.log("Redirecting to Google auth URL:", data.url);
         // The user will be redirected to Google's OAuth page automatically
+        window.location.href = data.url;
       }
     } catch (error: any) {
       console.error("Google Login Exception:", error);
