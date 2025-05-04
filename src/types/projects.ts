@@ -15,7 +15,7 @@ export interface Project {
   genres: Genre[];
   duration: number; // in minutes
   inspirations: string[];
-  coverImage?: string;
+  coverImage?: string | null;
   scenes: Scene[];
   characters: Character[];
   episodes: Episode[];
@@ -46,7 +46,6 @@ export interface EditProjectFormData {
   narrativeStructure?: NarrativeStructureType;
 }
 
-// Modified to NOT extend Project since it has a different type for coverImage
 export interface ProjectWithCoverImageFile {
   id: string;
   title: string;
@@ -55,7 +54,7 @@ export interface ProjectWithCoverImageFile {
   genres: Genre[];
   duration: number;
   inspirations: string[];
-  coverImage?: string | File;
+  coverImage?: string | File | null;
   scenes: Scene[];
   characters: Character[];
   episodes: Episode[];
