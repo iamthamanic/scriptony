@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { toast } from "sonner";
 import { ArrowLeft } from 'lucide-react';
 
@@ -10,12 +11,16 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Separator } from "@/components/ui/separator";
 import { LoginForm } from '@/components/auth/LoginForm';
 import { RegisterForm } from '@/components/auth/RegisterForm';
+import Logo from '@/components/Logo';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 const Auth = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
+  const { t } = useTranslation();
   
   useEffect(() => {
     // Check if state has mode parameter to determine login or register
@@ -45,7 +50,7 @@ const Auth = () => {
         }
       });
     } catch (error: any) {
-      toast.error("Google Login fehlgeschlagen. Bitte versuche es erneut.");
+      toast.error(t('auth.error.google'));
     }
   };
 
@@ -53,19 +58,27 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <div className="absolute top-4 right-4 flex items-center gap-2">
+        <LanguageSwitcher />
+        <ThemeToggle />
+      </div>
+      
       <Button
         variant="ghost"
         className="absolute top-4 left-4 flex items-center gap-2"
         onClick={() => navigate('/')}
       >
-        <ArrowLeft className="h-4 w-4" /> Zurück zur Startseite
+        <ArrowLeft className="h-4 w-4" /> {t('common.back')}
       </Button>
       
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">{isLogin ? "Willkommen zurück" : "Konto erstellen"}</CardTitle>
+          <div className="mx-auto mb-4">
+            <Logo size="lg" showText={true} />
+          </div>
+          <CardTitle className="text-2xl">{isLogin ? t('common.welcome') : t('common.createAccount')}</CardTitle>
           <CardDescription>
-            {isLogin ? "Melde dich in deinem ScriptBuddy Konto an" : "Tritt der ScriptBuddy-Community bei"}
+            {isLogin ? t('common.loginTo') : t('common.joinCommunity')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -82,12 +95,12 @@ const Auth = () => {
                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
               </svg>
-              Mit Google fortfahren
+              {t('common.continueWithGoogle')}
             </Button>
             
             <div className="flex items-center my-4">
               <Separator className="flex-grow" />
-              <span className="mx-4 text-xs text-muted-foreground">ODER</span>
+              <span className="mx-4 text-xs text-muted-foreground">{t('common.or')}</span>
               <Separator className="flex-grow" />
             </div>
 
@@ -104,7 +117,7 @@ const Auth = () => {
         </CardContent>
         <CardFooter className="flex justify-center border-t pt-4">
           <Button variant="link" onClick={toggleMode}>
-            {isLogin ? "Noch kein Konto? Jetzt registrieren" : "Bereits registriert? Jetzt anmelden"}
+            {isLogin ? t('common.notRegistered') : t('common.alreadyRegistered')}
           </Button>
         </CardFooter>
       </Card>
