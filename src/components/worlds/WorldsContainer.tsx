@@ -1,14 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import AppHeader from "../AppHeader";
-import WorldsList from "./WorldsList";
-import WorldDetail from "./WorldDetail";
-import NewWorldModal from "./NewWorldModal";
-import WorldCategoryModal from "./WorldCategoryModal";
-import DeleteWorldDialog from "./DeleteWorldDialog";
+import WorldsContent from "./WorldsContent";
+import WorldModals from "./WorldModals";
 import { World, WorldCategory, NewWorldFormData, WorldCategoryFormData } from "../../types";
-import { Loader2 } from "lucide-react";
 import { fetchUserWorlds, createWorld, updateWorld, deleteWorld, createWorldCategory, updateWorldCategory, deleteWorldCategory, updateCategoryOrder } from "../../services/worlds";
 
 interface WorldsContainerProps {
