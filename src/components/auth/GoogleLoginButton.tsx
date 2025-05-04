@@ -27,20 +27,23 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
       setLoading(true);
       setErrorDetails(null);
       
-      // Use the specific Supabase callback URL that's configured in Google OAuth
-      const callbackUrl = 'https://suvxmnrnldfhfwxvkntv.supabase.co/auth/v1/callback';
+      // Sicherstellen, dass die Weiterleitungs-URLs korrekt sind
+      const currentOrigin = window.location.origin;
       
-      console.log("Starting Google login with callback URL:", callbackUrl);
-      console.log("Current hostname:", window.location.hostname);
-      console.log("Current domain:", window.location.origin);
+      console.log("Starting Google login process");
+      console.log("Current origin:", currentOrigin);
+      console.log("Google Auth is configured with these redirect URLs:");
+      console.log("1. https://suvxmnrnldfhfwxvkntv.supabase.co/auth/v1/callback (Supabase)");
+      console.log("2. https://scriptbuddy.lovable.app/auth/callback (App)");
       
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin, // After auth flow, redirect back to our app
+          redirectTo: currentOrigin, // Nach der Auth zurück zur App
           scopes: 'email profile',
           queryParams: {
-            prompt: 'select_account',
+            // Immer neue Auswahl erzwingen, um Cache-Probleme zu vermeiden
+            prompt: 'select_account', 
             access_type: 'offline',
           }
         }
@@ -57,17 +60,17 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
       } else {
         console.log("Redirecting to Google auth URL:", data.url);
         
-        // Parse the URL for debugging information
+        // URL für Debugging-Informationen parsen
         try {
           const urlObj = new URL(data.url);
           console.log("Auth flow URL:", data.url);
           console.log("Auth URL host:", urlObj.host);
           console.log("Auth URL pathname:", urlObj.pathname);
           
-          // Log all query parameters for debugging
+          // Alle Query-Parameter für Debugging ausgeben
           console.log("Auth URL parameters:");
           urlObj.searchParams.forEach((value, key) => {
-            // Don't log the entire token for security reasons
+            // Tokens nicht vollständig loggen (Sicherheitsgrund)
             if (key === 'access_token' || key === 'refresh_token') {
               console.log(`Query param: ${key} = [TOKEN HIDDEN]`);
             } else {
@@ -75,7 +78,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
             }
           });
           
-          // Redirect to Google's authentication page
+          // Zu Google-Authentifizierungsseite weiterleiten
           window.location.href = data.url;
         } catch (e) {
           console.error("Could not parse URL:", e);
@@ -88,7 +91,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
       setErrorDetails(`Exception: ${error.message || 'Unknown error'}`);
       toast.error(`${t('auth.error.google')}: ${error.message || 'Unknown error'}`);
     } finally {
-      // Keep loading true if we're redirecting, set to false only if there was an error
+      // Beim Weiterleiten loading true behalten, nur bei Fehler false setzen
       if (errorDetails) {
         setLoading(false);
       }
