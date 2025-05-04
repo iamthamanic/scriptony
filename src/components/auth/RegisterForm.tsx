@@ -32,7 +32,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 }) => {
   const { t } = useTranslation();
   
-  const form = useValidatedForm<RegisterFormValues>(registerSchema, {
+  const form = useValidatedForm<RegisterFormValues, typeof registerSchema>(registerSchema, {
     defaultValues: {
       name: "",
       email: "",
