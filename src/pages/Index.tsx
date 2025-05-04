@@ -15,7 +15,8 @@ import {
   NewSceneFormData,
   EditProjectFormData,
   NewCharacterFormData,
-  Character
+  Character,
+  EditCharacterFormData
 } from "../types";
 import { useToast } from "@/hooks/use-toast";
 import { FilePlus } from "lucide-react";
@@ -121,6 +122,79 @@ const Index = () => {
     toast({
       title: "Character Added",
       description: `${data.name} has been added to ${selectedProject.title}.`,
+      duration: 3000
+    });
+  };
+
+  const handleEditCharacter = (characterId: string, data: EditCharacterFormData) => {
+    if (!selectedProject) return;
+
+    // Find the character to edit
+    const characterToEdit = selectedProject.characters.find(c => c.id === characterId);
+    if (!characterToEdit) return;
+
+    // Create the updated character
+    const updatedCharacter: Character = {
+      ...characterToEdit,
+      name: data.name,
+      role: data.role,
+      description: data.description,
+      avatar: data.avatar ? URL.createObjectURL(data.avatar) : characterToEdit.avatar,
+      updatedAt: new Date()
+    };
+
+    // Update the projects state
+    const updatedProjects = projects.map(project => 
+      project.id === selectedProject.id 
+        ? {
+            ...project,
+            characters: project.characters.map(c => 
+              c.id === characterId ? updatedCharacter : c
+            ),
+            updatedAt: new Date()
+          } 
+        : project
+    );
+
+    setProjects(updatedProjects);
+    toast({
+      title: "Character Updated",
+      description: `${data.name} has been updated successfully.`,
+      duration: 3000
+    });
+  };
+
+  const handleDeleteCharacter = (characterId: string) => {
+    if (!selectedProject) return;
+
+    // Find the character to delete
+    const characterToDelete = selectedProject.characters.find(c => c.id === characterId);
+    if (!characterToDelete) return;
+
+    // Remove character from all scenes that reference it
+    const updatedScenes = selectedProject.scenes.map(scene => ({
+      ...scene,
+      characterIds: scene.characterIds.filter(id => id !== characterId),
+      updatedAt: new Date()
+    }));
+
+    // Update the projects state
+    const updatedProjects = projects.map(project => 
+      project.id === selectedProject.id 
+        ? {
+            ...project,
+            characters: project.characters.filter(c => c.id !== characterId),
+            scenes: updatedScenes,
+            updatedAt: new Date()
+          } 
+        : project
+    );
+
+    setProjects(updatedProjects);
+    toast({
+      title: "Character Deleted",
+      description: `${characterToDelete.name} has been permanently deleted.`,
+      variant: "destructive",
       duration: 3000
     });
   };
@@ -324,7 +398,9 @@ const Index = () => {
           {selectedProject.characters.length > 0 && (
             <CharacterList 
               characters={selectedProject.characters} 
-              onNewCharacter={() => setIsNewCharacterModalOpen(true)} 
+              onNewCharacter={() => setIsNewCharacterModalOpen(true)}
+              onEditCharacter={handleEditCharacter}
+              onDeleteCharacter={handleDeleteCharacter}
             />
           )}
           
