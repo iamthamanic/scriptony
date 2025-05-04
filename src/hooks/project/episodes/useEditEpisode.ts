@@ -15,6 +15,7 @@ export const useEditEpisode = (
     const episodeToEdit = selectedProject.episodes.find(e => e.id === episodeId);
     if (!episodeToEdit) return;
 
+    // Create the updated episode with proper typing
     const updatedEpisode: EpisodeWithCoverImageFile = {
       ...episodeToEdit,
       title: data.title,
@@ -25,7 +26,7 @@ export const useEditEpisode = (
     };
 
     updateProjects(selectedProject.id, (project) => {
-      // Update scenes that reference this episode
+      // Update any scenes that reference this episode
       const updatedScenes = project.scenes.map(scene => {
         if (scene.episodeId === episodeId) {
           return {
