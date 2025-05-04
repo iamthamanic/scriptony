@@ -1,4 +1,3 @@
-
 export default {
   common: {
     welcome: "Willkommen zurück",
@@ -16,7 +15,8 @@ export default {
     loading: "Wird geladen...",
     workspace: "{name}'s Workspace",
     accountSettings: "Konto-Einstellungen",
-    newProject: "Neues Projekt"
+    newProject: "Neues Projekt",
+    loggedInAs: "Angemeldet als {email}"
   },
   landing: {
     hero: {

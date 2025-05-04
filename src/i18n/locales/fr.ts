@@ -1,4 +1,3 @@
-
 export default {
   common: {
     welcome: "Bon retour",
@@ -16,7 +15,8 @@ export default {
     loading: "Chargement...",
     workspace: "Espace de travail de {name}",
     accountSettings: "Paramètres du compte",
-    newProject: "Nouveau projet"
+    newProject: "Nouveau projet",
+    loggedInAs: "Connecté en tant que {email}"
   },
   landing: {
     hero: {
