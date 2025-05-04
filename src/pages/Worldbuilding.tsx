@@ -240,7 +240,7 @@ const Worldbuilding = () => {
     <div className="container mx-auto py-6 px-4 md:px-6">
       <header className="mb-8">
         <AppHeader 
-          onNewProject={() => {}} 
+          onNewProject={() => setIsNewWorldModalOpen(true)} 
           onOpenAccountSettings={() => setAccountSettingsOpen(true)}
           accountName={user?.email?.split('@')[0] || "Demo User"}
         />
