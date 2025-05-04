@@ -4,7 +4,7 @@ import NewProjectModal from "./NewProjectModal";
 import EditProjectModal from "./EditProjectModal";
 import NewCharacterModal from "./NewCharacterModal";
 import NewSceneModal from "./NewSceneModal";
-import EpisodeModal from "./EpisodeModal";
+import EpisodeModal from "./episodes/EpisodeModal";
 import { Project, Scene, NewProjectFormData, NewSceneFormData, EditProjectFormData, NewCharacterFormData, Episode, NewEpisodeFormData, EditEpisodeFormData } from "../types";
 
 interface ProjectModalsProps {

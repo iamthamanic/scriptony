@@ -3,7 +3,7 @@ import React from "react";
 import ProjectHeader from "./ProjectHeader";
 import CharacterList from "./CharacterList";
 import SceneList from "./SceneList";
-import EpisodeList from "./EpisodeList";
+import EpisodeList from "./episodes/EpisodeList";
 import EmptyState from "./EmptyState";
 import ScenePdfExport from "./ScenePdfExport";
 import { Character, Project, Scene, EditCharacterFormData, Episode } from "../types";
