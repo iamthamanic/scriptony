@@ -1,21 +1,24 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import type { AuthChangeEvent, Session, User } from "@supabase/supabase-js";
+import type { AuthChangeEvent, Session, User, AuthError } from "@supabase/supabase-js";
 import { toast } from "sonner";
+import { useErrorContext } from '@/contexts/ErrorContext';
 
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
   signOut: () => Promise<void>;
+  authError: AuthError | null;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   session: null,
   loading: true,
-  signOut: async () => {}
+  signOut: async () => {},
+  authError: null
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -24,14 +27,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [authError, setAuthError] = useState<AuthError | null>(null);
+  const { addError } = useErrorContext();
 
   useEffect(() => {
     console.log("AuthProvider initializing...");
+    let isMounted = true;
     
     // Set up auth state listener first
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event: AuthChangeEvent, currentSession: Session | null) => {
         console.log("Auth state changed:", event);
+        if (!isMounted) return;
+        
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
         setLoading(false);
@@ -49,32 +57,61 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } else if (event === 'SIGNED_OUT') {
           setTimeout(() => {
             console.log("User signed out");
+            toast.info("Successfully signed out");
           }, 0);
         } else if (event === 'TOKEN_REFRESHED') {
           console.log("Auth token refreshed");
+        } else if (event === 'USER_UPDATED') {
+          console.log("User profile updated");
+        } else if (event === 'USER_DELETED') {
+          console.log("User account deleted");
+          toast.info("Account deleted");
         }
       }
     );
 
     // Then get current session
-    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
-      console.log("Initial session check:", currentSession ? "Session found" : "No session");
-      setSession(currentSession);
-      setUser(currentSession?.user ?? null);
-      setLoading(false);
+    supabase.auth.getSession().then(({ data: { session: currentSession }, error }) => {
+      if (isMounted) {
+        console.log("Initial session check:", currentSession ? "Session found" : "No session");
+        
+        if (error) {
+          console.error("Session retrieval error:", error);
+          setAuthError(error);
+          addError({
+            message: "Authentication Error",
+            details: `Failed to retrieve session: ${error.message}`,
+            code: error.code,
+            severity: 'warning'
+          });
+        } else {
+          setSession(currentSession);
+          setUser(currentSession?.user ?? null);
+        }
+        
+        setLoading(false);
+      }
     });
 
-    return () => subscription.unsubscribe();
-  }, []);
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
+  }, [addError]);
 
   const signOut = async () => {
     try {
       setLoading(true);
       await supabase.auth.signOut();
       toast.success("Successfully signed out");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error signing out:", error);
       toast.error("Failed to sign out");
+      addError({
+        message: "Sign Out Error",
+        details: `Failed to sign out: ${error.message}`,
+        severity: 'warning'
+      });
     } finally {
       setLoading(false);
     }
@@ -84,7 +121,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     user,
     session,
     loading,
-    signOut
+    signOut,
+    authError
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
