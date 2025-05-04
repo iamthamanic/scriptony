@@ -10,5 +10,6 @@ export * from './episodes';
 export * from './references';
 export * from './common';
 
-// Export the NarrativeStructureType from narrativeStructures
-export type { NarrativeStructureType } from './narrativeStructures';
+// Export the NarrativeStructureType from the new module location
+export type { NarrativeStructureType, StructureTemplate } from './narrativeStructures';
+export { narrativeStructureOptions, narrativeStructureTemplates } from './narrativeStructures';
