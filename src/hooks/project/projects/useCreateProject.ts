@@ -38,7 +38,7 @@ export const useCreateProject = (
             projectId: newProjectData.id,
             sceneNumber: sceneTpl.sceneNumber || index + 1,
             location: sceneTpl.location || "",
-            timeOfDay: "day",
+            timeOfDay: sceneTpl.timeOfDay || "day",
             timecodeStart: "00:00:00",
             timecodeEnd: "00:00:00",
             visualComposition: "",

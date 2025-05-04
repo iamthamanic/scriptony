@@ -14,6 +14,7 @@ export * from './common';
 export type { 
   NarrativeStructureType, 
   StructureTemplate, 
-  NarrativeStructureOption 
+  NarrativeStructureOption,
+  SceneTemplate
 } from './narrativeStructures';
 export { getStructureOptions, narrativeStructureTemplates } from './narrativeStructures';

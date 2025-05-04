@@ -1,79 +1,46 @@
 
-import { supabase } from "@/integrations/supabase/client";
-import { Project } from "../types";
+import { toast } from "sonner";
+import { Project, NarrativeStructureType, ProjectType, Genre, VideoFormat } from "../types";
 
-export const handleApiError = (error: unknown, options: { 
+interface ErrorHandlingOptions {
   defaultMessage?: string;
   showToast?: boolean;
-  logToConsole?: boolean;
-  severe?: boolean;
-} = {}) => {
-  const {
-    defaultMessage = "Ein unerwarteter Fehler ist aufgetreten",
-    showToast = true,
-    logToConsole = true,
-    severe = false
-  } = options;
+  throwError?: boolean;
+}
+
+// Helper function for handling API errors
+export const handleApiError = (error: any, options: ErrorHandlingOptions = {}) => {
+  const message = error?.message || options.defaultMessage || "An error occurred";
+  console.error("API Error:", error);
   
-  // Extract error message
-  let errorMessage = defaultMessage;
-  let errorDetails = '';
-  let errorCode = '';
-  
-  if (error instanceof Error) {
-    errorMessage = error.message;
-    errorDetails = error.stack || '';
-  } else if (typeof error === 'object' && error !== null) {
-    const errorObj = error as any;
-    if (errorObj.message) errorMessage = errorObj.message;
-    if (errorObj.details) errorDetails = errorObj.details;
-    if (errorObj.code) errorCode = errorObj.code;
-    if (errorObj.error) errorMessage = errorObj.error;
+  if (options.showToast) {
+    toast.error(message);
   }
   
-  // Log to console in development
-  if (logToConsole && process.env.NODE_ENV !== 'production') {
-    console.error('[API Error]', error);
+  if (options.throwError) {
+    throw new Error(message);
   }
-  
-  // Show toast notification
-  if (showToast) {
-    import("@/hooks/use-toast").then(({ toast }) => {
-      toast({
-        variant: 'destructive',
-        title: severe ? 'Schwerwiegender Fehler' : 'Fehler',
-        description: errorMessage,
-      });
-    });
-  }
-  
-  return {
-    message: errorMessage,
-    details: errorDetails,
-    code: errorCode,
-    severity: severe ? 'critical' : 'error' as 'critical' | 'error'
-  };
 };
 
-/**
- * Convert database project to application project
- */
+// Function to convert a database project to our application Project type
 export const convertDbProjectToApp = (dbProject: any): Project => {
   return {
     id: dbProject.id,
     title: dbProject.title,
-    type: dbProject.type,
-    videoFormat: dbProject.video_format,
-    logline: dbProject.logline,
-    genres: (dbProject.genres || []),
+    type: dbProject.type as ProjectType,
+    videoFormat: dbProject.video_format as VideoFormat | undefined,
+    logline: dbProject.logline || '',
+    genres: (dbProject.genres || []) as Genre[],
     duration: parseInt(dbProject.duration),
-    inspirations: dbProject.inspirations ? JSON.parse(dbProject.inspirations) : [],
+    inspirations: dbProject.inspirations ? 
+      (dbProject.inspirations.includes(',') ? dbProject.inspirations.split(',') : JSON.parse(dbProject.inspirations)) 
+      : [],
     coverImage: dbProject.cover_image_url || null,
-    scenes: [],
+    scenes: [],  
     characters: [],
     episodes: [],
-    narrativeStructure: dbProject.narrative_structure,
+    narrativeStructure: dbProject.narrative_structure as NarrativeStructureType,
     createdAt: new Date(dbProject.created_at),
-    updatedAt: new Date(dbProject.updated_at),
+    updatedAt: new Date(dbProject.updated_at)
   };
 };

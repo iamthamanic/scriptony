@@ -1,5 +1,6 @@
 
-import { Scene } from '../scenes';
+import type { Scene } from '../scenes';
+import type { EmotionalSignificance } from '../common';
 
 export type NarrativeStructureType =
   | 'none'
@@ -36,11 +37,20 @@ export interface NarrativeStructureOption {
   description: string;
 }
 
+// Define a simplified Scene template type that doesn't require all Scene properties
+export interface SceneTemplate {
+  sceneNumber: number;
+  location: string;
+  description: string;
+  emotionalSignificance: EmotionalSignificance;
+  timeOfDay?: string;
+}
+
 export interface StructureTemplate {
   name: string;
   description: string;
-  suggestedScenes?: Scene[];
-  scenes?: Scene[]; // Add this for backward compatibility
+  suggestedScenes?: SceneTemplate[];
+  scenes?: SceneTemplate[]; // Add this for backward compatibility
 }
 
 // Function to get structure options based on project type

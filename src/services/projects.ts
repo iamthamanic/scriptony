@@ -1,5 +1,6 @@
+
 import { supabase } from "@/integrations/supabase/client";
-import { Project, NewProjectFormData, ProjectType, Genre, VideoFormat } from "../types";
+import { Project, NewProjectFormData, ProjectType, Genre, VideoFormat, NarrativeStructureType } from "../types";
 import { handleApiError, convertDbProjectToApp } from "./utils";
 
 export const fetchUserProjects = async (): Promise<Project[]> => {
@@ -25,7 +26,7 @@ export const fetchUserProjects = async (): Promise<Project[]> => {
       scenes: [],  // We'll fetch scenes separately
       characters: [],  // We'll fetch characters separately
       episodes: [],  // We'll fetch episodes separately
-      narrativeStructure: dbProject.narrative_structure,
+      narrativeStructure: dbProject.narrative_structure as NarrativeStructureType,
       createdAt: new Date(dbProject.created_at),
       updatedAt: new Date(dbProject.updated_at)
     }));
