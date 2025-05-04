@@ -18,8 +18,22 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
 
   // Log auth settings on component mount for debugging
   useEffect(() => {
+    console.log("======== GOOGLE AUTH DEBUGGING INFO ========");
     console.log("Current URL origin:", window.location.origin);
     console.log("Current full URL:", window.location.href);
+    console.log("Current path:", window.location.pathname);
+    console.log("Supabase project URL: https://suvxmnrnldfhfwxvkntv.supabase.co");
+    console.log("Supabase callback URL: https://suvxmnrnldfhfwxvkntv.supabase.co/auth/v1/callback");
+    console.log("==========================================");
+
+    // Test CORS with the Supabase domain
+    fetch("https://suvxmnrnldfhfwxvkntv.supabase.co/auth/v1/health")
+      .then(response => {
+        console.log("Supabase connectivity test:", response.ok ? "SUCCESS" : "FAILED", response.status);
+      })
+      .catch(error => {
+        console.error("Supabase connectivity error:", error.message);
+      });
   }, []);
 
   const handleGoogleLogin = async () => {
@@ -27,43 +41,53 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
       setLoading(true);
       setErrorDetails(null);
       
-      // ACHTUNG: Keine redirectTo Option verwenden - nur die Callback-URL in Google Cloud Console ist wichtig
-      console.log("Starting Google login process with default redirect settings");
-      console.log("Current origin:", window.location.origin);
-      console.log("Google Auth is configured with this redirect URL:");
-      console.log("https://suvxmnrnldfhfwxvkntv.supabase.co/auth/v1/callback");
+      console.log("======== STARTING GOOGLE LOGIN PROCESS ========");
+      console.log("Browser location:", window.location.href);
       
+      // We'll try to detect potential CORS issues
+      console.log("Testing if we have connectivity to Supabase...");
+      
+      // Explicitly showing we're not using redirectTo - relying on Supabase defaults
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          // Keine redirectTo Option - wir nutzen nur die Callback-URL von Supabase
+          // Not setting redirectTo to use Supabase's default callback handling
           scopes: 'email profile',
           queryParams: {
-            prompt: 'select_account', 
+            prompt: 'select_account',
             access_type: 'offline',
           }
         }
       });
       
       if (error) {
-        console.error("Google Login Error:", error);
-        setErrorDetails(`${error.message || 'Unknown error'}`);
-        toast.error(`${t('auth.error.google')}: ${error.message}`);
+        console.error("Google Login Error Details:", error);
+        let errorMessage = error.message || 'Unknown error';
+        
+        // Provide more specific error messages for common issues
+        if (errorMessage.includes('Failed to fetch')) {
+          errorMessage = 'Connection to authentication service failed. Possible CORS issue.';
+        } else if (errorMessage.includes('redirect_uri_mismatch')) {
+          errorMessage = 'Redirect URL mismatch. Check Google Console configuration.';
+        }
+        
+        setErrorDetails(errorMessage);
+        toast.error(`${t('auth.error.google')}: ${errorMessage}`);
       } else if (!data.url) {
         console.error("Google Login Failed: No redirect URL returned");
-        setErrorDetails('No redirect URL returned');
+        setErrorDetails('No redirect URL returned from authentication service');
         toast.error(t('auth.error.google'));
       } else {
-        console.log("Redirecting to Google auth URL:", data.url);
+        console.log("======== GOOGLE AUTH URL RECEIVED ========");
         
-        // URL für Debugging-Informationen parsen
+        // URL debugging information
         try {
           const urlObj = new URL(data.url);
-          console.log("Auth flow URL:", data.url);
           console.log("Auth URL host:", urlObj.host);
           console.log("Auth URL pathname:", urlObj.pathname);
+          console.log("Auth URL search:", urlObj.search);
           
-          // Alle Query-Parameter für Debugging ausgeben
+          // Log all params except sensitive tokens
           console.log("Auth URL parameters:");
           urlObj.searchParams.forEach((value, key) => {
             if (key === 'access_token' || key === 'refresh_token') {
@@ -73,7 +97,17 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
             }
           });
           
-          // Zu Google-Authentifizierungsseite weiterleiten
+          // Log specifically if redirect_uri parameter is present
+          const redirectUri = urlObj.searchParams.get('redirect_uri');
+          if (redirectUri) {
+            console.log("Found redirect_uri in auth URL:", redirectUri);
+          } else {
+            console.log("No redirect_uri parameter found in auth URL");
+          }
+          
+          console.log("Redirecting to Google authentication URL now...");
+          
+          // Redirect to Google auth URL
           window.location.href = data.url;
         } catch (e) {
           console.error("Could not parse URL:", e);

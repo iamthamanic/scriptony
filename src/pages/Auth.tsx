@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -25,6 +24,14 @@ const Auth = () => {
   const { t } = useTranslation();
   
   useEffect(() => {
+    // Additional logging for debugging OAuth flows
+    console.log("======== AUTH PAGE DEBUGGING INFO ========");
+    console.log("Current URL:", window.location.href);
+    console.log("URL hash:", window.location.hash);
+    console.log("URL search:", window.location.search);
+    console.log("Location state:", location.state);
+    console.log("==========================================");
+    
     // Check if state has mode parameter to determine login or register
     if (location.state?.mode === 'login') {
       setIsLogin(true);
@@ -77,7 +84,7 @@ const Auth = () => {
           const errorDescription = urlParams.get('error_description');
           
           if (errorParam) {
-            console.error("OAuth error:", errorParam, errorDescription);
+            console.error("OAuth error details:", errorParam, errorDescription);
             setAuthError(`Google login error: ${errorDescription || errorParam}`);
             toast.error(`${t('auth.error.oauth')}: ${errorDescription || errorParam}`);
             setLoading(false);
@@ -88,7 +95,7 @@ const Auth = () => {
           const { data, error } = await supabase.auth.getSession();
           
           if (error) {
-            console.error("OAuth callback error:", error);
+            console.error("OAuth callback processing error:", error);
             setAuthError(`OAuth processing error: ${error.message}`);
             toast.error(t('auth.error.oauth'));
           } else if (data.session) {
