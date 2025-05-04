@@ -5,7 +5,6 @@ import ProjectSelector from "../components/ProjectSelector";
 import ProjectContent from "../components/ProjectContent";
 import ProjectModals from "../components/ProjectModals";
 import EmptyState from "../components/EmptyState";
-import AccountSettings from "../components/AccountSettings";
 import { Scene, Episode } from "../types";
 import { useProjectState } from "../hooks/project/useProjectState";
 import { useAuth } from "@/contexts/AuthContext";
@@ -36,16 +35,10 @@ const Index = () => {
   const [isNewSceneModalOpen, setIsNewSceneModalOpen] = useState(false);
   const [isNewCharacterModalOpen, setIsNewCharacterModalOpen] = useState(false);
   const [isEpisodeModalOpen, setIsEpisodeModalOpen] = useState(false);
-  const [isAccountSettingsOpen, setIsAccountSettingsOpen] = useState(false);
   const [editingScene, setEditingScene] = useState<Scene | null>(null);
   const [editingEpisode, setEditingEpisode] = useState<Episode | null>(null);
   const [selectedEpisodeId, setSelectedEpisodeId] = useState<string | null>(null);
-  const [accountName] = useState("Demo User"); // This would come from authentication in a real app
-  const { signOut, user } = useAuth();
-
-  const handleSignOut = async () => {
-    await signOut();
-  };
+  const { user } = useAuth();
 
   const handleEditScene = (scene: Scene) => {
     setEditingScene(scene);
@@ -86,8 +79,7 @@ const Index = () => {
       <header className="mb-8">
         <AppHeader 
           onNewProject={() => setIsNewProjectModalOpen(true)} 
-          onOpenAccountSettings={() => setIsAccountSettingsOpen(true)}
-          accountName={user?.email?.split('@')[0] || accountName}
+          accountName={user?.email?.split('@')[0] || "Demo User"}
         />
         
         {projects.length > 0 && !isLoading && (
@@ -161,21 +153,6 @@ const Index = () => {
         editingScene={editingScene}
         editingEpisode={editingEpisode}
       />
-      
-      <AccountSettings
-        isOpen={isAccountSettingsOpen}
-        onClose={() => setIsAccountSettingsOpen(false)}
-        accountName={user?.email?.split('@')[0] || accountName}
-      />
-      
-      <div className="mt-10 text-center">
-        <button 
-          onClick={handleSignOut} 
-          className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
-        >
-          Sign Out
-        </button>
-      </div>
     </div>
   );
 };

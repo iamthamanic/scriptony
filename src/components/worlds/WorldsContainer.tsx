@@ -10,8 +10,6 @@ interface WorldsContainerProps {
 }
 
 const WorldsContainer = ({ user }: WorldsContainerProps) => {
-  const [accountSettingsOpen, setAccountSettingsOpen] = React.useState(false);
-  
   const {
     worlds,
     selectedWorld,
@@ -62,7 +60,6 @@ const WorldsContainer = ({ user }: WorldsContainerProps) => {
       <header className="mb-8">
         <AppHeader 
           onNewProject={() => setIsNewWorldModalOpen(true)} 
-          onOpenAccountSettings={() => setAccountSettingsOpen(true)}
           accountName={user?.email?.split('@')[0] || "Demo User"}
         />
       </header>
