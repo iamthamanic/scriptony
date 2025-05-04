@@ -13,6 +13,14 @@ interface GoogleLoginButtonProps {
   setLoading: (loading: boolean) => void;
 }
 
+// Define a custom response type to handle both fetch Response and error case
+interface CustomResponse {
+  ok: boolean;
+  status: string | number;
+  statusText: string;
+  type?: string; // Make type optional since our custom response may not have it
+}
+
 const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoading }) => {
   const { t } = useTranslation();
   const [errorDetails, setErrorDetails] = useState<string | null>(null);
@@ -42,12 +50,20 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
   const testConnectivity = async () => {
     try {
       // Test connection to Supabase
-      const supabaseResponse = await fetch("https://suvxmnrnldfhfwxvkntv.supabase.co/auth/v1/health", {
-        method: "GET",
-        mode: 'cors',
-      }).catch(error => {
-        return { ok: false, status: "network-error", statusText: error.message };
-      });
+      let supabaseResponse: CustomResponse;
+      try {
+        const response = await fetch("https://suvxmnrnldfhfwxvkntv.supabase.co/auth/v1/health", {
+          method: "GET",
+          mode: 'cors',
+        });
+        supabaseResponse = response;
+      } catch (error) {
+        supabaseResponse = { 
+          ok: false, 
+          status: "network-error", 
+          statusText: error instanceof Error ? error.message : String(error) 
+        };
+      }
       
       console.log("Supabase connectivity test:", 
         supabaseResponse.ok ? "SUCCESS" : "FAILED", 
@@ -55,17 +71,27 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
       );
 
       // Test connection to Google
-      const googleResponse = await fetch("https://accounts.google.com/favicon.ico", {
-        method: "GET",
-        mode: 'no-cors', // Using no-cors since we just want to check if the connection works
-      }).catch(error => {
-        return { ok: false, status: "network-error", statusText: error.message };
-      });
+      let googleResponse: CustomResponse;
+      try {
+        const response = await fetch("https://accounts.google.com/favicon.ico", {
+          method: "GET",
+          mode: 'no-cors', // Using no-cors since we just want to check if the connection works
+        });
+        googleResponse = response;
+      } catch (error) {
+        googleResponse = { 
+          ok: false, 
+          status: "network-error", 
+          statusText: error instanceof Error ? error.message : String(error) 
+        };
+      }
       
-      // We can't get the actual status with no-cors mode, but we can check if the request completed
-      console.log("Google connectivity test completed:", googleResponse.type === 'opaque' ? "SUCCESS (opaque response)" : "FAILED");
+      // For no-cors mode, we can't access response properties directly
+      // But if we got here without an error, the request likely completed
+      const googleSuccess = googleResponse.ok || (googleResponse as Response).type === 'opaque';
+      console.log("Google connectivity test completed:", googleSuccess ? "SUCCESS (opaque response)" : "FAILED");
       
-      setConnectionTestResult(`Supabase: ${supabaseResponse.ok ? "OK" : "Failed"}, Google: ${googleResponse.type === 'opaque' ? "OK" : "Failed"}`);
+      setConnectionTestResult(`Supabase: ${supabaseResponse.ok ? "OK" : "Failed"}, Google: ${googleSuccess ? "OK" : "Failed"}`);
     } catch (error) {
       console.error("Connectivity test error:", error);
       setConnectionTestResult(`Connectivity test error: ${error instanceof Error ? error.message : String(error)}`);
