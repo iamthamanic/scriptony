@@ -11,11 +11,10 @@ export const useEditEpisode = (
   const handleEditEpisode = (episodeId: string, data: EditEpisodeFormData) => {
     if (!selectedProject) return;
 
-    // Find the episode to edit
     const episodeToEdit = selectedProject.episodes.find(e => e.id === episodeId);
     if (!episodeToEdit) return;
 
-    // Create the updated episode with proper typing
+    // Create the updated episode with proper type handling
     const updatedEpisode: EpisodeWithCoverImageFile = {
       ...episodeToEdit,
       title: data.title,
@@ -26,7 +25,6 @@ export const useEditEpisode = (
     };
 
     updateProjects(selectedProject.id, (project) => {
-      // Update any scenes that reference this episode
       const updatedScenes = project.scenes.map(scene => {
         if (scene.episodeId === episodeId) {
           return {
@@ -50,7 +48,7 @@ export const useEditEpisode = (
 
     toast({
       title: "Episode Updated",
-      description: `Episode ${data.number}: ${data.title} has been updated successfully.`,
+      description: `Episode ${data.number}: ${data.title} has been updated.`,
       duration: 3000
     });
   };
