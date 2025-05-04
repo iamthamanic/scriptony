@@ -63,7 +63,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           console.log("Auth token refreshed");
         } else if (event === 'USER_UPDATED') {
           console.log("User profile updated");
-        } else if (event === 'USER_DELETED') {
+        // Fix the type error by using a type guard
+        } else if (
+          // Use type assertion to handle the case where 'USER_DELETED' might be a valid event in runtime
+          // but not recognized in the TypeScript definition
+          event === 'USER_DELETED' as AuthChangeEvent
+        ) {
           console.log("User account deleted");
           toast.info("Account deleted");
         }
