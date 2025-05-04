@@ -14,7 +14,6 @@ export const useEditEpisode = (
     const episodeToEdit = selectedProject.episodes.find(e => e.id === episodeId);
     if (!episodeToEdit) return;
 
-    // Update the episode with proper type handling
     const updatedEpisode: EpisodeWithCoverImageFile = {
       ...episodeToEdit,
       title: data.title,
@@ -24,9 +23,8 @@ export const useEditEpisode = (
       updatedAt: new Date()
     };
 
-    // Update episodes in the project
     updateProjects(selectedProject.id, (project) => {
-      // Update any scenes that reference this episode
+      // Update scenes that reference this episode
       const updatedScenes = project.scenes.map(scene => {
         if (scene.episodeId === episodeId) {
           return {
@@ -50,7 +48,7 @@ export const useEditEpisode = (
 
     toast({
       title: "Episode Updated",
-      description: `Episode ${data.number}: ${data.title} has been updated.`,
+      description: `Episode ${data.number}: ${data.title} has been updated successfully.`,
       duration: 3000
     });
   };
