@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -19,13 +20,6 @@ import {
 } from "@/components/ui/form";
 import { PasswordInput } from './PasswordInput';
 
-const loginSchema = z.object({
-  email: z.string().email("Bitte gib eine gültige E-Mail-Adresse ein."),
-  password: z.string().min(6, "Das Passwort muss mindestens 6 Zeichen lang sein.")
-});
-
-type LoginFormValues = z.infer<typeof loginSchema>;
-
 interface LoginFormProps {
   loading: boolean;
   setLoading: (loading: boolean) => void;
@@ -33,6 +27,14 @@ interface LoginFormProps {
 
 export const LoginForm: React.FC<LoginFormProps> = ({ loading, setLoading }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  
+  const loginSchema = z.object({
+    email: z.string().email("Bitte gib eine gültige E-Mail-Adresse ein."),
+    password: z.string().min(6, "Das Passwort muss mindestens 6 Zeichen lang sein.")
+  });
+  
+  type LoginFormValues = z.infer<typeof loginSchema>;
   
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -52,10 +54,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({ loading, setLoading }) => 
       
       if (error) throw error;
       
-      toast.success("Erfolgreich eingeloggt!");
+      toast.success(t('auth.success.login'));
       navigate('/');
     } catch (error: any) {
-      toast.error(error.message || "Login fehlgeschlagen. Bitte versuche es erneut.");
+      toast.error(t('auth.error.login'));
     } finally {
       setLoading(false);
     }
@@ -69,7 +71,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ loading, setLoading }) => 
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>E-Mail</FormLabel>
+              <FormLabel>{t('common.email')}</FormLabel>
               <FormControl>
                 <Input placeholder="name@example.com" type="email" {...field} disabled={loading} />
               </FormControl>
@@ -83,7 +85,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ loading, setLoading }) => 
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Passwort</FormLabel>
+              <FormLabel>{t('common.password')}</FormLabel>
               <FormControl>
                 <PasswordInput field={field} disabled={loading} />
               </FormControl>
@@ -93,7 +95,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ loading, setLoading }) => 
         />
         
         <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? "Wird geladen..." : "Anmelden"}
+          {loading ? t('common.loading') : t('common.login')}
         </Button>
       </form>
     </Form>
