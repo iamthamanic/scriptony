@@ -27,7 +27,6 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
       setErrorDetails(null);
       
       // Generate the redirect URL based on the current origin
-      // This is where users will be sent AFTER successful authentication
       const redirectTo = window.location.origin;
       console.log("Starting Google login with redirect URL:", redirectTo);
       
@@ -35,17 +34,14 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
       console.log("Current hostname:", window.location.hostname);
       console.log("Current domain:", window.location.origin);
       
-      // Important: Supabase will handle the callback internally through:
-      // https://suvxmnrnldfhfwxvkntv.supabase.co/auth/v1/callback
-      // We just need to specify where to go after the whole flow completes
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: redirectTo,
           scopes: 'email profile',
           queryParams: {
-            prompt: 'select_account', // Force account selection even when already signed in
-            access_type: 'offline',   // Get refresh token for server side use
+            prompt: 'select_account',
+            access_type: 'offline',
           }
         }
       });
