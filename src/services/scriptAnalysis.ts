@@ -186,10 +186,10 @@ export async function analyzeScriptText(text: string): Promise<AnalysisResult> {
     } else if (sceneHeaderCount > 20) {
       result.type = 'series';
     } else {
-      result.type = 'theater';
+      result.type = 'theaterstück';
     }
   } else if (dialogBlockCount > 20 && sceneHeaderCount < 3) {
-    result.type = 'audio';
+    result.type = 'hörspiel';
   }
   
   // Estimate duration based on scene count
@@ -215,7 +215,7 @@ export async function analyzeScriptText(text: string): Promise<AnalysisResult> {
     'horror': ['fear', 'terrify', 'scream', 'monster', 'ghost', 'blood'],
     'mystery': ['clue', 'suspect', 'detective', 'mystery', 'solve', 'secret'],
     'romance': ['love', 'kiss', 'romantic', 'relationship', 'date', 'passion'],
-    'scifi': ['technology', 'space', 'alien', 'future', 'robot', 'science'],
+    'sci-fi': ['technology', 'space', 'alien', 'future', 'robot', 'science'],
     'thriller': ['suspense', 'danger', 'threat', 'tension', 'killer', 'chase']
   };
   

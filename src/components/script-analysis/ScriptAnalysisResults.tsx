@@ -31,9 +31,11 @@ import { NewProjectFormData } from '@/types';
 const projectTypeLabels: Record<ProjectType, string> = {
   'movie': 'Film',
   'series': 'TV Series',
-  'theater': 'Theater Play',
-  'audio': 'Audio Drama',
-  'social_video': 'Social Video',
+  'short': 'Short Film',
+  'theaterstück': 'Theater Play',
+  'hörspiel': 'Audio Drama',
+  'buch': 'Book',
+  'social_video': 'Social Video'
 };
 
 const genreLabels: Record<Genre, string> = {
@@ -45,7 +47,9 @@ const genreLabels: Record<Genre, string> = {
   'horror': 'Horror',
   'mystery': 'Mystery',
   'romance': 'Romance',
-  'scifi': 'Sci-Fi',
+  'sci-fi': 'Sci-Fi',
+  'slice-of-life': 'Slice of Life',
+  'supernatural': 'Supernatural',
   'thriller': 'Thriller'
 };
 
@@ -97,12 +101,12 @@ const ScriptAnalysisResults = ({
                 <h3 className="text-lg font-semibold">{analysisResult.title || 'Untitled Script'}</h3>
                 <div className="flex items-center mt-1">
                   <FilmIcon className="h-4 w-4 mr-1.5 text-muted-foreground" />
-                  <span>{projectTypeLabels[analysisResult.type]}</span>
+                  <span>{projectTypeLabels[analysisResult.type] || analysisResult.type}</span>
                 </div>
               </div>
               <div className="flex flex-wrap gap-1 justify-end">
                 {analysisResult.genres.map(genre => (
-                  <Badge key={genre} variant="secondary">{genreLabels[genre]}</Badge>
+                  <Badge key={genre} variant="secondary">{genreLabels[genre] || genre}</Badge>
                 ))}
               </div>
             </div>

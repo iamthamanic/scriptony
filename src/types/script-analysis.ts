@@ -1,5 +1,6 @@
 
-import { ProjectType, NarrativeStructureType, Genre } from './projects';
+import { ProjectType, Genre } from './genres';
+import { NarrativeStructureType } from './narrativeStructures/types';
 
 export interface DetectedScene {
   sceneNumber: number;
