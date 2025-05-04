@@ -5,9 +5,14 @@ import { mapDbWorldToAppWorld } from "./utils";
 
 // Fetch all worlds for the current user
 export const fetchUserWorlds = async (): Promise<World[]> => {
+  // Get the current user
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('User not authenticated');
+
   const { data: worlds, error } = await supabase
     .from('worlds')
     .select('*')
+    .eq('user_id', user.id)
     .order('created_at', { ascending: false });
     
   if (error) throw error;
@@ -64,7 +69,10 @@ export const createWorld = async (data: NewWorldFormData): Promise<World> => {
       .from('covers')
       .upload(fileName, cover_image);
       
-    if (uploadError) throw uploadError;
+    if (uploadError) {
+      console.error('Error uploading cover image:', uploadError);
+      throw uploadError;
+    }
     
     const { data: urlData } = supabase.storage
       .from('covers')
@@ -85,7 +93,10 @@ export const createWorld = async (data: NewWorldFormData): Promise<World> => {
     .select()
     .single();
     
-  if (error) throw error;
+  if (error) {
+    console.error('Error creating world:', error);
+    throw error;
+  }
   
   // Create default world categories
   const { DEFAULT_WORLD_CATEGORIES } = await import("@/types/worlds");
