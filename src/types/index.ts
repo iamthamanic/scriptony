@@ -1,4 +1,3 @@
-
 export type ProjectType = 'movie' | 'series' | 'short';
 
 export type TimeOfDay = 'morning' | 'day' | 'evening' | 'night';
@@ -58,7 +57,8 @@ export type CameraPerspective =
   | 'worms-eye'
   | 'other';
 
-import { NarrativeStructureType } from './narrativeStructures';
+// Export NarrativeStructureType from narrativeStructures.ts
+export { NarrativeStructureType } from './narrativeStructures';
 
 export interface Character {
   id: string;
