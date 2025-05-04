@@ -114,13 +114,16 @@ export type Database = {
           genres: string[] | null
           id: string
           inspirations: string | null
+          is_admin: boolean | null
           logline: string | null
           narrative_structure: string | null
+          subscription_tier: string | null
           title: string
           type: string
           updated_at: string
           user_id: string
           video_format: string | null
+          world_id: string | null
         }
         Insert: {
           cover_image_url?: string | null
@@ -129,13 +132,16 @@ export type Database = {
           genres?: string[] | null
           id?: string
           inspirations?: string | null
+          is_admin?: boolean | null
           logline?: string | null
           narrative_structure?: string | null
+          subscription_tier?: string | null
           title: string
           type: string
           updated_at?: string
           user_id: string
           video_format?: string | null
+          world_id?: string | null
         }
         Update: {
           cover_image_url?: string | null
@@ -144,15 +150,26 @@ export type Database = {
           genres?: string[] | null
           id?: string
           inspirations?: string | null
+          is_admin?: boolean | null
           logline?: string | null
           narrative_structure?: string | null
+          subscription_tier?: string | null
           title?: string
           type?: string
           updated_at?: string
           user_id?: string
           video_format?: string | null
+          world_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "projects_world_id_fkey"
+            columns: ["world_id"]
+            isOneToOne: false
+            referencedRelation: "worlds"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       scenes: {
         Row: {
@@ -249,6 +266,113 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      unlock_codes: {
+        Row: {
+          code: string
+          created_at: string
+          expiry_at: string | null
+          id: string
+          is_admin: boolean
+          is_single_use: boolean
+          tier_level: string
+          used_by: string[] | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          expiry_at?: string | null
+          id?: string
+          is_admin?: boolean
+          is_single_use?: boolean
+          tier_level: string
+          used_by?: string[] | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          expiry_at?: string | null
+          id?: string
+          is_admin?: boolean
+          is_single_use?: boolean
+          tier_level?: string
+          used_by?: string[] | null
+        }
+        Relationships: []
+      }
+      world_categories: {
+        Row: {
+          content: Json | null
+          created_at: string
+          icon: string | null
+          id: string
+          name: string
+          order_index: number
+          type: string
+          updated_at: string
+          world_id: string
+        }
+        Insert: {
+          content?: Json | null
+          created_at?: string
+          icon?: string | null
+          id?: string
+          name: string
+          order_index?: number
+          type: string
+          updated_at?: string
+          world_id: string
+        }
+        Update: {
+          content?: Json | null
+          created_at?: string
+          icon?: string | null
+          id?: string
+          name?: string
+          order_index?: number
+          type?: string
+          updated_at?: string
+          world_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "world_categories_world_id_fkey"
+            columns: ["world_id"]
+            isOneToOne: false
+            referencedRelation: "worlds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      worlds: {
+        Row: {
+          cover_image_url: string | null
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
     }
     Views: {

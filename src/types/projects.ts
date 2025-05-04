@@ -24,6 +24,9 @@ export interface Project {
   narrativeStructure: NarrativeStructureType;
   createdAt: Date;
   updatedAt: Date;
+  world_id?: string | null;
+  subscription_tier?: string;
+  is_admin?: boolean;
 }
 
 export interface NewProjectFormData {
@@ -36,6 +39,7 @@ export interface NewProjectFormData {
   inspirations: string[];
   coverImage?: File;
   narrativeStructure?: NarrativeStructureType;
+  world_id?: string;
 }
 
 export interface EditProjectFormData {
@@ -48,6 +52,7 @@ export interface EditProjectFormData {
   inspirations: string[];
   coverImage?: File | string;
   narrativeStructure?: NarrativeStructureType;
+  world_id?: string | null;
 }
 
 export interface ProjectWithCoverImageFile extends Omit<Project, 'coverImage'> {
