@@ -33,7 +33,7 @@ const NewProjectModal = ({ isOpen, onClose, onSubmit }: NewProjectModalProps) =>
 
   useEffect(() => {
     // Update narrative structure options when project type changes
-    setStructureOptions(getStructureOptions(formData.type, formData.videoFormat));
+    setStructureOptions(getStructureOptions(formData.type));
     
     // Reset narrative structure if the current one isn't available in the new options
     const availableValues = structureOptions.map(option => option.value);

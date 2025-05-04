@@ -39,11 +39,12 @@ export interface NarrativeStructureOption {
 export interface StructureTemplate {
   name: string;
   description: string;
-  suggestedScenes: Scene[];
+  suggestedScenes?: Scene[];
+  scenes?: Scene[]; // Add this for backward compatibility
 }
 
 // Function to get structure options based on project type
-export const getStructureOptions = (projectType?: string): NarrativeStructureOption[] => {
+export const getStructureOptions = (projectType?: string, videoFormat?: string): NarrativeStructureOption[] => {
   // Common structures across all project types
   const common: NarrativeStructureOption[] = [
     { value: 'none', label: 'None', description: 'No specific narrative structure' }

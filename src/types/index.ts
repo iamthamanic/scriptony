@@ -1,5 +1,4 @@
 
-
 // Re-export all types from their respective files
 export * from './projects';
 export * from './genres';
@@ -18,4 +17,3 @@ export type {
   NarrativeStructureOption 
 } from './narrativeStructures';
 export { getStructureOptions, narrativeStructureTemplates } from './narrativeStructures';
-

@@ -33,7 +33,8 @@ export const useCreateProject = (
         const template = narrativeStructureTemplates[data.narrativeStructure];
         
         if (template) {
-          scenes = template.scenes.map((sceneTpl, index) => ({
+          const templateScenes = template.scenes || template.suggestedScenes || [];
+          scenes = templateScenes.map((sceneTpl, index) => ({
             projectId: newProjectData.id,
             sceneNumber: sceneTpl.sceneNumber || index + 1,
             location: sceneTpl.location || "",

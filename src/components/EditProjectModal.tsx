@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -37,7 +36,7 @@ const EditProjectModal = ({ isOpen, onClose, onSubmit, project }: EditProjectMod
   );
   
   const [structureOptions, setStructureOptions] = useState(
-    getStructureOptions(project.type, project.videoFormat)
+    getStructureOptions(project.type)
   );
 
   useEffect(() => {
@@ -54,12 +53,12 @@ const EditProjectModal = ({ isOpen, onClose, onSubmit, project }: EditProjectMod
       narrativeStructure: project.narrativeStructure
     });
     setCoverImagePreview(project.coverImage || null);
-    setStructureOptions(getStructureOptions(project.type, project.videoFormat));
+    setStructureOptions(getStructureOptions(project.type));
   }, [project]);
 
   useEffect(() => {
     // Update narrative structure options when project type changes
-    setStructureOptions(getStructureOptions(formData.type, formData.videoFormat));
+    setStructureOptions(getStructureOptions(formData.type));
     
     // Reset narrative structure if the current one isn't available in the new options
     const availableValues = structureOptions.map(option => option.value);
