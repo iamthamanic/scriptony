@@ -26,9 +26,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log("AuthProvider initializing...");
+    
     // Set up auth state listener first
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event: AuthChangeEvent, currentSession: Session | null) => {
+        console.log("Auth state changed:", event);
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
         setLoading(false);
@@ -40,14 +43,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           // Don't do heavy operations in this callback
           // Use setTimeout to prevent potential deadlocks
           setTimeout(() => {
-            console.log("User signed in");
+            console.log("User signed in:", currentSession?.user?.email);
+            toast.success("Successfully signed in");
           }, 0);
+        } else if (event === 'SIGNED_OUT') {
+          setTimeout(() => {
+            console.log("User signed out");
+          }, 0);
+        } else if (event === 'TOKEN_REFRESHED') {
+          console.log("Auth token refreshed");
         }
       }
     );
 
     // Then get current session
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      console.log("Initial session check:", currentSession ? "Session found" : "No session");
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
       setLoading(false);
@@ -58,11 +69,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signOut = async () => {
     try {
+      setLoading(true);
       await supabase.auth.signOut();
       toast.success("Successfully signed out");
     } catch (error) {
       console.error("Error signing out:", error);
       toast.error("Failed to sign out");
+    } finally {
+      setLoading(false);
     }
   };
 
