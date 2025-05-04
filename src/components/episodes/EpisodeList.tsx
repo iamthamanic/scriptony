@@ -83,7 +83,7 @@ const EpisodeList = ({
                 
                 <DeleteEpisodeDialog 
                   episode={episode}
-                  onDelete={() => onDeleteEpisode(episode.id)}
+                  onConfirm={() => onDeleteEpisode(episode.id)}
                   trigger={
                     <Button 
                       variant="outline" 

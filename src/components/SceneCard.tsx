@@ -8,13 +8,23 @@ import { cn } from '@/lib/utils';
 
 interface SceneCardProps {
   scene: Scene;
-  onClick: () => void;
-  onExportPDF: () => void;
-  onDeleteScene?: () => void;
+  onEdit?: () => void;
+  onClick?: () => void;
+  onExport: () => void;
+  onDelete?: () => void;
+  episodeTitle?: string;
   characters?: Character[];
 }
 
-const SceneCard = ({ scene, onClick, onExportPDF, onDeleteScene, characters = [] }: SceneCardProps) => {
+const SceneCard = ({ 
+  scene, 
+  onEdit, 
+  onClick = onEdit, // Use onEdit as fallback for onClick for backward compatibility
+  onExport, 
+  onDelete, 
+  episodeTitle, 
+  characters = [] 
+}: SceneCardProps) => {
   // Helper function to get background color based on emotional significance
   const getEmotionColor = () => {
     switch (scene.emotionalSignificance) {
@@ -52,7 +62,7 @@ const SceneCard = ({ scene, onClick, onExportPDF, onDeleteScene, characters = []
           <div>
             <h3 className="font-bold text-lg">
               Scene {scene.sceneNumber}
-              {scene.episodeTitle && <span className="font-normal text-muted-foreground"> - {scene.episodeTitle}</span>}
+              {episodeTitle && <span className="font-normal text-muted-foreground"> - {episodeTitle}</span>}
             </h3>
             <p className="text-sm text-muted-foreground">{scene.location}</p>
           </div>
@@ -106,15 +116,15 @@ const SceneCard = ({ scene, onClick, onExportPDF, onDeleteScene, characters = []
 
       <CardFooter className="pt-0">
         <div className="w-full flex justify-end gap-2">
-          {onDeleteScene && (
-            <Button variant="outline" size="sm" onClick={onDeleteScene} className="border-destructive text-destructive hover:bg-destructive/10">
+          {onDelete && (
+            <Button variant="outline" size="sm" onClick={onDelete} className="border-destructive text-destructive hover:bg-destructive/10">
               <Trash2 className="h-4 w-4" />
             </Button>
           )}
-          <Button variant="outline" size="sm" onClick={onExportPDF}>
+          <Button variant="outline" size="sm" onClick={onExport}>
             <FileText className="h-4 w-4" />
           </Button>
-          <Button variant="default" size="sm" onClick={onClick} className="bg-anime-purple hover:bg-anime-dark-purple">
+          <Button variant="default" size="sm" onClick={onClick || onEdit} className="bg-anime-purple hover:bg-anime-dark-purple">
             <Edit className="h-4 w-4 mr-1" />
             Edit
           </Button>
