@@ -56,7 +56,7 @@ export const emotionalSignificanceOptions = emotionalSignificances.map(significa
 }));
 
 export const projectTypeOptions = projectTypes.map(type => {
-  let label;
+  let label: string;
   switch(type) {
     case 'movie': label = 'Film'; break;
     case 'series': label = 'Serie'; break;
@@ -71,7 +71,7 @@ export const projectTypeOptions = projectTypes.map(type => {
 });
 
 export const videoFormatOptions = videoFormats.map(format => {
-  let label;
+  let label: string;
   switch(format) {
     case 'shortform': label = 'Kurzform (TikTok, Reels, Shorts)'; break;
     case 'longform': label = 'Langform (YouTube)'; break;
