@@ -27,9 +27,10 @@ export const fetchUserWorlds = async (): Promise<World[]> => {
       categories: categories.map(cat => ({
         ...cat,
         created_at: new Date(cat.created_at),
-        updated_at: new Date(cat.updated_at)
+        updated_at: new Date(cat.updated_at),
+        type: cat.type as WorldCategory['type']
       }))
-    };
+    } as World;
   }));
   
   return worldsWithCategories;
@@ -60,14 +61,19 @@ export const fetchWorld = async (worldId: string): Promise<World> => {
     categories: categories.map(cat => ({
       ...cat,
       created_at: new Date(cat.created_at),
-      updated_at: new Date(cat.updated_at)
+      updated_at: new Date(cat.updated_at),
+      type: cat.type as WorldCategory['type']
     }))
-  };
+  } as World;
 };
 
 // Create a new world
 export const createWorld = async (data: NewWorldFormData): Promise<World> => {
   const { name, description, cover_image } = data;
+  
+  // Get the current user
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('User not authenticated');
   
   // Upload cover image if provided
   let cover_image_url = null;
@@ -92,7 +98,8 @@ export const createWorld = async (data: NewWorldFormData): Promise<World> => {
     .insert({
       name,
       description,
-      cover_image_url
+      cover_image_url,
+      user_id: user.id
     })
     .select()
     .single();
@@ -123,9 +130,10 @@ export const createWorld = async (data: NewWorldFormData): Promise<World> => {
     categories: categories.map(cat => ({
       ...cat,
       created_at: new Date(cat.created_at),
-      updated_at: new Date(cat.updated_at)
+      updated_at: new Date(cat.updated_at),
+      type: cat.type as WorldCategory['type']
     }))
-  };
+  } as World;
 };
 
 // Update a world
@@ -175,9 +183,10 @@ export const updateWorld = async (worldId: string, data: NewWorldFormData): Prom
     categories: categories.map(cat => ({
       ...cat,
       created_at: new Date(cat.created_at),
-      updated_at: new Date(cat.updated_at)
+      updated_at: new Date(cat.updated_at),
+      type: cat.type as WorldCategory['type']
     }))
-  };
+  } as World;
 };
 
 // Delete a world
@@ -225,8 +234,9 @@ export const createWorldCategory = async (worldId: string, data: WorldCategoryFo
   return {
     ...category,
     created_at: new Date(category.created_at),
-    updated_at: new Date(category.updated_at)
-  };
+    updated_at: new Date(category.updated_at),
+    type: category.type as WorldCategory['type']
+  } as WorldCategory;
 };
 
 // Update a world category
@@ -250,8 +260,9 @@ export const updateWorldCategory = async (categoryId: string, data: WorldCategor
   return {
     ...category,
     created_at: new Date(category.created_at),
-    updated_at: new Date(category.updated_at)
-  };
+    updated_at: new Date(category.updated_at),
+    type: category.type as WorldCategory['type']
+  } as WorldCategory;
 };
 
 // Delete a world category
