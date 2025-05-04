@@ -46,9 +46,7 @@ export interface EditProjectFormData {
   narrativeStructure?: NarrativeStructureType;
 }
 
-/**
- * This type is now aligned with Project but allows File type for coverImage
- */
+// Modified to NOT extend Project since it has a different type for coverImage
 export interface ProjectWithCoverImageFile {
   id: string;
   title: string;

@@ -24,9 +24,7 @@ export interface EditEpisodeFormData {
   coverImage?: File | string;
 }
 
-/**
- * This type is now aligned with Episode but allows File type for coverImage
- */
+// Modified to NOT extend Episode since it has a different type for coverImage
 export interface EpisodeWithCoverImageFile {
   id: string;
   projectId: string;
