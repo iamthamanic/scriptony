@@ -14,19 +14,18 @@ export const useEditEpisode = (
     const episodeToEdit = selectedProject.episodes.find(e => e.id === episodeId);
     if (!episodeToEdit) return;
 
+    // Create the updated episode using the proper interface
     const updatedEpisode: EpisodeWithCoverImageFile = {
       ...episodeToEdit,
       title: data.title,
       number: data.number,
       description: data.description,
-      coverImage: data.coverImage && typeof data.coverImage !== 'string' 
-        ? URL.createObjectURL(data.coverImage) 
-        : (typeof data.coverImage === 'string' ? data.coverImage : episodeToEdit.coverImage),
+      coverImage: data.coverImage,
       updatedAt: new Date()
     };
 
+    // Update episodes and scenes that reference this episode
     updateProjects(selectedProject.id, (project) => {
-      // Update scenes that reference this episode
       const updatedScenes = project.scenes.map(scene => {
         if (scene.episodeId === episodeId) {
           return {

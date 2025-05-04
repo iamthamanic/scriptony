@@ -1,4 +1,3 @@
-
 import { useToast } from "../use-toast";
 import { Character, CharacterWithAvatarFile, NewCharacterFormData, EditCharacterFormData } from "../../types";
 import { createCharacter, updateCharacter, deleteCharacter } from "../../services/database";
@@ -46,15 +45,13 @@ export const useCharacters = (
     });
 
     if (success) {
-      // Create the updated character - use CharacterWithAvatarFile to allow File type for avatar
+      // Create the updated character using CharacterWithAvatarFile for proper typing
       const updatedCharacter: CharacterWithAvatarFile = {
         ...characterToEdit,
         name: data.name,
         role: data.role,
         description: data.description,
-        avatar: data.avatar && typeof data.avatar !== 'string' 
-          ? URL.createObjectURL(data.avatar) 
-          : (typeof data.avatar === 'string' ? data.avatar : characterToEdit.avatar),
+        avatar: data.avatar,
         updatedAt: new Date()
       };
 

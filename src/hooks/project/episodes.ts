@@ -1,4 +1,3 @@
-
 import { useToast } from "../../hooks/use-toast";
 import { Episode, EpisodeWithCoverImageFile, NewEpisodeFormData, EditEpisodeFormData } from "../../types";
 import { createEpisode, updateEpisode, deleteEpisode } from "../../services/database";
@@ -47,15 +46,13 @@ export const useEpisodes = (
     });
 
     if (success) {
-      // Create the updated episode - use EpisodeWithCoverImageFile to allow File type for coverImage
+      // Create the updated episode using EpisodeWithCoverImageFile for proper typing
       const updatedEpisode: EpisodeWithCoverImageFile = {
         ...episodeToEdit,
         title: data.title,
         number: data.number,
         description: data.description,
-        coverImage: data.coverImage && typeof data.coverImage !== 'string' 
-          ? URL.createObjectURL(data.coverImage) 
-          : (typeof data.coverImage === 'string' ? data.coverImage : episodeToEdit.coverImage),
+        coverImage: data.coverImage,
         updatedAt: new Date()
       };
 

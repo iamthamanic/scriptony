@@ -181,9 +181,7 @@ export const useProjects = () => {
         duration: data.duration,
         inspirations: data.inspirations,
         narrativeStructure: data.narrativeStructure || selectedProject.narrativeStructure,
-        coverImage: data.coverImage && typeof data.coverImage !== 'string'
-          ? URL.createObjectURL(data.coverImage) 
-          : (typeof data.coverImage === 'string' ? data.coverImage : selectedProject.coverImage),
+        coverImage: data.coverImage,
         updatedAt: new Date()
       };
 
