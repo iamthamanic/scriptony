@@ -95,10 +95,15 @@ const Auth = () => {
       <div className="space-y-4">
         <GoogleLoginButton loading={loading} setLoading={setLoading} />
         
-        <div className="flex items-center my-4">
-          <Separator className="flex-grow" />
-          <span className="mx-4 text-xs text-muted-foreground">{t('common.or')}</span>
-          <Separator className="flex-grow" />
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <Separator className="w-full" />
+          </div>
+          <div className="relative flex justify-center">
+            <span className="bg-card px-4 text-xs text-muted-foreground">
+              {t('common.or')}
+            </span>
+          </div>
         </div>
 
         {isLogin ? (
