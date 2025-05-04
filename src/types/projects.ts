@@ -47,18 +47,5 @@ export interface EditProjectFormData {
 }
 
 export interface ProjectWithCoverImageFile extends Omit<Project, 'coverImage'> {
-  id: string;
-  title: string;
-  type: ProjectType;
-  logline: string;
-  genres: Genre[];
-  duration: number;
-  inspirations: string[];
   coverImage?: string | File | null;
-  scenes: Scene[];
-  characters: Character[];
-  episodes: Episode[];
-  narrativeStructure: NarrativeStructureType;
-  createdAt: Date;
-  updatedAt: Date;
 }

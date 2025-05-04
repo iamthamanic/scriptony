@@ -1,6 +1,6 @@
 
 import { useToast } from "../../use-toast";
-import { Episode, EpisodeWithCoverImageFile, EditEpisodeFormData } from "../../../types";
+import { Episode, EditEpisodeFormData, EpisodeWithCoverImageFile } from "../../../types";
 
 export const useEditEpisode = (
   selectedProject: { id: string; episodes: Episode[] } | null,
