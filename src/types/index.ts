@@ -13,8 +13,7 @@ export * from './common';
 // Export the types and templates from the new module location
 export type { 
   NarrativeStructureType, 
-  StructureTemplate, 
-  NarrativeStructureOption,
+  StructureTemplate,
   SceneTemplate
 } from './narrativeStructures';
 export { getStructureOptions, narrativeStructureTemplates } from './narrativeStructures';

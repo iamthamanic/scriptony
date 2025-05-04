@@ -1,4 +1,3 @@
-
 import { ProjectType, Genre, TimeOfDay, EmotionalSignificance, VideoFormat } from "../types";
 import { projectTypes, genres, timesOfDay, emotionalSignificances, videoFormats } from "./constants";
 
@@ -12,8 +11,13 @@ export const projectTypeOptions = projectTypes.map((type) => {
     case 'hörspiel': label = 'Hörspiel'; break;
     case 'buch': label = 'Buch'; break;
     case 'social_video': label = 'Social Media Video'; break;
-    default: label = type.charAt(0).toUpperCase() + type.slice(1);
+    default: label = type as string; // Cast to string
   }
+  
+  if (typeof label === 'string') {
+    label = label.charAt(0).toUpperCase() + label.slice(1);
+  }
+  
   return { value: type, label };
 });
 
@@ -22,8 +26,13 @@ export const videoFormatOptions = videoFormats.map((format) => {
   switch(format) {
     case 'shortform': label = 'Kurzform (TikTok, Reels, Shorts)'; break;
     case 'longform': label = 'Langform (YouTube)'; break;
-    default: label = format.charAt(0).toUpperCase() + format.slice(1);
+    default: label = format as string; // Cast to string
   }
+  
+  if (typeof label === 'string') {
+    label = label.charAt(0).toUpperCase() + label.slice(1);
+  }
+  
   return { value: format, label };
 });
 
@@ -42,8 +51,13 @@ export const genreOptions = genres.map((genre) => {
     case 'slice-of-life': label = 'Slice of Life'; break;
     case 'supernatural': label = 'Übernatürlich'; break;
     case 'thriller': label = 'Thriller'; break;
-    default: label = genre.charAt(0).toUpperCase() + genre.slice(1);
+    default: label = genre as string; // Cast to string
   }
+  
+  if (typeof label === 'string') {
+    label = label.charAt(0).toUpperCase() + label.slice(1);
+  }
+  
   return { value: genre, label };
 });
 

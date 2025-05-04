@@ -47,10 +47,11 @@ export interface SceneTemplate {
 }
 
 export interface StructureTemplate {
+  id?: string;  // Make id optional to accommodate existing usage
   name: string;
   description: string;
   suggestedScenes?: SceneTemplate[];
-  scenes?: SceneTemplate[]; // Add this for backward compatibility
+  scenes?: SceneTemplate[]; // For backward compatibility
 }
 
 // Function to get structure options based on project type
