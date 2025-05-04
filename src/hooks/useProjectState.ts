@@ -8,14 +8,17 @@ import {
   EditProjectFormData,
   NewCharacterFormData,
   Character,
-  EditCharacterFormData
+  EditCharacterFormData,
+  Episode,
+  NewEpisodeFormData,
+  EditEpisodeFormData
 } from "../types";
 import { mockProjects } from "../utils/mockData";
 import { useToast } from "./use-toast";
 
 export const useProjectState = () => {
   const [projects, setProjects] = useState<Project[]>(
-    mockProjects.map(p => ({ ...p, characters: [] }))
+    mockProjects.map(p => ({ ...p, characters: [], episodes: [] }))
   );
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(mockProjects[0]?.id || null);
   const { toast } = useToast();
@@ -34,6 +37,7 @@ export const useProjectState = () => {
       coverImage: data.coverImage ? URL.createObjectURL(data.coverImage) : undefined,
       scenes: [],
       characters: [],
+      episodes: [],
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -201,6 +205,127 @@ export const useProjectState = () => {
     });
   };
 
+  // Episode management functions
+  const handleCreateEpisode = (data: NewEpisodeFormData) => {
+    if (!selectedProject) return;
+
+    const newEpisode: Episode = {
+      id: `e${projects.flatMap(p => p.episodes || []).length + 1}`,
+      projectId: selectedProject.id,
+      title: data.title,
+      number: data.number,
+      description: data.description,
+      coverImage: data.coverImage ? URL.createObjectURL(data.coverImage) : undefined,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    const updatedProjects = projects.map(project => 
+      project.id === selectedProject.id 
+        ? {
+            ...project,
+            episodes: [...(project.episodes || []), newEpisode].sort((a, b) => a.number - b.number),
+            updatedAt: new Date()
+          } 
+        : project
+    );
+
+    setProjects(updatedProjects);
+    toast({
+      title: "Episode Added",
+      description: `Episode ${data.number}: ${data.title} has been added to ${selectedProject.title}.`,
+      duration: 3000
+    });
+  };
+
+  const handleEditEpisode = (episodeId: string, data: EditEpisodeFormData) => {
+    if (!selectedProject) return;
+
+    const episodeToEdit = selectedProject.episodes.find(e => e.id === episodeId);
+    if (!episodeToEdit) return;
+
+    const updatedEpisode: Episode = {
+      ...episodeToEdit,
+      title: data.title,
+      number: data.number,
+      description: data.description,
+      coverImage: data.coverImage ? URL.createObjectURL(data.coverImage) : episodeToEdit.coverImage,
+      updatedAt: new Date()
+    };
+
+    // Update scenes that reference this episode (by episode title)
+    const updatedScenes = selectedProject.scenes.map(scene => {
+      if (scene.episodeId === episodeId || scene.episodeTitle === episodeToEdit.title) {
+        return {
+          ...scene,
+          episodeId: episodeId,
+          episodeTitle: data.title,
+          updatedAt: new Date()
+        };
+      }
+      return scene;
+    });
+
+    const updatedProjects = projects.map(project => 
+      project.id === selectedProject.id 
+        ? {
+            ...project,
+            episodes: project.episodes.map(e => 
+              e.id === episodeId ? updatedEpisode : e
+            ).sort((a, b) => a.number - b.number),
+            scenes: updatedScenes,
+            updatedAt: new Date()
+          } 
+        : project
+    );
+
+    setProjects(updatedProjects);
+    toast({
+      title: "Episode Updated",
+      description: `Episode ${data.number}: ${data.title} has been updated successfully.`,
+      duration: 3000
+    });
+  };
+
+  const handleDeleteEpisode = (episodeId: string) => {
+    if (!selectedProject) return;
+
+    const episodeToDelete = selectedProject.episodes.find(e => e.id === episodeId);
+    if (!episodeToDelete) return;
+
+    // Update scenes that reference this episode
+    const updatedScenes = selectedProject.scenes.map(scene => {
+      if (scene.episodeId === episodeId) {
+        return {
+          ...scene,
+          episodeId: undefined,
+          episodeTitle: undefined,
+          updatedAt: new Date()
+        };
+      }
+      return scene;
+    });
+
+    const updatedProjects = projects.map(project => 
+      project.id === selectedProject.id 
+        ? {
+            ...project,
+            episodes: project.episodes.filter(e => e.id !== episodeId),
+            scenes: updatedScenes,
+            updatedAt: new Date()
+          } 
+        : project
+    );
+
+    setProjects(updatedProjects);
+    toast({
+      title: "Episode Deleted",
+      description: `Episode ${episodeToDelete.number}: ${episodeToDelete.title} has been permanently deleted.`,
+      variant: "destructive",
+      duration: 3000
+    });
+  };
+
   // Scene management functions
   const handleCreateScene = (data: NewSceneFormData, editingScene: Scene | null) => {
     if (!selectedProject) return;
@@ -209,6 +334,7 @@ export const useProjectState = () => {
       // Update existing scene
       const updatedScene: Scene = {
         ...editingScene,
+        episodeId: data.episodeId,
         episodeTitle: data.episodeTitle,
         sceneNumber: data.sceneNumber,
         location: data.location,
@@ -254,6 +380,7 @@ export const useProjectState = () => {
       const newScene: Scene = {
         id: `s${projects.flatMap(p => p.scenes).length + 1}`,
         projectId: selectedProject.id,
+        episodeId: data.episodeId,
         episodeTitle: data.episodeTitle,
         sceneNumber: data.sceneNumber,
         location: data.location,
@@ -330,6 +457,9 @@ export const useProjectState = () => {
     handleCreateCharacter,
     handleEditCharacter,
     handleDeleteCharacter,
+    handleCreateEpisode,
+    handleEditEpisode,
+    handleDeleteEpisode,
     handleCreateScene,
     handleDeleteScene
   };
