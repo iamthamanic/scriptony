@@ -1,64 +1,22 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { 
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from "@/components/ui/form";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-
-const loginSchema = z.object({
-  email: z.string().email("Bitte gib eine gültige E-Mail-Adresse ein."),
-  password: z.string().min(6, "Das Passwort muss mindestens 6 Zeichen lang sein.")
-});
-
-const registerSchema = loginSchema.extend({
-  name: z.string().min(2, "Der Name muss mindestens 2 Zeichen lang sein.")
-});
-
-type LoginFormValues = z.infer<typeof loginSchema>;
-type RegisterFormValues = z.infer<typeof registerSchema>;
+import { LoginForm } from '@/components/auth/LoginForm';
+import { RegisterForm } from '@/components/auth/RegisterForm';
 
 const Auth = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isLogin, setIsLogin] = useState(true);
-  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   
-  // Initialize the form with the correct schema based on login/register mode
-  const loginForm = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: ""
-    }
-  });
-  
-  const registerForm = useForm<RegisterFormValues>({
-    resolver: zodResolver(registerSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      password: ""
-    }
-  });
-
   useEffect(() => {
     // Check if state has mode parameter to determine login or register
     if (location.state?.mode === 'login') {
@@ -78,49 +36,6 @@ const Auth = () => {
     checkUser();
   }, [location.state, navigate]);
 
-  const handleLogin = async (data: LoginFormValues) => {
-    setLoading(true);
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email: data.email,
-        password: data.password
-      });
-      
-      if (error) throw error;
-      
-      toast.success("Erfolgreich eingeloggt!");
-      navigate('/');
-    } catch (error: any) {
-      toast.error(error.message || "Login fehlgeschlagen. Bitte versuche es erneut.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleRegister = async (data: RegisterFormValues) => {
-    setLoading(true);
-    try {
-      const { error } = await supabase.auth.signUp({
-        email: data.email,
-        password: data.password,
-        options: {
-          data: {
-            name: data.name
-          }
-        }
-      });
-      
-      if (error) throw error;
-      
-      toast.success("Registrierung erfolgreich! Bitte überprüfe deinen Posteingang.");
-      setIsLogin(true);
-    } catch (error: any) {
-      toast.error(error.message || "Registrierung fehlgeschlagen. Bitte versuche es erneut.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleGoogleLogin = async () => {
     try {
       await supabase.auth.signInWithOAuth({
@@ -135,7 +50,6 @@ const Auth = () => {
   };
 
   const toggleMode = () => setIsLogin(!isLogin);
-  const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -179,126 +93,13 @@ const Auth = () => {
             </div>
 
             {isLogin ? (
-              <Form {...loginForm}>
-                <form onSubmit={loginForm.handleSubmit(handleLogin)} className="space-y-4">
-                  <FormField
-                    control={loginForm.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>E-Mail</FormLabel>
-                        <FormControl>
-                          <Input placeholder="name@example.com" type="email" {...field} disabled={loading} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={loginForm.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Passwort</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Input 
-                              placeholder="••••••••" 
-                              type={showPassword ? "text" : "password"}
-                              {...field} 
-                              disabled={loading}
-                            />
-                            <Button 
-                              type="button"
-                              variant="ghost" 
-                              size="sm"
-                              className="absolute right-0 top-0 h-full px-3" 
-                              onClick={togglePasswordVisibility}
-                            >
-                              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                            </Button>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? "Wird geladen..." : "Anmelden"}
-                  </Button>
-                </form>
-              </Form>
+              <LoginForm loading={loading} setLoading={setLoading} />
             ) : (
-              <Form {...registerForm}>
-                <form onSubmit={registerForm.handleSubmit(handleRegister)} className="space-y-4">
-                  <FormField
-                    control={registerForm.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Max Mustermann" {...field} disabled={loading} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={registerForm.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>E-Mail</FormLabel>
-                        <FormControl>
-                          <Input placeholder="name@example.com" type="email" {...field} disabled={loading} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={registerForm.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Passwort</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Input 
-                              placeholder="••••••••" 
-                              type={showPassword ? "text" : "password"}
-                              {...field} 
-                              disabled={loading}
-                            />
-                            <Button 
-                              type="button"
-                              variant="ghost" 
-                              size="sm"
-                              className="absolute right-0 top-0 h-full px-3" 
-                              onClick={togglePasswordVisibility}
-                            >
-                              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                            </Button>
-                          </div>
-                        </FormControl>
-                        <FormDescription>
-                          Mindestens 6 Zeichen
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? "Wird geladen..." : "Registrieren"}
-                  </Button>
-                </form>
-              </Form>
+              <RegisterForm 
+                loading={loading} 
+                setLoading={setLoading} 
+                onSuccess={() => setIsLogin(true)}
+              />
             )}
           </div>
         </CardContent>
