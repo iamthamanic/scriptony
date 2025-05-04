@@ -46,20 +46,20 @@ export const useCharacters = (
     });
 
     if (success) {
-      // Create the updated character with proper type casting
-      const updatedCharacter = {
+      // Create the updated character with proper type handling
+      const updatedCharacter: CharacterWithAvatarFile = {
         ...characterToEdit,
         name: data.name,
         role: data.role,
         description: data.description,
         avatar: data.avatar,
         updatedAt: new Date()
-      } as Character; // Cast to Character type to avoid type errors
+      };
 
       updateProjects(selectedProject.id, (project) => ({
         ...project,
         characters: project.characters.map(c => 
-          c.id === characterId ? updatedCharacter : c
+          c.id === characterId ? updatedCharacter as unknown as Character : c
         ),
         updatedAt: new Date()
       }));

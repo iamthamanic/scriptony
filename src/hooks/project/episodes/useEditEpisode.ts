@@ -1,6 +1,6 @@
 
 import { useToast } from "../../use-toast";
-import { Episode, EditEpisodeFormData } from "../../../types";
+import { Episode, EpisodeWithCoverImageFile, EditEpisodeFormData } from "../../../types";
 
 export const useEditEpisode = (
   selectedProject: { id: string; episodes: Episode[] } | null,
@@ -14,19 +14,19 @@ export const useEditEpisode = (
     const episodeToEdit = selectedProject.episodes.find(e => e.id === episodeId);
     if (!episodeToEdit) return;
 
-    // Update the episode with proper type casting
-    const updatedEpisode = {
+    // Update the episode with proper type handling
+    const updatedEpisode: EpisodeWithCoverImageFile = {
       ...episodeToEdit,
       title: data.title,
       number: data.number,
       description: data.description,
       coverImage: data.coverImage,
       updatedAt: new Date()
-    } as Episode; // Cast to Episode type to avoid type errors
+    };
 
     // Update episodes in the project
     updateProjects(selectedProject.id, (project) => {
-      // Update scenes that reference this episode
+      // Update any scenes that reference this episode
       const updatedScenes = project.scenes.map(scene => {
         if (scene.episodeId === episodeId) {
           return {
@@ -41,7 +41,7 @@ export const useEditEpisode = (
       return {
         ...project,
         episodes: project.episodes
-          .map(e => e.id === episodeId ? updatedEpisode : e)
+          .map(e => e.id === episodeId ? updatedEpisode as unknown as Episode : e)
           .sort((a, b) => a.number - b.number),
         scenes: updatedScenes,
         updatedAt: new Date()

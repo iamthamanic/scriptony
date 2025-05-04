@@ -24,13 +24,6 @@ export interface EditEpisodeFormData {
   coverImage?: File | string;
 }
 
-export interface EpisodeWithCoverImageFile {
-  id: string;
-  projectId: string;
-  title: string;
-  number: number;
-  description: string;
+export interface EpisodeWithCoverImageFile extends Omit<Episode, 'coverImage'> {
   coverImage?: string | File | null;
-  createdAt: Date;
-  updatedAt: Date;
 }

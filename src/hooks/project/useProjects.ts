@@ -172,8 +172,8 @@ export const useProjects = () => {
     });
 
     if (success) {
-      // Use proper type casting to avoid the error
-      const updatedProject = {
+      // Use proper type handling for the updated project
+      const updatedProject: ProjectWithCoverImageFile = {
         ...selectedProject,
         title: data.title,
         type: data.type,
@@ -184,10 +184,10 @@ export const useProjects = () => {
         narrativeStructure: data.narrativeStructure || selectedProject.narrativeStructure,
         coverImage: data.coverImage,
         updatedAt: new Date()
-      } as Project; // Cast to Project type to avoid type errors
+      };
 
       const updatedProjects = projects.map(project => 
-        project.id === selectedProject.id ? updatedProject : project
+        project.id === selectedProject.id ? updatedProject as unknown as Project : project
       );
 
       setProjects(updatedProjects);
