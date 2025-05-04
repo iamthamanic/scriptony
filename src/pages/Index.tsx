@@ -5,21 +5,34 @@ import ProjectHeader from "../components/ProjectHeader";
 import NewProjectModal from "../components/NewProjectModal";
 import NewSceneModal from "../components/NewSceneModal";
 import ScenePdfExport from "../components/ScenePdfExport";
+import EditProjectModal from "../components/EditProjectModal";
+import NewCharacterModal from "../components/NewCharacterModal";
+import CharacterList from "../components/CharacterList";
 import { mockProjects } from "../utils/mockData";
-import { Project, Scene, NewProjectFormData, NewSceneFormData } from "../types";
+import { 
+  Project, 
+  Scene, 
+  NewProjectFormData, 
+  NewSceneFormData,
+  EditProjectFormData,
+  NewCharacterFormData,
+  Character
+} from "../types";
 import { useToast } from "@/hooks/use-toast";
 import { FilePlus } from "lucide-react";
-
-// Import the newly created components
 import ProjectSelector from "../components/ProjectSelector";
 import SceneList from "../components/SceneList";
 import EmptyState from "../components/EmptyState";
 
 const Index = () => {
-  const [projects, setProjects] = useState<Project[]>(mockProjects);
+  const [projects, setProjects] = useState<Project[]>(
+    mockProjects.map(p => ({ ...p, characters: [] })) // Add empty characters array to existing projects
+  );
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(mockProjects[0]?.id || null);
   const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false);
+  const [isEditProjectModalOpen, setIsEditProjectModalOpen] = useState(false);
   const [isNewSceneModalOpen, setIsNewSceneModalOpen] = useState(false);
+  const [isNewCharacterModalOpen, setIsNewCharacterModalOpen] = useState(false);
   const [editingScene, setEditingScene] = useState<Scene | null>(null);
   const { toast } = useToast();
 
@@ -36,6 +49,7 @@ const Index = () => {
       inspirations: data.inspirations,
       coverImage: data.coverImage ? URL.createObjectURL(data.coverImage) : undefined,
       scenes: [],
+      characters: [],
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -45,6 +59,69 @@ const Index = () => {
     toast({
       title: "Project Created",
       description: `${data.title} has been created successfully.`,
+      duration: 3000
+    });
+  };
+
+  const handleEditProject = (data: EditProjectFormData) => {
+    if (!selectedProject) return;
+
+    const updatedProject: Project = {
+      ...selectedProject,
+      title: data.title,
+      type: data.type,
+      logline: data.logline,
+      genres: data.genres,
+      duration: data.duration,
+      inspirations: data.inspirations,
+      coverImage: data.coverImage 
+        ? URL.createObjectURL(data.coverImage) 
+        : selectedProject.coverImage,
+      updatedAt: new Date()
+    };
+
+    const updatedProjects = projects.map(project => 
+      project.id === selectedProject.id ? updatedProject : project
+    );
+
+    setProjects(updatedProjects);
+    setIsEditProjectModalOpen(false);
+    toast({
+      title: "Project Updated",
+      description: `${data.title} has been updated successfully.`,
+      duration: 3000
+    });
+  };
+
+  const handleCreateCharacter = (data: NewCharacterFormData) => {
+    if (!selectedProject) return;
+
+    const newCharacter: Character = {
+      id: `c${projects.flatMap(p => p.characters).length + 1}`,
+      name: data.name,
+      role: data.role,
+      description: data.description,
+      projectId: selectedProject.id,
+      avatar: data.avatar ? URL.createObjectURL(data.avatar) : undefined,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    const updatedProjects = projects.map(project => 
+      project.id === selectedProject.id 
+        ? {
+            ...project,
+            characters: [...project.characters, newCharacter],
+            updatedAt: new Date()
+          } 
+        : project
+    );
+
+    setProjects(updatedProjects);
+    setIsNewCharacterModalOpen(false);
+    toast({
+      title: "Character Added",
+      description: `${data.name} has been added to ${selectedProject.title}.`,
       duration: 3000
     });
   };
@@ -74,6 +151,7 @@ const Index = () => {
         productionNotes: data.productionNotes,
         emotionalSignificance: data.emotionalSignificance,
         emotionalNotes: data.emotionalNotes,
+        characterIds: data.characterIds || [],
         updatedAt: new Date()
       };
 
@@ -120,6 +198,7 @@ const Index = () => {
         productionNotes: data.productionNotes,
         emotionalSignificance: data.emotionalSignificance,
         emotionalNotes: data.emotionalNotes,
+        characterIds: data.characterIds || [],
         createdAt: new Date(),
         updatedAt: new Date()
       };
@@ -194,8 +273,17 @@ const Index = () => {
             onNewScene={() => {
               setEditingScene(null);
               setIsNewSceneModalOpen(true);
-            }} 
+            }}
+            onEditProject={() => setIsEditProjectModalOpen(true)}
+            onNewCharacter={() => setIsNewCharacterModalOpen(true)} 
           />
+          
+          {selectedProject.characters.length > 0 && (
+            <CharacterList 
+              characters={selectedProject.characters} 
+              onNewCharacter={() => setIsNewCharacterModalOpen(true)} 
+            />
+          )}
           
           {selectedProject.scenes.length > 0 ? (
             <SceneList 
@@ -232,31 +320,47 @@ const Index = () => {
       />
       
       {selectedProject && (
-        <NewSceneModal 
-          isOpen={isNewSceneModalOpen} 
-          onClose={() => {
-            setIsNewSceneModalOpen(false);
-            setEditingScene(null);
-          }} 
-          onSubmit={handleCreateScene} 
-          projectType={selectedProject.type} 
-          lastSceneNumber={
-            editingScene 
-              ? editingScene.sceneNumber 
-              : selectedProject.scenes.length > 0 
-                ? Math.max(...selectedProject.scenes.map(s => s.sceneNumber)) 
-                : 0
-          } 
-          editScene={editingScene} 
-        />
+        <>
+          <EditProjectModal
+            isOpen={isEditProjectModalOpen}
+            onClose={() => setIsEditProjectModalOpen(false)}
+            onSubmit={handleEditProject}
+            project={selectedProject}
+          />
+          
+          <NewCharacterModal
+            isOpen={isNewCharacterModalOpen}
+            onClose={() => setIsNewCharacterModalOpen(false)}
+            onSubmit={handleCreateCharacter}
+          />
+          
+          <NewSceneModal 
+            isOpen={isNewSceneModalOpen} 
+            onClose={() => {
+              setIsNewSceneModalOpen(false);
+              setEditingScene(null);
+            }} 
+            onSubmit={handleCreateScene} 
+            projectType={selectedProject.type} 
+            lastSceneNumber={
+              editingScene 
+                ? editingScene.sceneNumber 
+                : selectedProject.scenes.length > 0 
+                  ? Math.max(...selectedProject.scenes.map(s => s.sceneNumber)) 
+                  : 0
+            } 
+            editScene={editingScene}
+            characters={selectedProject.characters}
+          />
+          
+          {/* PDF Export Component (hidden) */}
+          {selectedProject.scenes.map(scene => (
+            <div key={scene.id} className="hidden">
+              <ScenePdfExport scene={scene} project={selectedProject} />
+            </div>
+          ))}
+        </>
       )}
-      
-      {/* PDF Export Component (hidden) */}
-      {selectedProject && selectedProject.scenes.map(scene => (
-        <div key={scene.id} className="hidden">
-          <ScenePdfExport scene={scene} project={selectedProject} />
-        </div>
-      ))}
     </div>
   );
 };

@@ -26,6 +26,17 @@ export type Genre =
   | 'supernatural' 
   | 'thriller';
 
+export interface Character {
+  id: string;
+  name: string;
+  role: string;
+  description: string;
+  projectId: string;
+  avatar?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface Project {
   id: string;
   title: string;
@@ -36,6 +47,7 @@ export interface Project {
   inspirations: string[];
   coverImage?: string;
   scenes: Scene[];
+  characters: Character[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -61,6 +73,7 @@ export interface Scene {
   productionNotes: string;
   emotionalSignificance: EmotionalSignificance;
   emotionalNotes?: string;
+  characterIds: string[]; // Array of character IDs in the scene
   createdAt: Date;
   updatedAt: Date;
 }
@@ -73,6 +86,23 @@ export interface NewProjectFormData {
   duration: number;
   inspirations: string[];
   coverImage?: File;
+}
+
+export interface EditProjectFormData {
+  title: string;
+  type: ProjectType;
+  logline: string;
+  genres: Genre[];
+  duration: number;
+  inspirations: string[];
+  coverImage?: File;
+}
+
+export interface NewCharacterFormData {
+  name: string;
+  role: string;
+  description: string;
+  avatar?: File;
 }
 
 export interface NewSceneFormData {
@@ -94,4 +124,5 @@ export interface NewSceneFormData {
   productionNotes: string;
   emotionalSignificance: EmotionalSignificance;
   emotionalNotes?: string;
+  characterIds: string[]; // Array of character IDs in the scene
 }

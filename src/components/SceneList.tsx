@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Scene } from '../types';
+import { Scene, Character } from '../types';
 import SceneCard from './SceneCard';
 import TimelineView from './TimelineView';
 import { ListFilter, Calendar } from 'lucide-react';
@@ -10,9 +10,10 @@ interface SceneListProps {
   scenes: Scene[];
   onEditScene: (scene: Scene) => void;
   onExportPDF: (scene: Scene) => void;
+  characters?: Character[];
 }
 
-const SceneList = ({ scenes, onEditScene, onExportPDF }: SceneListProps) => {
+const SceneList = ({ scenes, onEditScene, onExportPDF, characters = [] }: SceneListProps) => {
   const [activeView, setActiveView] = useState<"gallery" | "timeline">("gallery");
 
   return (
@@ -49,6 +50,7 @@ const SceneList = ({ scenes, onEditScene, onExportPDF }: SceneListProps) => {
               scene={scene} 
               onClick={() => onEditScene(scene)} 
               onExportPDF={() => onExportPDF(scene)} 
+              characters={characters}
             />
           ))}
         </div>
