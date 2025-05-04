@@ -9,6 +9,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Episode } from "../types";
 
@@ -63,9 +64,9 @@ const DeleteEpisodeDialog = ({
   return (
     <AlertDialog open={dialogOpen} onOpenChange={handleOpenChange}>
       {trigger && (
-        <AlertDialog.Trigger asChild>
+        <AlertDialogTrigger asChild>
           {trigger}
-        </AlertDialog.Trigger>
+        </AlertDialogTrigger>
       )}
       <AlertDialogContent>
         <AlertDialogHeader>
