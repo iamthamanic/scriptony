@@ -1,11 +1,10 @@
 
-import { StructureTemplate } from './types';
+import { StructureTemplate, SceneTemplate } from './types';
 
 /**
  * Hero's Journey narrative structure template
  */
 export const heroJourneyTemplate: StructureTemplate = {
-  id: 'hero-journey',
   name: 'Hero\'s Journey',
   description: 'The classic 12-step hero journey structure',
   scenes: [

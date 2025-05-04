@@ -1,11 +1,10 @@
 
-import { StructureTemplate } from './types';
+import { StructureTemplate, SceneTemplate } from './types';
 
 /**
  * Three-Act Structure narrative template
  */
 export const threeActTemplate: StructureTemplate = {
-  id: 'three-act',
   name: 'Three-Act Structure',
   description: 'The traditional three-act structure',
   scenes: [
