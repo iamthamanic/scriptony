@@ -1,9 +1,9 @@
 
 import { useState } from "react";
-import { Project, NewProjectFormData } from "../../../types";
+import { Project, NewProjectFormData, SceneTemplate } from "../../../types";
 import { useToast } from "../../use-toast";
 import { narrativeStructureTemplates } from "../../../types/narrativeStructures";
-import { createProject } from "../../../services/database";
+import { createProject } from "../../../services/projects";
 import { useAuth } from "@/contexts/AuthContext";
 
 export const useCreateProject = (
@@ -33,7 +33,8 @@ export const useCreateProject = (
         const template = narrativeStructureTemplates[data.narrativeStructure];
         
         if (template) {
-          const templateScenes = template.scenes || template.suggestedScenes || [];
+          // Use scenes or suggestedScenes array from the template
+          const templateScenes = (template.scenes || template.suggestedScenes || []) as SceneTemplate[];
           scenes = templateScenes.map((sceneTpl, index) => ({
             projectId: newProjectData.id,
             sceneNumber: sceneTpl.sceneNumber || index + 1,

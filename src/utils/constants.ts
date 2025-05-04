@@ -65,8 +65,13 @@ export const projectTypeOptions = projectTypes.map((type) => {
     case 'hörspiel': label = 'Hörspiel'; break;
     case 'buch': label = 'Buch'; break;
     case 'social_video': label = 'Social Media Video'; break;
-    default: label = type.charAt(0).toUpperCase() + type.slice(1);
+    default: label = type as string; // Cast type to string for charAt
   }
+  
+  if (typeof label === 'string') {
+    label = label.charAt(0).toUpperCase() + label.slice(1);
+  }
+  
   return { value: type, label };
 });
 
@@ -75,7 +80,12 @@ export const videoFormatOptions = videoFormats.map((format) => {
   switch(format) {
     case 'shortform': label = 'Kurzform (TikTok, Reels, Shorts)'; break;
     case 'longform': label = 'Langform (YouTube)'; break;
-    default: label = format.charAt(0).toUpperCase() + format.slice(1);
+    default: label = format as string; // Cast format to string for charAt
   }
+  
+  if (typeof label === 'string') {
+    label = label.charAt(0).toUpperCase() + label.slice(1);
+  }
+  
   return { value: format, label };
 });
