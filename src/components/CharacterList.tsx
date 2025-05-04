@@ -2,20 +2,54 @@
 import React, { useState } from 'react';
 import { Character } from '../types';
 import { Button } from "@/components/ui/button";
-import { UserPlus, Users } from 'lucide-react';
+import { UserPlus, Users, Edit, Trash2 } from 'lucide-react';
 import { 
   Card, 
   CardContent, 
-  CardHeader 
+  CardHeader,
+  CardFooter
 } from '@/components/ui/card';
+import EditCharacterModal, { EditCharacterFormData } from './EditCharacterModal';
+import DeleteCharacterDialog from './DeleteCharacterDialog';
 
 interface CharacterListProps {
   characters: Character[];
   onNewCharacter: () => void;
+  onEditCharacter: (characterId: string, data: EditCharacterFormData) => void;
+  onDeleteCharacter: (characterId: string) => void;
 }
 
-const CharacterList = ({ characters, onNewCharacter }: CharacterListProps) => {
+const CharacterList = ({ 
+  characters, 
+  onNewCharacter, 
+  onEditCharacter,
+  onDeleteCharacter 
+}: CharacterListProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [editingCharacter, setEditingCharacter] = useState<Character | null>(null);
+  const [characterToDelete, setCharacterToDelete] = useState<Character | null>(null);
+
+  const handleEditClick = (character: Character) => {
+    setEditingCharacter(character);
+  };
+
+  const handleEditSubmit = (data: EditCharacterFormData) => {
+    if (editingCharacter) {
+      onEditCharacter(editingCharacter.id, data);
+      setEditingCharacter(null);
+    }
+  };
+
+  const handleDeleteClick = (character: Character) => {
+    setCharacterToDelete(character);
+  };
+
+  const handleConfirmDelete = () => {
+    if (characterToDelete) {
+      onDeleteCharacter(characterToDelete.id);
+      setCharacterToDelete(null);
+    }
+  };
 
   return (
     <div className="mb-8">
@@ -70,9 +104,46 @@ const CharacterList = ({ characters, onNewCharacter }: CharacterListProps) => {
                   {character.description}
                 </p>
               </CardContent>
+              <CardFooter className="flex justify-end gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => handleDeleteClick(character)}
+                  className="border-destructive text-destructive hover:bg-destructive/10"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => handleEditClick(character)}
+                >
+                  <Edit className="h-4 w-4 mr-1" />
+                  Edit
+                </Button>
+              </CardFooter>
             </Card>
           ))}
         </div>
+      )}
+
+      {/* Modals */}
+      {editingCharacter && (
+        <EditCharacterModal
+          isOpen={!!editingCharacter}
+          onClose={() => setEditingCharacter(null)}
+          onSubmit={handleEditSubmit}
+          character={editingCharacter}
+        />
+      )}
+
+      {characterToDelete && (
+        <DeleteCharacterDialog
+          isOpen={!!characterToDelete}
+          onClose={() => setCharacterToDelete(null)}
+          onConfirm={handleConfirmDelete}
+          character={characterToDelete}
+        />
       )}
     </div>
   );

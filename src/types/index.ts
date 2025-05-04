@@ -1,4 +1,3 @@
-
 export type ProjectType = 'movie' | 'series' | 'short';
 
 export type TimeOfDay = 'morning' | 'day' | 'evening' | 'night';
@@ -125,4 +124,11 @@ export interface NewSceneFormData {
   emotionalSignificance: EmotionalSignificance;
   emotionalNotes?: string;
   characterIds: string[]; // Array of character IDs in the scene
+}
+
+export interface EditCharacterFormData {
+  name: string;
+  role: string;
+  description: string;
+  avatar?: File;
 }
