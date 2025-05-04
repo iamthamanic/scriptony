@@ -26,6 +26,40 @@ export type Genre =
   | 'supernatural' 
   | 'thriller';
 
+export type ShotType =
+  | 'wide' 
+  | 'medium' 
+  | 'close-up'
+  | 'extreme-close-up'
+  | 'over-the-shoulder'
+  | 'point-of-view'
+  | 'aerial'
+  | 'dutch-angle'
+  | 'two-shot'
+  | 'other';
+
+export type CameraMovement =
+  | 'static'
+  | 'pan'
+  | 'tilt'
+  | 'zoom'
+  | 'dolly'
+  | 'tracking'
+  | 'crane'
+  | 'steadicam'
+  | 'handheld'
+  | 'other';
+
+export type CameraPerspective =
+  | 'eye-level'
+  | 'high-angle'
+  | 'low-angle'
+  | 'birds-eye'
+  | 'worms-eye'
+  | 'other';
+
+import { NarrativeStructureType } from './narrativeStructures';
+
 export interface Character {
   id: string;
   name: string;
@@ -37,6 +71,11 @@ export interface Character {
   updatedAt: Date;
 }
 
+export interface CharacterDialog {
+  characterId: string;
+  text: string;
+}
+
 export interface Episode {
   id: string;
   projectId: string;
@@ -46,6 +85,26 @@ export interface Episode {
   coverImage?: string;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface ColorReference {
+  id: string;
+  name: string;
+  hexCode: string;
+}
+
+export interface AudioReference {
+  id: string;
+  name: string;
+  url?: string;
+  file?: string;
+  isExternal: boolean;
+}
+
+export interface VisualReference {
+  id: string;
+  name: string;
+  url: string;
 }
 
 export interface Project {
@@ -60,6 +119,24 @@ export interface Project {
   scenes: Scene[];
   characters: Character[];
   episodes: Episode[];
+  narrativeStructure: NarrativeStructureType;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Shot {
+  id: string;
+  sceneId: string;
+  title: string;
+  shotNumber: number;
+  shotType: ShotType;
+  cameraMovement: CameraMovement;
+  cameraPerspective?: CameraPerspective;
+  timecodeStart?: string;
+  timecodeEnd?: string;
+  description: string;
+  image?: string;
+  aiNotes?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -82,11 +159,16 @@ export interface Scene {
   keyframeImage?: string;
   description: string;
   dialog: string;
+  characterDialogs?: CharacterDialog[];
   transitions: string;
   productionNotes: string;
   emotionalSignificance: EmotionalSignificance;
   emotionalNotes?: string;
   characterIds: string[]; // Array of character IDs in the scene
+  colorReferences?: ColorReference[];
+  audioReferences?: AudioReference[];
+  visualReferences?: VisualReference[];
+  shots?: Shot[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -99,6 +181,7 @@ export interface NewProjectFormData {
   duration: number;
   inspirations: string[];
   coverImage?: File;
+  narrativeStructure?: NarrativeStructureType;
 }
 
 export interface EditProjectFormData {
@@ -109,6 +192,7 @@ export interface EditProjectFormData {
   duration: number;
   inspirations: string[];
   coverImage?: File;
+  narrativeStructure?: NarrativeStructureType;
 }
 
 export interface NewCharacterFormData {
@@ -134,11 +218,15 @@ export interface NewSceneFormData {
   keyframeImage?: File;
   description: string;
   dialog: string;
+  characterDialogs?: CharacterDialog[];
   transitions: string;
   productionNotes: string;
   emotionalSignificance: EmotionalSignificance;
   emotionalNotes?: string;
   characterIds: string[]; // Array of character IDs in the scene
+  colorReferences?: ColorReference[];
+  audioReferences?: AudioReference[];
+  visualReferences?: VisualReference[];
 }
 
 export interface EditCharacterFormData {
@@ -160,4 +248,30 @@ export interface EditEpisodeFormData {
   number: number;
   description: string;
   coverImage?: File;
+}
+
+export interface NewShotFormData {
+  title: string;
+  shotNumber: number;
+  shotType: ShotType;
+  cameraMovement: CameraMovement;
+  cameraPerspective?: CameraPerspective;
+  timecodeStart?: string;
+  timecodeEnd?: string;
+  description: string;
+  image?: File;
+  aiNotes?: string;
+}
+
+export interface EditShotFormData {
+  title: string;
+  shotNumber: number;
+  shotType: ShotType;
+  cameraMovement: CameraMovement;
+  cameraPerspective?: CameraPerspective;
+  timecodeStart?: string;
+  timecodeEnd?: string;
+  description: string;
+  image?: File;
+  aiNotes?: string;
 }

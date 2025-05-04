@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { NewProjectFormData, ProjectType, Genre } from '../types';
 import { genreOptions, projectTypeOptions } from '../utils/mockData';
 import { X, Plus, Upload } from 'lucide-react';
+import { narrativeStructureOptions } from '../types/narrativeStructures';
 
 interface NewProjectModalProps {
   isOpen: boolean;
@@ -23,7 +24,8 @@ const NewProjectModal = ({ isOpen, onClose, onSubmit }: NewProjectModalProps) =>
     logline: '',
     genres: [],
     duration: 0,
-    inspirations: ['']
+    inspirations: [''],
+    narrativeStructure: 'none'
   });
   
   const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null);
@@ -35,6 +37,10 @@ const NewProjectModal = ({ isOpen, onClose, onSubmit }: NewProjectModalProps) =>
 
   const handleTypeChange = (value: string) => {
     setFormData(prev => ({ ...prev, type: value as ProjectType }));
+  };
+
+  const handleNarrativeStructureChange = (value: string) => {
+    setFormData(prev => ({ ...prev, narrativeStructure: value as any }));
   };
 
   const handleGenreToggle = (genre: Genre) => {
@@ -133,6 +139,30 @@ const NewProjectModal = ({ isOpen, onClose, onSubmit }: NewProjectModalProps) =>
                 </SelectContent>
               </Select>
             </div>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="narrativeStructure">Narrative Structure</Label>
+            <Select
+              value={formData.narrativeStructure}
+              onValueChange={handleNarrativeStructureChange}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select narrative structure" />
+              </SelectTrigger>
+              <SelectContent>
+                {narrativeStructureOptions.map(option => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              {formData.narrativeStructure !== 'none' 
+                ? "This will auto-generate scene templates based on the selected structure" 
+                : "No structure will be applied - build your project from scratch"}
+            </p>
           </div>
           
           <div className="space-y-2">
