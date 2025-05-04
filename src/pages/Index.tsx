@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import AppHeader from "../components/AppHeader";
 import ProjectSelector from "../components/ProjectSelector";
@@ -8,6 +7,7 @@ import EmptyState from "../components/EmptyState";
 import AccountSettings from "../components/AccountSettings";
 import { Scene, Episode } from "../types";
 import { useProjectState } from "../hooks/project/useProjectState";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
   const {
@@ -38,6 +38,11 @@ const Index = () => {
   const [editingEpisode, setEditingEpisode] = useState<Episode | null>(null);
   const [selectedEpisodeId, setSelectedEpisodeId] = useState<string | null>(null);
   const [accountName] = useState("Demo User"); // This would come from authentication in a real app
+  const { signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
 
   const handleEditScene = (scene: Scene) => {
     setEditingScene(scene);
@@ -154,6 +159,8 @@ const Index = () => {
         onClose={() => setIsAccountSettingsOpen(false)}
         accountName={accountName}
       />
+      
+      <button onClick={handleSignOut}>Sign Out</button>
     </div>
   );
 };
