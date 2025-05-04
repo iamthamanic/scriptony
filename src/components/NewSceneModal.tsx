@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -6,11 +5,12 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { NewSceneFormData, TimeOfDay, EmotionalSignificance, Scene } from '../types';
-import { timeOfDayOptions, emotionalSignificanceOptions } from '../utils/mockData';
+import { NewSceneFormData, TimeOfDay, EmotionalSignificance, Scene, Character } from '../types';
+import { timesOfDay, emotionalSignificances } from '../utils/constants';
 import { Upload, Clock, Image, Save, Check } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
+import CharacterSelector from './CharacterSelector';
 
 interface NewSceneModalProps {
   isOpen: boolean;
@@ -19,9 +19,10 @@ interface NewSceneModalProps {
   projectType: 'movie' | 'series' | 'short';
   lastSceneNumber: number;
   editScene?: Scene | null;
+  characters?: Character[];
 }
 
-const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber, editScene }: NewSceneModalProps) => {
+const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber, editScene, characters = [] }: NewSceneModalProps) => {
   const [formData, setFormData] = useState<NewSceneFormData>({
     sceneNumber: lastSceneNumber + 1,
     location: '',
@@ -38,6 +39,7 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
     transitions: '',
     productionNotes: '',
     emotionalSignificance: 'introduction',
+    characterIds: [],
   });
   
   const [keyframePreview, setKeyframePreview] = useState<string | null>(null);
@@ -69,6 +71,7 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
         emotionalSignificance: editScene.emotionalSignificance,
         episodeTitle: editScene.episodeTitle,
         emotionalNotes: editScene.emotionalNotes,
+        characterIds: editScene.characterIds || [],
       });
       
       if (editScene.keyframeImage) {
@@ -94,6 +97,7 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
         transitions: '',
         productionNotes: '',
         emotionalSignificance: 'introduction',
+        characterIds: [],
       });
       setKeyframePreview(null);
       setLastSaved(null);
@@ -187,6 +191,24 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
       !!formData.visualComposition &&
       !!formData.description
     );
+  };
+
+  const handleCharacterToggle = (characterId: string) => {
+    setFormData(prev => {
+      const characterIds = prev.characterIds || [];
+      if (characterIds.includes(characterId)) {
+        return { 
+          ...prev, 
+          characterIds: characterIds.filter(id => id !== characterId) 
+        };
+      } else {
+        return { 
+          ...prev, 
+          characterIds: [...characterIds, characterId] 
+        };
+      }
+    });
+    setIsFormDirty(true);
   };
 
   return (
@@ -355,7 +377,7 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
                       <SelectValue placeholder="Select time of day" />
                     </SelectTrigger>
                     <SelectContent>
-                      {timeOfDayOptions.map(option => (
+                      {timesOfDay.map(option => (
                         <SelectItem key={option.value} value={option.value}>
                           {option.label}
                         </SelectItem>
@@ -403,6 +425,17 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
                     )}
                   </div>
                 </div>
+                
+                {/* Add Character Selector if characters are provided */}
+                {characters && characters.length > 0 && (
+                  <div className="space-y-2 mt-4">
+                    <CharacterSelector
+                      characters={characters}
+                      selectedCharacterIds={formData.characterIds || []}
+                      onSelectCharacter={handleCharacterToggle}
+                    />
+                  </div>
+                )}
               </AccordionContent>
             </AccordionItem>
             
@@ -585,7 +618,7 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
                       <SelectValue placeholder="Select scene significance" />
                     </SelectTrigger>
                     <SelectContent>
-                      {emotionalSignificanceOptions.map(option => (
+                      {emotionalSignificances.map(option => (
                         <SelectItem key={option.value} value={option.value}>
                           {option.label}
                         </SelectItem>
