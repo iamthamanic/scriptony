@@ -1,7 +1,7 @@
 
 import { z } from "zod";
 import { basicTextSchema, titleSchema, descriptionSchema } from "./index";
-import { Genre, ProjectType } from "@/types";
+import type { Genre, ProjectType } from "@/types";
 import type { NarrativeStructureType } from "@/types";
 
 // Validate project types
