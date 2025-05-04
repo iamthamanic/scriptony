@@ -1,5 +1,6 @@
+
 import { supabase } from "@/integrations/supabase/client";
-import { Project, Character, Episode, Scene, NewProjectFormData, NewCharacterFormData, NewEpisodeFormData, NewSceneFormData, ProjectType, Genre, TimeOfDay, EmotionalSignificance, NarrativeStructureType } from "../types";
+import { Project, Character, Episode, Scene, NewProjectFormData, NewCharacterFormData, NewEpisodeFormData, NewSceneFormData, ProjectType, Genre, TimeOfDay, EmotionalSignificance, NarrativeStructureType, VideoFormat } from "../types";
 import { toast } from "@/hooks/use-toast";
 import { handleApiError } from "@/utils/apiUtils";
 

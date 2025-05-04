@@ -120,6 +120,7 @@ export type Database = {
           type: string
           updated_at: string
           user_id: string
+          video_format: string | null
         }
         Insert: {
           cover_image_url?: string | null
@@ -134,6 +135,7 @@ export type Database = {
           type: string
           updated_at?: string
           user_id: string
+          video_format?: string | null
         }
         Update: {
           cover_image_url?: string | null
@@ -148,6 +150,7 @@ export type Database = {
           type?: string
           updated_at?: string
           user_id?: string
+          video_format?: string | null
         }
         Relationships: []
       }
