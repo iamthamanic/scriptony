@@ -38,7 +38,7 @@ export const useEditProject = (
     // Only include coverImage if it's a string (URL) or undefined
     // File objects will be handled by the updateProject function
     if (typeof data.coverImage === 'string' || data.coverImage === undefined) {
-      updateData.coverImage = data.coverImage;
+      updateData.coverImage = typeof data.coverImage === 'string' ? data.coverImage : undefined;
     }
 
     const success = await updateProject(selectedProject.id, updateData);

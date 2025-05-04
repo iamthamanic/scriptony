@@ -57,7 +57,7 @@ export const useCharacters = (
     // Only include avatar if it's a string (URL) or undefined
     // File objects will be handled by the updateCharacter function
     if (typeof data.avatar === 'string' || data.avatar === undefined) {
-      updateData.avatar = data.avatar;
+      updateData.avatar = typeof data.avatar === 'string' ? data.avatar : undefined;
     }
 
     const success = await updateCharacter(characterId, updateData);
@@ -130,3 +130,4 @@ export const useCharacters = (
     handleDeleteCharacter
   };
 };
+

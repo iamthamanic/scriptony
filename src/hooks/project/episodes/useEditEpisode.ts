@@ -2,6 +2,15 @@
 import { useToast } from "../../use-toast";
 import { Episode, EditEpisodeFormData, EpisodeWithCoverImageFile } from "../../../types";
 
+// Helper function to safely convert EpisodeWithCoverImageFile to Episode
+const convertToEpisode = (episode: EpisodeWithCoverImageFile): Episode => {
+  const { coverImage, ...rest } = episode;
+  return {
+    ...rest,
+    coverImage: typeof coverImage === 'string' ? coverImage : null
+  };
+};
+
 export const useEditEpisode = (
   selectedProject: { id: string; episodes: Episode[] } | null,
   updateProjects: (projectId: string, updater: (project: any) => any) => void
@@ -39,7 +48,7 @@ export const useEditEpisode = (
       return {
         ...project,
         episodes: project.episodes
-          .map(e => e.id === episodeId ? (updatedEpisode as unknown as Episode) : e)
+          .map(e => e.id === episodeId ? convertToEpisode(updatedEpisode) : e)
           .sort((a, b) => a.number - b.number),
         scenes: updatedScenes,
         updatedAt: new Date()
@@ -55,3 +64,4 @@ export const useEditEpisode = (
 
   return handleEditEpisode;
 };
+
