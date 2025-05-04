@@ -59,7 +59,7 @@ export const useCharacters = (
       updateProjects(selectedProject.id, (project) => ({
         ...project,
         characters: project.characters.map(c => 
-          c.id === characterId ? updatedCharacter as unknown as Character : c
+          c.id === characterId ? (updatedCharacter as unknown as Character) : c
         ),
         updatedAt: new Date()
       }));

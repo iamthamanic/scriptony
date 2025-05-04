@@ -187,7 +187,7 @@ export const useProjects = () => {
       };
 
       const updatedProjects = projects.map(project => 
-        project.id === selectedProject.id ? updatedProject as unknown as Project : project
+        project.id === selectedProject.id ? (updatedProject as unknown as Project) : project
       );
 
       setProjects(updatedProjects);

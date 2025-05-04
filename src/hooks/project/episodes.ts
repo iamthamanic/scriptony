@@ -47,7 +47,7 @@ export const useEpisodes = (
     });
 
     if (success) {
-      // Create the updated episode with correct typing
+      // Create the updated episode with proper typing
       const updatedEpisode: EpisodeWithCoverImageFile = {
         ...episodeToEdit,
         title: data.title,
@@ -73,7 +73,7 @@ export const useEpisodes = (
         return {
           ...project,
           episodes: project.episodes
-            .map(e => e.id === episodeId ? updatedEpisode as unknown as Episode : e)
+            .map(e => e.id === episodeId ? (updatedEpisode as unknown as Episode) : e)
             .sort((a, b) => a.number - b.number),
           scenes: updatedScenes,
           updatedAt: new Date()
