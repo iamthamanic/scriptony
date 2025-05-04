@@ -53,7 +53,7 @@ export const useEpisodes = (
         title: data.title,
         number: data.number,
         description: data.description,
-        coverImage: data.coverImage ? URL.createObjectURL(data.coverImage) : episodeToEdit.coverImage,
+        coverImage: data.coverImage && typeof data.coverImage !== 'string' ? URL.createObjectURL(data.coverImage) : episodeToEdit.coverImage,
         updatedAt: new Date()
       };
 

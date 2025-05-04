@@ -21,5 +21,5 @@ export interface EditEpisodeFormData {
   title: string;
   number: number;
   description: string;
-  coverImage?: File;
+  coverImage?: File | string;
 }
