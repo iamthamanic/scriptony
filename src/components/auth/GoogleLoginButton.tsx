@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from "sonner";
 
@@ -14,6 +14,12 @@ interface GoogleLoginButtonProps {
 const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoading }) => {
   const { t } = useTranslation();
 
+  // Log auth settings on component mount for debugging
+  useEffect(() => {
+    console.log("Current URL origin:", window.location.origin);
+    console.log("Current full URL:", window.location.href);
+  }, []);
+
   const handleGoogleLogin = async () => {
     try {
       setLoading(true);
@@ -21,6 +27,10 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
       // Generate the redirect URL based on the current origin
       const redirectTo = `${window.location.origin}/`;
       console.log("Starting Google login with redirect URL:", redirectTo);
+      
+      // Log hostname information for debugging
+      console.log("Current hostname:", window.location.hostname);
+      console.log("Is localhost:", window.location.hostname === 'localhost');
       
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -41,7 +51,17 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
         toast.error(t('auth.error.google'));
       } else {
         console.log("Redirecting to Google auth URL:", data.url);
-        // The user will be redirected to Google's OAuth page automatically
+        
+        // Parse the URL to check the redirect_uri parameter
+        try {
+          const urlObj = new URL(data.url);
+          const redirectUri = urlObj.searchParams.get('redirect_uri');
+          console.log("Parsed redirect_uri from URL:", redirectUri);
+        } catch (e) {
+          console.error("Could not parse URL:", e);
+        }
+        
+        // Force redirect using window.location for more reliable navigation
         window.location.href = data.url;
       }
     } catch (error: any) {
