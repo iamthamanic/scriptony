@@ -4,6 +4,15 @@ import { Episode, EpisodeWithCoverImageFile, NewEpisodeFormData, EditEpisodeForm
 import { createEpisode, updateEpisode, deleteEpisode } from "../../services/database";
 import { useAuth } from "@/contexts/AuthContext";
 
+// Helper function to safely convert EpisodeWithCoverImageFile to Episode
+const convertToEpisode = (episode: EpisodeWithCoverImageFile): Episode => {
+  const { coverImage, ...rest } = episode;
+  return {
+    ...rest,
+    coverImage: typeof coverImage === 'string' ? coverImage : null
+  };
+};
+
 export const useEpisodes = (
   selectedProject: { id: string; episodes: Episode[] } | null,
   updateProjects: (projectId: string, updater: (project: any) => any) => void
@@ -81,11 +90,7 @@ export const useEpisodes = (
         return {
           ...project,
           episodes: project.episodes
-            .map(e => e.id === episodeId ? {
-              ...updatedEpisode,
-              // Ensure coverImage is handled properly for database storage
-              coverImage: typeof updatedEpisode.coverImage === 'string' ? updatedEpisode.coverImage : null
-            } as Episode : e)
+            .map(e => e.id === episodeId ? convertToEpisode(updatedEpisode) : e)
             .sort((a, b) => a.number - b.number),
           scenes: updatedScenes,
           updatedAt: new Date()
