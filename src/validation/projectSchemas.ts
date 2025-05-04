@@ -1,7 +1,8 @@
+
 import { z } from "zod";
 import { basicTextSchema, titleSchema, descriptionSchema } from "./index";
 import { Genre, ProjectType } from "@/types";
-import { NarrativeStructureType } from "@/types";
+import type { NarrativeStructureType } from "@/types";
 
 // Validate project types
 export const projectTypeSchema = z.enum(["movie", "series", "short"] as const);
@@ -22,15 +23,16 @@ export const genreSchema = z.enum([
   "thriller"
 ] as const);
 
-// Validate narrative structure types
+// Validate narrative structure types 
 export const narrativeStructureTypeSchema = z.enum([
-  "three_act", 
-  "hero_journey", 
-  "save_the_cat", 
-  "sequence_method",
-  "seven_point_arc", 
-  "none"
-] as [NarrativeStructureType, ...NarrativeStructureType[]]);
+  "none", 
+  "hero-journey", 
+  "three-act", 
+  "save-the-cat", 
+  "story-circle", 
+  "tragedy", 
+  "cyclical"
+] as const) as z.ZodType<NarrativeStructureType>;
 
 // Project creation schema
 export const newProjectSchema = z.object({
