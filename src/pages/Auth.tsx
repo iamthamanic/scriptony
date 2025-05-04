@@ -62,16 +62,25 @@ const Auth = () => {
   const handleGoogleLogin = async () => {
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signInWithOAuth({
+      console.log("Starting Google login process...");
+      console.log("Current URL:", window.location.href);
+      console.log("Origin:", window.location.origin);
+      
+      const redirectUrl = `${window.location.origin}/`;
+      console.log("Redirect URL:", redirectUrl);
+      
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/`
+          redirectTo: redirectUrl
         }
       });
       
       if (error) {
         console.error("Google Login Error:", error);
         toast.error(error.message || t('auth.error.google'));
+      } else {
+        console.log("Google auth initiated successfully:", data);
       }
     } catch (error: any) {
       console.error("Google Login Exception:", error);
