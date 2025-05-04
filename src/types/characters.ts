@@ -29,13 +29,6 @@ export interface EditCharacterFormData {
   avatar?: File | string;
 }
 
-export interface CharacterWithAvatarFile {
-  id: string;
-  name: string;
-  role: string;
-  description: string;
-  projectId: string;
+export interface CharacterWithAvatarFile extends Omit<Character, 'avatar'> {
   avatar?: string | File | null;
-  createdAt: Date;
-  updatedAt: Date;
 }

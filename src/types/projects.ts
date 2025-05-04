@@ -46,7 +46,7 @@ export interface EditProjectFormData {
   narrativeStructure?: NarrativeStructureType;
 }
 
-export interface ProjectWithCoverImageFile {
+export interface ProjectWithCoverImageFile extends Omit<Project, 'coverImage'> {
   id: string;
   title: string;
   type: ProjectType;
