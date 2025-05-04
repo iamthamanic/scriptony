@@ -1,7 +1,7 @@
 
 // Export all types and templates from the narrative structures module
 import { Scene } from '../scenes';
-import { NarrativeStructureType, StructureTemplate, getStructureOptions } from './types';
+import { NarrativeStructureType, StructureTemplate, SceneTemplate, getStructureOptions } from './types';
 import { heroJourneyTemplate } from './heroJourney';
 import { threeActTemplate } from './threeAct';
 import { 
@@ -32,7 +32,7 @@ import {
 } from './otherTemplates';
 
 // Re-export all the types, options and function
-export type { NarrativeStructureType, StructureTemplate };
+export type { NarrativeStructureType, StructureTemplate, SceneTemplate };
 export { getStructureOptions };
 
 // Create a map of all templates
