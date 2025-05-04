@@ -1,6 +1,5 @@
-
 import { supabase } from "@/integrations/supabase/client";
-import { Project, NewProjectFormData } from "../types";
+import { Project, NewProjectFormData, ProjectType, Genre, VideoFormat } from "../types";
 import { handleApiError, convertDbProjectToApp } from "./utils";
 
 export const fetchUserProjects = async (): Promise<Project[]> => {
@@ -16,10 +15,10 @@ export const fetchUserProjects = async (): Promise<Project[]> => {
     return projectsData.map(dbProject => ({
       id: dbProject.id,
       title: dbProject.title,
-      type: dbProject.type,
-      videoFormat: dbProject.video_format,
+      type: dbProject.type as ProjectType,
+      videoFormat: dbProject.video_format as VideoFormat | undefined,
       logline: dbProject.logline || '',
-      genres: (dbProject.genres || []),
+      genres: (dbProject.genres || []) as Genre[],
       duration: parseInt(dbProject.duration),
       inspirations: dbProject.inspirations ? JSON.parse(dbProject.inspirations) : [],
       coverImage: dbProject.cover_image_url || null,

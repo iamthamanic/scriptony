@@ -1,6 +1,5 @@
-
 import { supabase } from "@/integrations/supabase/client";
-import { Scene, NewSceneFormData } from "../types";
+import { Scene, NewSceneFormData, TimeOfDay, EmotionalSignificance } from "../types";
 import { handleApiError } from "./utils";
 
 export const createScene = async (projectId: string, sceneData: NewSceneFormData, editingScene: Scene | null): Promise<Scene | null> => {
@@ -65,7 +64,7 @@ export const createScene = async (projectId: string, sceneData: NewSceneFormData
         episodeTitle: data.episode_title || undefined,
         sceneNumber: data.scene_number,
         location: data.location,
-        timeOfDay: data.time_of_day,
+        timeOfDay: data.time_of_day as TimeOfDay,
         timecodeStart: data.timecode_start,
         timecodeEnd: data.timecode_end,
         visualComposition: data.visual_composition || '',
@@ -78,7 +77,7 @@ export const createScene = async (projectId: string, sceneData: NewSceneFormData
         dialog: data.dialog || '',
         transitions: data.transitions || '',
         productionNotes: data.production_notes || '',
-        emotionalSignificance: data.emotional_significance || 'other',
+        emotionalSignificance: data.emotional_significance as EmotionalSignificance || 'other',
         emotionalNotes: data.emotional_notes || '',
         characterIds: data.character_ids || [],
         createdAt: new Date(data.created_at),
@@ -125,7 +124,7 @@ export const createScene = async (projectId: string, sceneData: NewSceneFormData
         episodeTitle: data.episode_title || undefined,
         sceneNumber: data.scene_number,
         location: data.location,
-        timeOfDay: data.time_of_day,
+        timeOfDay: data.time_of_day as TimeOfDay,
         timecodeStart: data.timecode_start,
         timecodeEnd: data.timecode_end,
         visualComposition: data.visual_composition || '',
@@ -138,7 +137,7 @@ export const createScene = async (projectId: string, sceneData: NewSceneFormData
         dialog: data.dialog || '',
         transitions: data.transitions || '',
         productionNotes: data.production_notes || '',
-        emotionalSignificance: data.emotional_significance || 'other',
+        emotionalSignificance: data.emotional_significance as EmotionalSignificance || 'other',
         emotionalNotes: data.emotional_notes || '',
         characterIds: data.character_ids || [],
         createdAt: new Date(data.created_at),
