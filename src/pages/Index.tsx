@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import AppHeader from "../components/AppHeader";
 import ProjectSelector from "../components/ProjectSelector";
@@ -33,6 +34,7 @@ const Index = () => {
   const [isEpisodeModalOpen, setIsEpisodeModalOpen] = useState(false);
   const [editingScene, setEditingScene] = useState<Scene | null>(null);
   const [editingEpisode, setEditingEpisode] = useState<Episode | null>(null);
+  const [selectedEpisodeId, setSelectedEpisodeId] = useState<string | null>(null);
 
   const handleEditScene = (scene: Scene) => {
     setEditingScene(scene);
@@ -63,6 +65,11 @@ const Index = () => {
     setEditingEpisode(null);
   };
 
+  const handleNewScene = () => {
+    setEditingScene(null);
+    setIsNewSceneModalOpen(true);
+  };
+
   return (
     <div className="container mx-auto py-6 px-4 md:px-6">
       <header className="mb-8">
@@ -72,7 +79,10 @@ const Index = () => {
           <ProjectSelector 
             projects={projects} 
             selectedProjectId={selectedProjectId} 
-            onSelectProject={setSelectedProjectId} 
+            onSelectProject={(projectId) => {
+              setSelectedProjectId(projectId);
+              setSelectedEpisodeId(null); // Reset selected episode when switching projects
+            }} 
           />
         )}
       </header>
@@ -80,10 +90,7 @@ const Index = () => {
       {selectedProject ? (
         <ProjectContent 
           project={selectedProject}
-          onNewScene={() => {
-            setEditingScene(null);
-            setIsNewSceneModalOpen(true);
-          }}
+          onNewScene={handleNewScene}
           onEditProject={() => setIsEditProjectModalOpen(true)}
           onNewCharacter={() => setIsNewCharacterModalOpen(true)}
           onDeleteProject={handleDeleteProject}

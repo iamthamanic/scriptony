@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import ProjectHeader from "./ProjectHeader";
 import CharacterList from "./CharacterList";
 import SceneList from "./SceneList";
@@ -39,6 +39,7 @@ const ProjectContent = ({
   onDeleteEpisode
 }: ProjectContentProps) => {
   const { toast } = useToast();
+  const [selectedEpisodeId, setSelectedEpisodeId] = useState<string | null>(null);
 
   const handleExportScenePDF = (scene: Scene) => {
     toast({
@@ -48,11 +49,25 @@ const ProjectContent = ({
     });
   };
 
+  const handleNewSceneClick = () => {
+    // For series projects, require an episode selection before creating a scene
+    if (project.type === 'series' && !selectedEpisodeId && project.episodes.length > 0) {
+      toast({
+        title: "Episode Required",
+        description: "Please select an episode before creating a scene",
+        duration: 3000
+      });
+      return;
+    }
+    
+    onNewScene();
+  };
+
   return (
     <div className="animate-fade-in">
       <ProjectHeader 
         project={project} 
-        onNewScene={onNewScene}
+        onNewScene={handleNewSceneClick}
         onEditProject={onEditProject}
         onNewCharacter={onNewCharacter}
         onDeleteProject={onDeleteProject}
@@ -77,6 +92,8 @@ const ProjectContent = ({
               onNewEpisode={onNewEpisode}
               onEditEpisode={onEditEpisode}
               onDeleteEpisode={onDeleteEpisode}
+              selectedEpisodeId={selectedEpisodeId}
+              onSelectEpisode={setSelectedEpisodeId}
             />
           ) : (
             <EmptyState
@@ -89,20 +106,35 @@ const ProjectContent = ({
         </>
       )}
       
+      {/* Filter scenes by episode for series projects */}
       {project.scenes.length > 0 ? (
         <SceneList 
-          scenes={project.scenes} 
+          scenes={
+            project.type === 'series' && selectedEpisodeId 
+              ? project.scenes.filter(scene => scene.episodeId === selectedEpisodeId)
+              : project.scenes
+          }
           onEditScene={onEditScene}
           onExportPDF={handleExportScenePDF}
           onDeleteScene={onDeleteScene}
           characters={project.characters}
+          showEpisodeFilter={project.type === 'series' && !selectedEpisodeId}
+          episodes={project.episodes}
         />
       ) : (
         <EmptyState
-          title="No Scenes Yet"
-          description={`Start by adding your first scene to ${project.title}`}
+          title={
+            project.type === 'series' && selectedEpisodeId
+              ? "No Scenes in This Episode Yet"
+              : "No Scenes Yet"
+          }
+          description={
+            project.type === 'series' && selectedEpisodeId
+              ? `Start by adding your first scene to this episode`
+              : `Start by adding your first scene to ${project.title}`
+          }
           buttonText="Create First Scene"
-          onClick={onNewScene}
+          onClick={handleNewSceneClick}
         />
       )}
       

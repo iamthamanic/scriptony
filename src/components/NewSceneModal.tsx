@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -5,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { NewSceneFormData, TimeOfDay, EmotionalSignificance, Scene, Character } from '../types';
+import { NewSceneFormData, TimeOfDay, EmotionalSignificance, Scene, Character, Episode } from '../types';
 import { timeOfDayOptions, emotionalSignificanceOptions } from '../utils/constants';
 import { Upload, Clock, Image, Save, Check } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -20,9 +21,21 @@ interface NewSceneModalProps {
   lastSceneNumber: number;
   editScene?: Scene | null;
   characters?: Character[];
+  episodes?: Episode[];
+  selectedEpisodeId?: string | null;
 }
 
-const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber, editScene, characters = [] }: NewSceneModalProps) => {
+const NewSceneModal = ({ 
+  isOpen, 
+  onClose, 
+  onSubmit, 
+  projectType, 
+  lastSceneNumber, 
+  editScene, 
+  characters = [],
+  episodes = [],
+  selectedEpisodeId = null
+}: NewSceneModalProps) => {
   const [formData, setFormData] = useState<NewSceneFormData>({
     sceneNumber: lastSceneNumber + 1,
     location: '',
@@ -69,6 +82,7 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
         transitions: editScene.transitions,
         productionNotes: editScene.productionNotes,
         emotionalSignificance: editScene.emotionalSignificance,
+        episodeId: editScene.episodeId,
         episodeTitle: editScene.episodeTitle,
         emotionalNotes: editScene.emotionalNotes,
         characterIds: editScene.characterIds || [],
@@ -81,6 +95,11 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
       setLastSaved(editScene.updatedAt);
     } else {
       // Reset form data when creating a new scene
+      // If we have a selected episode for a series, pre-populate the episode fields
+      const selectedEpisode = projectType === 'series' && selectedEpisodeId 
+        ? episodes.find(ep => ep.id === selectedEpisodeId)
+        : null;
+        
       setFormData({
         sceneNumber: lastSceneNumber + 1,
         location: '',
@@ -98,12 +117,16 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
         productionNotes: '',
         emotionalSignificance: 'introduction',
         characterIds: [],
+        ...(selectedEpisode ? {
+          episodeId: selectedEpisode.id,
+          episodeTitle: selectedEpisode.title
+        } : {})
       });
       setKeyframePreview(null);
       setLastSaved(null);
     }
     setIsFormDirty(false);
-  }, [editScene, lastSceneNumber]);
+  }, [editScene, lastSceneNumber, projectType, selectedEpisodeId, episodes]);
 
   // AutoSave function
   useEffect(() => {
@@ -123,7 +146,21 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
   };
 
   const handleSelectChange = (name: string, value: string) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
+    // If this is the episodeId being changed, also update the episodeTitle
+    if (name === 'episodeId' && value) {
+      const selectedEpisode = episodes.find(ep => ep.id === value);
+      if (selectedEpisode) {
+        setFormData(prev => ({ 
+          ...prev, 
+          [name]: value,
+          episodeTitle: selectedEpisode.title
+        }));
+      } else {
+        setFormData(prev => ({ ...prev, [name]: value }));
+      }
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
     setIsFormDirty(true);
   };
 
@@ -183,6 +220,11 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
 
   // Check if the form is valid
   const isFormValid = (): boolean => {
+    // For series projects, we need an episodeId
+    if (projectType === 'series' && !formData.episodeId) {
+      return false;
+    }
+
     return (
       !!formData.location &&
       !!formData.timecodeStart &&
@@ -316,7 +358,7 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
                 Basic Info
               </AccordionTrigger>
               <AccordionContent className="py-4 space-y-4">
-                {/* Scene number and episode title */}
+                {/* Scene number and episode selection for series */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="sceneNumber">Scene Number</Label>
@@ -333,14 +375,28 @@ const NewSceneModal = ({ isOpen, onClose, onSubmit, projectType, lastSceneNumber
                   
                   {projectType === 'series' && (
                     <div className="space-y-2">
-                      <Label htmlFor="episodeTitle">Episode Title (Optional)</Label>
-                      <Input
-                        id="episodeTitle"
-                        name="episodeTitle"
-                        value={formData.episodeTitle || ''}
-                        onChange={handleChange}
-                        placeholder="Episode title"
-                      />
+                      <Label htmlFor="episodeId">Episode</Label>
+                      <Select
+                        value={formData.episodeId || ''}
+                        onValueChange={(value) => handleSelectChange('episodeId', value)}
+                        disabled={!!editScene} // Disable changing episodes for existing scenes
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select episode" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {episodes.map(episode => (
+                            <SelectItem key={episode.id} value={episode.id}>
+                              Episode {episode.number}: {episode.title}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {!formData.episodeId && projectType === 'series' && (
+                        <p className="text-xs text-red-500 mt-1">
+                          You must select an episode for series projects
+                        </p>
+                      )}
                     </div>
                   )}
                 </div>

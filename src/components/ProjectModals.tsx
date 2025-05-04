@@ -58,6 +58,12 @@ const ProjectModals = ({
     );
   }
 
+  // Find the selected episode from the project if we're editing a scene
+  const selectedEpisodeId = editingScene?.episodeId || 
+    (selectedProject.type === 'series' && selectedProject.episodes.length > 0 
+      ? selectedProject.episodes[0].id 
+      : null);
+
   return (
     <>
       <NewProjectModal 
@@ -93,6 +99,8 @@ const ProjectModals = ({
         } 
         editScene={editingScene}
         characters={selectedProject.characters}
+        episodes={selectedProject.type === 'series' ? selectedProject.episodes : []}
+        selectedEpisodeId={selectedEpisodeId}
       />
       
       <EpisodeModal
