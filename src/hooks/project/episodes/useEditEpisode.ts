@@ -11,6 +11,7 @@ export const useEditEpisode = (
   const handleEditEpisode = (episodeId: string, data: EditEpisodeFormData) => {
     if (!selectedProject) return;
 
+    // Find the episode to edit
     const episodeToEdit = selectedProject.episodes.find(e => e.id === episodeId);
     if (!episodeToEdit) return;
 
