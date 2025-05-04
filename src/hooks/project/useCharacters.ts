@@ -38,12 +38,20 @@ export const useCharacters = (
     const characterToEdit = selectedProject.characters.find(c => c.id === characterId);
     if (!characterToEdit) return;
 
-    const success = await updateCharacter(characterId, {
+    // Create update data with proper typing for API call
+    const updateData: Partial<Character> = {
       name: data.name,
       role: data.role,
-      description: data.description,
-      avatar: data.avatar
-    });
+      description: data.description
+    };
+    
+    // Only include avatar if it's a string (URL) or undefined
+    // File objects will be handled by the updateCharacter function
+    if (typeof data.avatar === 'string' || data.avatar === undefined) {
+      updateData.avatar = data.avatar;
+    }
+
+    const success = await updateCharacter(characterId, updateData);
 
     if (success) {
       // Create the updated character with proper type handling
