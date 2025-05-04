@@ -1,18 +1,19 @@
 
 import React from 'react';
-import { Scene } from '../types';
+import { Scene, Character } from '../types';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FileText, Edit, Clock } from 'lucide-react';
+import { FileText, Edit, Clock, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SceneCardProps {
   scene: Scene;
   onClick: () => void;
   onExportPDF: () => void;
+  characters?: Character[];
 }
 
-const SceneCard = ({ scene, onClick, onExportPDF }: SceneCardProps) => {
+const SceneCard = ({ scene, onClick, onExportPDF, characters = [] }: SceneCardProps) => {
   // Helper function to get background color based on emotional significance
   const getEmotionColor = () => {
     switch (scene.emotionalSignificance) {
@@ -32,6 +33,11 @@ const SceneCard = ({ scene, onClick, onExportPDF }: SceneCardProps) => {
         return 'bg-gray-50 border-gray-200';
     }
   };
+
+  // Get characters in scene
+  const sceneCharacters = characters.filter(
+    character => scene.characterIds?.includes(character.id)
+  );
 
   return (
     <Card 
@@ -73,6 +79,20 @@ const SceneCard = ({ scene, onClick, onExportPDF }: SceneCardProps) => {
             <p className="text-sm line-clamp-3">
               {scene.description}
             </p>
+            
+            {sceneCharacters.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-1">
+                {sceneCharacters.map(character => (
+                  <div 
+                    key={character.id} 
+                    className="flex items-center bg-muted/40 rounded-full px-2 py-0.5 text-xs"
+                  >
+                    <User size={10} className="mr-1" />
+                    {character.name}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </CardContent>
