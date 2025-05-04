@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Project, NewProjectFormData, EditProjectFormData } from "../../types";
+import { Project, NewProjectFormData, EditProjectFormData, ProjectType, Genre } from "../../types";
 import { useToast } from "../use-toast";
 import { narrativeStructureTemplates } from "../../types/narrativeStructures";
 import { fetchUserProjects, fetchProjectDetails, createProject, updateProject, deleteProject } from "../../services/database";
@@ -182,9 +182,9 @@ export const useProjects = () => {
         duration: data.duration,
         inspirations: data.inspirations,
         narrativeStructure: data.narrativeStructure || selectedProject.narrativeStructure,
-        coverImage: data.coverImage 
+        coverImage: data.coverImage && typeof data.coverImage !== 'string'
           ? URL.createObjectURL(data.coverImage) 
-          : selectedProject.coverImage,
+          : (typeof data.coverImage === 'string' ? data.coverImage : selectedProject.coverImage),
         updatedAt: new Date()
       };
 

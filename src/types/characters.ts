@@ -26,5 +26,5 @@ export interface EditCharacterFormData {
   name: string;
   role: string;
   description: string;
-  avatar?: File;
+  avatar?: File | string;
 }

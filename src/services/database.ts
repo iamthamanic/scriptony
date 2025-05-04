@@ -212,10 +212,11 @@ export const updateProject = async (projectId: string, projectData: Partial<Proj
     let coverImageUrl = undefined;
     
     if (projectData.coverImage && typeof projectData.coverImage !== 'string') {
-      const fileName = `${Date.now()}_${projectData.coverImage.name}`;
+      const file = projectData.coverImage as File;
+      const fileName = `${Date.now()}_${file.name}`;
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('project_assets')
-        .upload(`project-covers/${fileName}`, projectData.coverImage);
+        .upload(`project-covers/${fileName}`, file);
         
       if (uploadError) throw uploadError;
       
@@ -287,10 +288,11 @@ export const createCharacter = async (projectId: string, characterData: NewChara
     let avatarUrl = undefined;
     
     if (characterData.avatar) {
-      const fileName = `${Date.now()}_${characterData.avatar.name}`;
+      const file = characterData.avatar as File;
+      const fileName = `${Date.now()}_${file.name}`;
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('project_assets')
-        .upload(`character-avatars/${fileName}`, characterData.avatar);
+        .upload(`character-avatars/${fileName}`, file);
         
       if (uploadError) throw uploadError;
       
@@ -344,10 +346,11 @@ export const updateCharacter = async (characterId: string, characterData: Partia
     let avatarUrl = undefined;
     
     if (characterData.avatar && typeof characterData.avatar !== 'string') {
-      const fileName = `${Date.now()}_${characterData.avatar.name}`;
+      const file = characterData.avatar as File;
+      const fileName = `${Date.now()}_${file.name}`;
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('project_assets')
-        .upload(`character-avatars/${fileName}`, characterData.avatar);
+        .upload(`character-avatars/${fileName}`, file);
         
       if (uploadError) throw uploadError;
       
@@ -415,10 +418,11 @@ export const createEpisode = async (projectId: string, episodeData: NewEpisodeFo
     let coverImageUrl = undefined;
     
     if (episodeData.coverImage) {
-      const fileName = `${Date.now()}_${episodeData.coverImage.name}`;
+      const file = episodeData.coverImage as File;
+      const fileName = `${Date.now()}_${file.name}`;
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('project_assets')
-        .upload(`episode-covers/${fileName}`, episodeData.coverImage);
+        .upload(`episode-covers/${fileName}`, file);
         
       if (uploadError) throw uploadError;
       
@@ -472,10 +476,11 @@ export const updateEpisode = async (episodeId: string, episodeData: Partial<Epis
     let coverImageUrl = undefined;
     
     if (episodeData.coverImage && typeof episodeData.coverImage !== 'string') {
-      const fileName = `${Date.now()}_${episodeData.coverImage.name}`;
+      const file = episodeData.coverImage as File;
+      const fileName = `${Date.now()}_${file.name}`;
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('project_assets')
-        .upload(`episode-covers/${fileName}`, episodeData.coverImage);
+        .upload(`episode-covers/${fileName}`, file);
         
       if (uploadError) throw uploadError;
       

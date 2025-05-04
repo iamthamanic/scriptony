@@ -52,7 +52,9 @@ export const useCharacters = (
         name: data.name,
         role: data.role,
         description: data.description,
-        avatar: data.avatar ? URL.createObjectURL(data.avatar) : characterToEdit.avatar,
+        avatar: data.avatar && typeof data.avatar !== 'string' 
+          ? URL.createObjectURL(data.avatar) 
+          : (typeof data.avatar === 'string' ? data.avatar : characterToEdit.avatar),
         updatedAt: new Date()
       };
 
