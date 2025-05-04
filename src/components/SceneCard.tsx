@@ -61,11 +61,13 @@ const SceneCard = ({ scene, onClick, onExportPDF }: SceneCardProps) => {
           {scene.keyframeImage && (
             <div className="hidden sm:block w-1/3">
               <AspectRatio ratio={16 / 9} className="bg-muted rounded-md overflow-hidden">
-                <img 
-                  src={scene.keyframeImage} 
-                  alt={`Scene ${scene.sceneNumber} keyframe`}
-                  className="w-full h-full object-contain"
-                />
+                <div className="w-full h-full flex items-center justify-center">
+                  <img 
+                    src={scene.keyframeImage} 
+                    alt={`Scene ${scene.sceneNumber} keyframe`}
+                    className="max-w-full max-h-full object-contain"
+                  />
+                </div>
               </AspectRatio>
             </div>
           )}
