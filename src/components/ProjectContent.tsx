@@ -1,11 +1,12 @@
 
-import React, { useState } from "react";
+import React from "react";
 import ProjectHeader from "./ProjectHeader";
 import CharacterList from "./CharacterList";
 import SceneList from "./SceneList";
+import EpisodeList from "./EpisodeList";
 import EmptyState from "./EmptyState";
 import ScenePdfExport from "./ScenePdfExport";
-import { Character, Project, Scene, EditCharacterFormData } from "../types";
+import { Character, Project, Scene, EditCharacterFormData, Episode } from "../types";
 import { useToast } from "@/hooks/use-toast";
 
 interface ProjectContentProps {
@@ -18,6 +19,9 @@ interface ProjectContentProps {
   onDeleteScene: (scene: Scene) => void;
   onEditCharacter: (characterId: string, data: EditCharacterFormData) => void;
   onDeleteCharacter: (characterId: string) => void;
+  onNewEpisode: () => void;
+  onEditEpisode: (episodeId: string) => void;
+  onDeleteEpisode: (episodeId: string) => void;
 }
 
 const ProjectContent = ({
@@ -29,7 +33,10 @@ const ProjectContent = ({
   onEditScene,
   onDeleteScene,
   onEditCharacter,
-  onDeleteCharacter
+  onDeleteCharacter,
+  onNewEpisode,
+  onEditEpisode,
+  onDeleteEpisode
 }: ProjectContentProps) => {
   const { toast } = useToast();
 
@@ -49,6 +56,7 @@ const ProjectContent = ({
         onEditProject={onEditProject}
         onNewCharacter={onNewCharacter}
         onDeleteProject={onDeleteProject}
+        onNewEpisode={project.type === 'series' ? onNewEpisode : undefined}
       />
       
       {project.characters.length > 0 && (
@@ -58,6 +66,27 @@ const ProjectContent = ({
           onEditCharacter={onEditCharacter}
           onDeleteCharacter={onDeleteCharacter}
         />
+      )}
+      
+      {/* Display Episodes for series projects */}
+      {project.type === 'series' && (
+        <>
+          {project.episodes && project.episodes.length > 0 ? (
+            <EpisodeList
+              episodes={project.episodes}
+              onNewEpisode={onNewEpisode}
+              onEditEpisode={onEditEpisode}
+              onDeleteEpisode={onDeleteEpisode}
+            />
+          ) : (
+            <EmptyState
+              title="No Episodes Yet"
+              description={`Start by adding your first episode to ${project.title}`}
+              buttonText="Create First Episode"
+              onClick={onNewEpisode}
+            />
+          )}
+        </>
       )}
       
       {project.scenes.length > 0 ? (

@@ -4,23 +4,28 @@ import NewProjectModal from "./NewProjectModal";
 import EditProjectModal from "./EditProjectModal";
 import NewCharacterModal from "./NewCharacterModal";
 import NewSceneModal from "./NewSceneModal";
-import { Project, Scene, NewProjectFormData, NewSceneFormData, EditProjectFormData, NewCharacterFormData } from "../types";
+import EpisodeModal from "./EpisodeModal";
+import { Project, Scene, NewProjectFormData, NewSceneFormData, EditProjectFormData, NewCharacterFormData, Episode, NewEpisodeFormData, EditEpisodeFormData } from "../types";
 
 interface ProjectModalsProps {
   isNewProjectModalOpen: boolean;
   isEditProjectModalOpen: boolean;
   isNewSceneModalOpen: boolean;
   isNewCharacterModalOpen: boolean;
+  isEpisodeModalOpen: boolean;
   onCloseNewProject: () => void;
   onCloseEditProject: () => void;
   onCloseNewScene: () => void;
   onCloseNewCharacter: () => void;
+  onCloseEpisodeModal: () => void;
   onCreateProject: (data: NewProjectFormData) => void;
   onEditProject: (data: EditProjectFormData) => void;
   onCreateScene: (data: NewSceneFormData) => void;
   onCreateCharacter: (data: NewCharacterFormData) => void;
+  onCreateOrEditEpisode: (data: NewEpisodeFormData | EditEpisodeFormData) => void;
   selectedProject: Project | null;
   editingScene: Scene | null;
+  editingEpisode: Episode | null;
 }
 
 const ProjectModals = ({
@@ -28,16 +33,20 @@ const ProjectModals = ({
   isEditProjectModalOpen,
   isNewSceneModalOpen,
   isNewCharacterModalOpen,
+  isEpisodeModalOpen,
   onCloseNewProject,
   onCloseEditProject,
   onCloseNewScene,
   onCloseNewCharacter,
+  onCloseEpisodeModal,
   onCreateProject,
   onEditProject,
   onCreateScene,
   onCreateCharacter,
+  onCreateOrEditEpisode,
   selectedProject,
-  editingScene
+  editingScene,
+  editingEpisode
 }: ProjectModalsProps) => {
   if (!selectedProject) {
     return (
@@ -84,6 +93,18 @@ const ProjectModals = ({
         } 
         editScene={editingScene}
         characters={selectedProject.characters}
+      />
+      
+      <EpisodeModal
+        isOpen={isEpisodeModalOpen}
+        onClose={onCloseEpisodeModal}
+        onSubmit={onCreateOrEditEpisode}
+        episode={editingEpisode}
+        lastEpisodeNumber={
+          selectedProject.episodes && selectedProject.episodes.length > 0
+            ? Math.max(...selectedProject.episodes.map(e => e.number))
+            : 0
+        }
       />
     </>
   );

@@ -1,3 +1,4 @@
+
 export type ProjectType = 'movie' | 'series' | 'short';
 
 export type TimeOfDay = 'morning' | 'day' | 'evening' | 'night';
@@ -36,6 +37,17 @@ export interface Character {
   updatedAt: Date;
 }
 
+export interface Episode {
+  id: string;
+  projectId: string;
+  title: string;
+  number: number;
+  description: string;
+  coverImage?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface Project {
   id: string;
   title: string;
@@ -47,6 +59,7 @@ export interface Project {
   coverImage?: string;
   scenes: Scene[];
   characters: Character[];
+  episodes: Episode[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -54,6 +67,7 @@ export interface Project {
 export interface Scene {
   id: string;
   projectId: string;
+  episodeId?: string;
   episodeTitle?: string;
   sceneNumber: number;
   location: string;
@@ -105,6 +119,7 @@ export interface NewCharacterFormData {
 }
 
 export interface NewSceneFormData {
+  episodeId?: string;
   episodeTitle?: string;
   sceneNumber: number;
   location: string;
@@ -131,4 +146,18 @@ export interface EditCharacterFormData {
   role: string;
   description: string;
   avatar?: File;
+}
+
+export interface NewEpisodeFormData {
+  title: string;
+  number: number;
+  description: string;
+  coverImage?: File;
+}
+
+export interface EditEpisodeFormData {
+  title: string;
+  number: number;
+  description: string;
+  coverImage?: File;
 }

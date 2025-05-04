@@ -5,7 +5,7 @@ import ProjectSelector from "../components/ProjectSelector";
 import ProjectContent from "../components/ProjectContent";
 import ProjectModals from "../components/ProjectModals";
 import EmptyState from "../components/EmptyState";
-import { Scene } from "../types";
+import { Scene, Episode } from "../types";
 import { useProjectState } from "../hooks/useProjectState";
 
 const Index = () => {
@@ -21,18 +21,47 @@ const Index = () => {
     handleEditCharacter,
     handleDeleteCharacter,
     handleCreateScene,
-    handleDeleteScene
+    handleDeleteScene,
+    handleCreateEpisode,
+    handleEditEpisode,
+    handleDeleteEpisode
   } = useProjectState();
 
   const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false);
   const [isEditProjectModalOpen, setIsEditProjectModalOpen] = useState(false);
   const [isNewSceneModalOpen, setIsNewSceneModalOpen] = useState(false);
   const [isNewCharacterModalOpen, setIsNewCharacterModalOpen] = useState(false);
+  const [isEpisodeModalOpen, setIsEpisodeModalOpen] = useState(false);
   const [editingScene, setEditingScene] = useState<Scene | null>(null);
+  const [editingEpisode, setEditingEpisode] = useState<Episode | null>(null);
 
   const handleEditScene = (scene: Scene) => {
     setEditingScene(scene);
     setIsNewSceneModalOpen(true);
+  };
+
+  const handleNewEpisode = () => {
+    setEditingEpisode(null);
+    setIsEpisodeModalOpen(true);
+  };
+
+  const handleEditEpisodeClick = (episodeId: string) => {
+    if (!selectedProject) return;
+    const episode = selectedProject.episodes.find(e => e.id === episodeId);
+    if (episode) {
+      setEditingEpisode(episode);
+      setIsEpisodeModalOpen(true);
+    }
+  };
+
+  const handleCreateOrEditEpisode = (data) => {
+    if (editingEpisode) {
+      handleEditEpisode(editingEpisode.id, data);
+    } else {
+      handleCreateEpisode(data);
+    }
+    setIsEpisodeModalOpen(false);
+    setEditingEpisode(null);
   };
 
   return (
@@ -63,6 +92,9 @@ const Index = () => {
           onDeleteScene={handleDeleteScene}
           onEditCharacter={handleEditCharacter}
           onDeleteCharacter={handleDeleteCharacter}
+          onNewEpisode={handleNewEpisode}
+          onEditEpisode={handleEditEpisodeClick}
+          onDeleteEpisode={handleDeleteEpisode}
         />
       ) : (
         <EmptyState
@@ -78,6 +110,7 @@ const Index = () => {
         isEditProjectModalOpen={isEditProjectModalOpen}
         isNewSceneModalOpen={isNewSceneModalOpen}
         isNewCharacterModalOpen={isNewCharacterModalOpen}
+        isEpisodeModalOpen={isEpisodeModalOpen}
         onCloseNewProject={() => setIsNewProjectModalOpen(false)}
         onCloseEditProject={() => setIsEditProjectModalOpen(false)}
         onCloseNewScene={() => {
@@ -85,6 +118,10 @@ const Index = () => {
           setEditingScene(null);
         }}
         onCloseNewCharacter={() => setIsNewCharacterModalOpen(false)}
+        onCloseEpisodeModal={() => {
+          setIsEpisodeModalOpen(false);
+          setEditingEpisode(null);
+        }}
         onCreateProject={handleCreateProject}
         onEditProject={handleEditProject}
         onCreateScene={(data) => {
@@ -93,8 +130,10 @@ const Index = () => {
           setEditingScene(null);
         }}
         onCreateCharacter={handleCreateCharacter}
+        onCreateOrEditEpisode={handleCreateOrEditEpisode}
         selectedProject={selectedProject}
         editingScene={editingScene}
+        editingEpisode={editingEpisode}
       />
     </div>
   );
