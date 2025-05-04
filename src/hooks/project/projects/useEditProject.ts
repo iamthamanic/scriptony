@@ -4,6 +4,15 @@ import { useToast } from "../../use-toast";
 import { updateProject } from "../../../services/database";
 import { useAuth } from "@/contexts/AuthContext";
 
+// Helper function to safely convert ProjectWithCoverImageFile to Project
+const convertToProject = (project: ProjectWithCoverImageFile): Project => {
+  const { coverImage, ...rest } = project;
+  return {
+    ...rest,
+    coverImage: typeof coverImage === 'string' ? coverImage : null
+  };
+};
+
 export const useEditProject = (
   projects: Project[],
   setProjects: React.Dispatch<React.SetStateAction<Project[]>>,
@@ -50,11 +59,7 @@ export const useEditProject = (
       };
 
       const updatedProjects = projects.map(project => 
-        project.id === selectedProject.id ? {
-          ...updatedProject,
-          // Ensure coverImage is handled properly for database storage
-          coverImage: typeof updatedProject.coverImage === 'string' ? updatedProject.coverImage : null
-        } as Project : project
+        project.id === selectedProject.id ? convertToProject(updatedProject) : project
       );
 
       setProjects(updatedProjects);

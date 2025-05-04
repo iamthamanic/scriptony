@@ -4,6 +4,15 @@ import { Character, CharacterWithAvatarFile, NewCharacterFormData, EditCharacter
 import { createCharacter, updateCharacter, deleteCharacter } from "../../services/database";
 import { useAuth } from "@/contexts/AuthContext";
 
+// Helper function to safely convert CharacterWithAvatarFile to Character
+const convertToCharacter = (character: CharacterWithAvatarFile): Character => {
+  const { avatar, ...rest } = character;
+  return {
+    ...rest,
+    avatar: typeof avatar === 'string' ? avatar : null
+  };
+};
+
 export const useCharacters = (
   selectedProject: { id: string; characters: Character[] } | null,
   updateProjects: (projectId: string, updater: (project: any) => any) => void
@@ -67,11 +76,7 @@ export const useCharacters = (
       updateProjects(selectedProject.id, (project) => ({
         ...project,
         characters: project.characters.map(c => 
-          c.id === characterId ? {
-            ...updatedCharacter,
-            // Ensure avatar is handled properly for database storage
-            avatar: typeof updatedCharacter.avatar === 'string' ? updatedCharacter.avatar : null
-          } as Character : c
+          c.id === characterId ? convertToCharacter(updatedCharacter) : c
         ),
         updatedAt: new Date()
       }));
