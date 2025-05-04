@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { NewSceneFormData, Scene, Character, Episode, ProjectType } from '../types';
+import { NewSceneFormData, Scene, Character, Episode, ProjectType, TimeOfDay, EmotionalSignificance } from '../types';
 import { timeOfDayOptions, emotionalSignificanceOptions } from '../utils/constants';
 import { Upload, Clock, Image, Save, Check } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';

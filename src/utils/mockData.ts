@@ -2,7 +2,7 @@
 import { ProjectType, Genre, TimeOfDay, EmotionalSignificance, VideoFormat } from "../types";
 import { projectTypes, genres, timesOfDay, emotionalSignificances, videoFormats } from "./constants";
 
-export const projectTypeOptions = projectTypes.map(type => {
+export const projectTypeOptions = projectTypes.map((type: ProjectType) => {
   let label: string;
   switch(type) {
     case 'movie': label = 'Film'; break;
@@ -17,7 +17,7 @@ export const projectTypeOptions = projectTypes.map(type => {
   return { value: type, label };
 });
 
-export const videoFormatOptions = videoFormats.map(format => {
+export const videoFormatOptions = videoFormats.map((format: VideoFormat) => {
   let label: string;
   switch(format) {
     case 'shortform': label = 'Kurzform (TikTok, Reels, Shorts)'; break;
@@ -27,7 +27,7 @@ export const videoFormatOptions = videoFormats.map(format => {
   return { value: format, label };
 });
 
-export const genreOptions = genres.map(genre => {
+export const genreOptions = genres.map((genre: Genre) => {
   let label: string;
   switch(genre) {
     case 'action': label = 'Action'; break;

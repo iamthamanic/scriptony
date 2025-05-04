@@ -1,13 +1,7 @@
 
-import type { EmotionalSignificance } from '../common';
-import type { ProjectType, VideoFormat } from '../projects';
-import type { Genre } from '../genres';
+import { Scene } from '../scenes';
 
-/**
- * Core narrative structure types
- */
-
-export type NarrativeStructureType = 
+export type NarrativeStructureType =
   | 'none'
   | 'hero-journey'
   | 'three-act'
@@ -36,205 +30,82 @@ export type NarrativeStructureType =
   | 'list-structure'
   | 'tutorial-structure';
 
-export interface StructureTemplate {
-  id: NarrativeStructureType;
-  name: string;
-  description: string;
-  recommendedFor?: Genre[];
-  scenes: Array<{
-    sceneNumber: number;
-    location: string;
-    description: string;
-    emotionalSignificance?: string;
-  }>;
-}
-
 export interface NarrativeStructureOption {
   value: NarrativeStructureType;
   label: string;
   description: string;
-  recommendedFor?: Genre[];
 }
 
-export const getStructureOptions = (projectType: ProjectType, videoFormat?: VideoFormat): NarrativeStructureOption[] => {
-  // Always include 'none' option
-  const baseOptions: NarrativeStructureOption[] = [
-    { value: 'none', label: 'Keine Struktur auswählen', description: 'Manuell aufbauen ohne vordefinierte Struktur' }
+export interface StructureTemplate {
+  name: string;
+  description: string;
+  suggestedScenes: Scene[];
+}
+
+// Function to get structure options based on project type
+export const getStructureOptions = (projectType?: string): NarrativeStructureOption[] => {
+  // Common structures across all project types
+  const common: NarrativeStructureOption[] = [
+    { value: 'none', label: 'None', description: 'No specific narrative structure' }
   ];
   
-  // Add media-specific options
+  // Film structures (movie, short film)
+  const filmStructures: NarrativeStructureOption[] = [
+    { value: 'three-act', label: 'Three Act Structure', description: 'Classic beginning, middle, and end structure' },
+    { value: 'hero-journey', label: 'Hero\'s Journey', description: 'Campbell\'s monomyth structure' },
+    { value: 'save-the-cat', label: 'Save the Cat', description: 'Blake Snyder\'s 15-beat story structure' }
+  ];
+  
+  // TV series structures
+  const seriesStructures: NarrativeStructureOption[] = [
+    { value: 'season-arc', label: 'Season Arc', description: 'Overarching story for a full season' },
+    { value: 'procedural', label: 'Procedural', description: 'Case-of-the-week format' }
+  ];
+  
+  // Theater structures
+  const theaterStructures: NarrativeStructureOption[] = [
+    { value: 'five-act', label: 'Five Act Structure', description: 'Classical theatrical structure' },
+    { value: 'tragedy', label: 'Classical Tragedy', description: 'Aristotelian tragic structure' },
+    { value: 'cyclical', label: 'Cyclical Structure', description: 'Events repeat with variations' },
+    { value: 'cyclic-beckett', label: 'Beckettian Structure', description: 'Absurdist circular narrative' },
+    { value: 'episode-brecht', label: 'Brechtian Episodes', description: 'Episodic scenes with alienation effect' }
+  ];
+  
+  // Audio structures
+  const audioStructures: NarrativeStructureOption[] = [
+    { value: 'three-act-audio', label: 'Three Act Audio', description: 'Adapted three-act for audio' },
+    { value: 'narrator-scenes', label: 'Narrator with Scenes', description: 'Narration alternating with dramatized scenes' },
+    { value: 'inner-monologue', label: 'Inner Monologue', description: 'Character thoughts and internal dialogue' },
+    { value: 'audio-series', label: 'Audio Series Arc', description: 'Connected episodes for audio series' }
+  ];
+  
+  // Book structures
+  const bookStructures: NarrativeStructureOption[] = [
+    { value: 'novel-three-act', label: 'Novel Three Act', description: 'Classic structure adapted for novels' },
+    { value: 'seven-point', label: 'Seven Point Story Structure', description: 'Hook, Plot Turn, Pinch, etc.' },
+    { value: 'snowflake', label: 'Snowflake Method', description: 'Expanding from simple to complex' },
+    { value: 'novel-hero-journey', label: 'Novel Hero\'s Journey', description: 'Hero\'s Journey adapted for novels' }
+  ];
+  
+  // Social media structures
+  const socialMediaStructures: NarrativeStructureOption[] = [
+    { value: 'hook-impact-punch', label: 'Hook-Impact-Punch', description: 'Quick attention, value, memorable ending' },
+    { value: 'micro-story', label: 'Micro Story', description: 'Complete tiny narrative arc' },
+    { value: 'problem-solution', label: 'Problem-Solution', description: 'Present issue then solve it' },
+    { value: 'youtube-hero', label: 'YouTube Hero Journey', description: 'Simplified hero journey for videos' },
+    { value: 'list-structure', label: 'List Structure', description: 'Engaging countdown or ranking format' },
+    { value: 'tutorial-structure', label: 'Tutorial Structure', description: 'Step-by-step instructional format' }
+  ];
+  
+  // Return options based on project type
   switch(projectType) {
-    case 'movie':
-      return [
-        ...baseOptions,
-        { 
-          value: 'three-act', 
-          label: 'Drei-Akt-Struktur', 
-          description: 'Die klassische Drei-Akt-Struktur mit Setup, Konfrontation und Auflösung' 
-        },
-        { 
-          value: 'hero-journey', 
-          label: 'Heldenreise (Campbell)', 
-          description: 'Joseph Campbells Heldenreise mit 12 Stationen des Helden' 
-        },
-        { 
-          value: 'save-the-cat', 
-          label: 'Save the Cat (Snyder)', 
-          description: 'Blake Snyders 15-Beats-Struktur für erfolgreiche Drehbücher' 
-        },
-        { 
-          value: 'tragedy', 
-          label: 'Tragische Heldenreise', 
-          description: 'Struktur mit tragischem Ende für den Protagonisten' 
-        }
-      ];
-    
-    case 'series':
-      return [
-        ...baseOptions,
-        { 
-          value: 'season-arc', 
-          label: 'Serienbogen (Staffelstruktur)', 
-          description: 'Übergreifender Handlungsbogen für eine komplette Staffel' 
-        },
-        { 
-          value: 'story-circle', 
-          label: 'Dan Harmon\'s Story Circle', 
-          description: '8-teilige zyklische Struktur für Episoden und Staffelbögen' 
-        },
-        { 
-          value: 'procedural', 
-          label: 'Procedural-Loop', 
-          description: 'Sich wiederholendes Format mit "Fall der Woche", z.B. für Krimiserien' 
-        },
-        { 
-          value: 'character-arc', 
-          label: 'Staffel mit Charakterbogen', 
-          description: 'Fokus auf Entwicklung der Hauptfiguren über die Staffel hinweg' 
-        }
-      ];
-      
-    case 'theaterstück':
-      return [
-        ...baseOptions,
-        { 
-          value: 'five-act', 
-          label: 'Fünf-Akt-Struktur (Freytag)', 
-          description: 'Klassische Dramenstruktur mit fünf Akten: Exposition, Steigerung, Höhepunkt, Fall, Katastrophe' 
-        },
-        { 
-          value: 'three-act', 
-          label: 'Drei-Akt-Struktur (modern)', 
-          description: 'Modernisierte Version der Drei-Akt-Struktur für Bühnenwerke' 
-        },
-        { 
-          value: 'cyclic-beckett', 
-          label: 'Zyklische Struktur (Beckett)', 
-          description: 'Sich wiederholende Ereignisse, Kreisstruktur, absurdes Theater' 
-        },
-        { 
-          value: 'episode-brecht', 
-          label: 'Episodenstruktur (Brecht)', 
-          description: 'Nicht-aristotelische Erzählstruktur mit eigenständigen Szenen und Verfremdungseffekten' 
-        }
-      ];
-      
-    case 'hörspiel':
-      return [
-        ...baseOptions,
-        { 
-          value: 'three-act-audio', 
-          label: 'Drei-Akt (hörspieloptimiert)', 
-          description: 'An das Hörmedium angepasste Drei-Akt-Struktur' 
-        },
-        { 
-          value: 'narrator-scenes', 
-          label: 'Erzähler + Szenen-Mix', 
-          description: 'Wechsel zwischen Erzählerstimme und szenischen Elementen' 
-        },
-        { 
-          value: 'inner-monologue', 
-          label: 'Innerer Monolog / Solo-Stück', 
-          description: 'Fokus auf Gedankenwelt und inneren Dialog einer Hauptfigur' 
-        },
-        { 
-          value: 'audio-series', 
-          label: 'Serienstruktur mit Cliffhangern', 
-          description: 'Episodischer Aufbau mit Spannungsbögen am Ende jeder Folge' 
-        }
-      ];
-      
-    case 'buch':
-      return [
-        ...baseOptions,
-        { 
-          value: 'novel-three-act', 
-          label: 'Drei-Akt-Romanstruktur', 
-          description: 'Klassische Romanstruktur mit Anfang, Mittelteil und Ende' 
-        },
-        { 
-          value: 'seven-point', 
-          label: 'Sieben-Punkt-Modell (Dan Wells)', 
-          description: 'Sieben Schlüsselszenen als Gerüst für die Geschichte' 
-        },
-        { 
-          value: 'snowflake', 
-          label: 'Snowflake-Methode', 
-          description: 'Vom einfachen Konzept zum komplexen Roman durch iteratives Erweitern' 
-        },
-        { 
-          value: 'novel-hero-journey', 
-          label: 'Heldenreise für Romane', 
-          description: 'An Romanerzählungen angepasste Version der klassischen Heldenreise' 
-        }
-      ];
-      
-    case 'social_video':
-      if (videoFormat === 'shortform') {
-        return [
-          ...baseOptions,
-          { 
-            value: 'hook-impact-punch', 
-            label: 'Hook-Impact-Punch', 
-            description: 'Aufmerksamkeit wecken, Inhalte liefern, starker Abschluss' 
-          },
-          { 
-            value: 'micro-story', 
-            label: 'Micro-Story-Arc', 
-            description: 'Komprimierte Erzählstruktur für Kurzformate' 
-          },
-          { 
-            value: 'problem-solution', 
-            label: 'Problem–Lösung–CTA', 
-            description: 'Problem identifizieren, Lösung anbieten, Call-to-Action' 
-          }
-        ];
-      } else if (videoFormat === 'longform') {
-        return [
-          ...baseOptions,
-          { 
-            value: 'youtube-hero', 
-            label: 'YouTube Hero Structure', 
-            description: 'Optimierte Erzählstruktur für längere YouTube-Videos' 
-          },
-          { 
-            value: 'list-structure', 
-            label: 'Listenstruktur', 
-            description: 'Aufbau nach Listenformat, z.B. Top 5, 10 Gründe für...' 
-          },
-          { 
-            value: 'tutorial-structure', 
-            label: 'Tutorial-Aufbau', 
-            description: 'Schritt-für-Schritt-Anleitung mit Einführung und Zusammenfassung' 
-          }
-        ];
-      }
-      return baseOptions;
-      
-    default:
-      return baseOptions;
+    case 'movie': return [...common, ...filmStructures];
+    case 'short': return [...common, ...filmStructures];
+    case 'series': return [...common, ...seriesStructures, ...filmStructures];
+    case 'theaterstück': return [...common, ...theaterStructures];
+    case 'hörspiel': return [...common, ...audioStructures, ...filmStructures];
+    case 'buch': return [...common, ...bookStructures];
+    case 'social_video': return [...common, ...socialMediaStructures];
+    default: return [...common];
   }
 };
-
-// Export the function as a replacement for the static options array
-export const narrativeStructureOptions = getStructureOptions('movie');
