@@ -1,41 +1,10 @@
-
 import { Genre, Project, Scene, TimeOfDay, ProjectType, EmotionalSignificance, Character } from "../types";
 import { genres, projectTypes, timesOfDay, emotionalSignificances } from "./constants";
 
-export const mockProjects: Project[] = [
-  {
-    id: "p1",
-    title: "Neo Tokyo Adventures",
-    type: "series",
-    logline: "In a cyberpunk future, a group of teenage hackers uncover a conspiracy that threatens their city.",
-    genres: ["action", "sci-fi", "adventure"],
-    duration: 24, // per episode
-    inspirations: ["Ghost in the Shell", "Akira", "Serial Experiments Lain"],
-    coverImage: "/placeholder.svg",
-    scenes: [],
-    characters: [],
-    episodes: [],
-    narrativeStructure: "none", // Add the missing narrativeStructure property
-    createdAt: new Date("2025-04-28"),
-    updatedAt: new Date("2025-05-01")
-  },
-  {
-    id: "p2",
-    title: "Spirit Academy",
-    type: "movie",
-    logline: "A young girl discovers she can see spirits and is invited to attend a magical academy.",
-    genres: ["fantasy", "supernatural", "adventure"],
-    duration: 110,
-    inspirations: ["Spirited Away", "The Ancient Magus' Bride", "Little Witch Academia"],
-    scenes: [],
-    characters: [],
-    episodes: [],
-    narrativeStructure: "none", // Add the missing narrativeStructure property
-    createdAt: new Date("2025-03-15"),
-    updatedAt: new Date("2025-04-20")
-  }
-];
+// Empty array for projects - no mock projects anymore
+export const mockProjects: Project[] = [];
 
+// Keep the mock scenes since they might be useful for reference
 export const mockScenes: Scene[] = [
   {
     id: "s1",
@@ -111,9 +80,9 @@ export const mockScenes: Scene[] = [
   }
 ];
 
-// Add references to scenes in projects
-mockProjects[0].scenes = mockScenes.filter(scene => scene.projectId === "p1");
-mockProjects[1].scenes = mockScenes.filter(scene => scene.projectId === "p2");
+// Since we've deleted the projects, this line is no longer needed:
+// mockProjects[0].scenes = mockScenes.filter(scene => scene.projectId === "p1");
+// mockProjects[1].scenes = mockScenes.filter(scene => scene.projectId === "p2");
 
 export const timeOfDayOptions: { label: string; value: TimeOfDay }[] = 
   timesOfDay.map(time => ({ 
