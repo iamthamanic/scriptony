@@ -1,7 +1,7 @@
-
 import { z } from "zod";
 import { basicTextSchema, titleSchema, descriptionSchema } from "./index";
-import { Genre, ProjectType, NarrativeStructureType } from "@/types";
+import { Genre, ProjectType } from "@/types";
+import { NarrativeStructureType } from "@/types";
 
 // Validate project types
 export const projectTypeSchema = z.enum(["movie", "series", "short"] as const);
