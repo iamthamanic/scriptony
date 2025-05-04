@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from "sonner";
@@ -26,18 +27,17 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
       setLoading(true);
       setErrorDetails(null);
       
-      // Generate the redirect URL based on the current origin
-      const redirectTo = window.location.origin;
-      console.log("Starting Google login with redirect URL:", redirectTo);
+      // Use the specific Supabase callback URL that's configured in Google OAuth
+      const callbackUrl = 'https://suvxmnrnldfhfwxvkntv.supabase.co/auth/v1/callback';
       
-      // Log hostname information for debugging
+      console.log("Starting Google login with callback URL:", callbackUrl);
       console.log("Current hostname:", window.location.hostname);
       console.log("Current domain:", window.location.origin);
       
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: redirectTo,
+          redirectTo: window.location.origin, // After auth flow, redirect back to our app
           scopes: 'email profile',
           queryParams: {
             prompt: 'select_account',
