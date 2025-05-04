@@ -39,12 +39,20 @@ export const useEpisodes = (
     const episodeToEdit = selectedProject.episodes.find(e => e.id === episodeId);
     if (!episodeToEdit) return;
 
-    const success = await updateEpisode(episodeId, {
+    // Create update data with proper typing for API call
+    const updateData: Partial<Episode> = {
       title: data.title,
       number: data.number,
-      description: data.description,
-      coverImage: data.coverImage
-    });
+      description: data.description
+    };
+    
+    // Only include coverImage if it's a string (URL) or undefined
+    // File objects will be handled by the updateEpisode function
+    if (typeof data.coverImage === 'string' || data.coverImage === undefined) {
+      updateData.coverImage = data.coverImage;
+    }
+
+    const success = await updateEpisode(episodeId, updateData);
 
     if (success) {
       // Create the updated episode with proper typing

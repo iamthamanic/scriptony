@@ -160,16 +160,24 @@ export const useProjects = () => {
   const handleEditProject = async (data: EditProjectFormData) => {
     if (!selectedProject || !user) return;
 
-    const success = await updateProject(selectedProject.id, {
+    // Create update data with proper typing for API call
+    const updateData: Partial<Project> = {
       title: data.title,
       type: data.type,
       logline: data.logline,
       genres: data.genres,
       duration: data.duration,
       inspirations: data.inspirations,
-      narrativeStructure: data.narrativeStructure,
-      coverImage: data.coverImage
-    });
+      narrativeStructure: data.narrativeStructure
+    };
+    
+    // Only include coverImage if it's a string (URL) or undefined
+    // File objects will be handled by the updateProject function
+    if (typeof data.coverImage === 'string' || data.coverImage === undefined) {
+      updateData.coverImage = data.coverImage;
+    }
+
+    const success = await updateProject(selectedProject.id, updateData);
 
     if (success) {
       // Use proper type handling for the updated project
