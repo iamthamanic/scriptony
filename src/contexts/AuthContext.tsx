@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { AuthChangeEvent, Session, User } from "@supabase/supabase-js";
+import { toast } from "sonner";
 
 interface AuthContextType {
   user: User | null;
@@ -31,6 +32,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
         setLoading(false);
+        
+        // Handle specific auth events
+        if (event === 'PASSWORD_RECOVERY') {
+          toast.info("Please update your password.");
+        } else if (event === 'SIGNED_IN') {
+          // Don't do heavy operations in this callback
+          // Use setTimeout to prevent potential deadlocks
+          setTimeout(() => {
+            console.log("User signed in");
+          }, 0);
+        }
       }
     );
 
@@ -45,7 +57,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+      toast.success("Successfully signed out");
+    } catch (error) {
+      console.error("Error signing out:", error);
+      toast.error("Failed to sign out");
+    }
   };
 
   const value = {

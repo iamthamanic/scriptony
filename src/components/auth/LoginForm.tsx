@@ -23,9 +23,10 @@ import { PasswordInput } from './PasswordInput';
 interface LoginFormProps {
   loading: boolean;
   setLoading: (loading: boolean) => void;
+  onForgotPassword?: () => void;
 }
 
-export const LoginForm: React.FC<LoginFormProps> = ({ loading, setLoading }) => {
+export const LoginForm: React.FC<LoginFormProps> = ({ loading, setLoading, onForgotPassword }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   
@@ -90,6 +91,19 @@ export const LoginForm: React.FC<LoginFormProps> = ({ loading, setLoading }) => 
                 <PasswordInput field={field} disabled={loading} />
               </FormControl>
               <FormMessage />
+              {onForgotPassword && (
+                <Button 
+                  variant="link" 
+                  className="p-0 h-auto font-normal text-xs"
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onForgotPassword();
+                  }}
+                >
+                  {t('auth.forgotPassword') || 'Forgot password?'}
+                </Button>
+              )}
             </FormItem>
           )}
         />
