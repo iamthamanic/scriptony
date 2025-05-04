@@ -18,6 +18,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
   const [errorDetails, setErrorDetails] = useState<string | null>(null);
   const [currentURL, setCurrentURL] = useState<string>("");
   const [showDebugInfo, setShowDebugInfo] = useState<boolean>(false);
+  const [connectionTestResult, setConnectionTestResult] = useState<string | null>(null);
   
   // Capture initial URL
   useEffect(() => {
@@ -34,15 +35,42 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
     console.log("Supabase callback URL: https://suvxmnrnldfhfwxvkntv.supabase.co/auth/v1/callback");
     console.log("==========================================");
 
-    // Test CORS with the Supabase domain
-    fetch("https://suvxmnrnldfhfwxvkntv.supabase.co/auth/v1/health")
-      .then(response => {
-        console.log("Supabase connectivity test:", response.ok ? "SUCCESS" : "FAILED", response.status);
-      })
-      .catch(error => {
-        console.error("Supabase connectivity error:", error.message);
-      });
+    // Test connectivity to Google and Supabase domains
+    testConnectivity();
   }, []);
+  
+  const testConnectivity = async () => {
+    try {
+      // Test connection to Supabase
+      const supabaseResponse = await fetch("https://suvxmnrnldfhfwxvkntv.supabase.co/auth/v1/health", {
+        method: "GET",
+        mode: 'cors',
+      }).catch(error => {
+        return { ok: false, status: "network-error", statusText: error.message };
+      });
+      
+      console.log("Supabase connectivity test:", 
+        supabaseResponse.ok ? "SUCCESS" : "FAILED", 
+        supabaseResponse.status || "network-error"
+      );
+
+      // Test connection to Google
+      const googleResponse = await fetch("https://accounts.google.com/favicon.ico", {
+        method: "GET",
+        mode: 'no-cors', // Using no-cors since we just want to check if the connection works
+      }).catch(error => {
+        return { ok: false, status: "network-error", statusText: error.message };
+      });
+      
+      // We can't get the actual status with no-cors mode, but we can check if the request completed
+      console.log("Google connectivity test completed:", googleResponse.type === 'opaque' ? "SUCCESS (opaque response)" : "FAILED");
+      
+      setConnectionTestResult(`Supabase: ${supabaseResponse.ok ? "OK" : "Failed"}, Google: ${googleResponse.type === 'opaque' ? "OK" : "Failed"}`);
+    } catch (error) {
+      console.error("Connectivity test error:", error);
+      setConnectionTestResult(`Connectivity test error: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  };
 
   const handleGoogleLogin = async () => {
     try {
@@ -53,7 +81,8 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
       console.log("Browser location:", window.location.href);
       
       // We'll try to detect potential CORS issues
-      console.log("Testing if we have connectivity to Supabase...");
+      console.log("Testing if we have connectivity to Supabase and Google...");
+      await testConnectivity();
       
       // Explicitly set redirectTo to ensure consistent behavior across environments
       const redirectUrl = `${window.location.origin}/auth`;
@@ -86,6 +115,8 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
           errorMessage = 'Unauthorized client. Verify domain authorization in Google Console.';
         } else if (error.status === 401 || errorMessage.includes('401')) {
           errorMessage = 'Authorization failed (401). Check API credentials and domain verification.';
+        } else if (errorMessage.includes('Network Error') || errorMessage.includes('connection refused')) {
+          errorMessage = 'Network connection to authentication provider failed. Check your connection and firewall settings.';
         }
         
         setErrorDetails(errorMessage);
@@ -185,13 +216,29 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
       )}
       
       {errorDetails && showDebugInfo && (
-        <div className="mt-2 p-3 bg-muted/50 rounded-md border text-xs font-mono overflow-x-auto">
+        <div className="mt-2 p-3 bg-muted/50 rounded-md border text-xs font-mono overflow-x-auto space-y-1">
           <p><strong>Current URL:</strong> {currentURL}</p>
           <p><strong>Redirect URL:</strong> {window.location.origin}/auth</p>
           <p><strong>Supabase Project:</strong> suvxmnrnldfhfwxvkntv.supabase.co</p>
+          {connectionTestResult && (
+            <p><strong>Connection Test:</strong> {connectionTestResult}</p>
+          )}
           <p className="mt-2 text-xs text-muted-foreground">
             This debugging information may be helpful for configuration troubleshooting.
           </p>
+          <div className="mt-4 p-2 bg-background rounded border border-destructive/40">
+            <p className="font-semibold text-destructive">Google connection refused error</p>
+            <p className="mt-1">
+              This error often occurs when there are network issues or incorrect configuration between 
+              your application and Google's authentication servers. Please check:
+            </p>
+            <ol className="list-decimal pl-4 mt-2 space-y-1">
+              <li>Your network connection and firewall settings</li>
+              <li>That the Google OAuth Consent Screen is properly configured</li>
+              <li>That the Google OAuth Client ID and Secret are correctly set in Supabase</li>
+              <li>That all required domains are authorized in Google Cloud Console</li>
+            </ol>
+          </div>
         </div>
       )}
     </div>
