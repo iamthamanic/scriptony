@@ -1,11 +1,10 @@
-
 import React from "react";
 import NewProjectModal from "./NewProjectModal";
 import EditProjectModal from "./EditProjectModal";
 import NewCharacterModal from "./NewCharacterModal";
 import NewSceneModal from "./NewSceneModal";
 import EpisodeModal from "./episodes/EpisodeModal";
-import { Project, Scene, NewProjectFormData, NewSceneFormData, EditProjectFormData, NewCharacterFormData, Episode, NewEpisodeFormData, EditEpisodeFormData } from "../types";
+import { Project, Scene, NewProjectFormData, NewSceneFormData, EditProjectFormData, NewCharacterFormData, Episode, NewEpisodeFormData, EditEpisodeFormData, ProjectType } from "../types";
 
 interface ProjectModalsProps {
   isNewProjectModalOpen: boolean;
@@ -89,7 +88,7 @@ const ProjectModals = ({
         isOpen={isNewSceneModalOpen} 
         onClose={onCloseNewScene} 
         onSubmit={onCreateScene} 
-        projectType={selectedProject.type} 
+        projectType={selectedProject.type as ProjectType} 
         lastSceneNumber={
           editingScene 
             ? editingScene.sceneNumber 
