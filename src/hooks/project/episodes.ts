@@ -47,15 +47,15 @@ export const useEpisodes = (
     });
 
     if (success) {
-      // Create the updated episode
-      const updatedEpisode: EpisodeWithCoverImageFile = {
+      // Create the updated episode with the correct type casting
+      const updatedEpisode = {
         ...episodeToEdit,
         title: data.title,
         number: data.number,
         description: data.description,
         coverImage: data.coverImage,
         updatedAt: new Date()
-      };
+      } as Episode; // Cast to Episode type to avoid type errors
 
       // Update episodes and any scenes that reference this episode
       updateProjects(selectedProject.id, (project) => {
@@ -73,7 +73,7 @@ export const useEpisodes = (
         return {
           ...project,
           episodes: project.episodes
-            .map(e => e.id === episodeId ? updatedEpisode as unknown as Episode : e)
+            .map(e => e.id === episodeId ? updatedEpisode : e)
             .sort((a, b) => a.number - b.number),
           scenes: updatedScenes,
           updatedAt: new Date()

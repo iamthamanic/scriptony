@@ -11,11 +11,10 @@ export const useEditEpisode = (
   const handleEditEpisode = (episodeId: string, data: EditEpisodeFormData) => {
     if (!selectedProject) return;
 
-    // Find the episode to edit
     const episodeToEdit = selectedProject.episodes.find(e => e.id === episodeId);
     if (!episodeToEdit) return;
 
-    // Update the episode
+    // Update the episode with proper type casting
     const updatedEpisode = {
       ...episodeToEdit,
       title: data.title,
@@ -23,7 +22,7 @@ export const useEditEpisode = (
       description: data.description,
       coverImage: data.coverImage,
       updatedAt: new Date()
-    };
+    } as Episode; // Cast to Episode type to avoid type errors
 
     // Update episodes in the project
     updateProjects(selectedProject.id, (project) => {
