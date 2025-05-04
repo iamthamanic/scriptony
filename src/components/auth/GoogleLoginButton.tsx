@@ -32,10 +32,12 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
       console.log("Current hostname:", window.location.hostname);
       console.log("Is localhost:", window.location.hostname === 'localhost');
       
+      // Add explicit scopes to request the minimum needed permissions
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: redirectTo,
+          scopes: 'email profile',
           queryParams: {
             prompt: 'select_account', // Force account selection even when already signed in
             access_type: 'offline',   // Get refresh token for server side use
@@ -55,8 +57,15 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
         // Parse the URL to check the redirect_uri parameter
         try {
           const urlObj = new URL(data.url);
+          console.log("Auth URL host:", urlObj.host);
+          console.log("Auth URL pathname:", urlObj.pathname);
           const redirectUri = urlObj.searchParams.get('redirect_uri');
           console.log("Parsed redirect_uri from URL:", redirectUri);
+          
+          // Log all query parameters for debugging
+          urlObj.searchParams.forEach((value, key) => {
+            console.log(`Query param: ${key} = ${value}`);
+          });
         } catch (e) {
           console.error("Could not parse URL:", e);
         }
