@@ -160,12 +160,13 @@ export const createProject = async (projectData: NewProjectFormData): Promise<Pr
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error("User not authenticated");
     
-    // Insert project into database
+    // Insert project into database with new fields
     const { data, error } = await supabase
       .from('projects')
       .insert({
         title: projectData.title,
         type: projectData.type,
+        video_format: projectData.videoFormat, // New field
         logline: projectData.logline,
         genres: projectData.genres,
         duration: projectData.duration.toString(),
@@ -184,6 +185,7 @@ export const createProject = async (projectData: NewProjectFormData): Promise<Pr
       id: data.id,
       title: data.title,
       type: data.type as ProjectType,
+      videoFormat: data.video_format as VideoFormat,
       logline: data.logline || '',
       genres: (data.genres || []) as Genre[],
       duration: Number(data.duration) || 0,
@@ -231,12 +233,13 @@ export const updateProject = async (projectId: string, projectData: Partial<Proj
       coverImageUrl = projectData.coverImage;
     }
     
-    // Update project in database
+    // Update project in database with new fields
     const { error } = await supabase
       .from('projects')
       .update({
         title: projectData.title,
         type: projectData.type,
+        video_format: projectData.videoFormat, // New field
         logline: projectData.logline,
         genres: projectData.genres,
         duration: projectData.duration?.toString(),

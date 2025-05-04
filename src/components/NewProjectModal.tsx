@@ -1,15 +1,15 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { NewProjectFormData, ProjectType, Genre } from '../types';
-import { genreOptions, projectTypeOptions } from '../utils/mockData';
-import { X, Plus, Upload } from 'lucide-react';
-import { narrativeStructureOptions } from '../types/narrativeStructures';
+import { NewProjectFormData, ProjectType, Genre, VideoFormat } from '../types';
+import { genreOptions, projectTypeOptions, videoFormatOptions } from '../utils/mockData';
+import { X, Plus, Upload, HelpCircle } from 'lucide-react';
+import { getStructureOptions } from '../types/narrativeStructures';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 interface NewProjectModalProps {
   isOpen: boolean;
@@ -20,7 +20,7 @@ interface NewProjectModalProps {
 const NewProjectModal = ({ isOpen, onClose, onSubmit }: NewProjectModalProps) => {
   const [formData, setFormData] = useState<NewProjectFormData>({
     title: '',
-    type: 'series',
+    type: 'movie',
     logline: '',
     genres: [],
     duration: 0,
@@ -29,6 +29,18 @@ const NewProjectModal = ({ isOpen, onClose, onSubmit }: NewProjectModalProps) =>
   });
   
   const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null);
+  const [structureOptions, setStructureOptions] = useState(getStructureOptions('movie'));
+
+  useEffect(() => {
+    // Update narrative structure options when project type changes
+    setStructureOptions(getStructureOptions(formData.type, formData.videoFormat));
+    
+    // Reset narrative structure if the current one isn't available in the new options
+    const availableValues = structureOptions.map(option => option.value);
+    if (formData.narrativeStructure && !availableValues.includes(formData.narrativeStructure)) {
+      setFormData(prev => ({ ...prev, narrativeStructure: 'none' }));
+    }
+  }, [formData.type, formData.videoFormat]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -36,11 +48,25 @@ const NewProjectModal = ({ isOpen, onClose, onSubmit }: NewProjectModalProps) =>
   };
 
   const handleTypeChange = (value: string) => {
-    setFormData(prev => ({ ...prev, type: value as ProjectType }));
+    setFormData(prev => ({ 
+      ...prev, 
+      type: value as ProjectType,
+      // Reset videoFormat when not social_video 
+      videoFormat: value === 'social_video' ? 'shortform' : undefined
+    }));
+  };
+
+  const handleVideoFormatChange = (value: string) => {
+    setFormData(prev => ({ ...prev, videoFormat: value as VideoFormat }));
   };
 
   const handleNarrativeStructureChange = (value: string) => {
-    setFormData(prev => ({ ...prev, narrativeStructure: value as any }));
+    const selectedStructure = structureOptions.find(option => option.value === value);
+    
+    setFormData(prev => ({ 
+      ...prev, 
+      narrativeStructure: value as any 
+    }));
   };
 
   const handleGenreToggle = (genre: Genre) => {
@@ -100,6 +126,11 @@ const NewProjectModal = ({ isOpen, onClose, onSubmit }: NewProjectModalProps) =>
     onSubmit(cleanedData);
   };
 
+  // Find the description for the current narrative structure
+  const currentStructureDescription = structureOptions.find(
+    option => option.value === formData.narrativeStructure
+  )?.description || '';
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -141,8 +172,46 @@ const NewProjectModal = ({ isOpen, onClose, onSubmit }: NewProjectModalProps) =>
             </div>
           </div>
           
+          {/* Conditionally show video format selector for social_video */}
+          {formData.type === 'social_video' && (
+            <div className="space-y-2">
+              <Label htmlFor="videoFormat">Video Format</Label>
+              <Select
+                value={formData.videoFormat || 'shortform'}
+                onValueChange={handleVideoFormatChange}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select video format" />
+                </SelectTrigger>
+                <SelectContent>
+                  {videoFormatOptions.map(option => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+          
           <div className="space-y-2">
-            <Label htmlFor="narrativeStructure">Narrative Structure</Label>
+            <div className="flex items-center gap-2">
+              <Label htmlFor="narrativeStructure">Narrative Structure</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-5 w-5">
+                    <HelpCircle className="h-4 w-4 text-muted-foreground" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80 p-4">
+                  <h4 className="font-medium mb-2">Narrative Structure</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Die Plotstruktur bestimmt den grundlegenden Aufbau deiner Geschichte. 
+                    Basierend auf dem gewählten Projekttyp werden passende Strukturen angezeigt.
+                  </p>
+                </PopoverContent>
+              </Popover>
+            </div>
             <Select
               value={formData.narrativeStructure}
               onValueChange={handleNarrativeStructureChange}
@@ -151,17 +220,15 @@ const NewProjectModal = ({ isOpen, onClose, onSubmit }: NewProjectModalProps) =>
                 <SelectValue placeholder="Select narrative structure" />
               </SelectTrigger>
               <SelectContent>
-                {narrativeStructureOptions.map(option => (
+                {structureOptions.map(option => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            <p className="text-xs text-muted-foreground">
-              {formData.narrativeStructure !== 'none' 
-                ? "This will auto-generate scene templates based on the selected structure" 
-                : "No structure will be applied - build your project from scratch"}
+            <p className="text-xs text-muted-foreground mt-1">
+              {currentStructureDescription}
             </p>
           </div>
           

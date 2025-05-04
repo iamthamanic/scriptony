@@ -5,12 +5,14 @@ import type { Scene } from './scenes';
 import type { Character } from './characters';
 import type { Episode } from './episodes';
 
-export type ProjectType = 'movie' | 'series' | 'short';
+export type ProjectType = 'movie' | 'series' | 'short' | 'theaterstück' | 'hörspiel' | 'buch' | 'social_video';
+export type VideoFormat = 'shortform' | 'longform';
 
 export interface Project {
   id: string;
   title: string;
   type: ProjectType;
+  videoFormat?: VideoFormat;
   logline: string;
   genres: Genre[];
   duration: number; // in minutes
@@ -27,6 +29,7 @@ export interface Project {
 export interface NewProjectFormData {
   title: string;
   type: ProjectType;
+  videoFormat?: VideoFormat;
   logline: string;
   genres: Genre[];
   duration: number;
@@ -38,6 +41,7 @@ export interface NewProjectFormData {
 export interface EditProjectFormData {
   title: string;
   type: ProjectType;
+  videoFormat?: VideoFormat;
   logline: string;
   genres: Genre[];
   duration: number;

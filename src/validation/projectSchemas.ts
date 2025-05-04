@@ -1,11 +1,22 @@
 
 import { z } from "zod";
 import { basicTextSchema, titleSchema, descriptionSchema } from "./index";
-import type { Genre, ProjectType } from "@/types";
+import type { Genre, ProjectType, VideoFormat } from "@/types";
 import type { NarrativeStructureType } from "@/types";
 
 // Validate project types
-export const projectTypeSchema = z.enum(["movie", "series", "short"] as const);
+export const projectTypeSchema = z.enum([
+  "movie", 
+  "series", 
+  "short", 
+  "theaterstück", 
+  "hörspiel", 
+  "buch", 
+  "social_video"
+] as const);
+
+// Validate video format for social_video
+export const videoFormatSchema = z.enum(["shortform", "longform"] as const);
 
 // Validate genres with proper typing
 export const genreSchema = z.enum([
@@ -31,13 +42,34 @@ export const narrativeStructureTypeSchema = z.enum([
   "save-the-cat", 
   "story-circle", 
   "tragedy", 
-  "cyclical"
+  "cyclical",
+  "five-act",
+  "season-arc",
+  "procedural",
+  "character-arc",
+  "cyclic-beckett",
+  "episode-brecht",
+  "three-act-audio",
+  "narrator-scenes",
+  "inner-monologue",
+  "audio-series",
+  "novel-three-act",
+  "seven-point",
+  "snowflake",
+  "novel-hero-journey",
+  "hook-impact-punch",
+  "micro-story",
+  "problem-solution",
+  "youtube-hero",
+  "list-structure",
+  "tutorial-structure"
 ] as const) as z.ZodType<NarrativeStructureType>;
 
 // Project creation schema
 export const newProjectSchema = z.object({
   title: titleSchema,
   type: projectTypeSchema,
+  videoFormat: videoFormatSchema.optional(),
   logline: basicTextSchema.max(200, "Die Logline darf maximal 200 Zeichen lang sein"),
   genres: z.array(genreSchema).min(1, "Wähle mindestens ein Genre"),
   duration: z.number().int().positive().max(600, "Die maximale Dauer beträgt 600 Minuten"),
