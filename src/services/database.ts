@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { Project, Character, Episode, Scene, NewProjectFormData, NewCharacterFormData, NewEpisodeFormData, NewSceneFormData, ProjectType, Genre, TimeOfDay, EmotionalSignificance, NarrativeStructureType } from "../types";
 import { toast } from "@/hooks/use-toast";
@@ -20,15 +19,16 @@ export const fetchUserProjects = async (): Promise<Project[]> => {
       id: dbProject.id,
       title: dbProject.title,
       type: dbProject.type as ProjectType,
-      logline: dbProject.logline || '',
-      genres: (dbProject.genres || []) as Genre[],
-      duration: Number(dbProject.duration) || 0,
-      inspirations: dbProject.inspirations ? dbProject.inspirations.split(',') : [],
-      coverImage: dbProject.cover_image_url,
-      narrativeStructure: (dbProject.narrative_structure || 'none') as NarrativeStructureType,
+      videoFormat: dbProject.video_format as VideoFormat | undefined,
+      logline: dbProject.logline,
+      genres: dbProject.genres as Genre[],
+      duration: parseInt(dbProject.duration),
+      inspirations: dbProject.inspirations ? JSON.parse(dbProject.inspirations) : [],
+      coverImage: dbProject.cover_image_url || null,
       scenes: [],  // We'll fetch scenes separately
       characters: [],  // We'll fetch characters separately
       episodes: [],  // We'll fetch episodes separately
+      narrativeStructure: dbProject.narrative_structure as NarrativeStructureType,
       createdAt: new Date(dbProject.created_at),
       updatedAt: new Date(dbProject.updated_at)
     }));
@@ -715,4 +715,27 @@ export const deleteScene = async (sceneId: string): Promise<boolean> => {
     });
     return false;
   }
+};
+
+/**
+ * Convert database project to application project
+ */
+export const convertDbProjectToApp = (dbProject: any): Project => {
+  return {
+    id: dbProject.id,
+    title: dbProject.title,
+    type: dbProject.type as ProjectType,
+    videoFormat: dbProject.video_format as VideoFormat | undefined,
+    logline: dbProject.logline,
+    genres: dbProject.genres as Genre[],
+    duration: parseInt(dbProject.duration),
+    inspirations: dbProject.inspirations ? JSON.parse(dbProject.inspirations) : [],
+    coverImage: dbProject.cover_image_url || null,
+    scenes: [],
+    characters: [],
+    episodes: [],
+    narrativeStructure: dbProject.narrative_structure as NarrativeStructureType,
+    createdAt: new Date(dbProject.created_at),
+    updatedAt: new Date(dbProject.updated_at),
+  };
 };

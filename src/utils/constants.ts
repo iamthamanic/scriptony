@@ -1,3 +1,4 @@
+
 import { Genre, ProjectType, TimeOfDay, EmotionalSignificance, VideoFormat } from "../types";
 
 export const projectTypes: ProjectType[] = [
