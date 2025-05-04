@@ -26,6 +26,9 @@ const AuthContainer: React.FC<AuthContainerProps> = ({
   const navigate = useNavigate();
   const { t } = useTranslation();
 
+  // Determine if we need to show "willkommen" instead of "welcome"
+  const displayTitle = title === t('common.welcome') ? "Willkommen" : title;
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="absolute top-4 right-4 flex items-center gap-2">
@@ -47,7 +50,7 @@ const AuthContainer: React.FC<AuthContainerProps> = ({
             <Logo size="lg" showText={true} />
           </div>
           <CardTitle className="text-2xl">
-            {title === t('common.welcome') ? "willkommen" : title}
+            {displayTitle}
           </CardTitle>
           <CardDescription>{description}</CardDescription>
         </CardHeader>
