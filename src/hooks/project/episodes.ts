@@ -1,3 +1,4 @@
+
 import { useToast } from "../../hooks/use-toast";
 import { Episode, EpisodeWithCoverImageFile, NewEpisodeFormData, EditEpisodeFormData } from "../../types";
 import { createEpisode, updateEpisode, deleteEpisode } from "../../services/database";
@@ -72,7 +73,7 @@ export const useEpisodes = (
         return {
           ...project,
           episodes: project.episodes
-            .map(e => e.id === episodeId ? updatedEpisode as Episode : e)
+            .map(e => e.id === episodeId ? updatedEpisode as unknown as Episode : e)
             .sort((a, b) => a.number - b.number),
           scenes: updatedScenes,
           updatedAt: new Date()

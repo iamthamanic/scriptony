@@ -29,9 +29,7 @@ export interface EditCharacterFormData {
   avatar?: File | string;
 }
 
-/**
- * This type is now aligned with Character but allows File type for avatar
- */
+// Modified to NOT extend Character since it has a different type for avatar
 export interface CharacterWithAvatarFile {
   id: string;
   name: string;

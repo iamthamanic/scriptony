@@ -1,3 +1,4 @@
+
 import { useToast } from "../use-toast";
 import { Character, CharacterWithAvatarFile, NewCharacterFormData, EditCharacterFormData } from "../../types";
 import { createCharacter, updateCharacter, deleteCharacter } from "../../services/database";
@@ -58,7 +59,7 @@ export const useCharacters = (
       updateProjects(selectedProject.id, (project) => ({
         ...project,
         characters: project.characters.map(c => 
-          c.id === characterId ? updatedCharacter as Character : c
+          c.id === characterId ? updatedCharacter as unknown as Character : c
         ),
         updatedAt: new Date()
       }));
