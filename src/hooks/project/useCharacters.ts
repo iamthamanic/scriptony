@@ -1,6 +1,6 @@
 
 import { useToast } from "../use-toast";
-import { Character, NewCharacterFormData, EditCharacterFormData } from "../../types";
+import { Character, CharacterWithAvatarFile, NewCharacterFormData, EditCharacterFormData } from "../../types";
 import { createCharacter, updateCharacter, deleteCharacter } from "../../services/database";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -46,8 +46,8 @@ export const useCharacters = (
     });
 
     if (success) {
-      // Create the updated character
-      const updatedCharacter: Character = {
+      // Create the updated character - use CharacterWithAvatarFile to allow File type for avatar
+      const updatedCharacter: CharacterWithAvatarFile = {
         ...characterToEdit,
         name: data.name,
         role: data.role,
@@ -61,7 +61,7 @@ export const useCharacters = (
       updateProjects(selectedProject.id, (project) => ({
         ...project,
         characters: project.characters.map(c => 
-          c.id === characterId ? updatedCharacter : c
+          c.id === characterId ? updatedCharacter as Character : c
         ),
         updatedAt: new Date()
       }));

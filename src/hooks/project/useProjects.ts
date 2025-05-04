@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from "react";
-import { Project, NewProjectFormData, EditProjectFormData, ProjectType, Genre } from "../../types";
+import { Project, ProjectWithCoverImageFile, NewProjectFormData, EditProjectFormData, ProjectType, Genre } from "../../types";
 import { useToast } from "../use-toast";
 import { narrativeStructureTemplates } from "../../types/narrativeStructures";
 import { fetchUserProjects, fetchProjectDetails, createProject, updateProject, deleteProject } from "../../services/database";
@@ -173,7 +172,7 @@ export const useProjects = () => {
     });
 
     if (success) {
-      const updatedProject: Project = {
+      const updatedProject: ProjectWithCoverImageFile = {
         ...selectedProject,
         title: data.title,
         type: data.type,
@@ -189,7 +188,7 @@ export const useProjects = () => {
       };
 
       const updatedProjects = projects.map(project => 
-        project.id === selectedProject.id ? updatedProject : project
+        project.id === selectedProject.id ? updatedProject as Project : project
       );
 
       setProjects(updatedProjects);

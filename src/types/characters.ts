@@ -28,3 +28,9 @@ export interface EditCharacterFormData {
   description: string;
   avatar?: File | string;
 }
+
+// This is a utility type that helps us handle character avatar types in hooks
+export interface CharacterWithAvatarFile extends Character {
+  avatar?: string | File;
+}
+

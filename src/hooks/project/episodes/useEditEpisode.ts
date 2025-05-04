@@ -1,6 +1,6 @@
 
 import { useToast } from "../../use-toast";
-import { Episode, EditEpisodeFormData } from "../../../types";
+import { Episode, EpisodeWithCoverImageFile, EditEpisodeFormData } from "../../../types";
 
 export const useEditEpisode = (
   selectedProject: { id: string; episodes: Episode[] } | null,
@@ -14,7 +14,7 @@ export const useEditEpisode = (
     const episodeToEdit = selectedProject.episodes.find(e => e.id === episodeId);
     if (!episodeToEdit) return;
 
-    const updatedEpisode: Episode = {
+    const updatedEpisode: EpisodeWithCoverImageFile = {
       ...episodeToEdit,
       title: data.title,
       number: data.number,
@@ -41,7 +41,7 @@ export const useEditEpisode = (
       return {
         ...project,
         episodes: project.episodes
-          .map(e => e.id === episodeId ? updatedEpisode : e)
+          .map(e => e.id === episodeId ? updatedEpisode as Episode : e)
           .sort((a, b) => a.number - b.number),
         scenes: updatedScenes,
         updatedAt: new Date()
