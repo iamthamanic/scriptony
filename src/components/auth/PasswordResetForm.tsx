@@ -1,9 +1,6 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -17,6 +14,8 @@ import {
   FormLabel,
   FormMessage
 } from "@/components/ui/form";
+import { useValidatedForm } from '@/hooks/useValidatedForm';
+import { passwordResetSchema, type PasswordResetFormValues } from '@/validation/authSchemas';
 
 interface PasswordResetFormProps {
   loading: boolean;
@@ -27,20 +26,13 @@ interface PasswordResetFormProps {
 const PasswordResetForm: React.FC<PasswordResetFormProps> = ({ loading, setLoading, onSuccess }) => {
   const { t } = useTranslation();
 
-  const resetPasswordSchema = z.object({
-    email: z.string().email(t('common.invalidEmail'))
-  });
-
-  type ResetPasswordValues = z.infer<typeof resetPasswordSchema>;
-
-  const form = useForm<ResetPasswordValues>({
-    resolver: zodResolver(resetPasswordSchema),
+  const form = useValidatedForm<PasswordResetFormValues>(passwordResetSchema, {
     defaultValues: {
       email: ""
     }
   });
 
-  const handlePasswordReset = async (data: ResetPasswordValues) => {
+  const handlePasswordReset = async (data: PasswordResetFormValues) => {
     try {
       setLoading(true);
       const { error } = await supabase.auth.resetPasswordForEmail(data.email, {

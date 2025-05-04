@@ -1,8 +1,5 @@
 
 import React from 'react';
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { toast } from "sonner";
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -19,6 +16,8 @@ import {
   FormMessage
 } from "@/components/ui/form";
 import { PasswordInput } from './PasswordInput';
+import { useValidatedForm } from '@/hooks/useValidatedForm';
+import { loginSchema, type LoginFormValues } from '@/validation/authSchemas';
 
 interface LoginFormProps {
   loading: boolean;
@@ -30,15 +29,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ loading, setLoading, onFor
   const navigate = useNavigate();
   const { t } = useTranslation();
   
-  const loginSchema = z.object({
-    email: z.string().email("Bitte gib eine gültige E-Mail-Adresse ein."),
-    password: z.string().min(6, "Das Passwort muss mindestens 6 Zeichen lang sein.")
-  });
-  
-  type LoginFormValues = z.infer<typeof loginSchema>;
-  
-  const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+  const form = useValidatedForm<LoginFormValues>(loginSchema, {
     defaultValues: {
       email: "",
       password: ""
