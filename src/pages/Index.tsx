@@ -9,6 +9,10 @@ import { Scene, Episode } from "../types";
 import { useProjectState } from "../hooks/project/useProjectState";
 import { useAuth } from "@/contexts/AuthContext";
 import { Loader2 } from "lucide-react";
+import ScriptAnalysisResults from "@/components/script-analysis/ScriptAnalysisResults";
+import { uploadAndAnalyzeScript } from "@/services/scriptAnalysis";
+import { AnalysisResult } from "@/types";
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const {
@@ -38,6 +42,13 @@ const Index = () => {
   const [editingScene, setEditingScene] = useState<Scene | null>(null);
   const [editingEpisode, setEditingEpisode] = useState<Episode | null>(null);
   const [selectedEpisodeId, setSelectedEpisodeId] = useState<string | null>(null);
+  
+  // Script analysis state
+  const [isAnalysisResultsOpen, setIsAnalysisResultsOpen] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  
+  const { toast } = useToast();
   const { user } = useAuth();
 
   const handleEditScene = (scene: Scene) => {
@@ -73,12 +84,46 @@ const Index = () => {
     setEditingScene(null);
     setIsNewSceneModalOpen(true);
   };
+  
+  const handleUploadScript = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    
+    try {
+      setIsAnalyzing(true);
+      toast({
+        title: "Analyzing script",
+        description: "Please wait while we analyze your script...",
+      });
+      
+      const { analysisResult } = await uploadAndAnalyzeScript(file);
+      setAnalysisResult(analysisResult);
+      setIsAnalysisResultsOpen(true);
+      
+      toast({
+        title: "Analysis complete",
+        description: "Script analysis completed successfully",
+      });
+    } catch (error) {
+      console.error("Error analyzing script:", error);
+      toast({
+        title: "Analysis failed",
+        description: "Failed to analyze script. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsAnalyzing(false);
+      // Reset the file input
+      event.target.value = '';
+    }
+  };
 
   return (
     <div className="container mx-auto py-6 px-4 md:px-6">
       <header className="mb-8">
         <AppHeader 
           onNewProject={() => setIsNewProjectModalOpen(true)} 
+          onUploadScript={handleUploadScript}
           accountName={user?.email?.split('@')[0] || "Demo User"}
         />
         
@@ -152,6 +197,17 @@ const Index = () => {
         selectedProject={selectedProject}
         editingScene={editingScene}
         editingEpisode={editingEpisode}
+      />
+      
+      <ScriptAnalysisResults
+        isOpen={isAnalysisResultsOpen}
+        onClose={() => setIsAnalysisResultsOpen(false)}
+        analysisResult={analysisResult}
+        onCreateProject={(data) => {
+          handleCreateProject(data);
+          setIsAnalysisResultsOpen(false);
+        }}
+        isLoading={isAnalyzing}
       />
     </div>
   );

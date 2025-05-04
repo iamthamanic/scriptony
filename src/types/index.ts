@@ -1,21 +1,14 @@
 
-// Re-export all types from their respective files
-export * from './projects';
-export * from './genres';
-export * from './scenes';
-export * from './shots';
-export * from './camera';
-export * from './characters';
-export * from './episodes';
-export * from './references';
 export * from './common';
+export * from './projects';
+export * from './characters';
+export * from './scenes';
+export * from './episodes';
+export * from './camera';
+export * from './references';
+export * from './narrativeStructures/types';
+export * from './genres';
 export * from './worlds';
 export * from './admin';
-
-// Export the types and templates from the new module location
-export type { 
-  NarrativeStructureType, 
-  StructureTemplate,
-  SceneTemplate
-} from './narrativeStructures';
-export { getStructureOptions, narrativeStructureTemplates } from './narrativeStructures';
+export * from './shots';
+export * from './script-analysis';
