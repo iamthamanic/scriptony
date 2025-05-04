@@ -1,8 +1,9 @@
+
 import React from 'react';
 import { Scene, Character } from '../types';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FileText, Edit, Clock, User, Trash2 } from 'lucide-react';
+import { FileText, Edit, User, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SceneCardProps {
@@ -53,14 +54,14 @@ const SceneCard = ({ scene, onClick, onExportPDF, onDeleteScene, characters = []
               Scene {scene.sceneNumber}
               {scene.episodeTitle && <span className="font-normal text-muted-foreground"> - {scene.episodeTitle}</span>}
             </h3>
-            <p className="text-sm text-muted-foreground">{scene.location} ({scene.timeOfDay})</p>
+            <p className="text-sm text-muted-foreground">{scene.location}</p>
           </div>
-          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-            <Clock size={14} />
-            <span>{scene.timecodeStart} - {scene.timecodeEnd}</span>
-          </div>
+          <span className="text-xs bg-anime-light-purple text-anime-purple px-2 py-1 rounded-full">
+            {scene.emotionalSignificance}
+          </span>
         </div>
       </CardHeader>
+
       <CardContent className="pb-3">
         <div className="flex gap-4">
           {scene.keyframeImage && (
@@ -80,37 +81,38 @@ const SceneCard = ({ scene, onClick, onExportPDF, onDeleteScene, characters = []
               {scene.description}
             </p>
             
-            {sceneCharacters.length > 0 && (
-              <div className="mt-3 flex flex-wrap gap-1">
-                {sceneCharacters.map(character => (
-                  <div 
-                    key={character.id} 
-                    className="flex items-center bg-muted/40 rounded-full px-2 py-0.5 text-xs"
-                  >
-                    <User size={10} className="mr-1" />
-                    {character.name}
-                  </div>
-                ))}
+            <div className="mt-3 flex items-center justify-between">
+              <div className="text-xs text-muted-foreground">
+                {scene.timeOfDay}, {scene.timecodeStart} - {scene.timecodeEnd}
               </div>
-            )}
+              
+              {sceneCharacters.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {sceneCharacters.map(character => (
+                    <div 
+                      key={character.id} 
+                      className="flex items-center bg-muted/40 rounded-full px-2 py-0.5 text-xs"
+                    >
+                      <User size={10} className="mr-1" />
+                      {character.name}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between pt-0">
-        <div>
-          <span className="text-xs bg-anime-light-purple text-anime-purple px-2 py-1 rounded-full">
-            {scene.emotionalSignificance}
-          </span>
-        </div>
-        <div className="flex gap-2">
+
+      <CardFooter className="pt-0">
+        <div className="w-full flex justify-end gap-2">
           {onDeleteScene && (
             <Button variant="outline" size="sm" onClick={onDeleteScene} className="border-destructive text-destructive hover:bg-destructive/10">
               <Trash2 className="h-4 w-4" />
             </Button>
           )}
           <Button variant="outline" size="sm" onClick={onExportPDF}>
-            <FileText className="h-4 w-4 mr-1" />
-            PDF
+            <FileText className="h-4 w-4" />
           </Button>
           <Button variant="default" size="sm" onClick={onClick} className="bg-anime-purple hover:bg-anime-dark-purple">
             <Edit className="h-4 w-4 mr-1" />
