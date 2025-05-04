@@ -30,11 +30,16 @@ export const useScenes = (
         keyframeImage: data.keyframeImage ? URL.createObjectURL(data.keyframeImage) : editingScene.keyframeImage,
         description: data.description,
         dialog: data.dialog,
+        characterDialogs: data.characterDialogs || editingScene.characterDialogs,
         transitions: data.transitions,
         productionNotes: data.productionNotes,
         emotionalSignificance: data.emotionalSignificance,
         emotionalNotes: data.emotionalNotes,
         characterIds: data.characterIds || [],
+        colorReferences: data.colorReferences || editingScene.colorReferences,
+        audioReferences: data.audioReferences || editingScene.audioReferences,
+        visualReferences: data.visualReferences || editingScene.visualReferences,
+        shots: editingScene.shots,
         updatedAt: new Date()
       };
 
@@ -71,11 +76,16 @@ export const useScenes = (
         keyframeImage: data.keyframeImage ? URL.createObjectURL(data.keyframeImage) : undefined,
         description: data.description,
         dialog: data.dialog,
+        characterDialogs: data.characterDialogs || [],
         transitions: data.transitions,
         productionNotes: data.productionNotes,
         emotionalSignificance: data.emotionalSignificance,
         emotionalNotes: data.emotionalNotes,
         characterIds: data.characterIds || [],
+        colorReferences: data.colorReferences || [],
+        audioReferences: data.audioReferences || [],
+        visualReferences: data.visualReferences || [],
+        shots: [],
         createdAt: new Date(),
         updatedAt: new Date()
       };

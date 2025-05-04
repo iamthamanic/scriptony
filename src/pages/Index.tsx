@@ -5,6 +5,7 @@ import ProjectSelector from "../components/ProjectSelector";
 import ProjectContent from "../components/ProjectContent";
 import ProjectModals from "../components/ProjectModals";
 import EmptyState from "../components/EmptyState";
+import AccountSettings from "../components/AccountSettings";
 import { Scene, Episode } from "../types";
 import { useProjectState } from "../hooks/project/useProjectState";
 
@@ -32,9 +33,11 @@ const Index = () => {
   const [isNewSceneModalOpen, setIsNewSceneModalOpen] = useState(false);
   const [isNewCharacterModalOpen, setIsNewCharacterModalOpen] = useState(false);
   const [isEpisodeModalOpen, setIsEpisodeModalOpen] = useState(false);
+  const [isAccountSettingsOpen, setIsAccountSettingsOpen] = useState(false);
   const [editingScene, setEditingScene] = useState<Scene | null>(null);
   const [editingEpisode, setEditingEpisode] = useState<Episode | null>(null);
   const [selectedEpisodeId, setSelectedEpisodeId] = useState<string | null>(null);
+  const [accountName] = useState("Demo User"); // This would come from authentication in a real app
 
   const handleEditScene = (scene: Scene) => {
     setEditingScene(scene);
@@ -73,7 +76,11 @@ const Index = () => {
   return (
     <div className="container mx-auto py-6 px-4 md:px-6">
       <header className="mb-8">
-        <AppHeader onNewProject={() => setIsNewProjectModalOpen(true)} />
+        <AppHeader 
+          onNewProject={() => setIsNewProjectModalOpen(true)} 
+          onOpenAccountSettings={() => setIsAccountSettingsOpen(true)}
+          accountName={accountName}
+        />
         
         {projects.length > 0 && (
           <ProjectSelector 
@@ -140,6 +147,12 @@ const Index = () => {
         selectedProject={selectedProject}
         editingScene={editingScene}
         editingEpisode={editingEpisode}
+      />
+      
+      <AccountSettings
+        isOpen={isAccountSettingsOpen}
+        onClose={() => setIsAccountSettingsOpen(false)}
+        accountName={accountName}
       />
     </div>
   );

@@ -3,10 +3,11 @@ import { useState } from "react";
 import { Project, NewProjectFormData, EditProjectFormData } from "../../types";
 import { mockProjects } from "../../utils/mockData";
 import { useToast } from "../use-toast";
+import { narrativeStructureTemplates } from "../../types/narrativeStructures";
 
 export const useProjects = () => {
   const [projects, setProjects] = useState<Project[]>(
-    mockProjects.map(p => ({ ...p, characters: [], episodes: [] }))
+    mockProjects.map(p => ({ ...p, characters: [], episodes: [], narrativeStructure: 'none' }))
   );
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(mockProjects[0]?.id || null);
   const { toast } = useToast();
@@ -26,9 +27,50 @@ export const useProjects = () => {
       scenes: [],
       characters: [],
       episodes: [],
+      narrativeStructure: data.narrativeStructure || 'none',
       createdAt: new Date(),
       updatedAt: new Date()
     };
+    
+    // If a narrative structure was selected, generate template scenes
+    if (data.narrativeStructure && data.narrativeStructure !== 'none') {
+      const template = narrativeStructureTemplates[data.narrativeStructure];
+      
+      if (template) {
+        // Generate scenes from template
+        const templateScenes = template.scenes.map((sceneTpl, index) => {
+          const now = new Date();
+          return {
+            id: `s${index + 1}-${now.getTime()}`,
+            projectId: newProject.id,
+            episodeId: undefined,
+            episodeTitle: undefined,
+            sceneNumber: sceneTpl.sceneNumber || index + 1,
+            location: sceneTpl.location || "",
+            timeOfDay: sceneTpl.timeOfDay || "day",
+            timecodeStart: "00:00:00",
+            timecodeEnd: "00:00:00",
+            visualComposition: "",
+            lighting: "",
+            colorGrading: "",
+            soundDesign: "",
+            specialEffects: "",
+            keyframeImage: undefined,
+            description: sceneTpl.description || "",
+            dialog: "",
+            transitions: "",
+            productionNotes: "",
+            emotionalSignificance: sceneTpl.emotionalSignificance || "other",
+            characterIds: [],
+            createdAt: now,
+            updatedAt: now
+          };
+        });
+        
+        newProject.scenes = templateScenes;
+      }
+    }
+    
     setProjects([...projects, newProject]);
     setSelectedProjectId(newProject.id);
     toast({
@@ -49,6 +91,7 @@ export const useProjects = () => {
       genres: data.genres,
       duration: data.duration,
       inspirations: data.inspirations,
+      narrativeStructure: data.narrativeStructure || selectedProject.narrativeStructure,
       coverImage: data.coverImage 
         ? URL.createObjectURL(data.coverImage) 
         : selectedProject.coverImage,

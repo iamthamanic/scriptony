@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -8,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { EditProjectFormData, Genre, Project, ProjectType } from '../types';
 import { genres, projectTypes } from '../utils/constants';
+import { narrativeStructureOptions } from '../types/narrativeStructures';
 
 interface EditProjectModalProps {
   isOpen: boolean;
@@ -25,6 +27,7 @@ const EditProjectModal = ({ isOpen, onClose, onSubmit, project }: EditProjectMod
       genres: project.genres,
       duration: project.duration,
       inspirations: project.inspirations.join(", "),
+      narrativeStructure: project.narrativeStructure || 'none'
     }
   });
 
@@ -76,6 +79,29 @@ const EditProjectModal = ({ isOpen, onClose, onSubmit, project }: EditProjectMod
                     <SelectContent>
                       {projectTypes.map((type) => (
                         <SelectItem key={type} value={type}>{type.charAt(0).toUpperCase() + type.slice(1)}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="narrativeStructure"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Narrative Structure</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select narrative structure" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {narrativeStructureOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>

@@ -3,7 +3,7 @@ import React from 'react';
 import { Scene, Character } from '../types';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FileText, Edit, User, Trash2 } from 'lucide-react';
+import { FileText, Edit, User, Trash2, Music, Camera } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SceneCardProps {
@@ -49,6 +49,12 @@ const SceneCard = ({
   const sceneCharacters = characters.filter(
     character => scene.characterIds?.includes(character.id)
   );
+
+  // Count additional features
+  const colorReferencesCount = scene.colorReferences?.length || 0;
+  const audioReferencesCount = scene.audioReferences?.length || 0;
+  const shotsCount = scene.shots?.length || 0;
+  const characterDialogsCount = scene.characterDialogs?.length || 0;
 
   return (
     <Card 
@@ -110,6 +116,39 @@ const SceneCard = ({
                 </div>
               )}
             </div>
+            
+            {/* Show enhancement indicators */}
+            {(colorReferencesCount > 0 || audioReferencesCount > 0 || shotsCount > 0 || characterDialogsCount > 0) && (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {colorReferencesCount > 0 && (
+                  <div className="bg-muted/40 rounded-md px-1.5 py-0.5 text-xs flex items-center">
+                    <span className="w-3 h-3 rounded-full bg-anime-purple mr-1"></span>
+                    {colorReferencesCount} colors
+                  </div>
+                )}
+                
+                {audioReferencesCount > 0 && (
+                  <div className="bg-muted/40 rounded-md px-1.5 py-0.5 text-xs flex items-center">
+                    <Music size={10} className="mr-1" />
+                    {audioReferencesCount}
+                  </div>
+                )}
+                
+                {shotsCount > 0 && (
+                  <div className="bg-muted/40 rounded-md px-1.5 py-0.5 text-xs flex items-center">
+                    <Camera size={10} className="mr-1" />
+                    {shotsCount} shots
+                  </div>
+                )}
+                
+                {characterDialogsCount > 0 && (
+                  <div className="bg-muted/40 rounded-md px-1.5 py-0.5 text-xs flex items-center">
+                    <User size={10} className="mr-1" />
+                    {characterDialogsCount} dialogs
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </CardContent>
