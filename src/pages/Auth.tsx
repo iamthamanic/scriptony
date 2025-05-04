@@ -66,25 +66,39 @@ const Auth = () => {
       console.log("Current URL:", window.location.href);
       console.log("Origin:", window.location.origin);
       
-      const redirectUrl = `${window.location.origin}/`;
+      // Generate a proper redirect URL without any hash or search params
+      const baseUrl = window.location.origin;
+      const redirectUrl = `${baseUrl}/`;
       console.log("Redirect URL:", redirectUrl);
       
+      // Use the Supabase project URL for debugging
+      const supabaseUrl = "https://suvxmnrnldfhfwxvkntv.supabase.co";
+      console.log("Supabase URL:", supabaseUrl);
+      
+      // Call the Google OAuth method
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: redirectUrl
+          redirectTo: redirectUrl,
+          queryParams: {
+            // Optional: Add additional query params if needed
+            // prompt: 'select_account', // Forces account selection even if already signed in
+            // access_type: 'offline' // For getting refresh token
+          }
         }
       });
       
       if (error) {
         console.error("Google Login Error:", error);
-        toast.error(error.message || t('auth.error.google'));
+        toast.error(`Google Login Error: ${error.message || t('auth.error.google')}`);
       } else {
         console.log("Google auth initiated successfully:", data);
+        // At this point, the user will be redirected to Google's login page
+        // We don't need to do anything else here
       }
     } catch (error: any) {
       console.error("Google Login Exception:", error);
-      toast.error(error.message || t('auth.error.google'));
+      toast.error(`Google Login Exception: ${error.message || t('auth.error.google')}`);
     } finally {
       setLoading(false);
     }
