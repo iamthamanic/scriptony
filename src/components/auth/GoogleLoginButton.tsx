@@ -17,43 +17,34 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
   const handleGoogleLogin = async () => {
     try {
       setLoading(true);
-      console.log("Starting Google login process...");
-      console.log("Current URL:", window.location.href);
-      console.log("Origin:", window.location.origin);
       
-      // Generate a proper redirect URL without any hash or search params
-      const baseUrl = window.location.origin;
-      const redirectUrl = `${baseUrl}/`;
-      console.log("Redirect URL:", redirectUrl);
+      // Generate the redirect URL based on the current origin
+      const redirectTo = `${window.location.origin}/`;
+      console.log("Starting Google login with redirect URL:", redirectTo);
       
-      // Use the Supabase project URL for debugging
-      const supabaseUrl = "https://suvxmnrnldfhfwxvkntv.supabase.co";
-      console.log("Supabase URL:", supabaseUrl);
-      
-      // Call the Google OAuth method
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: redirectUrl,
+          redirectTo: redirectTo,
           queryParams: {
-            // Optional: Add additional query params if needed
-            // prompt: 'select_account', // Forces account selection even if already signed in
-            // access_type: 'offline' // For getting refresh token
+            prompt: 'select_account', // Force account selection even when already signed in
           }
         }
       });
       
       if (error) {
         console.error("Google Login Error:", error);
-        toast.error(`Google Login Error: ${error.message || t('auth.error.google')}`);
+        toast.error(`${t('auth.error.google')}: ${error.message}`);
+      } else if (!data.url) {
+        console.error("Google Login Failed: No redirect URL returned");
+        toast.error(t('auth.error.google'));
       } else {
-        console.log("Google auth initiated successfully:", data);
-        // At this point, the user will be redirected to Google's login page
-        // We don't need to do anything else here
+        console.log("Redirecting to Google auth URL:", data.url);
+        // The user will be redirected to Google's OAuth page automatically
       }
     } catch (error: any) {
       console.error("Google Login Exception:", error);
-      toast.error(`Google Login Exception: ${error.message || t('auth.error.google')}`);
+      toast.error(`${t('auth.error.google')}: ${error.message || 'Unknown error'}`);
     } finally {
       setLoading(false);
     }
@@ -72,7 +63,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
         <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
         <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
       </svg>
-      {loading ? t('common.loadingEllipsis') || 'Loading...' : t('common.continueWithGoogle')}
+      {loading ? t('common.loadingEllipsis') : t('common.continueWithGoogle')}
     </Button>
   );
 };
