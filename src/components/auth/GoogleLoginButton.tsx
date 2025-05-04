@@ -27,22 +27,18 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
       setLoading(true);
       setErrorDetails(null);
       
-      // Sicherstellen, dass die Weiterleitungs-URLs korrekt sind
-      const currentOrigin = window.location.origin;
-      
-      console.log("Starting Google login process");
-      console.log("Current origin:", currentOrigin);
-      console.log("Google Auth is configured with these redirect URLs:");
-      console.log("1. https://suvxmnrnldfhfwxvkntv.supabase.co/auth/v1/callback (Supabase)");
-      console.log("2. https://scriptbuddy.lovable.app/auth/callback (App)");
+      // ACHTUNG: Keine redirectTo Option verwenden - nur die Callback-URL in Google Cloud Console ist wichtig
+      console.log("Starting Google login process with default redirect settings");
+      console.log("Current origin:", window.location.origin);
+      console.log("Google Auth is configured with this redirect URL:");
+      console.log("https://suvxmnrnldfhfwxvkntv.supabase.co/auth/v1/callback");
       
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: currentOrigin, // Nach der Auth zurück zur App
+          // Keine redirectTo Option - wir nutzen nur die Callback-URL von Supabase
           scopes: 'email profile',
           queryParams: {
-            // Immer neue Auswahl erzwingen, um Cache-Probleme zu vermeiden
             prompt: 'select_account', 
             access_type: 'offline',
           }
@@ -70,7 +66,6 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
           // Alle Query-Parameter für Debugging ausgeben
           console.log("Auth URL parameters:");
           urlObj.searchParams.forEach((value, key) => {
-            // Tokens nicht vollständig loggen (Sicherheitsgrund)
             if (key === 'access_token' || key === 'refresh_token') {
               console.log(`Query param: ${key} = [TOKEN HIDDEN]`);
             } else {
@@ -91,7 +86,6 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
       setErrorDetails(`Exception: ${error.message || 'Unknown error'}`);
       toast.error(`${t('auth.error.google')}: ${error.message || 'Unknown error'}`);
     } finally {
-      // Beim Weiterleiten loading true behalten, nur bei Fehler false setzen
       if (errorDetails) {
         setLoading(false);
       }
