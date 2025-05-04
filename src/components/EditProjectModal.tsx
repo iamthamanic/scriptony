@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -18,7 +17,7 @@ interface EditProjectModalProps {
 }
 
 const EditProjectModal = ({ isOpen, onClose, onSubmit, project }: EditProjectModalProps) => {
-  const form = useForm<EditProjectFormData>({
+  const form = useForm<EditProjectFormData & { inspirations: string }>({
     defaultValues: {
       title: project.title,
       type: project.type,

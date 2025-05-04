@@ -1,5 +1,6 @@
 
-import { Genre, Project, Scene, TimeOfDay, ProjectType, EmotionalSignificance } from "../types";
+import { Genre, Project, Scene, TimeOfDay, ProjectType, EmotionalSignificance, Character } from "../types";
+import { genres, projectTypes, timesOfDay, emotionalSignificances } from "./constants";
 
 export const mockProjects: Project[] = [
   {
@@ -12,6 +13,7 @@ export const mockProjects: Project[] = [
     inspirations: ["Ghost in the Shell", "Akira", "Serial Experiments Lain"],
     coverImage: "/placeholder.svg",
     scenes: [],
+    characters: [],
     createdAt: new Date("2025-04-28"),
     updatedAt: new Date("2025-05-01")
   },
@@ -24,6 +26,7 @@ export const mockProjects: Project[] = [
     duration: 110,
     inspirations: ["Spirited Away", "The Ancient Magus' Bride", "Little Witch Academia"],
     scenes: [],
+    characters: [],
     createdAt: new Date("2025-03-15"),
     updatedAt: new Date("2025-04-20")
   }
@@ -51,6 +54,7 @@ export const mockScenes: Scene[] = [
     productionNotes: "Reference Blade Runner 2049 for atmospheric quality.",
     emotionalSignificance: "introduction",
     emotionalNotes: "Sets the tone for the cyberpunk world and creates a sense of wonder and isolation.",
+    characterIds: [],
     createdAt: new Date("2025-04-28"),
     updatedAt: new Date("2025-04-30")
   },
@@ -73,6 +77,7 @@ export const mockScenes: Scene[] = [
     transitions: "Cut to closeup of the message.",
     productionNotes: "Actress should look sleep-deprived but alert once she sees the message.",
     emotionalSignificance: "buildup",
+    characterIds: [],
     createdAt: new Date("2025-04-28"),
     updatedAt: new Date("2025-04-30")
   },
@@ -96,6 +101,7 @@ export const mockScenes: Scene[] = [
     productionNotes: "Spirits should be barely visible at first, becoming clearer as the scene progresses.",
     emotionalSignificance: "introduction",
     emotionalNotes: "Establishes the magical realism and Hana's growing awareness.",
+    characterIds: [],
     createdAt: new Date("2025-03-18"),
     updatedAt: new Date("2025-04-15")
   }
@@ -104,6 +110,18 @@ export const mockScenes: Scene[] = [
 // Add references to scenes in projects
 mockProjects[0].scenes = mockScenes.filter(scene => scene.projectId === "p1");
 mockProjects[1].scenes = mockScenes.filter(scene => scene.projectId === "p2");
+
+export const timeOfDayOptions: { label: string; value: TimeOfDay }[] = 
+  timesOfDay.map(time => ({ 
+    label: time.charAt(0).toUpperCase() + time.slice(1), 
+    value: time 
+  }));
+
+export const emotionalSignificanceOptions: { label: string; value: EmotionalSignificance }[] = 
+  emotionalSignificances.map(significance => ({ 
+    label: significance.charAt(0).toUpperCase() + significance.slice(1), 
+    value: significance 
+  }));
 
 export const genreOptions: { label: string; value: Genre }[] = [
   { label: "Action", value: "action" },
@@ -124,21 +142,4 @@ export const projectTypeOptions: { label: string; value: ProjectType }[] = [
   { label: "Movie", value: "movie" },
   { label: "Series", value: "series" },
   { label: "Short Film", value: "short" }
-];
-
-export const timeOfDayOptions: { label: string; value: TimeOfDay }[] = [
-  { label: "Morning", value: "morning" },
-  { label: "Day", value: "day" },
-  { label: "Evening", value: "evening" },
-  { label: "Night", value: "night" }
-];
-
-export const emotionalSignificanceOptions: { label: string; value: EmotionalSignificance }[] = [
-  { label: "Introduction", value: "introduction" },
-  { label: "Buildup", value: "buildup" },
-  { label: "Climax", value: "climax" },
-  { label: "Turning Point", value: "turning-point" },
-  { label: "Resolution", value: "resolution" },
-  { label: "Finale", value: "finale" },
-  { label: "Other", value: "other" }
 ];

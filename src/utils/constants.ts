@@ -34,3 +34,13 @@ export const emotionalSignificances: EmotionalSignificance[] = [
   'finale',
   'other'
 ];
+
+export const timeOfDayOptions = timesOfDay.map(time => ({
+  value: time,
+  label: time.charAt(0).toUpperCase() + time.slice(1)
+}));
+
+export const emotionalSignificanceOptions = emotionalSignificances.map(significance => ({
+  value: significance,
+  label: significance.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+}));
