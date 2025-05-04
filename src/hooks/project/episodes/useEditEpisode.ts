@@ -39,7 +39,7 @@ export const useEditEpisode = (
       return {
         ...project,
         episodes: project.episodes
-          .map(e => e.id === episodeId ? updatedEpisode as unknown as Episode : e)
+          .map(e => e.id === episodeId ? (updatedEpisode as unknown as Episode) : e)
           .sort((a, b) => a.number - b.number),
         scenes: updatedScenes,
         updatedAt: new Date()
