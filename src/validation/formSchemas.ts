@@ -58,3 +58,6 @@ export const sceneFormSchema = z.object({
 export type CharacterFormValidationSchema = z.infer<typeof characterFormSchema>;
 export type EpisodeFormValidationSchema = z.infer<typeof episodeFormSchema>;
 export type SceneFormValidationSchema = z.infer<typeof sceneFormSchema>;
+
+// Export the auth schemas for backward compatibility
+export * from '../validation/authSchemas';

@@ -1,9 +1,7 @@
 
 import React from 'react';
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { toast } from "sonner";
+import { useTranslation } from 'react-i18next';
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -18,14 +16,8 @@ import {
   FormDescription
 } from "@/components/ui/form";
 import { PasswordInput } from './PasswordInput';
-
-const registerSchema = z.object({
-  name: z.string().min(2, "Der Name muss mindestens 2 Zeichen lang sein."),
-  email: z.string().email("Bitte gib eine gültige E-Mail-Adresse ein."),
-  password: z.string().min(6, "Das Passwort muss mindestens 6 Zeichen lang sein.")
-});
-
-type RegisterFormValues = z.infer<typeof registerSchema>;
+import { useValidatedForm } from '@/hooks/useValidatedForm';
+import { registerSchema, type RegisterFormValues } from '@/validation/authSchemas';
 
 interface RegisterFormProps {
   loading: boolean;
@@ -38,8 +30,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   setLoading,
   onSuccess
 }) => {
-  const form = useForm<RegisterFormValues>({
-    resolver: zodResolver(registerSchema),
+  const { t } = useTranslation();
+  
+  const form = useValidatedForm<RegisterFormValues>(registerSchema, {
     defaultValues: {
       name: "",
       email: "",
@@ -62,10 +55,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       
       if (error) throw error;
       
-      toast.success("Registrierung erfolgreich! Bitte überprüfe deinen Posteingang.");
+      toast.success(t('auth.success.registration') || "Registrierung erfolgreich! Bitte überprüfe deinen Posteingang.");
       onSuccess();
     } catch (error: any) {
-      toast.error(error.message || "Registrierung fehlgeschlagen. Bitte versuche es erneut.");
+      toast.error(error.message || t('auth.error.registration') || "Registrierung fehlgeschlagen. Bitte versuche es erneut.");
     } finally {
       setLoading(false);
     }
@@ -79,7 +72,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>{t('common.name')}</FormLabel>
               <FormControl>
                 <Input placeholder="Max Mustermann" {...field} disabled={loading} />
               </FormControl>
@@ -93,7 +86,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>E-Mail</FormLabel>
+              <FormLabel>{t('common.email')}</FormLabel>
               <FormControl>
                 <Input placeholder="name@example.com" type="email" {...field} disabled={loading} />
               </FormControl>
@@ -107,12 +100,12 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Passwort</FormLabel>
+              <FormLabel>{t('common.password')}</FormLabel>
               <FormControl>
                 <PasswordInput field={field} disabled={loading} />
               </FormControl>
               <FormDescription>
-                Mindestens 6 Zeichen
+                {t('auth.passwordRequirements') || "Mindestens 6 Zeichen"}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -120,7 +113,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         />
         
         <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? "Wird geladen..." : "Registrieren"}
+          {loading ? t('common.loading') : t('common.register')}
         </Button>
       </form>
     </Form>
