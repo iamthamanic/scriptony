@@ -5,7 +5,6 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button';
 import { FileText, Edit, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 interface SceneCardProps {
   scene: Scene;
@@ -60,15 +59,14 @@ const SceneCard = ({ scene, onClick, onExportPDF }: SceneCardProps) => {
         <div className="flex gap-4">
           {scene.keyframeImage && (
             <div className="hidden sm:block w-1/3">
-              <AspectRatio ratio={16 / 9} className="bg-muted rounded-md overflow-hidden">
-                <div className="w-full h-full flex items-center justify-center">
-                  <img 
-                    src={scene.keyframeImage} 
-                    alt={`Scene ${scene.sceneNumber} keyframe`}
-                    className="max-w-full max-h-full object-contain"
-                  />
-                </div>
-              </AspectRatio>
+              <div className="bg-muted rounded-md overflow-hidden flex items-center justify-center p-1">
+                <img 
+                  src={scene.keyframeImage} 
+                  alt={`Scene ${scene.sceneNumber} keyframe`}
+                  className="max-w-full object-contain"
+                  style={{ maxHeight: "120px" }}
+                />
+              </div>
             </div>
           )}
           <div className={scene.keyframeImage ? "w-full sm:w-2/3" : "w-full"}>
