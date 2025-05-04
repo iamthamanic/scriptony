@@ -9,7 +9,244 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      characters: {
+        Row: {
+          background: string | null
+          conflicts: string | null
+          created_at: string
+          description: string | null
+          goals: string | null
+          id: string
+          image_url: string | null
+          name: string
+          personality: string | null
+          project_id: string
+          role: string | null
+          updated_at: string
+          visual_traits: string | null
+        }
+        Insert: {
+          background?: string | null
+          conflicts?: string | null
+          created_at?: string
+          description?: string | null
+          goals?: string | null
+          id?: string
+          image_url?: string | null
+          name: string
+          personality?: string | null
+          project_id: string
+          role?: string | null
+          updated_at?: string
+          visual_traits?: string | null
+        }
+        Update: {
+          background?: string | null
+          conflicts?: string | null
+          created_at?: string
+          description?: string | null
+          goals?: string | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          personality?: string | null
+          project_id?: string
+          role?: string | null
+          updated_at?: string
+          visual_traits?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "characters_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      episodes: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          number: number
+          project_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          number: number
+          project_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          number?: number
+          project_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "episodes_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      projects: {
+        Row: {
+          cover_image_url: string | null
+          created_at: string
+          duration: string | null
+          genres: string[] | null
+          id: string
+          inspirations: string | null
+          logline: string | null
+          narrative_structure: string | null
+          title: string
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cover_image_url?: string | null
+          created_at?: string
+          duration?: string | null
+          genres?: string[] | null
+          id?: string
+          inspirations?: string | null
+          logline?: string | null
+          narrative_structure?: string | null
+          title: string
+          type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cover_image_url?: string | null
+          created_at?: string
+          duration?: string | null
+          genres?: string[] | null
+          id?: string
+          inspirations?: string | null
+          logline?: string | null
+          narrative_structure?: string | null
+          title?: string
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      scenes: {
+        Row: {
+          character_ids: string[] | null
+          color_grading: string | null
+          created_at: string
+          description: string
+          dialog: string | null
+          emotional_notes: string | null
+          emotional_significance: string | null
+          episode_id: string | null
+          episode_title: string | null
+          id: string
+          keyframe_image_url: string | null
+          lighting: string | null
+          location: string
+          production_notes: string | null
+          project_id: string
+          scene_number: number
+          sound_design: string | null
+          special_effects: string | null
+          time_of_day: string
+          timecode_end: string
+          timecode_start: string
+          transitions: string | null
+          updated_at: string
+          visual_composition: string | null
+        }
+        Insert: {
+          character_ids?: string[] | null
+          color_grading?: string | null
+          created_at?: string
+          description: string
+          dialog?: string | null
+          emotional_notes?: string | null
+          emotional_significance?: string | null
+          episode_id?: string | null
+          episode_title?: string | null
+          id?: string
+          keyframe_image_url?: string | null
+          lighting?: string | null
+          location: string
+          production_notes?: string | null
+          project_id: string
+          scene_number: number
+          sound_design?: string | null
+          special_effects?: string | null
+          time_of_day: string
+          timecode_end: string
+          timecode_start: string
+          transitions?: string | null
+          updated_at?: string
+          visual_composition?: string | null
+        }
+        Update: {
+          character_ids?: string[] | null
+          color_grading?: string | null
+          created_at?: string
+          description?: string
+          dialog?: string | null
+          emotional_notes?: string | null
+          emotional_significance?: string | null
+          episode_id?: string | null
+          episode_title?: string | null
+          id?: string
+          keyframe_image_url?: string | null
+          lighting?: string | null
+          location?: string
+          production_notes?: string | null
+          project_id?: string
+          scene_number?: number
+          sound_design?: string | null
+          special_effects?: string | null
+          time_of_day?: string
+          timecode_end?: string
+          timecode_start?: string
+          transitions?: string | null
+          updated_at?: string
+          visual_composition?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scenes_episode_id_fkey"
+            columns: ["episode_id"]
+            isOneToOne: false
+            referencedRelation: "episodes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scenes_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

@@ -1,52 +1,130 @@
-import { useState } from "react";
-import { Project, NewProjectFormData, EditProjectFormData, EmotionalSignificance, TimeOfDay } from "../../types";
-import { mockProjects } from "../../utils/mockData";
+
+import { useState, useEffect } from "react";
+import { Project, NewProjectFormData, EditProjectFormData } from "../../types";
 import { useToast } from "../use-toast";
 import { narrativeStructureTemplates } from "../../types/narrativeStructures";
+import { fetchUserProjects, fetchProjectDetails, createProject, updateProject, deleteProject } from "../../services/database";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const useProjects = () => {
-  const [projects, setProjects] = useState<Project[]>(
-    mockProjects.map(p => ({ ...p, characters: [], episodes: [], narrativeStructure: 'none' }))
-  );
-  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(mockProjects[0]?.id || null);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const { user } = useAuth();
   
   const selectedProject = selectedProjectId ? projects.find(p => p.id === selectedProjectId) : null;
 
-  const handleCreateProject = (data: NewProjectFormData) => {
-    const newProject: Project = {
-      id: `p${projects.length + 1}`,
-      title: data.title,
-      type: data.type,
-      logline: data.logline,
-      genres: data.genres,
-      duration: data.duration,
-      inspirations: data.inspirations,
-      coverImage: data.coverImage ? URL.createObjectURL(data.coverImage) : undefined,
-      scenes: [],
-      characters: [],
-      episodes: [],
-      narrativeStructure: data.narrativeStructure || 'none',
-      createdAt: new Date(),
-      updatedAt: new Date()
+  // Fetch projects when user changes
+  useEffect(() => {
+    if (!user) {
+      setProjects([]);
+      setSelectedProjectId(null);
+      setIsLoading(false);
+      return;
+    }
+    
+    const loadProjects = async () => {
+      setIsLoading(true);
+      try {
+        const projectsData = await fetchUserProjects();
+        
+        if (projectsData.length > 0) {
+          setProjects(projectsData);
+          setSelectedProjectId(projectsData[0]?.id || null);
+          
+          // Load detailed data for the first project
+          if (projectsData[0]) {
+            const { characters, episodes, scenes } = await fetchProjectDetails(projectsData[0].id);
+            
+            setProjects(prevProjects => {
+              return prevProjects.map(project => {
+                if (project.id === projectsData[0].id) {
+                  return {
+                    ...project,
+                    characters,
+                    episodes,
+                    scenes
+                  };
+                }
+                return project;
+              });
+            });
+          }
+        } else {
+          setProjects([]);
+        }
+      } catch (error) {
+        console.error("Error loading projects:", error);
+        toast({
+          title: "Error loading projects",
+          description: "Please try again later.",
+          variant: "destructive"
+        });
+      } finally {
+        setIsLoading(false);
+      }
     };
     
-    // If a narrative structure was selected, generate template scenes
-    if (data.narrativeStructure && data.narrativeStructure !== 'none') {
-      const template = narrativeStructureTemplates[data.narrativeStructure];
-      
-      if (template) {
-        // Generate scenes from template
-        const templateScenes = template.scenes.map((sceneTpl, index) => {
-          const now = new Date();
-          return {
-            id: `s${index + 1}-${now.getTime()}`,
-            projectId: newProject.id,
-            episodeId: undefined,
-            episodeTitle: undefined,
+    loadProjects();
+  }, [user, toast]);
+  
+  // Load project details when selected project changes
+  useEffect(() => {
+    if (!selectedProjectId || !user) return;
+    
+    const loadProjectDetails = async () => {
+      try {
+        const { characters, episodes, scenes } = await fetchProjectDetails(selectedProjectId);
+        
+        setProjects(prevProjects => {
+          return prevProjects.map(project => {
+            if (project.id === selectedProjectId) {
+              return {
+                ...project,
+                characters,
+                episodes,
+                scenes
+              };
+            }
+            return project;
+          });
+        });
+      } catch (error) {
+        console.error("Error loading project details:", error);
+      }
+    };
+    
+    const selectedProject = projects.find(p => p.id === selectedProjectId);
+    if (selectedProject && (!selectedProject.characters.length && !selectedProject.scenes.length)) {
+      loadProjectDetails();
+    }
+  }, [selectedProjectId, user, projects]);
+
+  const handleCreateProject = async (data: NewProjectFormData) => {
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to create a project",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    const newProjectData = await createProject(data);
+    
+    if (newProjectData) {
+      // Generate scenes from template if needed
+      let scenes = [];
+      if (data.narrativeStructure && data.narrativeStructure !== 'none') {
+        const template = narrativeStructureTemplates[data.narrativeStructure];
+        
+        if (template) {
+          scenes = template.scenes.map((sceneTpl, index) => ({
+            projectId: newProjectData.id,
             sceneNumber: sceneTpl.sceneNumber || index + 1,
             location: sceneTpl.location || "",
-            timeOfDay: "day" as TimeOfDay, // Explicitly cast to TimeOfDay type
+            timeOfDay: "day",
             timecodeStart: "00:00:00",
             timecodeEnd: "00:00:00",
             visualComposition: "",
@@ -54,79 +132,98 @@ export const useProjects = () => {
             colorGrading: "",
             soundDesign: "",
             specialEffects: "",
-            keyframeImage: undefined,
             description: sceneTpl.description || "",
             dialog: "",
             transitions: "",
             productionNotes: "",
-            emotionalSignificance: (sceneTpl.emotionalSignificance as EmotionalSignificance) || "other",
+            emotionalSignificance: sceneTpl.emotionalSignificance || "other",
             characterIds: [],
-            createdAt: now,
-            updatedAt: now
-          };
-        });
-        
-        newProject.scenes = templateScenes;
+          }));
+        }
       }
+      
+      const newProject = {
+        ...newProjectData,
+        scenes: []  // Will be populated if template scenes are created
+      };
+      
+      setProjects([...projects, newProject]);
+      setSelectedProjectId(newProject.id);
+      
+      toast({
+        title: "Project Created",
+        description: `${data.title} has been created successfully.`,
+        duration: 3000
+      });
     }
-    
-    setProjects([...projects, newProject]);
-    setSelectedProjectId(newProject.id);
-    toast({
-      title: "Project Created",
-      description: `${data.title} has been created successfully.`,
-      duration: 3000
-    });
   };
 
-  const handleEditProject = (data: EditProjectFormData) => {
-    if (!selectedProject) return;
+  const handleEditProject = async (data: EditProjectFormData) => {
+    if (!selectedProject || !user) return;
 
-    const updatedProject: Project = {
-      ...selectedProject,
+    const success = await updateProject(selectedProject.id, {
       title: data.title,
       type: data.type,
       logline: data.logline,
       genres: data.genres,
       duration: data.duration,
       inspirations: data.inspirations,
-      narrativeStructure: data.narrativeStructure || selectedProject.narrativeStructure,
-      coverImage: data.coverImage 
-        ? URL.createObjectURL(data.coverImage) 
-        : selectedProject.coverImage,
-      updatedAt: new Date()
-    };
-
-    const updatedProjects = projects.map(project => 
-      project.id === selectedProject.id ? updatedProject : project
-    );
-
-    setProjects(updatedProjects);
-    toast({
-      title: "Project Updated",
-      description: `${data.title} has been updated successfully.`,
-      duration: 3000
+      narrativeStructure: data.narrativeStructure,
+      coverImage: data.coverImage
     });
+
+    if (success) {
+      const updatedProject: Project = {
+        ...selectedProject,
+        title: data.title,
+        type: data.type,
+        logline: data.logline,
+        genres: data.genres,
+        duration: data.duration,
+        inspirations: data.inspirations,
+        narrativeStructure: data.narrativeStructure || selectedProject.narrativeStructure,
+        coverImage: data.coverImage 
+          ? URL.createObjectURL(data.coverImage) 
+          : selectedProject.coverImage,
+        updatedAt: new Date()
+      };
+
+      const updatedProjects = projects.map(project => 
+        project.id === selectedProject.id ? updatedProject : project
+      );
+
+      setProjects(updatedProjects);
+      
+      toast({
+        title: "Project Updated",
+        description: `${data.title} has been updated successfully.`,
+        duration: 3000
+      });
+    }
   };
 
-  const handleDeleteProject = () => {
-    if (!selectedProjectId) return;
+  const handleDeleteProject = async () => {
+    if (!selectedProjectId || !user) return;
     
     const projectToDelete = projects.find(p => p.id === selectedProjectId);
     if (!projectToDelete) return;
     
-    const updatedProjects = projects.filter(project => project.id !== selectedProjectId);
-    const nextProjectId = updatedProjects.length > 0 ? updatedProjects[0].id : null;
+    const success = await deleteProject(selectedProjectId);
     
-    setProjects(updatedProjects);
-    setSelectedProjectId(nextProjectId);
-    
-    toast({
-      title: "Project Deleted",
-      description: `${projectToDelete.title} has been permanently deleted.`,
-      variant: "destructive",
-      duration: 3000
-    });
+    if (success) {
+      const updatedProjects = projects.filter(project => project.id !== selectedProjectId);
+      const nextProjectId = updatedProjects.length > 0 ? updatedProjects[0].id : null;
+      
+      setProjects(updatedProjects);
+      setSelectedProjectId(nextProjectId);
+      
+      toast({
+        title: "Project Deleted",
+        description: `${projectToDelete.title} has been permanently deleted.`,
+        variant: "destructive",
+        duration: 3000
+      });
+    }
   };
 
   return {
@@ -137,6 +234,7 @@ export const useProjects = () => {
     setSelectedProjectId,
     handleCreateProject,
     handleEditProject,
-    handleDeleteProject
+    handleDeleteProject,
+    isLoading
   };
 };

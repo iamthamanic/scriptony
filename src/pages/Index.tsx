@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import AppHeader from "../components/AppHeader";
 import ProjectSelector from "../components/ProjectSelector";
@@ -8,6 +9,7 @@ import AccountSettings from "../components/AccountSettings";
 import { Scene, Episode } from "../types";
 import { useProjectState } from "../hooks/project/useProjectState";
 import { useAuth } from "@/contexts/AuthContext";
+import { Loader2 } from "lucide-react";
 
 const Index = () => {
   const {
@@ -25,7 +27,8 @@ const Index = () => {
     handleDeleteScene,
     handleCreateEpisode,
     handleEditEpisode,
-    handleDeleteEpisode
+    handleDeleteEpisode,
+    isLoading
   } = useProjectState();
 
   const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false);
@@ -38,7 +41,7 @@ const Index = () => {
   const [editingEpisode, setEditingEpisode] = useState<Episode | null>(null);
   const [selectedEpisodeId, setSelectedEpisodeId] = useState<string | null>(null);
   const [accountName] = useState("Demo User"); // This would come from authentication in a real app
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
 
   const handleSignOut = async () => {
     await signOut();
@@ -84,10 +87,10 @@ const Index = () => {
         <AppHeader 
           onNewProject={() => setIsNewProjectModalOpen(true)} 
           onOpenAccountSettings={() => setIsAccountSettingsOpen(true)}
-          accountName={accountName}
+          accountName={user?.email?.split('@')[0] || accountName}
         />
         
-        {projects.length > 0 && (
+        {projects.length > 0 && !isLoading && (
           <ProjectSelector 
             projects={projects} 
             selectedProjectId={selectedProjectId} 
@@ -99,7 +102,12 @@ const Index = () => {
         )}
       </header>
       
-      {selectedProject ? (
+      {isLoading ? (
+        <div className="flex flex-col items-center justify-center py-20">
+          <Loader2 className="h-12 w-12 animate-spin text-anime-purple mb-4" />
+          <p className="text-lg text-muted-foreground">Loading your projects...</p>
+        </div>
+      ) : selectedProject ? (
         <ProjectContent 
           project={selectedProject}
           onNewScene={handleNewScene}
@@ -157,10 +165,17 @@ const Index = () => {
       <AccountSettings
         isOpen={isAccountSettingsOpen}
         onClose={() => setIsAccountSettingsOpen(false)}
-        accountName={accountName}
+        accountName={user?.email?.split('@')[0] || accountName}
       />
       
-      <button onClick={handleSignOut}>Sign Out</button>
+      <div className="mt-10 text-center">
+        <button 
+          onClick={handleSignOut} 
+          className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+        >
+          Sign Out
+        </button>
+      </div>
     </div>
   );
 };
