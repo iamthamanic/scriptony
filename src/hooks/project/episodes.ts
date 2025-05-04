@@ -64,7 +64,7 @@ export const useEpisodes = (
     const success = await updateEpisode(episodeId, updateData);
 
     if (success) {
-      // Create the updated episode with proper typing
+      // Create the updated episode with proper type handling
       const updatedEpisode: EpisodeWithCoverImageFile = {
         ...episodeToEdit,
         title: data.title,
