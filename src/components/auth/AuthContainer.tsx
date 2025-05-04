@@ -46,7 +46,9 @@ const AuthContainer: React.FC<AuthContainerProps> = ({
           <div className="mx-auto mb-4">
             <Logo size="lg" showText={true} />
           </div>
-          <CardTitle className="text-2xl">{title}</CardTitle>
+          <CardTitle className="text-2xl">
+            {title === t('common.welcome') ? "willkommen" : title}
+          </CardTitle>
           <CardDescription>{description}</CardDescription>
         </CardHeader>
         <CardContent>
