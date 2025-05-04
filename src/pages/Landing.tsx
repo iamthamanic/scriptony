@@ -1,15 +1,11 @@
-
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Check, X, AlertCircle } from "lucide-react";
-
 const Landing = () => {
   const navigate = useNavigate();
-
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="relative py-16 md:py-24">
         <div className="container mx-auto px-4">
@@ -25,18 +21,18 @@ const Landing = () => {
                 <Button size="lg" className="bg-primary hover:bg-primary/90" onClick={() => navigate('/auth')}>
                   Kostenlos starten mit Google
                 </Button>
-                <Button size="lg" variant="outline" onClick={() => navigate('/auth', { state: { mode: 'login' } })}>
+                <Button size="lg" variant="outline" onClick={() => navigate('/auth', {
+                state: {
+                  mode: 'login'
+                }
+              })}>
                   Login
                 </Button>
               </div>
             </div>
             <div className="flex-1 mt-8 md:mt-0">
               <div className="bg-card rounded-lg shadow-lg overflow-hidden">
-                <img 
-                  src="/placeholder.svg" 
-                  alt="ScriptBuddy Demo Scene" 
-                  className="w-full h-auto object-cover"
-                />
+                <img alt="ScriptBuddy Demo Scene" className="w-full h-auto object-cover" src="/lovable-uploads/edf9e706-94e5-41dc-9bc6-c6a6e0642216.png" />
               </div>
             </div>
           </div>
@@ -110,19 +106,10 @@ const Landing = () => {
             <h2 className="text-3xl font-bold mb-4">Was ScriptBuddy für dich macht</h2>
           </div>
           <div className="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[
-              "Szenen-Editor mit Bildern, Timecode & Sound",
-              "Struktur-Generator mit Plot-Vorlagen",
-              "Shotliste & visuelle Timeline",
-              "Export als PDF, Markdown oder ZIP",
-              "Projekte für Film, Audio oder Bühne",
-              "KI-tauglich für visuelle Generierung"
-            ].map((feature, index) => (
-              <div key={index} className="flex items-center p-3 bg-card rounded-lg shadow">
+            {["Szenen-Editor mit Bildern, Timecode & Sound", "Struktur-Generator mit Plot-Vorlagen", "Shotliste & visuelle Timeline", "Export als PDF, Markdown oder ZIP", "Projekte für Film, Audio oder Bühne", "KI-tauglich für visuelle Generierung"].map((feature, index) => <div key={index} className="flex items-center p-3 bg-card rounded-lg shadow">
                 <Check className="h-5 w-5 text-primary mr-3 flex-shrink-0" />
                 <span>{feature}</span>
-              </div>
-            ))}
+              </div>)}
           </div>
         </div>
       </section>
@@ -211,47 +198,35 @@ const Landing = () => {
             <h2 className="text-3xl font-bold">Preise</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {[
-              {
-                name: "Free",
-                price: "0 €",
-                features: ["5 Projekte", "PDF-Export", "Plotstruktur-Vorlagen"]
-              },
-              {
-                name: "Pro",
-                price: "9,99 € / Monat",
-                features: ["50 Projekte", "ZIP-Export", "Story-Blueprint-Modul"]
-              },
-              {
-                name: "Studio",
-                price: "19,99 € / Monat",
-                features: ["Unlimitiert", "Team-Funktion", "Versioning", "AI-Assistent"]
-              }
-            ].map((plan, index) => (
-              <Card key={index} className={`hover-scale ${index === 1 ? 'border-primary shadow-lg' : ''}`}>
+            {[{
+            name: "Free",
+            price: "0 €",
+            features: ["5 Projekte", "PDF-Export", "Plotstruktur-Vorlagen"]
+          }, {
+            name: "Pro",
+            price: "9,99 € / Monat",
+            features: ["50 Projekte", "ZIP-Export", "Story-Blueprint-Modul"]
+          }, {
+            name: "Studio",
+            price: "19,99 € / Monat",
+            features: ["Unlimitiert", "Team-Funktion", "Versioning", "AI-Assistent"]
+          }].map((plan, index) => <Card key={index} className={`hover-scale ${index === 1 ? 'border-primary shadow-lg' : ''}`}>
                 <CardContent className="p-6">
                   <div className="text-center space-y-4">
                     <h3 className="text-xl font-bold">{plan.name}</h3>
                     <div className="text-3xl font-bold">{plan.price}</div>
                     <div className="pt-4 space-y-2">
-                      {plan.features.map((feature, i) => (
-                        <div key={i} className="flex items-center">
+                      {plan.features.map((feature, i) => <div key={i} className="flex items-center">
                           <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
                           <span>{feature}</span>
-                        </div>
-                      ))}
+                        </div>)}
                     </div>
-                    <Button 
-                      className={`mt-6 w-full ${index === 1 ? 'bg-primary hover:bg-primary/90' : ''}`}
-                      variant={index === 1 ? 'default' : 'outline'}
-                      onClick={() => navigate('/auth')}
-                    >
+                    <Button className={`mt-6 w-full ${index === 1 ? 'bg-primary hover:bg-primary/90' : ''}`} variant={index === 1 ? 'default' : 'outline'} onClick={() => navigate('/auth')}>
                       Auswählen
                     </Button>
                   </div>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </div>
       </section>
@@ -260,11 +235,7 @@ const Landing = () => {
       <section className="py-16 bg-primary/10">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-6">Starte dein erstes Projekt heute</h2>
-          <Button 
-            size="lg" 
-            className="bg-primary hover:bg-primary/90"
-            onClick={() => navigate('/auth')}
-          >
+          <Button size="lg" className="bg-primary hover:bg-primary/90" onClick={() => navigate('/auth')}>
             Kostenlos loslegen
           </Button>
         </div>
@@ -286,8 +257,6 @@ const Landing = () => {
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Landing;
