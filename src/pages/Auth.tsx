@@ -2,30 +2,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { toast } from "sonner";
-import { ArrowLeft } from 'lucide-react';
+import { Separator } from "@/components/ui/separator";
 
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { LoginForm } from '@/components/auth/LoginForm';
 import { RegisterForm } from '@/components/auth/RegisterForm';
-import Logo from '@/components/Logo';
-import { ThemeToggle } from '@/components/ThemeToggle';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
-import { Input } from '@/components/ui/input';
-import { 
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from "@/components/ui/form";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import AuthContainer from '@/components/auth/AuthContainer';
+import GoogleLoginButton from '@/components/auth/GoogleLoginButton';
+import PasswordResetForm from '@/components/auth/PasswordResetForm';
+import AuthSwitcher from '@/components/auth/AuthSwitcher';
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -59,85 +44,6 @@ const Auth = () => {
     checkUser();
   }, [location.state, navigate]);
 
-  const handleGoogleLogin = async () => {
-    try {
-      setLoading(true);
-      console.log("Starting Google login process...");
-      console.log("Current URL:", window.location.href);
-      console.log("Origin:", window.location.origin);
-      
-      // Generate a proper redirect URL without any hash or search params
-      const baseUrl = window.location.origin;
-      const redirectUrl = `${baseUrl}/`;
-      console.log("Redirect URL:", redirectUrl);
-      
-      // Use the Supabase project URL for debugging
-      const supabaseUrl = "https://suvxmnrnldfhfwxvkntv.supabase.co";
-      console.log("Supabase URL:", supabaseUrl);
-      
-      // Call the Google OAuth method
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: redirectUrl,
-          queryParams: {
-            // Optional: Add additional query params if needed
-            // prompt: 'select_account', // Forces account selection even if already signed in
-            // access_type: 'offline' // For getting refresh token
-          }
-        }
-      });
-      
-      if (error) {
-        console.error("Google Login Error:", error);
-        toast.error(`Google Login Error: ${error.message || t('auth.error.google')}`);
-      } else {
-        console.log("Google auth initiated successfully:", data);
-        // At this point, the user will be redirected to Google's login page
-        // We don't need to do anything else here
-      }
-    } catch (error: any) {
-      console.error("Google Login Exception:", error);
-      toast.error(`Google Login Exception: ${error.message || t('auth.error.google')}`);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const resetPasswordSchema = z.object({
-    email: z.string().email(t('common.invalidEmail'))
-  });
-
-  type ResetPasswordValues = z.infer<typeof resetPasswordSchema>;
-
-  const resetPasswordForm = useForm<ResetPasswordValues>({
-    resolver: zodResolver(resetPasswordSchema),
-    defaultValues: {
-      email: ""
-    }
-  });
-
-  const handlePasswordReset = async (data: ResetPasswordValues) => {
-    try {
-      setLoading(true);
-      const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
-        redirectTo: `${window.location.origin}/auth?mode=update-password`
-      });
-      
-      if (error) {
-        toast.error(error.message || t('auth.error.passwordReset'));
-      } else {
-        toast.success(t('auth.success.passwordResetEmail'));
-        setIsPasswordReset(false);
-        setIsLogin(true);
-      }
-    } catch (error: any) {
-      toast.error(error.message || t('auth.error.passwordReset'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const toggleMode = () => {
     if (isPasswordReset) {
       setIsPasswordReset(false);
@@ -151,122 +57,81 @@ const Auth = () => {
     setIsPasswordReset(!isPasswordReset);
   };
 
-  const renderForm = () => {
+  const getAuthTitle = () => {
+    if (isPasswordReset) {
+      return t('auth.forgotPassword');
+    } else if (isLogin) {
+      return t('common.welcome');
+    } else {
+      return t('common.createAccount');
+    }
+  };
+
+  const getAuthDescription = () => {
+    if (isPasswordReset) {
+      return t('auth.enterEmailForReset');
+    } else if (isLogin) {
+      return t('common.loginTo');
+    } else {
+      return t('common.joinCommunity');
+    }
+  };
+
+  const renderAuthContent = () => {
     if (isPasswordReset) {
       return (
-        <Form {...resetPasswordForm}>
-          <form onSubmit={resetPasswordForm.handleSubmit(handlePasswordReset)} className="space-y-4">
-            <FormField
-              control={resetPasswordForm.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('common.email')}</FormLabel>
-                  <FormControl>
-                    <Input placeholder="name@example.com" type="email" {...field} disabled={loading} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? t('common.loading') : t('auth.resetPassword')}
-            </Button>
-          </form>
-        </Form>
+        <PasswordResetForm 
+          loading={loading} 
+          setLoading={setLoading} 
+          onSuccess={() => {
+            setIsPasswordReset(false);
+            setIsLogin(true);
+          }}
+        />
       );
     }
-    
-    return isLogin ? (
-      <>
-        <LoginForm loading={loading} setLoading={setLoading} onForgotPassword={togglePasswordReset} />
-      </>
-    ) : (
-      <RegisterForm 
-        loading={loading} 
-        setLoading={setLoading} 
-        onSuccess={() => setIsLogin(true)}
-      />
+
+    return (
+      <div className="space-y-4">
+        <GoogleLoginButton loading={loading} setLoading={setLoading} />
+        
+        <div className="flex items-center my-4">
+          <Separator className="flex-grow" />
+          <span className="mx-4 text-xs text-muted-foreground">{t('common.or')}</span>
+          <Separator className="flex-grow" />
+        </div>
+
+        {isLogin ? (
+          <LoginForm 
+            loading={loading} 
+            setLoading={setLoading} 
+            onForgotPassword={togglePasswordReset} 
+          />
+        ) : (
+          <RegisterForm 
+            loading={loading} 
+            setLoading={setLoading} 
+            onSuccess={() => setIsLogin(true)}
+          />
+        )}
+      </div>
     );
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <div className="absolute top-4 right-4 flex items-center gap-2">
-        <LanguageSwitcher />
-        <ThemeToggle />
-      </div>
-      
-      <Button
-        variant="ghost"
-        className="absolute top-4 left-4 flex items-center gap-2"
-        onClick={() => navigate('/landing')}
-      >
-        <ArrowLeft className="h-4 w-4" /> {t('common.back')}
-      </Button>
-      
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-4">
-            <Logo size="lg" showText={true} />
-          </div>
-          <CardTitle className="text-2xl">
-            {isPasswordReset 
-              ? t('auth.forgotPassword') 
-              : isLogin 
-                ? t('common.welcome') 
-                : t('common.createAccount')}
-          </CardTitle>
-          <CardDescription>
-            {isPasswordReset 
-              ? t('auth.enterEmailForReset')
-              : isLogin 
-                ? t('common.loginTo') 
-                : t('common.joinCommunity')}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {!isPasswordReset && (
-              <>
-                <Button 
-                  variant="outline" 
-                  className="w-full flex items-center gap-2" 
-                  onClick={handleGoogleLogin}
-                  disabled={loading}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
-                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                  </svg>
-                  {loading ? t('common.loadingEllipsis') || 'Loading...' : t('common.continueWithGoogle')}
-                </Button>
-                
-                <div className="flex items-center my-4">
-                  <Separator className="flex-grow" />
-                  <span className="mx-4 text-xs text-muted-foreground">{t('common.or')}</span>
-                  <Separator className="flex-grow" />
-                </div>
-              </>
-            )}
-
-            {renderForm()}
-          </div>
-        </CardContent>
-        <CardFooter className="flex justify-center border-t pt-4">
-          <Button variant="link" onClick={toggleMode}>
-            {isPasswordReset 
-              ? t('common.backToLogin')
-              : isLogin 
-                ? t('common.notRegistered') 
-                : t('common.alreadyRegistered')}
-          </Button>
-        </CardFooter>
-      </Card>
-    </div>
+    <AuthContainer
+      title={getAuthTitle()}
+      description={getAuthDescription()}
+      footer={
+        <AuthSwitcher 
+          isLogin={isLogin} 
+          isPasswordReset={isPasswordReset} 
+          onToggle={toggleMode}
+        />
+      }
+    >
+      {renderAuthContent()}
+    </AuthContainer>
   );
 };
 
