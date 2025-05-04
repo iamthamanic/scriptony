@@ -1,5 +1,5 @@
 
-import { Genre, ProjectType } from "../types";
+import { Genre, ProjectType, TimeOfDay, EmotionalSignificance } from "../types";
 
 export const projectTypes: ProjectType[] = ['movie', 'series', 'short'];
 
@@ -16,4 +16,21 @@ export const genres: Genre[] = [
   'slice-of-life',
   'supernatural',
   'thriller'
+];
+
+export const timesOfDay: TimeOfDay[] = [
+  'morning',
+  'day',
+  'evening', 
+  'night'
+];
+
+export const emotionalSignificances: EmotionalSignificance[] = [
+  'introduction',
+  'buildup',
+  'climax',
+  'turning-point',
+  'resolution',
+  'finale',
+  'other'
 ];

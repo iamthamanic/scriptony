@@ -2,16 +2,28 @@
 import React from 'react';
 import { Project } from '../types';
 import { Button } from '@/components/ui/button';
-import { CalendarDays, FilePlus, Edit, Users } from 'lucide-react';
+import { CalendarDays, FilePlus, Edit, Users, Trash2 } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 interface ProjectHeaderProps {
   project: Project;
   onNewScene: () => void;
   onEditProject: () => void;
   onNewCharacter: () => void;
+  onDeleteProject?: () => void;
 }
 
-const ProjectHeader = ({ project, onNewScene, onEditProject, onNewCharacter }: ProjectHeaderProps) => {
+const ProjectHeader = ({ project, onNewScene, onEditProject, onNewCharacter, onDeleteProject }: ProjectHeaderProps) => {
   return (
     <div className="mb-8 animate-fade-in">
       <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4">
@@ -48,6 +60,37 @@ const ProjectHeader = ({ project, onNewScene, onEditProject, onNewCharacter }: P
           <p className="mt-3 text-lg italic text-muted-foreground">{project.logline}</p>
         </div>
         <div className="flex flex-wrap gap-2">
+          {onDeleteProject && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  className="border-destructive text-destructive hover:bg-destructive/10"
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete Project
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete Project</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to delete "{project.title}"? This action cannot be undone.
+                    All scenes and characters associated with this project will be permanently deleted.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction 
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    onClick={onDeleteProject}
+                  >
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
           <Button 
             onClick={onNewCharacter}
             variant="outline"

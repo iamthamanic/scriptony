@@ -1,19 +1,19 @@
-
 import React from 'react';
 import { Scene, Character } from '../types';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FileText, Edit, Clock, User } from 'lucide-react';
+import { FileText, Edit, Clock, User, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SceneCardProps {
   scene: Scene;
   onClick: () => void;
   onExportPDF: () => void;
+  onDeleteScene?: () => void;
   characters?: Character[];
 }
 
-const SceneCard = ({ scene, onClick, onExportPDF, characters = [] }: SceneCardProps) => {
+const SceneCard = ({ scene, onClick, onExportPDF, onDeleteScene, characters = [] }: SceneCardProps) => {
   // Helper function to get background color based on emotional significance
   const getEmotionColor = () => {
     switch (scene.emotionalSignificance) {
@@ -103,6 +103,11 @@ const SceneCard = ({ scene, onClick, onExportPDF, characters = [] }: SceneCardPr
           </span>
         </div>
         <div className="flex gap-2">
+          {onDeleteScene && (
+            <Button variant="outline" size="sm" onClick={onDeleteScene} className="border-destructive text-destructive hover:bg-destructive/10">
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
           <Button variant="outline" size="sm" onClick={onExportPDF}>
             <FileText className="h-4 w-4 mr-1" />
             PDF

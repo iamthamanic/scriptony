@@ -10,10 +10,11 @@ interface SceneListProps {
   scenes: Scene[];
   onEditScene: (scene: Scene) => void;
   onExportPDF: (scene: Scene) => void;
+  onDeleteScene?: (scene: Scene) => void;
   characters?: Character[];
 }
 
-const SceneList = ({ scenes, onEditScene, onExportPDF, characters = [] }: SceneListProps) => {
+const SceneList = ({ scenes, onEditScene, onExportPDF, onDeleteScene, characters = [] }: SceneListProps) => {
   const [activeView, setActiveView] = useState<"gallery" | "timeline">("gallery");
 
   return (
@@ -50,6 +51,7 @@ const SceneList = ({ scenes, onEditScene, onExportPDF, characters = [] }: SceneL
               scene={scene} 
               onClick={() => onEditScene(scene)} 
               onExportPDF={() => onExportPDF(scene)} 
+              onDeleteScene={onDeleteScene ? () => onDeleteScene(scene) : undefined}
               characters={characters}
             />
           ))}
