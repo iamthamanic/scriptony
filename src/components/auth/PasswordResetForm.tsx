@@ -3,7 +3,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from "sonner";
 
-import { supabase } from "@/integrations/supabase/client";
+import { customSupabase } from "@/integrations/supabase/customClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { 
@@ -35,7 +35,7 @@ const PasswordResetForm: React.FC<PasswordResetFormProps> = ({ loading, setLoadi
   const handlePasswordReset = async (data: PasswordResetFormValues) => {
     try {
       setLoading(true);
-      const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
+      const { error } = await customSupabase.auth.resetPasswordForEmail(data.email, {
         redirectTo: `${window.location.origin}/auth?mode=update-password`
       });
       

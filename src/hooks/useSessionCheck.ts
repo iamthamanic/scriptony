@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { customSupabase } from "@/integrations/supabase/customClient";
 
 /**
  * Hook to check if the user is already logged in
@@ -23,7 +23,7 @@ export const useSessionCheck = () => {
         setLoading(true);
         setAuthError(null);
         
-        const { data: { session }, error } = await supabase.auth.getSession();
+        const { data: { session }, error } = await customSupabase.auth.getSession();
         console.log("Auth page - checking session:", session ? "User logged in" : "No session");
         
         if (error) {

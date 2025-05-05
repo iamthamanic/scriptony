@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { customSupabase } from "@/integrations/supabase/customClient";
 
 /**
  * Custom hook to handle OAuth callbacks
@@ -73,7 +73,7 @@ export const useAuthCallback = () => {
       }
       
       // Let Supabase handle the hash fragment or query parameters
-      const { data, error } = await supabase.auth.getSession();
+      const { data, error } = await customSupabase.auth.getSession();
       
       console.log("Session check result:", data ? "Session data received" : "No session data");
       if (error) {

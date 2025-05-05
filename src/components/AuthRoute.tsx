@@ -18,7 +18,7 @@ export const AuthRoute: React.FC<AuthRouteProps> = ({ children }) => {
   }
 
   // In development mode, allow access without authentication
-  if (devMode && !user) {
+  if (devMode) {
     console.log("Development mode: Bypassing authentication check");
     return <>{children}</>;
   }
@@ -41,8 +41,8 @@ export const PublicOnlyRoute: React.FC<AuthRouteProps> = ({ children }) => {
   }
 
   // Allow authenticated users to access public routes in dev mode for testing
-  if (devMode && user) {
-    console.log("Development mode: Allowing authenticated user to access public route");
+  if (devMode) {
+    console.log("Development mode: Allowing access to public route");
     return <>{children}</>;
   }
 

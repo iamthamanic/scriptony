@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { customSupabase } from "@/integrations/supabase/customClient";
 import { toast } from "sonner";
 import { useErrorContext } from '@/contexts/ErrorContext';
 
@@ -14,7 +14,7 @@ export const useAuthActions = () => {
   const signOut = async () => {
     try {
       setLoading(true);
-      await supabase.auth.signOut();
+      await customSupabase.auth.signOut();
       toast.success("Successfully signed out");
     } catch (error: any) {
       console.error("Error signing out:", error);
