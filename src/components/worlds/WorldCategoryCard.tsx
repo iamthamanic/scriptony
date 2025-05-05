@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,8 +27,20 @@ const WorldCategoryCard = ({ category, onEdit, onDelete }: WorldCategoryCardProp
   const renderGeographyContent = () => {
     if (!category.content) return <div className="text-center py-8 text-muted-foreground">Keine Inhalte vorhanden</div>;
     
-    // Type assertion for GeographyContent
-    const geographyContent = category.content as GeographyContent;
+    // Safely check if content matches the expected GeographyContent structure
+    const content = category.content;
+    const isValidGeographyContent = 
+      typeof content === 'object' && 
+      content !== null && 
+      !Array.isArray(content) &&
+      'countries' in content && 
+      Array.isArray(content.countries);
+    
+    // If valid, use the content as GeographyContent, otherwise use an empty structure
+    const geographyContent: GeographyContent = isValidGeographyContent 
+      ? content as GeographyContent 
+      : { countries: [] };
+      
     const countries = geographyContent.countries || [];
     
     if (countries.length === 0) {
