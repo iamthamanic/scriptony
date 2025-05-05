@@ -18,7 +18,6 @@ const WorldsList = ({ worlds, onSelectWorld, onNewWorld }: WorldsListProps) => {
         <h2 className="text-2xl font-bold">Deine Welten</h2>
         <Button 
           onClick={onNewWorld}
-          className="bg-green-500 hover:bg-green-600"
         >
           <Plus className="mr-2 h-4 w-4" />
           Neue Welt
@@ -76,7 +75,6 @@ const WorldsList = ({ worlds, onSelectWorld, onNewWorld }: WorldsListProps) => {
           </p>
           <Button 
             onClick={onNewWorld}
-            className="bg-green-500 hover:bg-green-600"
           >
             <Plus className="mr-2 h-4 w-4" />
             Erste Welt erstellen
