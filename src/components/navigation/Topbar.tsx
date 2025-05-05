@@ -28,10 +28,10 @@ const NavItem = ({ to, icon: Icon, label, onClose }: NavItemProps) => {
       onClick={onClose}
       className={({ isActive }) =>
         cn(
-          "px-4 py-2 rounded-md transition-colors text-base font-medium",
+          "px-4 py-2 rounded-md transition-colors text-base font-medium whitespace-nowrap",
           isActive 
-            ? "bg-anime-light-purple text-anime-purple" 
-            : "text-anime-gray-700 hover:bg-muted/50 hover:text-anime-purple"
+            ? "bg-anime-light-purple text-anime-purple dark:bg-anime-dark-purple/30 dark:text-white" 
+            : "text-anime-gray-700 hover:bg-muted/50 hover:text-anime-purple dark:text-white/90 dark:hover:text-white"
         )
       }
     >
@@ -62,8 +62,8 @@ const Topbar = () => {
           <Logo size="sm" />
         </div>
         
-        {/* Desktop Navigation - Centered */}
-        <nav className="hidden md:flex items-center space-x-2 absolute left-1/2 transform -translate-x-1/2">
+        {/* Desktop Navigation - Centered with improved spacing */}
+        <nav className="hidden md:flex items-center space-x-4 absolute left-1/2 transform -translate-x-1/2">
           {navItems.map((item) => (
             <NavItem 
               key={item.to} 
@@ -73,7 +73,7 @@ const Topbar = () => {
           ))}
         </nav>
         
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           {/* Account link replaced with Settings icon for desktop */}
           {user && (
             <div className="hidden md:block">
@@ -85,8 +85,8 @@ const Topbar = () => {
                       cn(
                         "p-2 rounded-md transition-colors flex items-center justify-center",
                         isActive 
-                          ? "bg-anime-light-purple text-anime-purple" 
-                          : "text-anime-gray-700 hover:bg-muted/50 hover:text-anime-purple"
+                          ? "bg-anime-light-purple text-anime-purple dark:bg-anime-dark-purple/30 dark:text-white" 
+                          : "text-anime-gray-700 hover:bg-muted/50 hover:text-anime-purple dark:text-white/90 dark:hover:text-white"
                       )
                     }
                   >

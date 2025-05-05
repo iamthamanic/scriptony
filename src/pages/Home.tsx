@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
-import { FileText, Globe, Upload, Clock } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useProjects } from '@/hooks/project/useProjects';
@@ -25,65 +25,9 @@ const Home = () => {
     <div className="py-8 px-4 md:px-6 w-full space-y-8 animate-fade-in">
       <div className="max-w-5xl mx-auto">
         <header className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Willkommen zurück, {user?.email?.split('@')[0] || "Demo User"}!</h1>
+          <h1 className="text-3xl font-bold mb-2">Willkommen zurück, {user?.email?.split('@')[0] || "Dev"}!</h1>
           <p className="text-muted-foreground">Hier ist eine Übersicht deiner aktuellen Projekte und Welten.</p>
         </header>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5 text-anime-purple" />
-                Skript-Projekte
-              </CardTitle>
-              <CardDescription>
-                Erstelle und verwalte deine Skript-Projekte
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-4">
-              <Button 
-                onClick={() => navigate('/projects')}
-                className="bg-anime-purple hover:bg-anime-dark-purple w-full"
-              >
-                Zu meinen Projekten
-              </Button>
-              <Button 
-                onClick={() => navigate('/upload')}
-                variant="outline"
-                className="w-full"
-              >
-                Neues Skript hochladen
-              </Button>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Globe className="h-5 w-5 text-anime-purple" />
-                Worldbuilding
-              </CardTitle>
-              <CardDescription>
-                Erschaffe und gestalte deine Welten
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-4">
-              <Button 
-                onClick={() => navigate('/worldbuilding')}
-                className="bg-anime-purple hover:bg-anime-dark-purple w-full"
-              >
-                Zu meinen Welten
-              </Button>
-              <Button 
-                onClick={() => navigate('/worldbuilding')}
-                variant="outline"
-                className="w-full"
-              >
-                Neue Welt erstellen
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
         
         <div className="space-y-8">
           {/* Recent Projects */}
