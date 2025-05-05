@@ -42,7 +42,9 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ imageUrl, onImageChange, 
         .from('covers')
         .getPublicUrl(filePath);
 
-      // Only update the local state, don't trigger a save action
+      console.log('Image uploaded successfully, URL:', data.publicUrl);
+      
+      // Update the local state
       onImageChange(data.publicUrl);
       
       // Only show toast if not disabled
@@ -59,8 +61,9 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ imageUrl, onImageChange, 
   };
 
   const handleRemoveImage = () => {
-    // We don't delete from storage to avoid orphaned files
-    // Just remove the reference from the local state
+    console.log('Removing image:', imageUrl);
+    
+    // Remove the reference from the local state
     onImageChange(undefined);
     
     // Only show toast if not disabled

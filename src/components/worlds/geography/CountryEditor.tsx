@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Country, GeographyContent, Location } from '@/types/worlds';
 import { v4 as uuidv4 } from 'uuid';
@@ -47,9 +48,22 @@ const CountryEditor: React.FC<CountryEditorProps> = ({ content, onChange }) => {
 
   const handleUpdateCountry = (updatedCountry: Country) => {
     try {
+      console.log('Updating country:', updatedCountry);
+      console.log('With flag_url:', updatedCountry.flag_url);
+      console.log('With cover_image_url:', updatedCountry.cover_image_url);
+      
+      // Ensure the updatedCountry has the proper structure for JSON conversion
+      const countryForUpdate = {
+        ...updatedCountry,
+        // Ensure these fields are included in the update
+        flag_url: updatedCountry.flag_url,
+        cover_image_url: updatedCountry.cover_image_url,
+        // Add any other fields that might be missing
+      } as Country & Record<string, Json>;
+      
       // Update the working copy first
       const updatedCountries = workingContent.countries.map(country => 
-        country.id === updatedCountry.id ? updatedCountry as Country & Record<string, Json> : country
+        country.id === updatedCountry.id ? countryForUpdate : country
       );
       
       // Create a new content object to trigger a proper update
@@ -57,6 +71,8 @@ const CountryEditor: React.FC<CountryEditorProps> = ({ content, onChange }) => {
         ...workingContent,
         countries: updatedCountries
       };
+      
+      console.log('Updated content to save:', updatedContent);
       
       // Save to the actual content via onChange
       onChange(updatedContent);

@@ -1,3 +1,4 @@
+
 import { useToast } from "@/hooks/use-toast";
 import { 
   createWorldCategory, 
@@ -30,33 +31,61 @@ export function useCategoryOperations(
     // Ensure we have the expected structure based on category type
     switch (type) {
       case 'geography':
+        // Preserve country data including images
+        const countries = Array.isArray((existingContent as any)?.countries) ? 
+          (existingContent as any).countries.map((country: any) => ({
+            ...country,
+            flag_url: country.flag_url,
+            cover_image_url: country.cover_image_url,
+            locations: Array.isArray(country.locations) ? country.locations.map((loc: any) => ({
+              ...loc,
+              cover_image_url: loc.cover_image_url,
+              symbol_image_url: loc.symbol_image_url
+            })) : []
+          })) : [];
+          
         return {
-          countries: Array.isArray((existingContent as any)?.countries) ? 
-            (existingContent as any).countries : []
+          countries
         } as Json;
       
       case 'politics':
         return {
           systems: Array.isArray((existingContent as any)?.systems) ? 
-            (existingContent as any).systems : []
+            (existingContent as any).systems.map((system: any) => ({
+              ...system,
+              cover_image_url: system.cover_image_url,
+              symbol_image_url: system.symbol_image_url,
+            })) : []
         } as Json;
       
       case 'economy':
         return {
           entities: Array.isArray((existingContent as any)?.entities) ? 
-            (existingContent as any).entities : []
+            (existingContent as any).entities.map((entity: any) => ({
+              ...entity,
+              cover_image_url: entity.cover_image_url,
+              symbol_image_url: entity.symbol_image_url,
+            })) : []
         } as Json;
       
       case 'society':
         return {
           groups: Array.isArray((existingContent as any)?.groups) ? 
-            (existingContent as any).groups : []
+            (existingContent as any).groups.map((group: any) => ({
+              ...group,
+              cover_image_url: group.cover_image_url,
+              symbol_image_url: group.symbol_image_url,
+            })) : []
         } as Json;
       
       case 'culture':
         return {
           elements: Array.isArray((existingContent as any)?.elements) ? 
-            (existingContent as any).elements : []
+            (existingContent as any).elements.map((element: any) => ({
+              ...element,
+              cover_image_url: element.cover_image_url,
+              symbol_image_url: element.symbol_image_url,
+            })) : []
         } as Json;
       
       default:
@@ -80,6 +109,7 @@ export function useCategoryOperations(
       
       if (selectedCategory) {
         console.log("Updating existing category:", data);
+        console.log("Original category content:", selectedCategory.content);
         
         // For existing categories with type change, initialize new structure
         if (selectedCategory.type !== data.type) {
@@ -88,6 +118,7 @@ export function useCategoryOperations(
         } else {
           // Preserve existing content structure if type hasn't changed
           data.content = ensureContentStructure(data.type, data.content as Json);
+          console.log("Preserved category content:", data.content);
         }
         
         // Update existing category
