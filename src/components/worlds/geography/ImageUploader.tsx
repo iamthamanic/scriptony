@@ -8,9 +8,11 @@ import { toast } from "sonner";
 interface ImageUploaderProps {
   imageUrl?: string;
   onImageChange: (url: string | undefined) => void;
+  // Adding a new prop to disable automatic saving after upload
+  disableToast?: boolean;
 }
 
-const ImageUploader: React.FC<ImageUploaderProps> = ({ imageUrl, onImageChange }) => {
+const ImageUploader: React.FC<ImageUploaderProps> = ({ imageUrl, onImageChange, disableToast = false }) => {
   const [uploading, setUploading] = useState(false);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,7 +42,11 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ imageUrl, onImageChange }
         .getPublicUrl(filePath);
 
       onImageChange(data.publicUrl);
-      toast.success('Bild erfolgreich hochgeladen');
+      
+      // Only show toast if not disabled
+      if (!disableToast) {
+        toast.success('Bild erfolgreich hochgeladen');
+      }
     } catch (error: any) {
       console.error('Error uploading image:', error);
       toast.error(`Fehler beim Hochladen: ${error.message || 'Unbekannter Fehler'}`);
@@ -53,7 +59,11 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ imageUrl, onImageChange }
     // We don't delete from storage to avoid orphaned files
     // Just remove the reference
     onImageChange(undefined);
-    toast.success('Bild entfernt');
+    
+    // Only show toast if not disabled
+    if (!disableToast) {
+      toast.success('Bild entfernt');
+    }
   };
 
   return (
