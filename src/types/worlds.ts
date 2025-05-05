@@ -72,3 +72,34 @@ export const DEFAULT_WORLD_CATEGORIES: Array<Partial<WorldCategory>> = [
 export interface WorldWithCoverImageFile extends Omit<World, 'cover_image_url'> {
   cover_image?: string | File | null;
 }
+
+// New types for the structured content
+
+export interface Country {
+  id: string;
+  name: string;
+  description?: string;
+  flag_url?: string;
+  cover_image_url?: string;
+  customFields: CustomField[];
+  locations: Location[];
+}
+
+export interface Location {
+  id: string;
+  name: string;
+  description?: string;
+  cover_image_url?: string;
+  customFields: CustomField[];
+}
+
+export interface CustomField {
+  id: string;
+  name: string;
+  value: string;
+}
+
+// Geography category content with countries and locations
+export interface GeographyContent {
+  countries: Country[];
+}

@@ -19,6 +19,12 @@ export const createWorldCategory = async (worldId: string, data: WorldCategoryFo
   
   const nextOrderIndex = existingCategories.length > 0 ? existingCategories[0].order_index + 1 : 0;
   
+  // Initialize content structure based on type
+  let processedContent = content;
+  if (type === 'geography' && (!content || Object.keys(content).length === 0)) {
+    processedContent = { countries: [] };
+  }
+  
   // Create the new category
   const { data: category, error } = await customSupabase
     .from('world_categories')
@@ -27,7 +33,7 @@ export const createWorldCategory = async (worldId: string, data: WorldCategoryFo
       name,
       type,
       icon,
-      content,
+      content: processedContent,
       order_index: nextOrderIndex
     })
     .select()
@@ -79,4 +85,22 @@ export const updateCategoryOrder = async (categories: Partial<WorldCategory>[]):
   });
   
   await Promise.all(updatePromises);
+};
+
+// Upload an image for a country or location
+export const uploadGeographyImage = async (file: File): Promise<string> => {
+  const fileExt = file.name.split('.').pop();
+  const fileName = `geography-${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+  
+  const { error } = await customSupabase.storage
+    .from('covers')
+    .upload(fileName, file);
+    
+  if (error) throw error;
+  
+  const { data } = customSupabase.storage
+    .from('covers')
+    .getPublicUrl(fileName);
+    
+  return data.publicUrl;
 };
