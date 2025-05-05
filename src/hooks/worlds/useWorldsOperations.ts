@@ -1,4 +1,3 @@
-
 import { useToast } from "@/hooks/use-toast";
 import { 
   fetchUserWorlds, 
@@ -110,35 +109,19 @@ export function useWorldsOperations(
     if (!selectedWorld) return;
     
     try {
-      // The actual deletion happens in the DeleteWorldDialog component
-      // which is now responsible for setting its own loading state
+      console.log('Starting deletion process for world:', selectedWorld.id);
+      // The actual deletion process and loading state is now handled in the DeleteWorldDialog component
       await deleteWorld(selectedWorld.id);
+      
+      // Update local state after successful deletion
       const newWorlds = worlds.filter(w => w.id !== selectedWorld.id);
       setWorlds(newWorlds);
       setSelectedWorldId(null); // Always return to worlds list after deletion
-      setIsDeleteWorldDialogOpen(false);
       
-      toast({
-        title: 'Welt gelöscht',
-        description: `"${selectedWorld.name}" wurde erfolgreich gelöscht.`
-      });
+      // Note: The dialog is now responsible for showing success messages and closing itself
     } catch (error) {
-      console.error('Error deleting world:', error);
-      
-      // Provide a more specific error message based on the error type
-      let errorMessage = 'Die Welt konnte nicht gelöscht werden.';
-      if (error instanceof Error) {
-        errorMessage = `Fehler: ${error.message}`;
-      }
-      
-      toast({
-        title: 'Fehler',
-        description: errorMessage,
-        variant: 'destructive'
-      });
-      
-      // Close the dialog even on error to avoid UI getting stuck
-      setIsDeleteWorldDialogOpen(false);
+      console.error('Error in handleDeleteWorld:', error);
+      // The dialog component now handles the error display, so we don't need to show a toast here
     }
   };
 

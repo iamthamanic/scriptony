@@ -1,4 +1,3 @@
-
 import { customSupabase } from "@/integrations/supabase/customClient";
 import { World, NewWorldFormData } from "@/types/worlds";
 import { mapDbWorldToAppWorld } from "./utils";
@@ -178,14 +177,27 @@ export const updateWorld = async (worldId: string, data: NewWorldFormData): Prom
 
 // Delete a world
 export const deleteWorld = async (worldId: string): Promise<void> => {
-  // Set a timeout to prevent indefinite hanging
-  const timeout = setTimeout(() => {
-    console.error('Timeout: World deletion is taking too long');
-    throw new Error('World deletion timed out. Please try again later.');
-  }, 20000); // 20 seconds timeout
+  console.log('Starting world deletion process for world:', worldId);
+  
+  // Set a timeout to prevent indefinite hanging (30 seconds)
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    setTimeout(() => {
+      reject(new Error('World deletion timed out. Please try again later.'));
+    }, 30000);
+  });
 
   try {
-    console.log('Starting world deletion process for world:', worldId);
+    // First, check if the world exists
+    const { data: worldCheck, error: worldCheckError } = await customSupabase
+      .from('worlds')
+      .select('id')
+      .eq('id', worldId)
+      .single();
+      
+    if (worldCheckError) {
+      console.error('Error checking world existence:', worldCheckError);
+      throw new Error(`World not found or access denied: ${worldCheckError.message}`);
+    }
     
     // First, clear any world_id references in projects
     console.log('Updating project references to world:', worldId);
@@ -215,10 +227,13 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
     
     console.log('Categories deleted, now deleting world');
     // Now delete the world itself
-    const { error } = await customSupabase
+    const deletePromise = customSupabase
       .from('worlds')
       .delete()
       .eq('id', worldId);
+    
+    // Race against the timeout
+    const { error } = await Promise.race([deletePromise, timeoutPromise]);
       
     if (error) {
       console.error('Error deleting world:', error);
@@ -229,7 +244,5 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
   } catch (error) {
     console.error('Error in delete world process:', error);
     throw error;
-  } finally {
-    clearTimeout(timeout);
   }
 };
