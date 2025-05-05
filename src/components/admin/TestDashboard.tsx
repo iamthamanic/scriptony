@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -12,6 +11,22 @@ import { useToast } from '@/hooks/use-toast';
 import { mcpClient } from '@/utils/mcpClient';
 import { CheckIcon, AlertTriangleIcon, PlayIcon, RefreshCwIcon, ClockIcon, PlusIcon, XIcon, CheckCircleIcon } from 'lucide-react';
 
+interface TestAction {
+  type: string;
+  target?: string;
+  value?: string;
+  customCode?: string;
+  name?: string;
+}
+
+interface TestAssertion {
+  type: string;
+  target?: string;
+  expected?: string;
+  customCode?: string;
+  name?: string;
+}
+
 interface TestDefinition {
   id: string;
   name: string;
@@ -21,6 +36,16 @@ interface TestDefinition {
   is_auto_generated: boolean;
   created_at: string;
   updated_at: string;
+  actions?: TestAction[];
+  assertions?: TestAssertion[];
+  route?: string;
+}
+
+interface TestScreenshot {
+  id: string;
+  test_result_id: string;
+  screenshot_url: string;
+  step_name?: string;
 }
 
 interface TestResult {
@@ -31,13 +56,6 @@ interface TestResult {
   execution_time?: number;
   created_at: string;
   test_screenshots?: TestScreenshot[];
-}
-
-interface TestScreenshot {
-  id: string;
-  test_result_id: string;
-  screenshot_url: string;
-  step_name?: string;
 }
 
 interface FeatureRegistry {
