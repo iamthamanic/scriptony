@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Plus, Trash2 } from 'lucide-react';
-import { CustomField } from '@/types/worlds';
+import { CustomField, FieldType } from '@/types/worlds';
 import { v4 as uuidv4 } from 'uuid';
 
 interface CustomFieldsEditorProps {
@@ -22,7 +22,8 @@ const CustomFieldsEditor: React.FC<CustomFieldsEditorProps> = ({ customFields, o
     const newField: CustomField = {
       id: uuidv4(),
       name: newFieldName,
-      value: newFieldValue
+      value: newFieldValue,
+      type: FieldType.TEXT // Default to TEXT type
     };
     
     onChange([...customFields, newField]);
