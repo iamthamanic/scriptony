@@ -50,6 +50,7 @@ export interface EditWorldFormData {
 }
 
 export interface WorldCategoryFormData {
+  id?: string;
   name: string;
   type: WorldCategoryType;
   icon?: string;
