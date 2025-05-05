@@ -3,6 +3,7 @@ import React from "react";
 import { useToast } from "@/hooks/use-toast";
 import { uploadAndAnalyzeScript } from "@/services/scriptAnalysis";
 import { AnalysisResult } from "@/types";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface ScriptAnalysisHandlerProps {
   setIsAnalyzing: React.Dispatch<React.SetStateAction<boolean>>;
@@ -15,9 +16,19 @@ export const useScriptAnalysis = () => {
   const [analysisResult, setAnalysisResult] = React.useState<AnalysisResult | null>(null);
   const [isAnalysisResultsOpen, setIsAnalysisResultsOpen] = React.useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
   
   const handleUploadScript = async (file: File) => {
     if (!file) return;
+    
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to upload and analyze scripts",
+        variant: "destructive"
+      });
+      return;
+    }
     
     try {
       setIsAnalyzing(true);

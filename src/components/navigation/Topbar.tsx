@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, FileText, Globe, Upload, User, Menu, X } from 'lucide-react';
+import { Home, FileText, Globe, Upload, Settings, Menu, X } from 'lucide-react';
 import Logo from '@/components/Logo';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface NavItemProps {
   to: string;
@@ -27,7 +28,7 @@ const NavItem = ({ to, icon: Icon, label, onClose }: NavItemProps) => {
       onClick={onClose}
       className={({ isActive }) =>
         cn(
-          "px-5 py-2.5 rounded-md transition-colors text-base font-medium",
+          "px-4 py-2 rounded-md transition-colors text-base font-medium",
           isActive 
             ? "bg-anime-light-purple text-anime-purple" 
             : "text-anime-gray-700 hover:bg-muted/50 hover:text-anime-purple"
@@ -55,14 +56,14 @@ const Topbar = () => {
   const closeSheet = () => setIsOpen(false);
 
   return (
-    <div className="sticky top-0 z-50 w-full bg-white border-b border-border shadow-sm h-16 flex items-center px-4 md:px-6">
+    <div className="sticky top-0 z-50 w-full bg-background border-b border-border shadow-sm h-16 flex items-center px-4 md:px-6">
       <div className="flex items-center justify-between w-full max-w-7xl mx-auto">
         <div className="flex items-center">
           <Logo size="sm" />
         </div>
         
         {/* Desktop Navigation - Centered */}
-        <nav className="hidden md:flex items-center gap-6 absolute left-1/2 transform -translate-x-1/2">
+        <nav className="hidden md:flex items-center space-x-2 absolute left-1/2 transform -translate-x-1/2">
           {navItems.map((item) => (
             <NavItem 
               key={item.to} 
@@ -72,25 +73,34 @@ const Topbar = () => {
           ))}
         </nav>
         
-        <div className="flex items-center gap-4">
-          {/* Account link as text for desktop */}
+        <div className="flex items-center gap-3">
+          {/* Account link replaced with Settings icon for desktop */}
           {user && (
             <div className="hidden md:block">
-              <NavLink 
-                to="/account"
-                className={({ isActive }) =>
-                  cn(
-                    "px-5 py-2.5 rounded-md text-base font-medium transition-colors",
-                    isActive 
-                      ? "bg-anime-light-purple text-anime-purple" 
-                      : "text-anime-gray-700 hover:bg-muted/50 hover:text-anime-purple"
-                  )
-                }
-              >
-                Accounteinstellungen
-              </NavLink>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <NavLink 
+                    to="/account"
+                    className={({ isActive }) =>
+                      cn(
+                        "p-2 rounded-md transition-colors flex items-center justify-center",
+                        isActive 
+                          ? "bg-anime-light-purple text-anime-purple" 
+                          : "text-anime-gray-700 hover:bg-muted/50 hover:text-anime-purple"
+                      )
+                    }
+                  >
+                    <Settings className="h-5 w-5" />
+                  </NavLink>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Account Settings</p>
+                </TooltipContent>
+              </Tooltip>
             </div>
           )}
+          
+          <ThemeToggle />
           
           {/* Mobile menu trigger */}
           <div className="md:hidden">
@@ -123,8 +133,8 @@ const Topbar = () => {
                     {user && (
                       <NavItem 
                         to="/account" 
-                        icon={User} 
-                        label="Accounteinstellungen" 
+                        icon={Settings} 
+                        label="Account" 
                         onClose={closeSheet}
                       />
                     )}

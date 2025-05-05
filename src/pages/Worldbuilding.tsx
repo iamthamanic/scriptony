@@ -6,7 +6,11 @@ import WorldsContainer from "../components/worlds/WorldsContainer";
 const Worldbuilding = () => {
   const { user } = useAuth();
   
-  return <WorldsContainer user={user} />;
+  return (
+    <div className="py-6 px-4 md:px-6">
+      <WorldsContainer user={user} />
+    </div>
+  );
 };
 
 export default Worldbuilding;
