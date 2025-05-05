@@ -74,29 +74,37 @@ export interface WorldWithCoverImageFile extends Omit<World, 'cover_image_url'> 
   cover_image?: string | File | null;
 }
 
-// New types for the structured content
-
-export interface Country {
-  id: string;
-  name: string;
-  description?: string;
-  flag_url?: string;
-  cover_image_url?: string;
-  customFields: CustomField[];
-  locations: Location[];
-}
-
-export interface Location {
+// Base interfaces for category items
+export interface CategoryItem {
   id: string;
   name: string;
   description?: string;
   cover_image_url?: string;
+  symbol_image_url?: string;
   customFields: CustomField[];
 }
 
+// Field type definitions
+export enum FieldType {
+  TEXT = 'text',
+  NUMBER = 'number',
+  DATE = 'date',
+  DROPDOWN = 'dropdown'
+}
+
+// Extended CustomField interface with field type support
 export interface CustomField {
   id: string;
   name: string;
+  type: FieldType;
+  value: string;
+  options?: FieldOption[]; // For dropdown fields
+}
+
+// Options for dropdown fields
+export interface FieldOption {
+  id: string;
+  label: string;
   value: string;
 }
 
@@ -104,3 +112,115 @@ export interface CustomField {
 export interface GeographyContent {
   countries: Country[];
 }
+
+// Politics category content with political systems
+export interface PoliticsContent {
+  systems: PoliticalSystem[];
+}
+
+// Economy category content with economic entities
+export interface EconomyContent {
+  entities: EconomicEntity[];
+}
+
+// Society category content with social groups
+export interface SocietyContent {
+  groups: SocialGroup[];
+}
+
+// Culture category content with cultural elements
+export interface CultureContent {
+  elements: CultureElement[];
+}
+
+// Country extends CategoryItem
+export interface Country extends CategoryItem {
+  flag_url?: string;
+  locations: Location[];
+}
+
+// Location extends CategoryItem
+export interface Location extends CategoryItem {
+  coordinates?: { x: number; y: number }; // For map positioning
+}
+
+// Political system extends CategoryItem
+export interface PoliticalSystem extends CategoryItem {
+  government_type?: string;
+  leaders?: Leader[];
+  laws?: Law[];
+}
+
+export interface Leader {
+  id: string;
+  name: string;
+  title: string;
+  portrait_url?: string;
+  description?: string;
+}
+
+export interface Law {
+  id: string;
+  name: string;
+  description: string;
+}
+
+// Economic entity extends CategoryItem
+export interface EconomicEntity extends CategoryItem {
+  entity_type?: 'currency' | 'resource' | 'organization' | 'system';
+  value?: string;
+}
+
+// Social group extends CategoryItem
+export interface SocialGroup extends CategoryItem {
+  population?: string;
+  characteristics?: string[];
+}
+
+// Culture element extends CategoryItem
+export interface CultureElement extends CategoryItem {
+  element_type?: 'art' | 'tradition' | 'festival' | 'belief';
+}
+
+// Helper function to create a new custom field
+export const createCustomField = (
+  name: string, 
+  type: FieldType = FieldType.TEXT, 
+  value: string = '', 
+  options?: FieldOption[]
+): CustomField => ({
+  id: crypto.randomUUID(),
+  name,
+  type,
+  value,
+  options
+});
+
+// Helper function to create a new CategoryItem (base for all items)
+export const createCategoryItem = (
+  name: string,
+  description: string = ''
+): CategoryItem => ({
+  id: crypto.randomUUID(),
+  name,
+  description,
+  customFields: []
+});
+
+// Function to get the appropriate empty content structure based on category type
+export const getEmptyCategoryContent = (type: WorldCategoryType): Json => {
+  switch (type) {
+    case 'geography':
+      return { countries: [] } as GeographyContent;
+    case 'politics':
+      return { systems: [] } as PoliticsContent;
+    case 'economy':
+      return { entities: [] } as EconomyContent;
+    case 'society':
+      return { groups: [] } as SocietyContent;
+    case 'culture':
+      return { elements: [] } as CultureContent;
+    default:
+      return {};
+  }
+};

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -5,8 +6,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { WorldCategory, WorldCategoryType, WorldCategoryFormData } from '@/types';
+import { WorldCategory, WorldCategoryType, WorldCategoryFormData, getEmptyCategoryContent } from '@/types';
 import CountryEditor from './geography/CountryEditor';
+import PoliticsEditor from './categories/politics/PoliticsEditor';
+import EconomyEditor from './categories/economy/EconomyEditor';
+import SocietyEditor from './categories/society/SocietyEditor';
+import CultureEditor from './categories/culture/CultureEditor';
 
 interface WorldCategoryModalProps {
   isOpen: boolean;
@@ -31,7 +36,7 @@ const WorldCategoryModal = ({ isOpen, onClose, onSubmit, category }: WorldCatego
         name: category.name,
         type: category.type,
         icon: category.icon || 'map',
-        content: category.content || {}
+        content: category.content || getEmptyCategoryContent(category.type)
       });
     } else {
       setFormData({
@@ -51,15 +56,12 @@ const WorldCategoryModal = ({ isOpen, onClose, onSubmit, category }: WorldCatego
   const handleTypeChange = (value: string) => {
     setFormData(prev => {
       // Initialize appropriate content structure based on type
-      let content = prev.content || {};
-      
-      if (value === 'geography' && (!prev.content || Object.keys(prev.content).length === 0)) {
-        content = { countries: [] };
-      }
+      const newType = value as WorldCategoryType;
+      const content = getEmptyCategoryContent(newType);
       
       return { 
         ...prev, 
-        type: value as WorldCategoryType,
+        type: newType,
         content
       };
     });
@@ -100,6 +102,39 @@ const WorldCategoryModal = ({ isOpen, onClose, onSubmit, category }: WorldCatego
             onChange={handleContentChange}
           />
         );
+        
+      case 'politics':
+        return (
+          <PoliticsEditor
+            content={formData.content}
+            onChange={handleContentChange}
+          />
+        );
+        
+      case 'economy':
+        return (
+          <EconomyEditor
+            content={formData.content}
+            onChange={handleContentChange}
+          />
+        );
+        
+      case 'society':
+        return (
+          <SocietyEditor
+            content={formData.content}
+            onChange={handleContentChange}
+          />
+        );
+        
+      case 'culture':
+        return (
+          <CultureEditor
+            content={formData.content}
+            onChange={handleContentChange}
+          />
+        );
+      
       default:
         return (
           <div className="space-y-2">
