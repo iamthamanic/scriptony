@@ -56,7 +56,7 @@ const WorldsContainer = ({ user }: WorldsContainerProps) => {
   };
 
   return (
-    <div className="container mx-auto py-6 px-4 md:px-6">
+    <div className="py-6 px-4 md:px-6 w-full">
       <header className="mb-8">
         <AppHeader 
           onNewProject={() => setIsNewWorldModalOpen(true)} 
