@@ -2,7 +2,10 @@
 import { DetectedScene, DetectedCharacter } from '@/types';
 import { SCENE_HEADER_PATTERN, CHARACTER_NAME_PATTERN, SHOT_PATTERN } from './patterns';
 
-interface ScriptMetrics {
+/**
+ * Metrics used to analyze script content and structure
+ */
+export interface ScriptMetrics {
   sceneHeaderCount: number;
   dialogBlockCount: number;
   shotDescriptionCount: number;
@@ -97,10 +100,4 @@ export function processScriptContent(lines: string[]): {
   }));
 
   return { scenes, characters, metrics };
-}
-
-export interface ScriptMetrics {
-  sceneHeaderCount: number;
-  dialogBlockCount: number;
-  shotDescriptionCount: number;
 }
