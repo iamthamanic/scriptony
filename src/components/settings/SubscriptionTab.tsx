@@ -7,7 +7,7 @@ const SubscriptionTab = () => {
         <div className="flex justify-between items-center">
           <div>
             <span className="text-lg font-bold">Free Tier</span>
-            <p className="text-sm text-muted-foreground">Basic access to Scriptony</p>
+            <p className="text-sm text-muted-foreground">✓ 25 Skript-Projekte</p>
           </div>
           
           <Button variant="outline" className="border-anime-purple text-anime-purple">
@@ -31,7 +31,7 @@ const SubscriptionTab = () => {
             </Button>
           </div>
           <ul className="mt-3 text-sm space-y-1">
-            <li>✓ 25 Skript-Projekte</li>
+            <li>✓ 5 Skript-Projekte</li>
             <li>✓ 25 Welten</li>
             <li>✓ PDF Dossier Export</li>
             <li>✓ AI-MCP Integration</li>
