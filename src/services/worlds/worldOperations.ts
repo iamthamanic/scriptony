@@ -178,10 +178,31 @@ export const updateWorld = async (worldId: string, data: NewWorldFormData): Prom
 
 // Delete a world
 export const deleteWorld = async (worldId: string): Promise<void> => {
-  // First, delete all categories associated with this world to avoid constraint violations
+  // Set a timeout to prevent indefinite hanging
+  const timeout = setTimeout(() => {
+    console.error('Timeout: World deletion is taking too long');
+    throw new Error('World deletion timed out. Please try again later.');
+  }, 20000); // 20 seconds timeout
+
   try {
+    console.log('Starting world deletion process for world:', worldId);
+    
+    // First, clear any world_id references in projects
+    console.log('Updating project references to world:', worldId);
+    const { error: projectError } = await customSupabase
+      .from('projects')
+      .update({ world_id: null })
+      .eq('world_id', worldId);
+    
+    if (projectError) {
+      console.error('Error updating project references:', projectError);
+      // Continue with deletion even if this fails
+    } else {
+      console.log('Successfully updated project references');
+    }
+    
+    // Then, delete all categories associated with this world
     console.log('Deleting categories for world:', worldId);
-    // Delete all categories belonging to this world
     const { error: catError } = await customSupabase
       .from('world_categories')
       .delete()
@@ -189,7 +210,7 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
       
     if (catError) {
       console.error('Error deleting world categories:', catError);
-      throw catError;
+      throw new Error(`Failed to delete world categories: ${catError.message}`);
     }
     
     console.log('Categories deleted, now deleting world');
@@ -201,12 +222,14 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
       
     if (error) {
       console.error('Error deleting world:', error);
-      throw error;
+      throw new Error(`Failed to delete world: ${error.message}`);
     }
     
     console.log('World deleted successfully');
   } catch (error) {
     console.error('Error in delete world process:', error);
     throw error;
+  } finally {
+    clearTimeout(timeout);
   }
 };
