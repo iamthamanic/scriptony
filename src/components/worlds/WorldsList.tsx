@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { World } from "@/types";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Map, Plus } from "lucide-react";
+import EmptyState from "@/components/EmptyState";
 
 interface WorldsListProps {
   worlds: World[];
@@ -66,22 +67,12 @@ const WorldsList = ({ worlds, onSelectWorld, onNewWorld }: WorldsListProps) => {
           ))}
         </div>
       ) : (
-        <div className="text-center p-12 border border-dashed rounded-lg">
-          <div className="mx-auto w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-4">
-            <Map className="h-6 w-6 text-muted-foreground/50" />
-          </div>
-          <h3 className="text-lg font-medium mb-2">Keine Welten gefunden</h3>
-          <p className="text-muted-foreground mb-4">
-            Erstelle deine erste Welt und verbinde sie mit deinen Projekten
-          </p>
-          <Button 
-            onClick={onNewWorld}
-            className="bg-anime-purple hover:bg-anime-dark-purple"
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            Erste Welt erstellen
-          </Button>
-        </div>
+        <EmptyState
+          title="Keine Welten gefunden"
+          description="Erstelle deine erste Welt und verbinde sie mit deinen Projekten"
+          buttonText="Erste Welt erstellen"
+          onClick={onNewWorld}
+        />
       )}
     </div>
   );

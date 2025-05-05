@@ -178,10 +178,35 @@ export const updateWorld = async (worldId: string, data: NewWorldFormData): Prom
 
 // Delete a world
 export const deleteWorld = async (worldId: string): Promise<void> => {
-  const { error } = await customSupabase
-    .from('worlds')
-    .delete()
-    .eq('id', worldId);
+  // First, delete all categories associated with this world to avoid constraint violations
+  try {
+    console.log('Deleting categories for world:', worldId);
+    // Delete all categories belonging to this world
+    const { error: catError } = await customSupabase
+      .from('world_categories')
+      .delete()
+      .eq('world_id', worldId);
+      
+    if (catError) {
+      console.error('Error deleting world categories:', catError);
+      throw catError;
+    }
     
-  if (error) throw error;
+    console.log('Categories deleted, now deleting world');
+    // Now delete the world itself
+    const { error } = await customSupabase
+      .from('worlds')
+      .delete()
+      .eq('id', worldId);
+      
+    if (error) {
+      console.error('Error deleting world:', error);
+      throw error;
+    }
+    
+    console.log('World deleted successfully');
+  } catch (error) {
+    console.error('Error in delete world process:', error);
+    throw error;
+  }
 };
