@@ -9,12 +9,9 @@ export type McpResponse<T = any> = {
 
 export class McpClient {
   private apiKey: string;
-  private baseUrl: string;
   
   constructor(apiKey?: string) {
     this.apiKey = apiKey || '';
-    // We'll use the Supabase URL to construct the edge function URL
-    this.baseUrl = `${supabase.functions.url}/mcp`;
   }
   
   /**
