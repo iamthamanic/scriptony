@@ -8,6 +8,7 @@ import { ErrorProvider } from "@/contexts/ErrorContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { AuthRoute, PublicOnlyRoute } from "@/components/AuthRoute";
 import { ErrorDisplay } from "@/components/ErrorDisplay";
+import FeatureDetector from "@/components/admin/FeatureDetector";
 
 // Import pages
 import Index from "./pages/Index";
@@ -18,6 +19,7 @@ import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import Worldbuilding from "./pages/Worldbuilding";
+import AdminTests from "./pages/AdminTests";
 
 // Import components
 import Topbar from "./components/navigation/Topbar";
@@ -67,6 +69,9 @@ const App = () => {
             <Sonner />
             <ErrorDisplay />
             <BrowserRouter>
+              {/* The FeatureDetector registers routes automatically */}
+              <FeatureDetector />
+              
               <div className="flex flex-col w-full min-h-screen">
                 <Routes>
                   {/* Public routes without topbar */}
@@ -124,6 +129,14 @@ const App = () => {
                     <AuthRoute>
                       <AuthenticatedLayout>
                         <Account />
+                      </AuthenticatedLayout>
+                    </AuthRoute>
+                  } />
+                  
+                  <Route path="/admin/tests" element={
+                    <AuthRoute>
+                      <AuthenticatedLayout>
+                        <AdminTests />
                       </AuthenticatedLayout>
                     </AuthRoute>
                   } />

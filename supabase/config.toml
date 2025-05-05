@@ -111,3 +111,6 @@ verify_jwt = true
 
 [functions."mcp/tokens"]
 verify_jwt = true
+
+[functions.run-tests]
+verify_jwt = false
