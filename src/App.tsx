@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,7 +7,6 @@ import { ErrorProvider } from "@/contexts/ErrorContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { AuthRoute, PublicOnlyRoute } from "@/components/AuthRoute";
 import { ErrorDisplay } from "@/components/ErrorDisplay";
-import { useState } from "react";
 
 // Import pages
 import Index from "./pages/Index";
