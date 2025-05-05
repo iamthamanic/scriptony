@@ -2,11 +2,25 @@
 import { supabase } from "@/integrations/supabase/client";
 import { World, NewWorldFormData } from "@/types/worlds";
 import { mapDbWorldToAppWorld } from "./utils";
+import { isDevelopmentMode, getDevModeUser } from "@/utils/devMode";
+
+/**
+ * Gets the current user, returning a mock user if in development mode
+ */
+const getCurrentUser = async () => {
+  // Use mock user in development mode
+  if (isDevelopmentMode()) {
+    return { user: getDevModeUser() };
+  }
+  
+  // Use actual authentication in production
+  return await supabase.auth.getUser();
+};
 
 // Fetch all worlds for the current user
 export const fetchUserWorlds = async (): Promise<World[]> => {
   // Get the current user
-  const { data: { user } } = await supabase.auth.getUser();
+  const { user } = await getCurrentUser();
   if (!user) throw new Error('User not authenticated');
 
   const { data: worlds, error } = await supabase
@@ -58,7 +72,7 @@ export const createWorld = async (data: NewWorldFormData): Promise<World> => {
   const { name, description, cover_image } = data;
   
   // Get the current user
-  const { data: { user } } = await supabase.auth.getUser();
+  const { user } = await getCurrentUser();
   if (!user) throw new Error('User not authenticated');
   
   // Upload cover image if provided
