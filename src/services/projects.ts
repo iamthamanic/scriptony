@@ -1,11 +1,11 @@
 
-import { supabase } from "@/integrations/supabase/client";
+import { customSupabase } from "@/integrations/supabase/customClient";
 import { Project, NewProjectFormData, ProjectType, Genre, VideoFormat, NarrativeStructureType } from "../types";
 import { handleApiError, convertDbProjectToApp } from "./utils";
 
 export const fetchUserProjects = async (): Promise<Project[]> => {
   try {
-    const { data: projectsData, error } = await supabase
+    const { data: projectsData, error } = await customSupabase
       .from('projects')
       .select('*')
       .order('updated_at', { ascending: false });
@@ -47,7 +47,7 @@ export const fetchProjectDetails = async (projectId: string): Promise<{
 }> => {
   try {
     // Fetch characters
-    const { data: charactersData, error: charactersError } = await supabase
+    const { data: charactersData, error: charactersError } = await customSupabase
       .from('characters')
       .select('*')
       .eq('project_id', projectId);
@@ -55,7 +55,7 @@ export const fetchProjectDetails = async (projectId: string): Promise<{
     if (charactersError) throw charactersError;
     
     // Fetch episodes
-    const { data: episodesData, error: episodesError } = await supabase
+    const { data: episodesData, error: episodesError } = await customSupabase
       .from('episodes')
       .select('*')
       .eq('project_id', projectId)
@@ -64,7 +64,7 @@ export const fetchProjectDetails = async (projectId: string): Promise<{
     if (episodesError) throw episodesError;
     
     // Fetch scenes
-    const { data: scenesData, error: scenesError } = await supabase
+    const { data: scenesData, error: scenesError } = await customSupabase
       .from('scenes')
       .select('*')
       .eq('project_id', projectId)
@@ -140,14 +140,14 @@ export const createProject = async (projectData: NewProjectFormData): Promise<Pr
     
     if (projectData.coverImage) {
       const fileName = `${Date.now()}_${projectData.coverImage.name}`;
-      const { data: uploadData, error: uploadError } = await supabase.storage
+      const { data: uploadData, error: uploadError } = await customSupabase.storage
         .from('project_assets')
         .upload(`project-covers/${fileName}`, projectData.coverImage);
         
       if (uploadError) throw uploadError;
       
       // Get the public URL
-      const { data: urlData } = supabase.storage
+      const { data: urlData } = customSupabase.storage
         .from('project_assets')
         .getPublicUrl(`project-covers/${fileName}`);
         
@@ -155,11 +155,11 @@ export const createProject = async (projectData: NewProjectFormData): Promise<Pr
     }
     
     // Get the current user
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await customSupabase.auth.getUser();
     if (!user) throw new Error("User not authenticated");
     
     // Insert project into database with new fields
-    const { data, error } = await supabase
+    const { data, error } = await customSupabase
       .from('projects')
       .insert({
         title: projectData.title,
@@ -197,14 +197,14 @@ export const updateProject = async (projectId: string, projectData: Partial<Proj
     if (projectData.coverImage && typeof projectData.coverImage !== 'string') {
       const file = projectData.coverImage as File;
       const fileName = `${Date.now()}_${file.name}`;
-      const { data: uploadData, error: uploadError } = await supabase.storage
+      const { data: uploadData, error: uploadError } = await customSupabase.storage
         .from('project_assets')
         .upload(`project-covers/${fileName}`, file);
         
       if (uploadError) throw uploadError;
       
       // Get the public URL
-      const { data: urlData } = supabase.storage
+      const { data: urlData } = customSupabase.storage
         .from('project_assets')
         .getPublicUrl(`project-covers/${fileName}`);
         
@@ -215,7 +215,7 @@ export const updateProject = async (projectId: string, projectData: Partial<Proj
     }
     
     // Update project in database with new fields
-    const { error } = await supabase
+    const { error } = await customSupabase
       .from('projects')
       .update({
         title: projectData.title,
@@ -246,7 +246,7 @@ export const updateProject = async (projectId: string, projectData: Partial<Proj
 
 export const deleteProject = async (projectId: string): Promise<boolean> => {
   try {
-    const { error } = await supabase
+    const { error } = await customSupabase
       .from('projects')
       .delete()
       .eq('id', projectId);
