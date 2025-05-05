@@ -1,6 +1,12 @@
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.31.0';
-import { corsHeaders } from './cors.ts';
+
+// Define the corsHeaders here instead of importing them
+export const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+};
 
 // Create a Supabase client with the service role key for admin operations
 export const supabaseAdmin = createClient(
@@ -16,6 +22,3 @@ export const supabaseAdmin = createClient(
     },
   }
 );
-
-// Export the corsHeaders for convenience
-export { corsHeaders };
