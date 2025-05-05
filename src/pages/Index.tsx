@@ -1,24 +1,13 @@
 
-import React, { useState } from "react";
-import ProjectSelector from "../components/ProjectSelector";
-import ProjectContent from "../components/ProjectContent";
-import ProjectModals from "../components/ProjectModals";
-import EmptyState from "../components/EmptyState";
-import { Scene, Episode } from "../types";
+import React, { useState, useRef } from "react";
 import { useProjectState } from "../hooks/project/useProjectState";
 import { useAuth } from "@/contexts/AuthContext";
-import { Loader2, Plus, Upload } from "lucide-react";
+import { Scene, Episode, EditProjectFormData, NewCharacterFormData } from "../types";
 import ScriptAnalysisResults from "@/components/script-analysis/ScriptAnalysisResults";
-import { uploadAndAnalyzeScript } from "@/services/scriptAnalysis";
-import { AnalysisResult } from "@/types";
-import { useToast } from "@/hooks/use-toast";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
+import ProjectModals from "../components/ProjectModals";
+import ProjectPageHeader from "@/components/projects/ProjectPageHeader";
+import ProjectsContent from "@/components/projects/ProjectsContent";
+import { useScriptAnalysis } from "@/components/projects/ScriptAnalysisHandler";
 
 const Index = () => {
   const {
@@ -40,6 +29,7 @@ const Index = () => {
     isLoading
   } = useProjectState();
 
+  // Modal states
   const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false);
   const [isEditProjectModalOpen, setIsEditProjectModalOpen] = useState(false);
   const [isNewSceneModalOpen, setIsNewSceneModalOpen] = useState(false);
@@ -48,16 +38,20 @@ const Index = () => {
   const [editingScene, setEditingScene] = useState<Scene | null>(null);
   const [editingEpisode, setEditingEpisode] = useState<Episode | null>(null);
   const [selectedEpisodeId, setSelectedEpisodeId] = useState<string | null>(null);
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
   
-  // Script analysis state
-  const [isAnalysisResultsOpen, setIsAnalysisResultsOpen] = useState(false);
-  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  // File upload reference
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
-  const { toast } = useToast();
-  const { user } = useAuth();
+  // Script analysis 
+  const {
+    isAnalyzing,
+    analysisResult,
+    isAnalysisResultsOpen,
+    setIsAnalysisResultsOpen,
+    handleFileChange
+  } = useScriptAnalysis();
 
+  // Handler functions
   const handleEditScene = (scene: Scene) => {
     setEditingScene(scene);
     setIsNewSceneModalOpen(true);
@@ -77,7 +71,7 @@ const Index = () => {
     }
   };
 
-  const handleCreateOrEditEpisode = (data) => {
+  const handleCreateOrEditEpisode = (data: any) => {
     if (editingEpisode) {
       handleEditEpisode(editingEpisode.id, data);
     } else {
@@ -91,148 +85,45 @@ const Index = () => {
     setEditingScene(null);
     setIsNewSceneModalOpen(true);
   };
-  
-  const handleUploadScript = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    
-    try {
-      setIsAnalyzing(true);
-      toast({
-        title: "Analyzing script",
-        description: "Please wait while we analyze your script...",
-      });
-      
-      const { analysisResult } = await uploadAndAnalyzeScript(file);
-      setAnalysisResult(analysisResult);
-      setIsAnalysisResultsOpen(true);
-      
-      toast({
-        title: "Analysis complete",
-        description: "Script analysis completed successfully",
-      });
-    } catch (error) {
-      console.error("Error analyzing script:", error);
-      toast({
-        title: "Analysis failed",
-        description: "Failed to analyze script. Please try again.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsAnalyzing(false);
-      // Reset the file input
-      event.target.value = '';
-    }
-  };
 
   const handleNewProject = () => setIsNewProjectModalOpen(true);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    
-    // Check file type
-    const fileExt = file.name.split('.').pop()?.toLowerCase();
-    if (!['pdf', 'docx', 'txt'].includes(fileExt || '')) {
-      toast({
-        title: "Invalid file type",
-        description: "Please upload a PDF, DOCX, or TXT file",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    // Check file size (max 10MB)
-    if (file.size > 10 * 1024 * 1024) {
-      toast({
-        title: "File too large",
-        description: "Maximum file size is 10MB",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    handleUploadScript(event);
+  const handleSelectProject = (projectId: string) => {
+    setSelectedProjectId(projectId);
+    setSelectedEpisodeId(null); // Reset selected episode when switching projects
   };
 
   return (
     <div className="py-6 px-4 md:px-6 w-full">
-      <header className="mb-8">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <h1 className="text-2xl font-bold">Skript-Projekte</h1>
-          
-          <div className="flex items-center gap-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  size="sm"
-                  className="bg-anime-purple hover:bg-anime-dark-purple"
-                >
-                  <Plus className="h-4 w-4 mr-1.5" />
-                  <span>New Project</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={handleNewProject}>
-                  Empty Project
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => fileInputRef.current?.click()}>
-                  <Upload className="h-4 w-4 mr-2" />
-                  Upload Script
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                    accept=".pdf,.docx,.txt"
-                    style={{ display: 'none' }}
-                  />
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
-        
-        {projects.length > 0 && !isLoading && (
-          <ProjectSelector 
-            projects={projects} 
-            selectedProjectId={selectedProjectId} 
-            onSelectProject={(projectId) => {
-              setSelectedProjectId(projectId);
-              setSelectedEpisodeId(null); // Reset selected episode when switching projects
-            }} 
-          />
-        )}
-      </header>
+      {/* Project header with actions */}
+      <ProjectPageHeader 
+        onNewProject={handleNewProject}
+        fileInputRef={fileInputRef}
+        handleFileChange={handleFileChange}
+      />
       
-      {isLoading ? (
-        <div className="flex flex-col items-center justify-center py-20">
-          <Loader2 className="h-12 w-12 animate-spin text-anime-purple mb-4" />
-          <p className="text-lg text-muted-foreground">Loading your projects...</p>
-        </div>
-      ) : selectedProject ? (
-        <ProjectContent 
-          project={selectedProject}
-          onNewScene={handleNewScene}
-          onEditProject={() => setIsEditProjectModalOpen(true)}
-          onNewCharacter={() => setIsNewCharacterModalOpen(true)}
-          onDeleteProject={handleDeleteProject}
-          onEditScene={handleEditScene}
-          onDeleteScene={handleDeleteScene}
-          onEditCharacter={handleEditCharacter}
-          onDeleteCharacter={handleDeleteCharacter}
-          onNewEpisode={handleNewEpisode}
-          onEditEpisode={handleEditEpisodeClick}
-          onDeleteEpisode={handleDeleteEpisode}
-        />
-      ) : (
-        <EmptyState
-          title="No Projects Yet"
-          description="Start by creating your first anime project"
-          buttonText="Create First Project"
-          onClick={() => setIsNewProjectModalOpen(true)}
-        />
-      )}
+      {/* Projects content */}
+      <ProjectsContent
+        isLoading={isLoading}
+        projects={projects}
+        selectedProjectId={selectedProjectId}
+        selectedProject={selectedProject}
+        onSelectProject={handleSelectProject}
+        onNewScene={handleNewScene}
+        onEditProject={() => setIsEditProjectModalOpen(true)}
+        onNewCharacter={() => setIsNewCharacterModalOpen(true)}
+        onDeleteProject={handleDeleteProject}
+        onEditScene={handleEditScene}
+        onDeleteScene={handleDeleteScene}
+        onEditCharacter={handleEditCharacter}
+        onDeleteCharacter={handleDeleteCharacter}
+        onNewEpisode={handleNewEpisode}
+        onEditEpisode={handleEditEpisodeClick}
+        onDeleteEpisode={handleDeleteEpisode}
+        onNewProject={handleNewProject}
+      />
       
+      {/* Modals */}
       <ProjectModals
         isNewProjectModalOpen={isNewProjectModalOpen}
         isEditProjectModalOpen={isEditProjectModalOpen}
@@ -264,6 +155,7 @@ const Index = () => {
         editingEpisode={editingEpisode}
       />
       
+      {/* Script analysis results */}
       <ScriptAnalysisResults
         isOpen={isAnalysisResultsOpen}
         onClose={() => setIsAnalysisResultsOpen(false)}
