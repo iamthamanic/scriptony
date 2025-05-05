@@ -9,6 +9,7 @@ import { Country } from '@/types/worlds';
 import ImageUploader from './ImageUploader';
 import CustomFieldsEditor from './CustomFieldsEditor';
 import LocationEditor from './LocationEditor';
+import { preserveImageProperties } from '@/utils/jsonPreserver';
 
 interface CountryFormProps {
   country: Country;
@@ -27,31 +28,44 @@ const CountryForm: React.FC<CountryFormProps> = ({
   onUpdateLocation,
   onDeleteLocation
 }) => {
-  const [editingCountry, setEditingCountry] = React.useState<Country>({...country});
+  const [editingCountry, setEditingCountry] = React.useState<Country>(
+    JSON.parse(JSON.stringify(country)) // Deep clone to avoid reference issues
+  );
+  const formId = React.useId();
 
+  // Log when form initializes and when country object changes
   useEffect(() => {
-    console.log('Country form initialized with country:', country);
-    console.log('Country flag_url:', country.flag_url);
-    console.log('Country cover_image_url:', country.cover_image_url);
-  }, [country]);
+    console.log(`[CountryForm-${formId}] Form initialized with country:`, country);
+    console.log(`[CountryForm-${formId}] Country flag_url:`, country.flag_url);
+    console.log(`[CountryForm-${formId}] Country cover_image_url:`, country.cover_image_url);
+    
+    // Update local state when prop changes
+    setEditingCountry(JSON.parse(JSON.stringify(country)));
+  }, [country, formId]);
 
   // Create update handlers that only modify local state without triggering saves
   const handleCountryUpdate = (updates: Partial<Country>) => {
-    console.log('Updating country with:', updates);
+    console.log(`[CountryForm-${formId}] Updating country with:`, updates);
     setEditingCountry(prev => {
       const updated = {
         ...prev,
         ...updates
       };
-      console.log('Updated country state:', updated);
+      console.log(`[CountryForm-${formId}] Updated country state:`, updated);
+      console.log(`[CountryForm-${formId}] Updated flag_url:`, updated.flag_url);
+      console.log(`[CountryForm-${formId}] Updated cover_image_url:`, updated.cover_image_url);
       return updated;
     });
   };
 
   const handleSave = () => {
-    console.log('Saving country with flag_url:', editingCountry.flag_url);
-    console.log('Saving country with cover_image_url:', editingCountry.cover_image_url);
-    onSave(editingCountry);
+    // Make sure all image URLs are preserved
+    const countryToSave = preserveImageProperties(editingCountry);
+    
+    console.log(`[CountryForm-${formId}] Saving country with flag_url:`, countryToSave.flag_url);
+    console.log(`[CountryForm-${formId}] Saving country with cover_image_url:`, countryToSave.cover_image_url);
+    
+    onSave(countryToSave);
   };
 
   return (
@@ -103,7 +117,7 @@ const CountryForm: React.FC<CountryFormProps> = ({
                 <ImageUploader 
                   imageUrl={editingCountry.flag_url} 
                   onImageChange={(url) => {
-                    console.log('Flag image changed to:', url);
+                    console.log(`[CountryForm-${formId}] Flag image changed to:`, url);
                     handleCountryUpdate({
                       flag_url: url
                     });
@@ -117,7 +131,7 @@ const CountryForm: React.FC<CountryFormProps> = ({
                 <ImageUploader 
                   imageUrl={editingCountry.cover_image_url} 
                   onImageChange={(url) => {
-                    console.log('Cover image changed to:', url);
+                    console.log(`[CountryForm-${formId}] Cover image changed to:`, url);
                     handleCountryUpdate({
                       cover_image_url: url
                     });
