@@ -2,7 +2,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Plus, Upload } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +20,13 @@ const ProjectPageHeader = ({
   fileInputRef, 
   handleFileChange 
 }: ProjectPageHeaderProps) => {
+  // Function to trigger file input click
+  const triggerFileUpload = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
   return (
     <header className="mb-8">
       <div className="flex flex-col md:flex-row justify-between items-center gap-4">
@@ -41,19 +47,22 @@ const ProjectPageHeader = ({
               <DropdownMenuItem onClick={onNewProject}>
                 Empty Project
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => fileInputRef.current?.click()}>
+              <DropdownMenuItem onClick={triggerFileUpload}>
                 <Upload className="h-4 w-4 mr-2" />
                 Upload Script
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileChange}
-                  accept=".pdf,.docx,.txt"
-                  style={{ display: 'none' }}
-                />
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          
+          {/* Hidden file input */}
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept=".pdf,.docx,.txt"
+            style={{ display: 'none' }}
+            aria-label="Upload script file"
+          />
         </div>
       </div>
     </header>
