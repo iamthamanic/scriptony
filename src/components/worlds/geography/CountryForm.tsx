@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -29,11 +29,11 @@ const CountryForm: React.FC<CountryFormProps> = ({
 }) => {
   const [editingCountry, setEditingCountry] = React.useState<Country>({...country});
 
-  React.useEffect(() => {
+  useEffect(() => {
     console.log('Country form initialized with country:', country);
     console.log('Country flag_url:', country.flag_url);
     console.log('Country cover_image_url:', country.cover_image_url);
-  }, []);
+  }, [country]);
 
   // Create update handlers that only modify local state without triggering saves
   const handleCountryUpdate = (updates: Partial<Country>) => {

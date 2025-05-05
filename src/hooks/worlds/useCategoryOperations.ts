@@ -1,4 +1,3 @@
-
 import { useToast } from "@/hooks/use-toast";
 import { 
   createWorldCategory, 
@@ -28,21 +27,46 @@ export function useCategoryOperations(
     // Early return if no existing content
     if (!existingContent) return emptyContent;
     
+    // Deep clone the content to avoid reference issues
+    const contentCopy = existingContent ? JSON.parse(JSON.stringify(existingContent)) : {};
+    
     // Ensure we have the expected structure based on category type
     switch (type) {
       case 'geography':
         // Preserve country data including images
-        const countries = Array.isArray((existingContent as any)?.countries) ? 
-          (existingContent as any).countries.map((country: any) => ({
-            ...country,
-            flag_url: country.flag_url,
-            cover_image_url: country.cover_image_url,
-            locations: Array.isArray(country.locations) ? country.locations.map((loc: any) => ({
-              ...loc,
-              cover_image_url: loc.cover_image_url,
-              symbol_image_url: loc.symbol_image_url
-            })) : []
-          })) : [];
+        let countries = [];
+        
+        if ((contentCopy as any)?.countries && Array.isArray((contentCopy as any).countries)) {
+          countries = (contentCopy as any).countries.map((country: any) => {
+            console.log('Preserving country:', country.name);
+            console.log('With flag URL:', country.flag_url);
+            console.log('With cover image URL:', country.cover_image_url);
+            
+            // Create a clean copy of the country
+            const countryCopy = {
+              ...country,
+              flag_url: country.flag_url,
+              cover_image_url: country.cover_image_url,
+              locations: []
+            };
+            
+            // Add locations if they exist
+            if (Array.isArray(country.locations)) {
+              countryCopy.locations = country.locations.map((loc: any) => {
+                console.log('Preserving location:', loc.name);
+                console.log('With cover image URL:', loc.cover_image_url);
+                
+                return {
+                  ...loc,
+                  cover_image_url: loc.cover_image_url,
+                  symbol_image_url: loc.symbol_image_url
+                };
+              });
+            }
+            
+            return countryCopy;
+          });
+        }
           
         return {
           countries
@@ -50,8 +74,8 @@ export function useCategoryOperations(
       
       case 'politics':
         return {
-          systems: Array.isArray((existingContent as any)?.systems) ? 
-            (existingContent as any).systems.map((system: any) => ({
+          systems: Array.isArray((contentCopy as any)?.systems) ? 
+            (contentCopy as any).systems.map((system: any) => ({
               ...system,
               cover_image_url: system.cover_image_url,
               symbol_image_url: system.symbol_image_url,
@@ -60,8 +84,8 @@ export function useCategoryOperations(
       
       case 'economy':
         return {
-          entities: Array.isArray((existingContent as any)?.entities) ? 
-            (existingContent as any).entities.map((entity: any) => ({
+          entities: Array.isArray((contentCopy as any)?.entities) ? 
+            (contentCopy as any).entities.map((entity: any) => ({
               ...entity,
               cover_image_url: entity.cover_image_url,
               symbol_image_url: entity.symbol_image_url,
@@ -70,8 +94,8 @@ export function useCategoryOperations(
       
       case 'society':
         return {
-          groups: Array.isArray((existingContent as any)?.groups) ? 
-            (existingContent as any).groups.map((group: any) => ({
+          groups: Array.isArray((contentCopy as any)?.groups) ? 
+            (contentCopy as any).groups.map((group: any) => ({
               ...group,
               cover_image_url: group.cover_image_url,
               symbol_image_url: group.symbol_image_url,
@@ -80,8 +104,8 @@ export function useCategoryOperations(
       
       case 'culture':
         return {
-          elements: Array.isArray((existingContent as any)?.elements) ? 
-            (existingContent as any).elements.map((element: any) => ({
+          elements: Array.isArray((contentCopy as any)?.elements) ? 
+            (contentCopy as any).elements.map((element: any) => ({
               ...element,
               cover_image_url: element.cover_image_url,
               symbol_image_url: element.symbol_image_url,
@@ -90,7 +114,7 @@ export function useCategoryOperations(
       
       default:
         // For custom or other categories, just keep what we have
-        return existingContent;
+        return contentCopy as Json;
     }
   };
 

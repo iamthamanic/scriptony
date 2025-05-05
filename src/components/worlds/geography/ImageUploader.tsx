@@ -15,6 +15,11 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ imageUrl, onImageChange, 
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Log when component mounts or imageUrl changes
+  React.useEffect(() => {
+    console.log('ImageUploader initialized with URL:', imageUrl);
+  }, [imageUrl]);
+
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;

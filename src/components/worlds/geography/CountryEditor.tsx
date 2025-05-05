@@ -52,14 +52,21 @@ const CountryEditor: React.FC<CountryEditorProps> = ({ content, onChange }) => {
       console.log('With flag_url:', updatedCountry.flag_url);
       console.log('With cover_image_url:', updatedCountry.cover_image_url);
       
-      // Ensure the updatedCountry has the proper structure for JSON conversion
-      const countryForUpdate = {
-        ...updatedCountry,
-        // Ensure these fields are included in the update
-        flag_url: updatedCountry.flag_url,
-        cover_image_url: updatedCountry.cover_image_url,
-        // Add any other fields that might be missing
-      } as Country & Record<string, Json>;
+      // Create a deep clone to avoid reference issues
+      const countryForUpdate = JSON.parse(JSON.stringify(updatedCountry)) as Country & Record<string, Json>;
+      
+      // Make sure the image URLs are preserved
+      countryForUpdate.flag_url = updatedCountry.flag_url;
+      countryForUpdate.cover_image_url = updatedCountry.cover_image_url;
+      
+      // Make sure the locations have their image URLs preserved too
+      if (updatedCountry.locations) {
+        countryForUpdate.locations = updatedCountry.locations.map(loc => {
+          const locationCopy = JSON.parse(JSON.stringify(loc)) as Location & Record<string, Json>;
+          locationCopy.cover_image_url = loc.cover_image_url;
+          return locationCopy;
+        });
+      }
       
       // Update the working copy first
       const updatedCountries = workingContent.countries.map(country => 
@@ -146,11 +153,17 @@ const CountryEditor: React.FC<CountryEditorProps> = ({ content, onChange }) => {
   const handleUpdateLocation = (updatedLocation: Location) => {
     if (!editingCountry) return;
     
+    // Create a deep copy to avoid reference issues
+    const locationForUpdate = JSON.parse(JSON.stringify(updatedLocation)) as Location & Record<string, Json>;
+    
+    // Make sure the image URL is preserved
+    locationForUpdate.cover_image_url = updatedLocation.cover_image_url;
+    
     // Update in the currently editing country only
     setEditingCountry({
       ...editingCountry,
       locations: (editingCountry.locations || []).map(location => 
-        location.id === updatedLocation.id ? updatedLocation as Location & Record<string, Json> : location
+        location.id === updatedLocation.id ? locationForUpdate : location
       )
     });
   };
@@ -192,8 +205,23 @@ const CountryEditor: React.FC<CountryEditorProps> = ({ content, onChange }) => {
       onToggleExpand={toggleExpand}
       onAddCountry={handleAddCountry}
       onEditCountry={(country) => {
-        // Set the editing country to a deep copy to avoid reference issues
-        setEditingCountry(JSON.parse(JSON.stringify(country)));
+        // Create a deep copy to avoid reference issues
+        const countryToEdit = JSON.parse(JSON.stringify(country));
+        
+        // Make sure the image URLs are preserved during edit
+        countryToEdit.flag_url = country.flag_url;
+        countryToEdit.cover_image_url = country.cover_image_url;
+        
+        // Make sure the locations have their image URLs preserved too
+        if (country.locations) {
+          countryToEdit.locations = country.locations.map(loc => {
+            const locationCopy = JSON.parse(JSON.stringify(loc));
+            locationCopy.cover_image_url = loc.cover_image_url;
+            return locationCopy;
+          });
+        }
+        
+        setEditingCountry(countryToEdit);
       }}
       onDeleteCountry={handleDeleteCountry}
     />
