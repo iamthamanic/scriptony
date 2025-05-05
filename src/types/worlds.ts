@@ -111,26 +111,31 @@ export interface FieldOption {
 // Geography category content with countries and locations
 export interface GeographyContent {
   countries: Country[];
+  [key: string]: Json; // Add index signature to satisfy Json type
 }
 
 // Politics category content with political systems
 export interface PoliticsContent {
   systems: PoliticalSystem[];
+  [key: string]: Json; // Add index signature to satisfy Json type
 }
 
 // Economy category content with economic entities
 export interface EconomyContent {
   entities: EconomicEntity[];
+  [key: string]: Json; // Add index signature to satisfy Json type
 }
 
 // Society category content with social groups
 export interface SocietyContent {
   groups: SocialGroup[];
+  [key: string]: Json; // Add index signature to satisfy Json type
 }
 
 // Culture category content with cultural elements
 export interface CultureContent {
   elements: CultureElement[];
+  [key: string]: Json; // Add index signature to satisfy Json type
 }
 
 // Country extends CategoryItem
@@ -211,16 +216,16 @@ export const createCategoryItem = (
 export const getEmptyCategoryContent = (type: WorldCategoryType): Json => {
   switch (type) {
     case 'geography':
-      return { countries: [] } as GeographyContent;
+      return { countries: [] } as unknown as Json;
     case 'politics':
-      return { systems: [] } as PoliticsContent;
+      return { systems: [] } as unknown as Json;
     case 'economy':
-      return { entities: [] } as EconomyContent;
+      return { entities: [] } as unknown as Json;
     case 'society':
-      return { groups: [] } as SocietyContent;
+      return { groups: [] } as unknown as Json;
     case 'culture':
-      return { elements: [] } as CultureContent;
+      return { elements: [] } as unknown as Json;
     default:
-      return {};
+      return {} as Json;
   }
 };
