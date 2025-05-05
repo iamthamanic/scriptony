@@ -16,7 +16,7 @@ export interface Manifest {
   }[];
 }
 
-export async function generateManifest(): Promise<Manifest> {
+export async function generateManifest(scopes?: any[]): Promise<Manifest> {
   const functions = router.getAllFunctions();
   
   const manifest: Manifest = {
@@ -25,8 +25,13 @@ export async function generateManifest(): Promise<Manifest> {
     functions: []
   };
 
-  // Add all registered functions to the manifest
+  // Add all registered functions to the manifest, filtered by scopes if provided
   for (const [name, func] of functions.entries()) {
+    // If scopes are provided and don't include this function or wildcard, skip it
+    if (scopes && !scopes.includes('*') && !scopes.includes(name)) {
+      continue;
+    }
+    
     manifest.functions.push({
       name,
       description: func.description,

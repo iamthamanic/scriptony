@@ -5,9 +5,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Settings, User, CreditCard, Shield, LogOut, Key } from 'lucide-react';
+import { Settings, User, CreditCard, Shield, LogOut, Key, Code2 } from 'lucide-react';
 import { validateUnlockCode } from '@/services/admin';
 import { toast } from 'sonner';
+import TokenList from './mcp/TokenList';
+import TokenConnectionHelp from './mcp/TokenConnectionHelp';
 
 interface AccountSettingsProps {
   isOpen: boolean;
@@ -60,7 +62,7 @@ const AccountSettings = ({
         </DialogHeader>
         
         <Tabs defaultValue="profile" className="mt-4">
-          <TabsList className="grid grid-cols-4 mb-6">
+          <TabsList className="grid grid-cols-5 mb-6">
             <TabsTrigger value="profile" className="flex items-center gap-1">
               <User className="h-4 w-4" /> Profile
             </TabsTrigger>
@@ -72,6 +74,9 @@ const AccountSettings = ({
             </TabsTrigger>
             <TabsTrigger value="unlock" className="flex items-center gap-1">
               <Key className="h-4 w-4" /> Unlock
+            </TabsTrigger>
+            <TabsTrigger value="mcp-integration" className="flex items-center gap-1">
+              <Code2 className="h-4 w-4" /> KI-Integration
             </TabsTrigger>
           </TabsList>
           
@@ -223,6 +228,15 @@ const AccountSettings = ({
                   </div>
                 </div>
               </form>
+            </div>
+          </TabsContent>
+          
+          {/* MCP Integration Tab */}
+          <TabsContent value="mcp-integration" className="space-y-6">
+            <TokenList />
+            
+            <div className="pt-4 border-t">
+              <TokenConnectionHelp />
             </div>
           </TabsContent>
         </Tabs>

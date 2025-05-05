@@ -106,6 +106,48 @@ export type Database = {
           },
         ]
       }
+      mcp_tokens: {
+        Row: {
+          call_count: number
+          created_at: string
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          last_used_at: string | null
+          name: string
+          scopes: Json
+          token: string
+          token_preview: string
+          user_id: string
+        }
+        Insert: {
+          call_count?: number
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          last_used_at?: string | null
+          name: string
+          scopes?: Json
+          token: string
+          token_preview: string
+          user_id: string
+        }
+        Update: {
+          call_count?: number
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          last_used_at?: string | null
+          name?: string
+          scopes?: Json
+          token?: string
+          token_preview?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       projects: {
         Row: {
           cover_image_url: string | null

@@ -3,7 +3,6 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, Edit, Trash2, MoreHorizontal } from "lucide-react";
 import { World } from "@/types";
-import McpWorldIntegration from './McpWorldIntegration';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 
 interface WorldHeaderProps {
@@ -36,8 +35,6 @@ const WorldHeader = ({
       </div>
       
       <div className="flex items-center gap-2">
-        <McpWorldIntegration />
-        
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm">
