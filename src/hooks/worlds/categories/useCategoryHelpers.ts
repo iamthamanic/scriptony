@@ -11,98 +11,86 @@ export function useCategoryHelpers() {
     console.log(`Ensuring content structure for type: ${type}`);
     
     // If content is null or empty, create default structure
-    if (!content || Object.keys(content as object).length === 0) {
+    if (!content || (typeof content === 'object' && Object.keys(content as object).length === 0)) {
       console.log(`Creating empty content for type ${type}`);
       return getEmptyCategoryContent(type);
     }
     
-    // Make sure content is an object, not a primitive
+    // Make sure content is an object
     if (typeof content !== 'object' || content === null) {
       console.log(`Content is not an object, creating default structure for ${type}`);
       return getEmptyCategoryContent(type);
     }
     
-    let processedContent = { ...content } as Record<string, any>;
+    // Safe casting for object operations
+    const contentObj = content as Record<string, any>;
     
     // Apply type-specific structure checks and fixes
     switch (type) {
-      case 'geography':
-        if (!processedContent.countries) {
-          processedContent.countries = [];
-        } else if (Array.isArray(processedContent.countries)) {
-          // Ensure all special properties are preserved in countries array
-          processedContent.countries = processedContent.countries.map(
-            country => preserveImageProperties(country)
-          );
+      case 'geography': 
+        if (!contentObj.countries || !Array.isArray(contentObj.countries)) {
+          // If countries doesn't exist or is not an array, create an empty array
+          return { ...contentObj, countries: [] };
         } else {
-          // If countries is not an array, reset it
-          processedContent.countries = [];
+          // Ensure all special properties are preserved in countries array
+          return {
+            ...contentObj,
+            countries: contentObj.countries.map(country => preserveImageProperties(country))
+          };
         }
-        break;
         
       case 'politics':
-        if (!processedContent.systems) {
-          processedContent.systems = [];
-        } else if (Array.isArray(processedContent.systems)) {
-          // Ensure all special properties are preserved in systems array
-          processedContent.systems = processedContent.systems.map(
-            system => preserveImageProperties(system)
-          );
+        if (!contentObj.systems || !Array.isArray(contentObj.systems)) {
+          // If systems doesn't exist or is not an array, create an empty array
+          return { ...contentObj, systems: [] };
         } else {
-          // If systems is not an array, reset it
-          processedContent.systems = [];
+          // Ensure all special properties are preserved in systems array
+          return {
+            ...contentObj,
+            systems: contentObj.systems.map(system => preserveImageProperties(system))
+          };
         }
-        break;
         
       case 'economy':
-        if (!processedContent.entities) {
-          processedContent.entities = [];
-        } else if (Array.isArray(processedContent.entities)) {
-          // Ensure all special properties are preserved in entities array
-          processedContent.entities = processedContent.entities.map(
-            entity => preserveImageProperties(entity)
-          );
+        if (!contentObj.entities || !Array.isArray(contentObj.entities)) {
+          // If entities doesn't exist or is not an array, create an empty array
+          return { ...contentObj, entities: [] };
         } else {
-          // If entities is not an array, reset it
-          processedContent.entities = [];
+          // Ensure all special properties are preserved in entities array
+          return {
+            ...contentObj,
+            entities: contentObj.entities.map(entity => preserveImageProperties(entity))
+          };
         }
-        break;
         
       case 'society':
-        if (!processedContent.groups) {
-          processedContent.groups = [];
-        } else if (Array.isArray(processedContent.groups)) {
-          // Ensure all special properties are preserved in groups array
-          processedContent.groups = processedContent.groups.map(
-            group => preserveImageProperties(group)
-          );
+        if (!contentObj.groups || !Array.isArray(contentObj.groups)) {
+          // If groups doesn't exist or is not an array, create an empty array
+          return { ...contentObj, groups: [] };
         } else {
-          // If groups is not an array, reset it
-          processedContent.groups = [];
+          // Ensure all special properties are preserved in groups array
+          return {
+            ...contentObj,
+            groups: contentObj.groups.map(group => preserveImageProperties(group))
+          };
         }
-        break;
         
       case 'culture':
-        if (!processedContent.elements) {
-          processedContent.elements = [];
-        } else if (Array.isArray(processedContent.elements)) {
-          // Ensure all special properties are preserved in elements array
-          processedContent.elements = processedContent.elements.map(
-            element => preserveImageProperties(element)
-          );
+        if (!contentObj.elements || !Array.isArray(contentObj.elements)) {
+          // If elements doesn't exist or is not an array, create an empty array
+          return { ...contentObj, elements: [] };
         } else {
-          // If elements is not an array, reset it
-          processedContent.elements = [];
+          // Ensure all special properties are preserved in elements array
+          return {
+            ...contentObj,
+            elements: contentObj.elements.map(element => preserveImageProperties(element))
+          };
         }
-        break;
         
       default:
-        // For other types, just ensure it's an object
-        processedContent = typeof content === 'object' ? content as Record<string, any> : {};
+        // For other types, ensure it's a valid object
+        return contentObj;
     }
-    
-    console.log(`Ensured content structure:`, processedContent);
-    return processedContent as Json;
   };
   
   return { ensureContentStructure };

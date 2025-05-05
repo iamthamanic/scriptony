@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Image, Trash2, Upload } from 'lucide-react';
 import { customSupabase } from "@/integrations/supabase/customClient";
@@ -20,11 +20,21 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
 }) => {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [componentId] = useState(`uploader-${Math.random().toString(36).substring(2, 9)}`);
 
   // Log when component mounts or imageUrl changes
-  React.useEffect(() => {
-    console.log(`ImageUploader (${category}) initialized with URL:`, imageUrl);
-  }, [imageUrl, category]);
+  useEffect(() => {
+    console.log(`[${componentId}] ImageUploader (${category}) initialized with URL:`, imageUrl);
+    // Return cleanup function to log when component unmounts
+    return () => {
+      console.log(`[${componentId}] ImageUploader (${category}) unmounted with final URL:`, imageUrl);
+    };
+  }, [componentId, category]);
+  
+  // Log when the URL changes
+  useEffect(() => {
+    console.log(`[${componentId}] ImageUploader (${category}) URL updated:`, imageUrl);
+  }, [imageUrl, componentId, category]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -33,7 +43,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     try {
       setError(null);
       setUploading(true);
-      console.log(`Starting upload for ${category} with file:`, file.name);
+      console.log(`[${componentId}] Starting upload for ${category} with file:`, file.name);
 
       // Generate a unique file name
       const fileExt = file.name.split('.').pop();
@@ -41,12 +51,12 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       const filePath = fileName;
 
       // Make sure the storage bucket exists
-      const { error: uploadError } = await customSupabase.storage
+      const { error: uploadError, data: uploadData } = await customSupabase.storage
         .from('covers')
         .upload(filePath, file);
 
       if (uploadError) {
-        console.error('Upload error:', uploadError);
+        console.error(`[${componentId}] Upload error:`, uploadError);
         throw uploadError;
       }
 
@@ -55,17 +65,18 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         .from('covers')
         .getPublicUrl(filePath);
 
-      console.log(`Image uploaded successfully for ${category}, URL:`, data.publicUrl);
+      console.log(`[${componentId}] Image uploaded successfully for ${category}, URL:`, data.publicUrl);
       
       // Update the local state
       onImageChange(data.publicUrl);
+      console.log(`[${componentId}] Called onImageChange with URL:`, data.publicUrl);
       
       // Only show toast if not disabled
       if (!disableToast) {
         toast.success('Bild erfolgreich hochgeladen');
       }
     } catch (error: any) {
-      console.error(`Error uploading image for ${category}:`, error);
+      console.error(`[${componentId}] Error uploading image for ${category}:`, error);
       setError(error.message || 'Unbekannter Fehler');
       toast.error(`Fehler beim Hochladen: ${error.message || 'Unbekannter Fehler'}`);
     } finally {
@@ -74,10 +85,11 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   };
 
   const handleRemoveImage = () => {
-    console.log(`Removing image for ${category}:`, imageUrl);
+    console.log(`[${componentId}] Removing image for ${category}:`, imageUrl);
     
     // Remove the reference from the local state
     onImageChange(undefined);
+    console.log(`[${componentId}] Called onImageChange with undefined to remove image`);
     
     // Only show toast if not disabled
     if (!disableToast) {
@@ -94,6 +106,11 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
               src={imageUrl} 
               alt="Uploaded" 
               className="max-h-32 max-w-full mx-auto object-contain rounded" 
+              onError={() => {
+                console.error(`[${componentId}] Failed to load image:`, imageUrl);
+                setError("Bild konnte nicht geladen werden");
+              }}
+              onLoad={() => console.log(`[${componentId}] Image successfully loaded:`, imageUrl)}
             />
           </div>
         ) : (
@@ -113,7 +130,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
           variant="outline" 
           size="sm" 
           className="flex-1"
-          onClick={() => document.getElementById(`image-upload-${category}`)?.click()}
+          onClick={() => document.getElementById(`image-upload-${category}-${componentId}`)?.click()}
           disabled={uploading}
         >
           <Upload className="h-4 w-4 mr-2" /> {uploading ? 'Lädt...' : 'Bild hochladen'}
@@ -131,7 +148,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         )}
         
         <input 
-          id={`image-upload-${category}`} 
+          id={`image-upload-${category}-${componentId}`} 
           type="file" 
           accept="image/*" 
           className="hidden" 
