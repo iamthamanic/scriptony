@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useToast } from "@/hooks/use-toast";
 import { uploadAndAnalyzeScript } from "@/services/scriptAnalysis";
@@ -21,10 +20,8 @@ export const useScriptAnalysis = () => {
   const handleUploadScript = async (file: File) => {
     if (!file) return;
     
-    // Check for development mode in console logs
-    const isDevelopmentMode = !!console.logs?.some(log => 
-      log.includes("Development mode: Bypassing authentication check")
-    );
+    // Check for development mode - using isDevelopmentMode utility instead of checking console logs
+    const isDevelopmentMode = process.env.NODE_ENV === 'development';
     
     if (!user && !isDevelopmentMode) {
       toast({
