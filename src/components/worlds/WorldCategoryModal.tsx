@@ -3,7 +3,7 @@ import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { WorldCategory, WorldCategoryFormData } from '@/types';
 import { useWorldCategoryForm } from '@/hooks/worlds/categories/useWorldCategoryForm';
-import ModalForm from './categories/ModalForm';
+import CategoryForm from './categories/form/CategoryForm';
 
 interface WorldCategoryModalProps {
   isOpen: boolean;
@@ -34,7 +34,7 @@ const WorldCategoryModal = ({ isOpen, onClose, onSubmit, category }: WorldCatego
           </DialogTitle>
         </DialogHeader>
         
-        <ModalForm
+        <CategoryForm
           formData={formData}
           onNameChange={handleChange}
           onTypeChange={handleTypeChange}
