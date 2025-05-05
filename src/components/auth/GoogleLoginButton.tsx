@@ -1,9 +1,8 @@
-
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from "sonner";
 
-import { supabase } from "@/integrations/supabase/client";
+import { customSupabase } from "@/integrations/supabase/customClient";
 import { Button } from "@/components/ui/button";
 import { Loader2, AlertTriangle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -114,7 +113,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
       const redirectUrl = `${window.location.origin}/auth`;
       console.log("Setting explicit redirectTo URL:", redirectUrl);
       
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const { data, error } = await customSupabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: redirectUrl,

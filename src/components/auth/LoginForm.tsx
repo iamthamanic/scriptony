@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { supabase } from "@/integrations/supabase/client";
+import { customSupabase } from "@/integrations/supabase/customClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { 
@@ -39,7 +39,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ loading, setLoading, onFor
   const handleLogin = async (data: LoginFormValues) => {
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { error } = await customSupabase.auth.signInWithPassword({
         email: data.email,
         password: data.password
       });

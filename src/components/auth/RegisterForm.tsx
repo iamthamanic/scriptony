@@ -3,7 +3,7 @@ import React from 'react';
 import { toast } from "sonner";
 import { useTranslation } from 'react-i18next';
 
-import { supabase } from "@/integrations/supabase/client";
+import { customSupabase } from "@/integrations/supabase/customClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { 
@@ -43,7 +43,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   const handleRegister = async (data: RegisterFormValues) => {
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signUp({
+      const { error } = await customSupabase.auth.signUp({
         email: data.email,
         password: data.password,
         options: {

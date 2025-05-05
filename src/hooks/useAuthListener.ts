@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { customSupabase } from "@/integrations/supabase/customClient";
 import type { AuthChangeEvent, Session, User, AuthError } from "@supabase/supabase-js";
 import { toast } from "sonner";
 
@@ -18,7 +18,7 @@ export const useAuthListener = () => {
     let isMounted = true;
     
     // Set up auth state listener first
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+    const { data: { subscription } } = customSupabase.auth.onAuthStateChange(
       (event: AuthChangeEvent, currentSession: Session | null) => {
         console.log("Auth state changed:", event);
         if (!isMounted) return;
@@ -59,7 +59,7 @@ export const useAuthListener = () => {
     );
 
     // Then get current session
-    supabase.auth.getSession().then(({ data: { session: currentSession }, error }) => {
+    customSupabase.auth.getSession().then(({ data: { session: currentSession }, error }) => {
       if (isMounted) {
         console.log("Initial session check:", currentSession ? "Session found" : "No session");
         
