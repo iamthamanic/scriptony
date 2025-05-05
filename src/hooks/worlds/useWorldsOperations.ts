@@ -105,8 +105,8 @@ export function useWorldsOperations(
     }
   };
 
-  const handleDeleteWorld = async () => {
-    if (!selectedWorld) return;
+  const handleDeleteWorld = async (): Promise<void> => {
+    if (!selectedWorld) return Promise.resolve();
     
     try {
       console.log('Starting deletion process for world:', selectedWorld.id);
@@ -119,9 +119,11 @@ export function useWorldsOperations(
       setSelectedWorldId(null); // Always return to worlds list after deletion
       
       // Note: The dialog is now responsible for showing success messages and closing itself
+      return Promise.resolve();
     } catch (error) {
       console.error('Error in handleDeleteWorld:', error);
       // The dialog component now handles the error display, so we don't need to show a toast here
+      return Promise.reject(error);
     }
   };
 

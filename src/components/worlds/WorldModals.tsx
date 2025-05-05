@@ -16,7 +16,7 @@ interface WorldModalsProps {
   onCloseCategoryModal: () => void;
   onCreateWorld: (data: NewWorldFormData) => void;
   onUpdateWorld: (data: NewWorldFormData) => void;
-  onDeleteWorld: () => void;
+  onDeleteWorld: () => Promise<void>;
   onCategorySubmit: (data: WorldCategoryFormData) => void;
   selectedWorld: World | null;
   selectedCategory: WorldCategory | null;
