@@ -31,7 +31,7 @@ const SubscriptionTab = () => {
             </Button>
           </div>
           <ul className="mt-3 text-sm space-y-1">
-            <li>✓ 5 Skript-Projekte</li>
+            <li>✓ 25 Skript-Projekte</li>
             <li>✓ 25 Welten</li>
             <li>✓ PDF Dossier Export</li>
             <li>✓ AI-MCP Integration</li>
