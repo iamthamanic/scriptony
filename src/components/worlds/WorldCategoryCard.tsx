@@ -28,6 +28,7 @@ const WorldCategoryCard = ({ category, onEdit, onDelete }: WorldCategoryCardProp
   const renderGeographyContent = () => {
     if (!category.content) return <div className="text-center py-8 text-muted-foreground">Keine Inhalte vorhanden</div>;
     
+    // Type assertion for GeographyContent
     const geographyContent = category.content as GeographyContent;
     const countries = geographyContent.countries || [];
     
