@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, Edit, Trash2, MoreHorizontal } from "lucide-react";
 import { World } from "@/types";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
 
 interface WorldHeaderProps {
   world: World;
@@ -32,6 +33,13 @@ const WorldHeader = ({
       
       <div className="flex-1">
         <h1 className="text-2xl font-bold text-anime-purple">{world.name}</h1>
+        {world.categories && (
+          <div className="flex flex-wrap gap-1 mt-1">
+            <Badge variant="success" className="text-xs">
+              {world.categories.length} Kategorie{world.categories.length !== 1 ? 'n' : ''}
+            </Badge>
+          </div>
+        )}
       </div>
       
       <div className="flex items-center gap-2">
