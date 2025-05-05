@@ -12,7 +12,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 interface NavItemProps {
   to: string;
-  icon: React.ElementType;
+  icon?: React.ElementType;
   label: string;
   onClose?: () => void;
 }
@@ -27,14 +27,15 @@ const NavItem = ({ to, icon: Icon, label, onClose }: NavItemProps) => {
       onClick={onClose}
       className={({ isActive }) =>
         cn(
-          "flex items-center gap-2 px-3 py-2 rounded-md transition-colors",
+          "px-5 py-2.5 rounded-md transition-colors text-base font-medium",
           isActive 
-            ? "bg-purple-500 text-white" 
-            : "text-gray-200 hover:bg-purple-700/30 hover:text-white"
+            ? "bg-anime-light-purple text-anime-purple" 
+            : "text-anime-gray-700 hover:bg-muted/50 hover:text-anime-purple"
         )
       }
     >
-      <Icon className="h-5 w-5" />
+      {/* Only render icon in mobile menu */}
+      {Icon && onClose && <Icon className="h-5 w-5 mr-2 inline" />}
       <span>{label}</span>
     </NavLink>
   );
@@ -54,60 +55,57 @@ const Topbar = () => {
   const closeSheet = () => setIsOpen(false);
 
   return (
-    <div className="sticky top-0 z-50 w-full bg-purple-900 border-b border-purple-800 h-16 flex items-center px-4 md:px-6 text-white">
+    <div className="sticky top-0 z-50 w-full bg-white border-b border-border h-16 flex items-center px-4 md:px-6">
       <div className="flex items-center justify-between w-full max-w-7xl mx-auto">
         <div className="flex items-center">
           <Logo size="sm" />
         </div>
         
         {/* Desktop Navigation - Centered */}
-        <nav className="hidden md:flex items-center gap-2 absolute left-1/2 transform -translate-x-1/2">
+        <nav className="hidden md:flex items-center gap-4 absolute left-1/2 transform -translate-x-1/2">
           {navItems.map((item) => (
             <NavItem 
               key={item.to} 
-              to={item.to} 
-              icon={item.icon} 
+              to={item.to}
               label={item.label} 
             />
           ))}
         </nav>
         
-        <div className="flex items-center gap-3">
-          <div className="hidden md:flex items-center gap-3">
-            <ThemeToggle />
-            <LanguageSwitcher />
-          </div>
-          
+        <div className="flex items-center gap-4">
+          {/* Account link as text for desktop */}
           {user && (
-            <NavLink 
-              to="/account"
-              className={({ isActive }) =>
-                cn(
-                  "p-2 rounded-full transition-colors",
-                  isActive 
-                    ? "bg-purple-700 text-white" 
-                    : "text-gray-200 hover:bg-purple-700/30"
-                )
-              }
-            >
-              <User className="h-5 w-5" />
-            </NavLink>
+            <div className="hidden md:block">
+              <NavLink 
+                to="/account"
+                className={({ isActive }) =>
+                  cn(
+                    "text-base font-medium transition-colors",
+                    isActive 
+                      ? "text-anime-purple" 
+                      : "text-anime-gray-700 hover:text-anime-purple"
+                  )
+                }
+              >
+                Accounteinstellungen
+              </NavLink>
+            </div>
           )}
           
           {/* Mobile menu trigger */}
           <div className="md:hidden">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-white hover:bg-purple-800">
+                <Button variant="ghost" size="icon">
                   <Menu className="h-5 w-5" />
                   <span className="sr-only">Toggle menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[240px] sm:w-[300px] bg-purple-900 text-white border-purple-800">
+              <SheetContent side="right" className="w-[240px] sm:w-[300px] bg-background">
                 <div className="flex flex-col gap-6 h-full">
                   <div className="flex items-center justify-between">
                     <Logo size="sm" />
-                    <Button variant="ghost" size="icon" onClick={closeSheet} className="text-white hover:bg-purple-800">
+                    <Button variant="ghost" size="icon" onClick={closeSheet}>
                       <X className="h-5 w-5" />
                     </Button>
                   </div>
@@ -126,13 +124,13 @@ const Topbar = () => {
                       <NavItem 
                         to="/account" 
                         icon={User} 
-                        label="Konto" 
+                        label="Accounteinstellungen" 
                         onClose={closeSheet}
                       />
                     )}
                   </nav>
                   
-                  <div className="flex items-center gap-2 mt-auto">
+                  <div className="flex flex-col gap-4 mt-auto">
                     <ThemeToggle />
                     <LanguageSwitcher />
                   </div>
