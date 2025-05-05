@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -7,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { WorldCategory, WorldCategoryType, WorldCategoryFormData } from '@/types';
+import CountryEditor from './geography/CountryEditor';
 
 interface WorldCategoryModalProps {
   isOpen: boolean;
@@ -23,8 +23,7 @@ const WorldCategoryModal = ({ isOpen, onClose, onSubmit, category }: WorldCatego
     content: {}
   });
 
-  const [contentText, setContentText] = useState('');
-
+  // Initialize content based on category type
   useEffect(() => {
     if (category) {
       setFormData({
@@ -33,7 +32,6 @@ const WorldCategoryModal = ({ isOpen, onClose, onSubmit, category }: WorldCatego
         icon: category.icon || 'map',
         content: category.content || {}
       });
-      setContentText(JSON.stringify(category.content || {}, null, 2));
     } else {
       setFormData({
         name: '',
@@ -41,7 +39,6 @@ const WorldCategoryModal = ({ isOpen, onClose, onSubmit, category }: WorldCatego
         icon: 'map',
         content: {}
       });
-      setContentText('{}');
     }
   }, [category, isOpen]);
 
@@ -51,32 +48,32 @@ const WorldCategoryModal = ({ isOpen, onClose, onSubmit, category }: WorldCatego
   };
 
   const handleTypeChange = (value: string) => {
-    setFormData(prev => ({ ...prev, type: value as WorldCategoryType }));
+    setFormData(prev => {
+      // Initialize appropriate content structure based on type
+      let content = prev.content || {};
+      
+      if (value === 'geography' && (!prev.content || Object.keys(prev.content).length === 0)) {
+        content = { countries: [] };
+      }
+      
+      return { 
+        ...prev, 
+        type: value as WorldCategoryType,
+        content
+      };
+    });
   };
 
-  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setContentText(e.target.value);
-    try {
-      const parsed = JSON.parse(e.target.value);
-      setFormData(prev => ({ ...prev, content: parsed }));
-    } catch (error) {
-      // Invalid JSON, but we still update the text to show the user their input
-    }
+  const handleContentChange = (newContent: any) => {
+    setFormData(prev => ({
+      ...prev,
+      content: newContent
+    }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      // Ensure content is valid JSON
-      const content = contentText.trim() !== '' ? JSON.parse(contentText) : {};
-      onSubmit({
-        ...formData,
-        content
-      });
-    } catch (error) {
-      console.error('Invalid JSON content:', error);
-      // Could show error to user here
-    }
+    onSubmit(formData);
   };
 
   const categoryTypes = [
@@ -93,9 +90,44 @@ const WorldCategoryModal = ({ isOpen, onClose, onSubmit, category }: WorldCatego
     { value: 'custom', label: 'Benutzerdefiniert' },
   ];
 
+  const renderContentEditor = () => {
+    switch (formData.type) {
+      case 'geography':
+        return (
+          <CountryEditor 
+            content={formData.content} 
+            onChange={handleContentChange}
+          />
+        );
+      default:
+        return (
+          <div className="space-y-2">
+            <Label htmlFor="content">Inhalt (JSON Format)</Label>
+            <Textarea
+              id="content"
+              name="content"
+              value={JSON.stringify(formData.content || {}, null, 2)}
+              onChange={e => {
+                try {
+                  handleContentChange(JSON.parse(e.target.value));
+                } catch (error) {
+                  // Invalid JSON, but we still keep the text
+                }
+              }}
+              placeholder="{ }"
+              className="font-mono h-40"
+            />
+            <p className="text-xs text-muted-foreground">
+              Der Inhalt muss im JSON-Format eingegeben werden.
+            </p>
+          </div>
+        );
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-xl">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-anime-purple">
             {category ? 'Kategorie bearbeiten' : 'Neue Kategorie'}
@@ -134,20 +166,7 @@ const WorldCategoryModal = ({ isOpen, onClose, onSubmit, category }: WorldCatego
             </Select>
           </div>
           
-          <div className="space-y-2">
-            <Label htmlFor="content">Inhalt (JSON Format)</Label>
-            <Textarea
-              id="content"
-              name="content"
-              value={contentText}
-              onChange={handleContentChange}
-              placeholder="{ }"
-              className="font-mono h-40"
-            />
-            <p className="text-xs text-muted-foreground">
-              Der Inhalt muss im JSON-Format eingegeben werden.
-            </p>
-          </div>
+          {renderContentEditor()}
           
           <DialogFooter className="pt-4">
             <Button 
