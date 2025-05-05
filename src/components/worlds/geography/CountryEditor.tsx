@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
 import { Country, GeographyContent, Location } from '@/types/worlds';
 import { v4 as uuidv4 } from 'uuid';
 import CountryForm from './CountryForm';
 import CountryList from './CountryList';
 import { toast } from "sonner";
+import { Json } from '@/integrations/supabase/types';
 
 interface CountryEditorProps {
   content: any;
@@ -18,7 +18,7 @@ const CountryEditor: React.FC<CountryEditorProps> = ({ content, onChange }) => {
   // Initialize content structure safely
   const geographyContent: GeographyContent = content && content.countries 
     ? content as GeographyContent 
-    : { countries: [] };
+    : { countries: [] as Array<Country & Record<string, Json>> };
   
   // Create a working copy for local edits
   const [workingContent, setWorkingContent] = useState<GeographyContent>({
@@ -35,7 +35,7 @@ const CountryEditor: React.FC<CountryEditorProps> = ({ content, onChange }) => {
     };
     
     // Add to working copy only
-    const updatedCountries = [...workingContent.countries, newCountry];
+    const updatedCountries = [...workingContent.countries, newCountry as Country & Record<string, Json>];
     setWorkingContent({
       ...workingContent,
       countries: updatedCountries
@@ -49,11 +49,12 @@ const CountryEditor: React.FC<CountryEditorProps> = ({ content, onChange }) => {
     try {
       // Update the working copy first
       const updatedCountries = workingContent.countries.map(country => 
-        country.id === updatedCountry.id ? updatedCountry : country
+        country.id === updatedCountry.id ? updatedCountry as Country & Record<string, Json> : country
       );
       
       // Create a new content object to trigger a proper update
       const updatedContent: GeographyContent = {
+        ...workingContent,
         countries: updatedCountries
       };
       
@@ -85,8 +86,8 @@ const CountryEditor: React.FC<CountryEditorProps> = ({ content, onChange }) => {
     if (window.confirm('Sind Sie sicher, dass Sie dieses Land löschen möchten?')) {
       try {
         const updatedContent: GeographyContent = {
-          ...geographyContent,
-          countries: geographyContent.countries.filter(country => country.id !== countryId)
+          ...workingContent,
+          countries: workingContent.countries.filter(country => country.id !== countryId)
         };
         
         // Persist the deletion
@@ -122,7 +123,7 @@ const CountryEditor: React.FC<CountryEditorProps> = ({ content, onChange }) => {
     // Update the editing country with the new location without saving to backend
     setEditingCountry({
       ...editingCountry,
-      locations: [...(editingCountry.locations || []), newLocation]
+      locations: [...(editingCountry.locations || []), newLocation as Location & Record<string, Json>]
     });
   };
 
@@ -133,7 +134,7 @@ const CountryEditor: React.FC<CountryEditorProps> = ({ content, onChange }) => {
     setEditingCountry({
       ...editingCountry,
       locations: (editingCountry.locations || []).map(location => 
-        location.id === updatedLocation.id ? updatedLocation : location
+        location.id === updatedLocation.id ? updatedLocation as Location & Record<string, Json> : location
       )
     });
   };

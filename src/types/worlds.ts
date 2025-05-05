@@ -108,45 +108,49 @@ export interface FieldOption {
   value: string;
 }
 
+// Update content types to be properly serializable to Json
+
 // Geography category content with countries and locations
 export interface GeographyContent {
-  countries: Country[];
-  [key: string]: Json; // Add index signature to satisfy Json type
+  countries: Array<Country & Record<string, Json>>;
+  [key: string]: Json;
 }
 
 // Politics category content with political systems
 export interface PoliticsContent {
-  systems: PoliticalSystem[];
-  [key: string]: Json; // Add index signature to satisfy Json type
+  systems: Array<PoliticalSystem & Record<string, Json>>;
+  [key: string]: Json;
 }
 
 // Economy category content with economic entities
 export interface EconomyContent {
-  entities: EconomicEntity[];
-  [key: string]: Json; // Add index signature to satisfy Json type
+  entities: Array<EconomicEntity & Record<string, Json>>;
+  [key: string]: Json;
 }
 
 // Society category content with social groups
 export interface SocietyContent {
-  groups: SocialGroup[];
-  [key: string]: Json; // Add index signature to satisfy Json type
+  groups: Array<SocialGroup & Record<string, Json>>;
+  [key: string]: Json;
 }
 
 // Culture category content with cultural elements
 export interface CultureContent {
-  elements: CultureElement[];
-  [key: string]: Json; // Add index signature to satisfy Json type
+  elements: Array<CultureElement & Record<string, Json>>;
+  [key: string]: Json;
 }
 
 // Country extends CategoryItem
 export interface Country extends CategoryItem {
   flag_url?: string;
-  locations: Location[];
+  locations: Array<Location & Record<string, Json>>;
+  [key: string]: any; // Add index signature to satisfy Json requirements
 }
 
 // Location extends CategoryItem
 export interface Location extends CategoryItem {
   coordinates?: { x: number; y: number }; // For map positioning
+  [key: string]: any; // Add index signature to satisfy Json requirements
 }
 
 // Political system extends CategoryItem
@@ -154,6 +158,7 @@ export interface PoliticalSystem extends CategoryItem {
   government_type?: string;
   leaders?: Leader[];
   laws?: Law[];
+  [key: string]: any; // Add index signature to satisfy Json requirements
 }
 
 export interface Leader {
@@ -162,29 +167,34 @@ export interface Leader {
   title: string;
   portrait_url?: string;
   description?: string;
+  [key: string]: any; // Add index signature to satisfy Json requirements
 }
 
 export interface Law {
   id: string;
   name: string;
   description: string;
+  [key: string]: any; // Add index signature to satisfy Json requirements
 }
 
 // Economic entity extends CategoryItem
 export interface EconomicEntity extends CategoryItem {
   entity_type?: 'currency' | 'resource' | 'organization' | 'system';
   value?: string;
+  [key: string]: any; // Add index signature to satisfy Json requirements
 }
 
 // Social group extends CategoryItem
 export interface SocialGroup extends CategoryItem {
   population?: string;
   characteristics?: string[];
+  [key: string]: any; // Add index signature to satisfy Json requirements
 }
 
 // Culture element extends CategoryItem
 export interface CultureElement extends CategoryItem {
   element_type?: 'art' | 'tradition' | 'festival' | 'belief';
+  [key: string]: any; // Add index signature to satisfy Json requirements
 }
 
 // Helper function to create a new custom field
