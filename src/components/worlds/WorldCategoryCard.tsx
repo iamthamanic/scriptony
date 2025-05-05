@@ -38,10 +38,10 @@ const WorldCategoryCard = ({ category, onEdit, onDelete }: WorldCategoryCardProp
       Array.isArray((content as any).countries)
     );
     
-    // Create a properly typed geography content object
-    const geographyContent: GeographyContent = isValidGeographyContent 
-      ? { countries: (content as any).countries } 
-      : { countries: [] };
+    // Create a properly typed geography content object with safe type assertion
+    const geographyContent = isValidGeographyContent 
+      ? { countries: (content as any).countries } as GeographyContent
+      : { countries: [] } as GeographyContent;
       
     const countries = geographyContent.countries || [];
     
@@ -96,7 +96,7 @@ const WorldCategoryCard = ({ category, onEdit, onDelete }: WorldCategoryCardProp
                     <p className="text-xs text-muted-foreground line-clamp-2">{country.description}</p>
                   )}
                   
-                  {country.locations.length > 0 && (
+                  {country.locations && country.locations.length > 0 && (
                     <div className="mt-2">
                       <p className="text-xs font-medium flex items-center gap-1">
                         <MapPin className="h-3 w-3" /> {country.locations.length} Orte
@@ -104,7 +104,7 @@ const WorldCategoryCard = ({ category, onEdit, onDelete }: WorldCategoryCardProp
                     </div>
                   )}
                   
-                  {country.customFields.length > 0 && (
+                  {country.customFields && country.customFields.length > 0 && (
                     <div className="mt-2 grid grid-cols-1 gap-1">
                       {country.customFields.slice(0, 2).map(field => (
                         <p key={field.id} className="text-xs">
