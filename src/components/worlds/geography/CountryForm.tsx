@@ -29,6 +29,14 @@ const CountryForm: React.FC<CountryFormProps> = ({
 }) => {
   const [editingCountry, setEditingCountry] = React.useState<Country>(country);
 
+  // Create update handlers that only modify local state without triggering saves
+  const handleCountryUpdate = (updates: Partial<Country>) => {
+    setEditingCountry(prev => ({
+      ...prev,
+      ...updates
+    }));
+  };
+
   return (
     <div className="space-y-4">
       <Button 
@@ -47,8 +55,7 @@ const CountryForm: React.FC<CountryFormProps> = ({
           <Input 
             id="country-name" 
             value={editingCountry.name} 
-            onChange={(e) => setEditingCountry({
-              ...editingCountry,
+            onChange={(e) => handleCountryUpdate({
               name: e.target.value
             })}
           />
@@ -59,8 +66,7 @@ const CountryForm: React.FC<CountryFormProps> = ({
           <Textarea 
             id="country-description" 
             value={editingCountry.description || ''} 
-            onChange={(e) => setEditingCountry({
-              ...editingCountry,
+            onChange={(e) => handleCountryUpdate({
               description: e.target.value
             })}
           />
@@ -79,20 +85,20 @@ const CountryForm: React.FC<CountryFormProps> = ({
                 <Label>Flagge</Label>
                 <ImageUploader 
                   imageUrl={editingCountry.flag_url} 
-                  onImageChange={(url) => setEditingCountry({
-                    ...editingCountry,
+                  onImageChange={(url) => handleCountryUpdate({
                     flag_url: url
                   })}
+                  disableToast={true}
                 />
               </div>
               <div>
                 <Label>Titelbild</Label>
                 <ImageUploader 
                   imageUrl={editingCountry.cover_image_url} 
-                  onImageChange={(url) => setEditingCountry({
-                    ...editingCountry,
+                  onImageChange={(url) => handleCountryUpdate({
                     cover_image_url: url
                   })}
+                  disableToast={true}
                 />
               </div>
             </div>
@@ -101,8 +107,7 @@ const CountryForm: React.FC<CountryFormProps> = ({
           <TabsContent value="custom-fields" className="pt-4">
             <CustomFieldsEditor
               customFields={editingCountry.customFields || []}
-              onChange={(customFields) => setEditingCountry({
-                ...editingCountry,
+              onChange={(customFields) => handleCountryUpdate({
                 customFields
               })}
             />

@@ -3,6 +3,7 @@ import { Country, GeographyContent, Location } from '@/types/worlds';
 import { v4 as uuidv4 } from 'uuid';
 import CountryForm from './CountryForm';
 import CountryList from './CountryList';
+import { toast } from "sonner";
 
 interface CountryEditorProps {
   content: any;
@@ -12,6 +13,12 @@ interface CountryEditorProps {
 const CountryEditor: React.FC<CountryEditorProps> = ({ content, onChange }) => {
   const [expandedCountryId, setExpandedCountryId] = useState<string | null>(null);
   const [editingCountry, setEditingCountry] = useState<Country | null>(null);
+  // Add a working copy of the content to prevent immediate saves
+  const [workingContent, setWorkingContent] = useState<GeographyContent>(
+    content && content.countries 
+      ? content as GeographyContent 
+      : { countries: [] }
+  );
 
   // Initialize content structure if it doesn't exist
   const geographyContent: GeographyContent = content && content.countries 
@@ -27,16 +34,17 @@ const CountryEditor: React.FC<CountryEditorProps> = ({ content, onChange }) => {
       locations: []
     };
     
-    const updatedContent: GeographyContent = {
-      ...geographyContent,
-      countries: [...geographyContent.countries, newCountry]
-    };
+    // Add to working copy only, not to the actual saved content
+    setWorkingContent(prev => ({
+      ...prev,
+      countries: [...prev.countries, newCountry]
+    }));
     
-    onChange(updatedContent);
     setEditingCountry(newCountry);
   };
 
   const handleUpdateCountry = (updatedCountry: Country) => {
+    // Save the country update to the actual content
     const updatedContent: GeographyContent = {
       ...geographyContent,
       countries: geographyContent.countries.map(country => 
@@ -44,8 +52,22 @@ const CountryEditor: React.FC<CountryEditorProps> = ({ content, onChange }) => {
       )
     };
     
+    // Only now do we call onChange to persist the changes
     onChange(updatedContent);
     setEditingCountry(null);
+    
+    toast.success("Land erfolgreich aktualisiert");
+  };
+
+  const handleCancelEdit = () => {
+    // If cancelling, discard changes and reset to original content
+    setEditingCountry(null);
+    // Reset working copy to match the actual content
+    setWorkingContent(
+      content && content.countries 
+        ? content as GeographyContent 
+        : { countries: [] }
+    );
   };
 
   const handleDeleteCountry = (countryId: string) => {
@@ -55,6 +77,7 @@ const CountryEditor: React.FC<CountryEditorProps> = ({ content, onChange }) => {
         countries: geographyContent.countries.filter(country => country.id !== countryId)
       };
       
+      // Persist the deletion immediately
       onChange(updatedContent);
       
       if (expandedCountryId === countryId) {
@@ -67,53 +90,43 @@ const CountryEditor: React.FC<CountryEditorProps> = ({ content, onChange }) => {
     }
   };
 
-  const handleAddLocation = (countryId: string) => {
-    const country = geographyContent.countries.find(c => c.id === countryId);
+  const handleAddLocation = () => {
+    if (!editingCountry) return;
     
-    if (country) {
-      const newLocation: Location = {
-        id: uuidv4(),
-        name: 'Neuer Ort',
-        description: '',
-        customFields: []
-      };
-      
-      const updatedCountry: Country = {
-        ...country,
-        locations: [...(country.locations || []), newLocation]
-      };
-      
-      handleUpdateCountry(updatedCountry);
-    }
+    const newLocation: Location = {
+      id: uuidv4(),
+      name: 'Neuer Ort',
+      description: '',
+      customFields: []
+    };
+    
+    // Update the editing country with the new location without saving to backend
+    setEditingCountry({
+      ...editingCountry,
+      locations: [...(editingCountry.locations || []), newLocation]
+    });
   };
 
-  const handleUpdateLocation = (countryId: string, updatedLocation: Location) => {
-    const country = geographyContent.countries.find(c => c.id === countryId);
+  const handleUpdateLocation = (updatedLocation: Location) => {
+    if (!editingCountry) return;
     
-    if (country && country.locations) {
-      const updatedCountry: Country = {
-        ...country,
-        locations: country.locations.map(location => 
-          location.id === updatedLocation.id ? updatedLocation : location
-        )
-      };
-      
-      handleUpdateCountry(updatedCountry);
-    }
+    // Update in the currently editing country only
+    setEditingCountry({
+      ...editingCountry,
+      locations: (editingCountry.locations || []).map(location => 
+        location.id === updatedLocation.id ? updatedLocation : location
+      )
+    });
   };
 
-  const handleDeleteLocation = (countryId: string, locationId: string) => {
+  const handleDeleteLocation = (locationId: string) => {
+    if (!editingCountry) return;
+    
     if (window.confirm('Sind Sie sicher, dass Sie diesen Ort löschen möchten?')) {
-      const country = geographyContent.countries.find(c => c.id === countryId);
-      
-      if (country && country.locations) {
-        const updatedCountry: Country = {
-          ...country,
-          locations: country.locations.filter(location => location.id !== locationId)
-        };
-        
-        handleUpdateCountry(updatedCountry);
-      }
+      setEditingCountry({
+        ...editingCountry,
+        locations: (editingCountry.locations || []).filter(location => location.id !== locationId)
+      });
     }
   };
 
@@ -126,11 +139,11 @@ const CountryEditor: React.FC<CountryEditorProps> = ({ content, onChange }) => {
     return (
       <CountryForm
         country={editingCountry}
-        onCancel={() => setEditingCountry(null)}
+        onCancel={handleCancelEdit}
         onSave={handleUpdateCountry}
-        onAddLocation={() => handleAddLocation(editingCountry.id)}
-        onUpdateLocation={(location) => handleUpdateLocation(editingCountry.id, location)}
-        onDeleteLocation={(locationId) => handleDeleteLocation(editingCountry.id, locationId)}
+        onAddLocation={handleAddLocation}
+        onUpdateLocation={handleUpdateLocation}
+        onDeleteLocation={handleDeleteLocation}
       />
     );
   }
@@ -142,7 +155,10 @@ const CountryEditor: React.FC<CountryEditorProps> = ({ content, onChange }) => {
       expandedCountryId={expandedCountryId}
       onToggleExpand={toggleExpand}
       onAddCountry={handleAddCountry}
-      onEditCountry={setEditingCountry}
+      onEditCountry={(country) => {
+        // Set the editing country to a new object to avoid reference issues
+        setEditingCountry({...country});
+      }}
       onDeleteCountry={handleDeleteCountry}
     />
   );
