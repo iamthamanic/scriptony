@@ -12,4 +12,5 @@ export interface SocietyContent {
 export interface SocialGroup extends CategoryItem {
   population?: string;
   characteristics?: string[];
+  [key: string]: any; // Index signature to satisfy Json requirements
 }

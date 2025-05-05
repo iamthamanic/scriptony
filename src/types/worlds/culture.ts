@@ -11,4 +11,5 @@ export interface CultureContent {
 // Culture element extends CategoryItem
 export interface CultureElement extends CategoryItem {
   element_type?: 'art' | 'tradition' | 'festival' | 'belief';
+  [key: string]: any; // Index signature to satisfy Json requirements
 }

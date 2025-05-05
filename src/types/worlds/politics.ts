@@ -13,6 +13,7 @@ export interface PoliticalSystem extends CategoryItem {
   government_type?: string;
   leaders?: Leader[];
   laws?: Law[];
+  [key: string]: any; // Index signature to satisfy Json requirements
 }
 
 export interface Leader {

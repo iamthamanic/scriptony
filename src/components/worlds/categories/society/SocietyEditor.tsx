@@ -1,15 +1,17 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus, Map } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
-import { SocialGroup } from '@/types/worlds';
+import { SocialGroup, SocietyContent } from '@/types/worlds';
 import { toast } from "sonner";
 import SocialGroupList from './SocialGroupList';
 import SocialGroupForm from './SocialGroupForm';
+import { Json } from '@/integrations/supabase/types';
 
 interface SocietyEditorProps {
   content: any;
-  onChange: (content: any) => void;
+  onChange: (content: SocietyContent) => void;
 }
 
 const SocietyEditor: React.FC<SocietyEditorProps> = ({ content, onChange }) => {
@@ -17,12 +19,12 @@ const SocietyEditor: React.FC<SocietyEditorProps> = ({ content, onChange }) => {
   const [editingGroup, setEditingGroup] = useState<SocialGroup | null>(null);
   
   // Initialize content structure safely
-  const societyContent = content && content.groups 
-    ? content 
-    : { groups: [] };
+  const societyContent: SocietyContent = content && content.groups 
+    ? content as SocietyContent 
+    : { groups: [] as Array<SocialGroup & Record<string, Json>> };
   
   // Create a working copy for local edits
-  const [workingContent, setWorkingContent] = useState({
+  const [workingContent, setWorkingContent] = useState<SocietyContent>({
     groups: [...(societyContent.groups || [])]
   });
 
@@ -37,7 +39,7 @@ const SocietyEditor: React.FC<SocietyEditorProps> = ({ content, onChange }) => {
     };
     
     // Add to working copy only
-    const updatedGroups = [...workingContent.groups, newGroup];
+    const updatedGroups = [...workingContent.groups, newGroup as SocialGroup & Record<string, Json>];
     setWorkingContent({
       ...workingContent,
       groups: updatedGroups
@@ -51,11 +53,12 @@ const SocietyEditor: React.FC<SocietyEditorProps> = ({ content, onChange }) => {
     try {
       // Update the working copy first
       const updatedGroups = workingContent.groups.map(group => 
-        group.id === updatedGroup.id ? updatedGroup : group
+        group.id === updatedGroup.id ? updatedGroup as SocialGroup & Record<string, Json> : group
       );
       
       // Create a new content object to trigger a proper update
-      const updatedContent = {
+      const updatedContent: SocietyContent = {
+        ...workingContent,
         groups: updatedGroups
       };
       
@@ -86,7 +89,7 @@ const SocietyEditor: React.FC<SocietyEditorProps> = ({ content, onChange }) => {
   const handleDeleteGroup = (groupId: string) => {
     if (window.confirm('Sind Sie sicher, dass Sie diese soziale Gruppe löschen möchten?')) {
       try {
-        const updatedContent = {
+        const updatedContent: SocietyContent = {
           ...societyContent,
           groups: societyContent.groups.filter(group => group.id !== groupId)
         };

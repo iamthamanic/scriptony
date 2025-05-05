@@ -1,15 +1,17 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus, Map } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
-import { EconomicEntity } from '@/types/worlds';
+import { EconomicEntity, EconomyContent } from '@/types/worlds';
 import { toast } from "sonner";
 import EconomicEntityList from './EconomicEntityList';
 import EconomicEntityForm from './EconomicEntityForm';
+import { Json } from '@/integrations/supabase/types';
 
 interface EconomyEditorProps {
   content: any;
-  onChange: (content: any) => void;
+  onChange: (content: EconomyContent) => void;
 }
 
 const EconomyEditor: React.FC<EconomyEditorProps> = ({ content, onChange }) => {
@@ -17,12 +19,12 @@ const EconomyEditor: React.FC<EconomyEditorProps> = ({ content, onChange }) => {
   const [editingEntity, setEditingEntity] = useState<EconomicEntity | null>(null);
   
   // Initialize content structure safely
-  const economyContent = content && content.entities 
-    ? content 
-    : { entities: [] };
+  const economyContent: EconomyContent = content && content.entities 
+    ? content as EconomyContent 
+    : { entities: [] as Array<EconomicEntity & Record<string, Json>> };
   
   // Create a working copy for local edits
-  const [workingContent, setWorkingContent] = useState({
+  const [workingContent, setWorkingContent] = useState<EconomyContent>({
     entities: [...(economyContent.entities || [])]
   });
 
@@ -36,7 +38,7 @@ const EconomyEditor: React.FC<EconomyEditorProps> = ({ content, onChange }) => {
     };
     
     // Add to working copy only
-    const updatedEntities = [...workingContent.entities, newEntity];
+    const updatedEntities = [...workingContent.entities, newEntity as EconomicEntity & Record<string, Json>];
     setWorkingContent({
       ...workingContent,
       entities: updatedEntities
@@ -50,11 +52,12 @@ const EconomyEditor: React.FC<EconomyEditorProps> = ({ content, onChange }) => {
     try {
       // Update the working copy first
       const updatedEntities = workingContent.entities.map(entity => 
-        entity.id === updatedEntity.id ? updatedEntity : entity
+        entity.id === updatedEntity.id ? updatedEntity as EconomicEntity & Record<string, Json> : entity
       );
       
       // Create a new content object to trigger a proper update
-      const updatedContent = {
+      const updatedContent: EconomyContent = {
+        ...workingContent,
         entities: updatedEntities
       };
       
@@ -85,7 +88,7 @@ const EconomyEditor: React.FC<EconomyEditorProps> = ({ content, onChange }) => {
   const handleDeleteEntity = (entityId: string) => {
     if (window.confirm('Sind Sie sicher, dass Sie diese wirtschaftliche Einheit löschen möchten?')) {
       try {
-        const updatedContent = {
+        const updatedContent: EconomyContent = {
           ...economyContent,
           entities: economyContent.entities.filter(entity => entity.id !== entityId)
         };
