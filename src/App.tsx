@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -55,6 +56,8 @@ const AuthenticatedLayout = ({ children }: { children: React.ReactNode }) => {
 };
 
 const App = () => {
+  console.log("App rendering");
+  
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>

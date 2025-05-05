@@ -55,14 +55,14 @@ const Topbar = () => {
   const closeSheet = () => setIsOpen(false);
 
   return (
-    <div className="sticky top-0 z-50 w-full bg-white border-b border-border h-16 flex items-center px-4 md:px-6">
+    <div className="sticky top-0 z-50 w-full bg-white border-b border-border shadow-sm h-16 flex items-center px-4 md:px-6">
       <div className="flex items-center justify-between w-full max-w-7xl mx-auto">
         <div className="flex items-center">
           <Logo size="sm" />
         </div>
         
         {/* Desktop Navigation - Centered */}
-        <nav className="hidden md:flex items-center gap-4 absolute left-1/2 transform -translate-x-1/2">
+        <nav className="hidden md:flex items-center gap-6 absolute left-1/2 transform -translate-x-1/2">
           {navItems.map((item) => (
             <NavItem 
               key={item.to} 
@@ -80,10 +80,10 @@ const Topbar = () => {
                 to="/account"
                 className={({ isActive }) =>
                   cn(
-                    "text-base font-medium transition-colors",
+                    "px-5 py-2.5 rounded-md text-base font-medium transition-colors",
                     isActive 
-                      ? "text-anime-purple" 
-                      : "text-anime-gray-700 hover:text-anime-purple"
+                      ? "bg-anime-light-purple text-anime-purple" 
+                      : "text-anime-gray-700 hover:bg-muted/50 hover:text-anime-purple"
                   )
                 }
               >
