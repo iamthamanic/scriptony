@@ -2,6 +2,7 @@
 import { customSupabase } from "@/integrations/supabase/customClient";
 import { WorldCategory, WorldCategoryFormData } from "@/types/worlds";
 import { mapDbCategoryToAppCategory } from "./utils";
+import { preserveImageProperties } from "@/utils/jsonPreserver";
 
 // Create a new world category
 export const createWorldCategory = async (worldId: string, data: WorldCategoryFormData): Promise<WorldCategory> => {
@@ -51,39 +52,24 @@ export const updateWorldCategory = async (categoryId: string, data: WorldCategor
   const { name, type, icon, content } = data;
   
   console.log('Updating category with ID:', categoryId);
-  console.log('Content to update:', content);
+  console.log('Content to update (before processing):', content);
   
-  // Deep copy the content to avoid reference issues
-  const processedContent = content ? JSON.parse(JSON.stringify(content)) : {};
+  // Process content to preserve special properties like image URLs
+  const processedContent = preserveImageProperties(content);
   
-  // Make sure we preserve image URLs in Geography content
+  console.log('Processed content for update:', processedContent);
+  
+  // Explicitly log image URLs to verify they're preserved
   if (type === 'geography' && processedContent.countries && Array.isArray(processedContent.countries)) {
-    // Ensure each country has its image URLs properly saved
-    processedContent.countries = processedContent.countries.map((country: any) => {
-      // Log each country's image URLs for debugging
-      console.log('Country being processed:', country.name);
-      console.log('Flag URL:', country.flag_url);
-      console.log('Cover image URL:', country.cover_image_url);
+    processedContent.countries.forEach((country: any, index: number) => {
+      console.log(`Country ${index} (${country.name}) - flag_url:`, country.flag_url);
+      console.log(`Country ${index} (${country.name}) - cover_image_url:`, country.cover_image_url);
       
-      // Ensure locations have their image URLs preserved as well
       if (country.locations && Array.isArray(country.locations)) {
-        country.locations = country.locations.map((location: any) => {
-          console.log('Location being processed:', location.name);
-          console.log('Location cover image URL:', location.cover_image_url);
-          
-          return {
-            ...location,
-            cover_image_url: location.cover_image_url
-          };
+        country.locations.forEach((location: any, locIndex: number) => {
+          console.log(`Location ${locIndex} (${location.name}) - cover_image_url:`, location.cover_image_url);
         });
       }
-      
-      // Return the country with preserved image URLs
-      return {
-        ...country,
-        flag_url: country.flag_url,
-        cover_image_url: country.cover_image_url
-      };
     });
   }
   
@@ -131,19 +117,25 @@ export const updateCategoryOrder = async (categories: Partial<WorldCategory>[]):
 };
 
 // Upload an image for a country or location
-export const uploadGeographyImage = async (file: File): Promise<string> => {
+export const uploadGeographyImage = async (file: File, category: string = 'geography'): Promise<string> => {
+  console.log(`Uploading image for category: ${category}`, file.name);
+  
   const fileExt = file.name.split('.').pop();
-  const fileName = `geography-${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+  const fileName = `${category}/${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
   
   const { error } = await customSupabase.storage
     .from('covers')
     .upload(fileName, file);
     
-  if (error) throw error;
+  if (error) {
+    console.error(`Error uploading ${category} image:`, error);
+    throw error;
+  }
   
   const { data } = customSupabase.storage
     .from('covers')
     .getPublicUrl(fileName);
     
+  console.log(`Image upload successful for ${category}:`, data.publicUrl);
   return data.publicUrl;
 };
