@@ -16,9 +16,8 @@ const WorldsList = ({ worlds, onSelectWorld, onNewWorld }: WorldsListProps) => {
       <EmptyState
         title="Keine Welten vorhanden"
         description="Erstelle deine erste Welt, um dein Worldbuilding zu beginnen."
-        actionText="Neue Welt erstellen"
-        actionIcon={<PlusCircle className="h-5 w-5" />}
-        onAction={onNewWorld}
+        buttonText="Neue Welt erstellen"
+        onClick={onNewWorld}
       />
     );
   }
