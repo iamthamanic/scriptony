@@ -1,4 +1,3 @@
-
 import { useToast } from "@/hooks/use-toast";
 import { 
   createWorldCategory, 
@@ -6,7 +5,7 @@ import {
   deleteWorldCategory,
   updateCategoryOrder
 } from "@/services/worlds";
-import { WorldCategoryFormData } from "@/types";
+import { WorldCategoryFormData, getEmptyCategoryContent } from "@/types/worlds";
 
 export function useCategoryOperations(
   worlds: any[],
@@ -25,20 +24,61 @@ export function useCategoryOperations(
       const selectedCategory = selectedWorld.categories.find((c: any) => 
         c.id === data.id);
       
-      // Ensure geography content has a proper structure
-      if (data.type === 'geography' && (!data.content || typeof data.content !== 'object')) {
-        data.content = { countries: [] };
+      // Ensure content has a proper structure based on category type
+      if (!data.content || typeof data.content !== 'object') {
+        data.content = getEmptyCategoryContent(data.type);
       }
       
       if (selectedCategory) {
-        // For geography type, make sure we don't lose existing countries when updating
-        if (selectedCategory.type === 'geography' && data.type === 'geography') {
-          const existingContent = selectedCategory.content || { countries: [] };
-          // Fix: Ensure we're spreading an object, not potentially undefined or null
-          data.content = { 
-            countries: existingContent && existingContent.countries ? 
-              [...existingContent.countries] : []
-          };
+        // For existing categories, make sure we preserve existing content structure
+        if (selectedCategory.type === data.type) {
+          // Keep existing content structure if type hasn't changed
+          const existingContent = selectedCategory.content || getEmptyCategoryContent(data.type);
+          
+          // Safely merge content based on category type
+          switch (data.type) {
+            case 'geography':
+              data.content = { 
+                countries: existingContent && Array.isArray(existingContent.countries) ? 
+                  [...existingContent.countries] : []
+              };
+              break;
+              
+            case 'politics':
+              data.content = { 
+                systems: existingContent && Array.isArray(existingContent.systems) ? 
+                  [...existingContent.systems] : []
+              };
+              break;
+              
+            case 'economy':
+              data.content = { 
+                entities: existingContent && Array.isArray(existingContent.entities) ? 
+                  [...existingContent.entities] : []
+              };
+              break;
+              
+            case 'society':
+              data.content = { 
+                groups: existingContent && Array.isArray(existingContent.groups) ? 
+                  [...existingContent.groups] : []
+              };
+              break;
+              
+            case 'culture':
+              data.content = { 
+                elements: existingContent && Array.isArray(existingContent.elements) ? 
+                  [...existingContent.elements] : []
+              };
+              break;
+              
+            default:
+              // For custom or other categories, just keep the existing content
+              data.content = existingContent;
+          }
+        } else {
+          // If type has changed, initialize with empty structure
+          data.content = getEmptyCategoryContent(data.type);
         }
         
         // Update existing category
