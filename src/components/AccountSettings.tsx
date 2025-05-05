@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -8,7 +7,6 @@ import { Input } from '@/components/ui/input';
 import { Settings, User, CreditCard, Shield, LogOut, Key } from 'lucide-react';
 import { validateUnlockCode } from '@/services/admin';
 import { toast } from 'sonner';
-
 interface AccountSettingsProps {
   isOpen: boolean;
   onClose: () => void;
@@ -16,7 +14,6 @@ interface AccountSettingsProps {
   accountEmail?: string;
   onSignOut?: () => void;
 }
-
 const AccountSettings = ({
   isOpen,
   onClose,
@@ -26,16 +23,12 @@ const AccountSettings = ({
 }: AccountSettingsProps) => {
   const [unlockCode, setUnlockCode] = useState('');
   const [isSubmittingCode, setIsSubmittingCode] = useState(false);
-
   const handleUnlockSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!unlockCode.trim()) return;
-    
     setIsSubmittingCode(true);
     try {
       const result = await validateUnlockCode(unlockCode);
-      
       if (result.success) {
         toast.success(result.message || 'Code erfolgreich eingelöst!');
         setUnlockCode('');
@@ -49,9 +42,7 @@ const AccountSettings = ({
       setIsSubmittingCode(false);
     }
   };
-
-  return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+  return <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[600px] max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
@@ -172,11 +163,7 @@ const AccountSettings = ({
             </div>
             
             <div className="flex justify-between items-center pt-4">
-              <Button 
-                variant="outline" 
-                className="text-red-500 hover:bg-red-50"
-                onClick={onSignOut}
-              >
+              <Button variant="outline" className="text-red-500 hover:bg-red-50" onClick={onSignOut}>
                 <LogOut className="h-4 w-4 mr-2" />
                 Sign Out
               </Button>
@@ -193,26 +180,13 @@ const AccountSettings = ({
               <form onSubmit={handleUnlockSubmit}>
                 <div className="bg-muted/30 p-4 rounded-lg">
                   <h3 className="font-medium mb-2">Freischaltcode eingeben</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Wenn du einen Freischaltcode für ScriptBuddy erhalten hast, kannst du ihn hier eingeben, 
-                    um erweiterte Funktionen freizuschalten oder den Admin-Modus zu aktivieren.
-                  </p>
+                  <p className="text-sm text-muted-foreground mb-4">Wenn du einen Freischaltcode für ScriptBuddy erhalten hast, kannst du ihn hier eingeben.</p>
                   
                   <div className="space-y-2">
                     <div className="flex gap-2">
-                      <Input 
-                        id="unlock-code"
-                        value={unlockCode}
-                        onChange={(e) => setUnlockCode(e.target.value)}
-                        placeholder="Gib deinen Code ein"
-                        required
-                      />
+                      <Input id="unlock-code" value={unlockCode} onChange={e => setUnlockCode(e.target.value)} placeholder="Gib deinen Code ein" required />
                       
-                      <Button 
-                        type="submit" 
-                        className="bg-anime-purple hover:bg-anime-dark-purple"
-                        disabled={isSubmittingCode || !unlockCode.trim()}
-                      >
+                      <Button type="submit" className="bg-anime-purple hover:bg-anime-dark-purple" disabled={isSubmittingCode || !unlockCode.trim()}>
                         {isSubmittingCode ? 'Validiere...' : 'Einlösen'}
                       </Button>
                     </div>
@@ -227,8 +201,6 @@ const AccountSettings = ({
           </TabsContent>
         </Tabs>
       </DialogContent>
-    </Dialog>
-  );
+    </Dialog>;
 };
-
 export default AccountSettings;
