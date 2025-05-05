@@ -53,8 +53,39 @@ export const updateWorldCategory = async (categoryId: string, data: WorldCategor
   console.log('Updating category with ID:', categoryId);
   console.log('Content to update:', content);
   
-  // Ensure we don't lose any image URLs in the content
-  const processedContent = content || {};
+  // Deep copy the content to avoid reference issues
+  const processedContent = content ? JSON.parse(JSON.stringify(content)) : {};
+  
+  // Make sure we preserve image URLs in Geography content
+  if (type === 'geography' && processedContent.countries && Array.isArray(processedContent.countries)) {
+    // Ensure each country has its image URLs properly saved
+    processedContent.countries = processedContent.countries.map((country: any) => {
+      // Log each country's image URLs for debugging
+      console.log('Country being processed:', country.name);
+      console.log('Flag URL:', country.flag_url);
+      console.log('Cover image URL:', country.cover_image_url);
+      
+      // Ensure locations have their image URLs preserved as well
+      if (country.locations && Array.isArray(country.locations)) {
+        country.locations = country.locations.map((location: any) => {
+          console.log('Location being processed:', location.name);
+          console.log('Location cover image URL:', location.cover_image_url);
+          
+          return {
+            ...location,
+            cover_image_url: location.cover_image_url
+          };
+        });
+      }
+      
+      // Return the country with preserved image URLs
+      return {
+        ...country,
+        flag_url: country.flag_url,
+        cover_image_url: country.cover_image_url
+      };
+    });
+  }
   
   const { data: category, error } = await customSupabase
     .from('world_categories')
