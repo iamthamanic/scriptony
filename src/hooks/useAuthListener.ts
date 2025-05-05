@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { customSupabase } from "@/integrations/supabase/customClient";
 import type { AuthChangeEvent, Session, User, AuthError } from "@supabase/supabase-js";
 import { toast } from "sonner";
+import { isDevelopmentMode, getDevModeUser } from "@/utils/devMode";
 
 /**
  * Custom hook to listen for authentication state changes
@@ -17,6 +18,33 @@ export const useAuthListener = () => {
     console.log("AuthListener initializing...");
     let isMounted = true;
     
+    // Check if we're in development mode first
+    const devMode = isDevelopmentMode();
+    if (devMode) {
+      console.log("Development mode detected in useAuthListener, using mock user");
+      
+      // Create a mock session and user for development mode
+      const mockUser = getDevModeUser();
+      
+      // Create a simplified mock session
+      const mockSession = {
+        access_token: "mock-token",
+        refresh_token: "mock-refresh-token",
+        expires_in: 3600,
+        expires_at: new Date().getTime() + 3600000,
+        token_type: "bearer",
+        user: mockUser
+      } as Session;
+      
+      // Set the mock user and session
+      setUser(mockUser);
+      setSession(mockSession);
+      setLoading(false);
+      
+      return () => { isMounted = false; };
+    }
+    
+    // If not in dev mode, proceed with normal auth listener
     // Set up auth state listener first
     const { data: { subscription } } = customSupabase.auth.onAuthStateChange(
       (event: AuthChangeEvent, currentSession: Session | null) => {
@@ -58,6 +86,7 @@ export const useAuthListener = () => {
       }
     );
 
+    // Only fetch session if not in dev mode
     // Then get current session
     customSupabase.auth.getSession().then(({ data: { session: currentSession }, error }) => {
       if (isMounted) {
