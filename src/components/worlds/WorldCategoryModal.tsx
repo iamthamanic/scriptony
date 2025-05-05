@@ -27,6 +27,7 @@ const WorldCategoryModal = ({ isOpen, onClose, onSubmit, category }: WorldCatego
   useEffect(() => {
     if (category) {
       setFormData({
+        id: category.id,
         name: category.name,
         type: category.type,
         icon: category.icon || 'map',
