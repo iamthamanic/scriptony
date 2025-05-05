@@ -1,10 +1,7 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
-
 const SubscriptionTab = () => {
-  return (
-    <div className="space-y-6">
+  return <div className="space-y-6">
       <div className="bg-muted/30 p-4 rounded-lg">
         <h3 className="font-medium mb-2">Current Plan</h3>
         <div className="flex justify-between items-center">
@@ -26,7 +23,7 @@ const SubscriptionTab = () => {
           <div className="flex justify-between items-center">
             <div>
               <span className="text-lg font-bold">Scriptony Pro</span>
-              <p className="text-sm text-muted-foreground">$9.99/month</p>
+              <p className="text-sm text-muted-foreground">€14.99/month</p>
             </div>
             
             <Button className="bg-anime-purple hover:bg-anime-dark-purple">
@@ -34,18 +31,19 @@ const SubscriptionTab = () => {
             </Button>
           </div>
           <ul className="mt-3 text-sm space-y-1">
-            <li>✓ Unlimited projects</li>
-            <li>✓ Advanced AI assistance</li>
-            <li>✓ PDF exports</li>
-            <li>✓ Team collaboration</li>
+            <li>✓ 25 Skript-Projekte</li>
+            <li>✓ 25 Welten</li>
+            <li>✓ PDF Dossier Export</li>
+            <li>✓ AI-MCP Integration</li>
           </ul>
         </div>
         
         <div className="border rounded-lg p-4 hover:border-anime-purple transition-colors cursor-pointer">
           <div className="flex justify-between items-center">
             <div>
-              <span className="text-lg font-bold">Scriptony Enterprise</span>
-              <p className="text-sm text-muted-foreground">$29.99/month</p>
+              <span className="text-lg font-bold">Scriptony Studio
+            </span>
+              <p className="text-sm text-muted-foreground">€49.99/month</p>
             </div>
             
             <Button className="bg-anime-purple hover:bg-anime-dark-purple">
@@ -53,16 +51,14 @@ const SubscriptionTab = () => {
             </Button>
           </div>
           <ul className="mt-3 text-sm space-y-1">
-            <li>✓ All Pro features</li>
-            <li>✓ Priority support</li>
-            <li>✓ Custom branding</li>
-            <li>✓ API access</li>
-            <li>✓ Advanced analytics</li>
+            <li>✓ Unlimited Skript-Projekte</li>
+            <li>✓ Unlimited Welten</li>
+            <li>✓ PDF Dossier Export</li>
+            <li>✓ AI-MCP Integration</li>
+            <li>✓ 5 Teammitglieder inklusive (4,99€ pro weiteren)</li>
           </ul>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default SubscriptionTab;
