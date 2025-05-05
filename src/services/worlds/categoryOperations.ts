@@ -25,6 +25,8 @@ export const createWorldCategory = async (worldId: string, data: WorldCategoryFo
     processedContent = { countries: [] };
   }
   
+  console.log('Creating category with content:', processedContent);
+  
   // Create the new category
   const { data: category, error } = await customSupabase
     .from('world_categories')
@@ -48,20 +50,30 @@ export const createWorldCategory = async (worldId: string, data: WorldCategoryFo
 export const updateWorldCategory = async (categoryId: string, data: WorldCategoryFormData): Promise<WorldCategory> => {
   const { name, type, icon, content } = data;
   
+  console.log('Updating category with ID:', categoryId);
+  console.log('Content to update:', content);
+  
+  // Ensure we don't lose any image URLs in the content
+  const processedContent = content || {};
+  
   const { data: category, error } = await customSupabase
     .from('world_categories')
     .update({
       name,
       type,
       icon,
-      content
+      content: processedContent
     })
     .eq('id', categoryId)
     .select()
     .single();
     
-  if (error) throw error;
+  if (error) {
+    console.error('Error updating category:', error);
+    throw error;
+  }
   
+  console.log('Category updated successfully:', category);
   return mapDbCategoryToAppCategory(category);
 };
 

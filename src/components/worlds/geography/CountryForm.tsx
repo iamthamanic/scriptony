@@ -29,15 +29,28 @@ const CountryForm: React.FC<CountryFormProps> = ({
 }) => {
   const [editingCountry, setEditingCountry] = React.useState<Country>({...country});
 
+  React.useEffect(() => {
+    console.log('Country form initialized with country:', country);
+    console.log('Country flag_url:', country.flag_url);
+    console.log('Country cover_image_url:', country.cover_image_url);
+  }, []);
+
   // Create update handlers that only modify local state without triggering saves
   const handleCountryUpdate = (updates: Partial<Country>) => {
-    setEditingCountry(prev => ({
-      ...prev,
-      ...updates
-    }));
+    console.log('Updating country with:', updates);
+    setEditingCountry(prev => {
+      const updated = {
+        ...prev,
+        ...updates
+      };
+      console.log('Updated country state:', updated);
+      return updated;
+    });
   };
 
   const handleSave = () => {
+    console.log('Saving country with flag_url:', editingCountry.flag_url);
+    console.log('Saving country with cover_image_url:', editingCountry.cover_image_url);
     onSave(editingCountry);
   };
 
@@ -89,9 +102,12 @@ const CountryForm: React.FC<CountryFormProps> = ({
                 <Label>Flagge</Label>
                 <ImageUploader 
                   imageUrl={editingCountry.flag_url} 
-                  onImageChange={(url) => handleCountryUpdate({
-                    flag_url: url
-                  })}
+                  onImageChange={(url) => {
+                    console.log('Flag image changed to:', url);
+                    handleCountryUpdate({
+                      flag_url: url
+                    });
+                  }}
                   disableToast={true}
                 />
               </div>
@@ -99,9 +115,12 @@ const CountryForm: React.FC<CountryFormProps> = ({
                 <Label>Titelbild</Label>
                 <ImageUploader 
                   imageUrl={editingCountry.cover_image_url} 
-                  onImageChange={(url) => handleCountryUpdate({
-                    cover_image_url: url
-                  })}
+                  onImageChange={(url) => {
+                    console.log('Cover image changed to:', url);
+                    handleCountryUpdate({
+                      cover_image_url: url
+                    });
+                  }}
                   disableToast={true}
                 />
               </div>
