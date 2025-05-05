@@ -1,6 +1,7 @@
 
 import React from 'react';
-import { WorldCategory, GeographyContent, Json } from "@/types";
+import { WorldCategory, GeographyContent } from "@/types";
+import { Json } from "@/integrations/supabase/types";
 import { Textarea } from "@/components/ui/textarea";
 import GeographyContentRenderer from './geography/GeographyContentRenderer';
 
