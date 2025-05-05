@@ -24,7 +24,7 @@ export const useAuthListener = () => {
       console.log("Development mode detected in useAuthListener, using mock user");
       
       // Create a mock session and user for development mode
-      const mockUser = getDevModeUser();
+      const mockUser = getDevModeUser() as User;
       
       // Create a simplified mock session
       const mockSession = {
