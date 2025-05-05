@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, Edit, Trash2, MoreHorizontal } from "lucide-react";
@@ -53,7 +54,7 @@ const WorldHeader = ({
               onClick={onDeleteWorld}
               className="text-red-500 focus:text-red-500"
             >
-              <Trash className="h-4 w-4 mr-2" />
+              <Trash2 className="h-4 w-4 mr-2" />
               Welt löschen
             </DropdownMenuItem>
           </DropdownMenuContent>
