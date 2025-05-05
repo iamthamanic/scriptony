@@ -1,5 +1,5 @@
 
-import { supabase } from "@/integrations/supabase/client";
+import { customSupabase } from "@/integrations/supabase/customClient";
 import { World, NewWorldFormData } from "@/types/worlds";
 import { mapDbWorldToAppWorld } from "./utils";
 import { isDevelopmentMode, getDevModeUser } from "@/utils/devMode";
@@ -14,7 +14,7 @@ const getCurrentUser = async () => {
   }
   
   // Use actual authentication in production
-  return await supabase.auth.getUser();
+  return await customSupabase.auth.getUser();
 };
 
 // Fetch all worlds for the current user
@@ -23,7 +23,7 @@ export const fetchUserWorlds = async (): Promise<World[]> => {
   const { data: { user } } = await getCurrentUser();
   if (!user) throw new Error('User not authenticated');
 
-  const { data: worlds, error } = await supabase
+  const { data: worlds, error } = await customSupabase
     .from('worlds')
     .select('*')
     .eq('user_id', user.id)
@@ -32,7 +32,7 @@ export const fetchUserWorlds = async (): Promise<World[]> => {
   if (error) throw error;
   
   const worldsWithCategories = await Promise.all(worlds.map(async (world) => {
-    const { data: categories, error: catError } = await supabase
+    const { data: categories, error: catError } = await customSupabase
       .from('world_categories')
       .select('*')
       .eq('world_id', world.id)
@@ -48,7 +48,7 @@ export const fetchUserWorlds = async (): Promise<World[]> => {
 
 // Fetch a single world by ID
 export const fetchWorld = async (worldId: string): Promise<World> => {
-  const { data: world, error } = await supabase
+  const { data: world, error } = await customSupabase
     .from('worlds')
     .select('*')
     .eq('id', worldId)
@@ -56,7 +56,7 @@ export const fetchWorld = async (worldId: string): Promise<World> => {
     
   if (error) throw error;
   
-  const { data: categories, error: catError } = await supabase
+  const { data: categories, error: catError } = await customSupabase
     .from('world_categories')
     .select('*')
     .eq('world_id', worldId)
@@ -79,7 +79,7 @@ export const createWorld = async (data: NewWorldFormData): Promise<World> => {
   let cover_image_url = null;
   if (cover_image) {
     const fileName = `world-${Date.now()}-${cover_image.name}`;
-    const { error: uploadError, data: uploadData } = await supabase.storage
+    const { error: uploadError, data: uploadData } = await customSupabase.storage
       .from('covers')
       .upload(fileName, cover_image);
       
@@ -88,7 +88,7 @@ export const createWorld = async (data: NewWorldFormData): Promise<World> => {
       throw uploadError;
     }
     
-    const { data: urlData } = supabase.storage
+    const { data: urlData } = customSupabase.storage
       .from('covers')
       .getPublicUrl(fileName);
       
@@ -96,7 +96,7 @@ export const createWorld = async (data: NewWorldFormData): Promise<World> => {
   }
   
   // Insert the world
-  const { data: world, error } = await supabase
+  const { data: world, error } = await customSupabase
     .from('worlds')
     .insert({
       name,
@@ -123,7 +123,7 @@ export const createWorld = async (data: NewWorldFormData): Promise<World> => {
     content: {}
   }));
   
-  const { data: categories, error: catError } = await supabase
+  const { data: categories, error: catError } = await customSupabase
     .from('world_categories')
     .insert(defaultCategories)
     .select();
@@ -142,13 +142,13 @@ export const updateWorld = async (worldId: string, data: NewWorldFormData): Prom
   // Upload cover image if provided
   if (cover_image instanceof File) {
     const fileName = `world-${Date.now()}-${cover_image.name}`;
-    const { error: uploadError, data: uploadData } = await supabase.storage
+    const { error: uploadError, data: uploadData } = await customSupabase.storage
       .from('covers')
       .upload(fileName, cover_image);
       
     if (uploadError) throw uploadError;
     
-    const { data: urlData } = supabase.storage
+    const { data: urlData } = customSupabase.storage
       .from('covers')
       .getPublicUrl(fileName);
       
@@ -156,7 +156,7 @@ export const updateWorld = async (worldId: string, data: NewWorldFormData): Prom
   }
   
   // Update the world
-  const { data: world, error } = await supabase
+  const { data: world, error } = await customSupabase
     .from('worlds')
     .update(updateData)
     .eq('id', worldId)
@@ -165,7 +165,7 @@ export const updateWorld = async (worldId: string, data: NewWorldFormData): Prom
     
   if (error) throw error;
   
-  const { data: categories, error: catError } = await supabase
+  const { data: categories, error: catError } = await customSupabase
     .from('world_categories')
     .select('*')
     .eq('world_id', worldId)
@@ -178,7 +178,7 @@ export const updateWorld = async (worldId: string, data: NewWorldFormData): Prom
 
 // Delete a world
 export const deleteWorld = async (worldId: string): Promise<void> => {
-  const { error } = await supabase
+  const { error } = await customSupabase
     .from('worlds')
     .delete()
     .eq('id', worldId);

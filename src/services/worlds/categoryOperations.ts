@@ -1,5 +1,5 @@
 
-import { supabase } from "@/integrations/supabase/client";
+import { customSupabase } from "@/integrations/supabase/customClient";
 import { WorldCategory, WorldCategoryFormData } from "@/types/worlds";
 import { mapDbCategoryToAppCategory } from "./utils";
 
@@ -8,7 +8,7 @@ export const createWorldCategory = async (worldId: string, data: WorldCategoryFo
   const { name, type, icon, content } = data;
   
   // Get the highest order_index for this world
-  const { data: existingCategories, error: fetchError } = await supabase
+  const { data: existingCategories, error: fetchError } = await customSupabase
     .from('world_categories')
     .select('order_index')
     .eq('world_id', worldId)
@@ -20,7 +20,7 @@ export const createWorldCategory = async (worldId: string, data: WorldCategoryFo
   const nextOrderIndex = existingCategories.length > 0 ? existingCategories[0].order_index + 1 : 0;
   
   // Create the new category
-  const { data: category, error } = await supabase
+  const { data: category, error } = await customSupabase
     .from('world_categories')
     .insert({
       world_id: worldId,
@@ -42,7 +42,7 @@ export const createWorldCategory = async (worldId: string, data: WorldCategoryFo
 export const updateWorldCategory = async (categoryId: string, data: WorldCategoryFormData): Promise<WorldCategory> => {
   const { name, type, icon, content } = data;
   
-  const { data: category, error } = await supabase
+  const { data: category, error } = await customSupabase
     .from('world_categories')
     .update({
       name,
@@ -61,7 +61,7 @@ export const updateWorldCategory = async (categoryId: string, data: WorldCategor
 
 // Delete a world category
 export const deleteWorldCategory = async (categoryId: string): Promise<void> => {
-  const { error } = await supabase
+  const { error } = await customSupabase
     .from('world_categories')
     .delete()
     .eq('id', categoryId);
@@ -72,7 +72,7 @@ export const deleteWorldCategory = async (categoryId: string): Promise<void> => 
 // Update world category order
 export const updateCategoryOrder = async (categories: Partial<WorldCategory>[]): Promise<void> => {
   const updatePromises = categories.map(cat => {
-    return supabase
+    return customSupabase
       .from('world_categories')
       .update({ order_index: cat.order_index })
       .eq('id', cat.id);
