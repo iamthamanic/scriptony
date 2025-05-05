@@ -4,12 +4,12 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 
 // Import the settings components
-import AccountTabsList from './components/settings/AccountTabsList';
-import ProfileTab from './components/settings/ProfileTab';
-import SubscriptionTab from './components/settings/SubscriptionTab';
-import SecurityTab from './components/settings/SecurityTab';
-import UnlockTab from './components/settings/UnlockTab';
-import IntegrationTab from './components/settings/IntegrationTab';
+import AccountTabsList from '@/components/settings/AccountTabsList';
+import ProfileTab from '@/components/settings/ProfileTab';
+import SubscriptionTab from '@/components/settings/SubscriptionTab';
+import SecurityTab from '@/components/settings/SecurityTab';
+import UnlockTab from '@/components/settings/UnlockTab';
+import IntegrationTab from '@/components/settings/IntegrationTab';
 
 const Account = () => {
   const { user } = useAuth();
