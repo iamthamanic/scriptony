@@ -75,7 +75,7 @@ export async function analyzeScriptText(text: string): Promise<AnalysisResult> {
   const result: AnalysisResult = {
     title: '',
     type: 'movie' as ProjectType,
-    narrativeStructure: 'three_act' as NarrativeStructureType,
+    narrativeStructure: 'three-act' as NarrativeStructureType,
     scenes: [],
     characters: [],
     genres: [] as Genre[],
@@ -231,11 +231,11 @@ export async function analyzeScriptText(text: string): Promise<AnalysisResult> {
   // Determine narrative structure
   if (result.scenes.length > 0) {
     if (result.scenes.length >= 25) {
-      result.narrativeStructure = 'hero_journey';
+      result.narrativeStructure = 'hero-journey';
     } else if (result.scenes.length >= 15) {
-      result.narrativeStructure = 'three_act';
+      result.narrativeStructure = 'three-act';
     } else {
-      result.narrativeStructure = 'basic';
+      result.narrativeStructure = 'none';
     }
   }
   
