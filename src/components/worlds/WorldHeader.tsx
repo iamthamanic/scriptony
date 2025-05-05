@@ -1,8 +1,9 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Edit, Trash2 } from "lucide-react";
+import { ChevronLeft, Edit, Trash2, MoreHorizontal } from "lucide-react";
 import { World } from "@/types";
+import McpWorldIntegration from './McpWorldIntegration';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 
 interface WorldHeaderProps {
   world: World;
@@ -18,23 +19,45 @@ const WorldHeader = ({
   onDeleteWorld
 }: WorldHeaderProps) => {
   return (
-    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-      <div className="flex items-center gap-2">
-        <Button variant="outline" size="icon" onClick={onBack}>
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
-        <h1 className="text-2xl font-bold">{world.name}</h1>
+    <div className="flex flex-col md:flex-row md:items-center gap-4">
+      <Button 
+        variant="ghost" 
+        size="sm" 
+        onClick={onBack}
+        className="w-fit"
+      >
+        <ChevronLeft className="h-4 w-4 mr-2" />
+        Zurück zur Übersicht
+      </Button>
+      
+      <div className="flex-1">
+        <h1 className="text-2xl font-bold text-anime-purple">{world.name}</h1>
       </div>
       
-      <div className="flex gap-2">
-        <Button variant="outline" size="sm" onClick={onEditWorld}>
-          <Edit className="h-4 w-4 mr-2" />
-          Bearbeiten
-        </Button>
-        <Button variant="destructive" size="sm" onClick={onDeleteWorld}>
-          <Trash2 className="h-4 w-4 mr-2" />
-          Löschen
-        </Button>
+      <div className="flex items-center gap-2">
+        <McpWorldIntegration />
+        
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={onEditWorld}>
+              <Edit className="h-4 w-4 mr-2" />
+              Welt bearbeiten
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem 
+              onClick={onDeleteWorld}
+              className="text-red-500 focus:text-red-500"
+            >
+              <Trash className="h-4 w-4 mr-2" />
+              Welt löschen
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );
