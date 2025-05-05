@@ -19,7 +19,14 @@ serve(async (req) => {
 
     // Return manifest for /manifest endpoint
     if (path === 'manifest') {
-      const manifest = await generateManifest();
+      // Check if token is provided to filter functions
+      const authResult = req.headers.get('Authorization') 
+        ? await validateApiKey(req) 
+        : { valid: true, scopes: undefined };
+      
+      // Generate manifest, optionally filtering by scopes
+      const manifest = await generateManifest(authResult.scopes);
+      
       return new Response(JSON.stringify(manifest), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
@@ -29,8 +36,9 @@ serve(async (req) => {
     // Check API key for execute endpoint
     if (path === 'execute') {
       // Validate the API key before proceeding
-      const isAuthorized = await validateApiKey(req);
-      if (!isAuthorized) {
+      const authResult = await validateApiKey(req);
+      
+      if (!authResult.valid) {
         return new Response(
           JSON.stringify({ error: 'Unauthorized access. Invalid API key.' }),
           { 
@@ -49,6 +57,22 @@ serve(async (req) => {
           { 
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
             status: 400 
+          }
+        );
+      }
+
+      // Check if function is in allowed scopes
+      const scopes = authResult.scopes || [];
+      const hasWildcardAccess = scopes.includes('*');
+      
+      if (!hasWildcardAccess && !scopes.includes(functionName)) {
+        return new Response(
+          JSON.stringify({ 
+            error: `Access denied. Token does not have permission to execute '${functionName}'` 
+          }),
+          { 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            status: 403 
           }
         );
       }

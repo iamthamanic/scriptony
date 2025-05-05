@@ -27,7 +27,15 @@ export class McpClient {
    */
   async getManifest(): Promise<McpResponse> {
     try {
-      const { data, error } = await supabase.functions.invoke('mcp/manifest');
+      const headers: Record<string, string> = {};
+      
+      if (this.apiKey) {
+        headers['Authorization'] = `Bearer ${this.apiKey}`;
+      }
+      
+      const { data, error } = await supabase.functions.invoke('mcp/manifest', { 
+        headers
+      });
       
       if (error) {
         throw error;
@@ -81,7 +89,15 @@ export class McpClient {
    */
   async getStatus(): Promise<McpResponse> {
     try {
-      const { data, error } = await supabase.functions.invoke('mcp/status');
+      const headers: Record<string, string> = {};
+      
+      if (this.apiKey) {
+        headers['Authorization'] = `Bearer ${this.apiKey}`;
+      }
+      
+      const { data, error } = await supabase.functions.invoke('mcp/status', { 
+        headers 
+      });
       
       if (error) {
         throw error;
