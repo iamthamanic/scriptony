@@ -1,4 +1,3 @@
-
 import { useToast } from "@/hooks/use-toast";
 import { 
   fetchUserWorlds, 
@@ -41,8 +40,14 @@ export function useWorldsOperations(
       setIsLoading(true);
       const worldsData = await fetchUserWorlds();
       setWorlds(worldsData);
-      if (worldsData.length > 0 && !selectedWorldId) {
-        setSelectedWorldId(worldsData[0].id);
+      
+      // Remove auto-selection of the first world to show the worlds list instead
+      if (selectedWorldId && worldsData.some(w => w.id === selectedWorldId)) {
+        // Keep selected world if it exists in the loaded worlds
+        setSelectedWorldId(selectedWorldId);
+      } else {
+        // Clear selection to show the worlds list
+        setSelectedWorldId(null);
       }
     } catch (error) {
       console.error('Error loading worlds:', error);
@@ -107,7 +112,7 @@ export function useWorldsOperations(
       await deleteWorld(selectedWorld.id);
       const newWorlds = worlds.filter(w => w.id !== selectedWorld.id);
       setWorlds(newWorlds);
-      setSelectedWorldId(newWorlds.length > 0 ? newWorlds[0].id : null);
+      setSelectedWorldId(null); // Always return to worlds list after deletion
       setIsDeleteWorldDialogOpen(false);
       
       toast({
