@@ -1,15 +1,17 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus, Map } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
-import { CultureElement } from '@/types/worlds';
+import { CultureElement, CultureContent } from '@/types/worlds';
 import { toast } from "sonner";
 import CultureElementList from './CultureElementList';
 import CultureElementForm from './CultureElementForm';
+import { Json } from '@/integrations/supabase/types';
 
 interface CultureEditorProps {
   content: any;
-  onChange: (content: any) => void;
+  onChange: (content: CultureContent) => void;
 }
 
 const CultureEditor: React.FC<CultureEditorProps> = ({ content, onChange }) => {
@@ -17,12 +19,12 @@ const CultureEditor: React.FC<CultureEditorProps> = ({ content, onChange }) => {
   const [editingElement, setEditingElement] = useState<CultureElement | null>(null);
   
   // Initialize content structure safely
-  const cultureContent = content && content.elements 
-    ? content 
-    : { elements: [] };
+  const cultureContent: CultureContent = content && content.elements 
+    ? content as CultureContent 
+    : { elements: [] as Array<CultureElement & Record<string, Json>> };
   
   // Create a working copy for local edits
-  const [workingContent, setWorkingContent] = useState({
+  const [workingContent, setWorkingContent] = useState<CultureContent>({
     elements: [...(cultureContent.elements || [])]
   });
 
@@ -36,7 +38,7 @@ const CultureEditor: React.FC<CultureEditorProps> = ({ content, onChange }) => {
     };
     
     // Add to working copy only
-    const updatedElements = [...workingContent.elements, newElement];
+    const updatedElements = [...workingContent.elements, newElement as CultureElement & Record<string, Json>];
     setWorkingContent({
       ...workingContent,
       elements: updatedElements
@@ -50,11 +52,12 @@ const CultureEditor: React.FC<CultureEditorProps> = ({ content, onChange }) => {
     try {
       // Update the working copy first
       const updatedElements = workingContent.elements.map(element => 
-        element.id === updatedElement.id ? updatedElement : element
+        element.id === updatedElement.id ? updatedElement as CultureElement & Record<string, Json> : element
       );
       
       // Create a new content object to trigger a proper update
-      const updatedContent = {
+      const updatedContent: CultureContent = {
+        ...workingContent,
         elements: updatedElements
       };
       
@@ -85,9 +88,9 @@ const CultureEditor: React.FC<CultureEditorProps> = ({ content, onChange }) => {
   const handleDeleteElement = (elementId: string) => {
     if (window.confirm('Sind Sie sicher, dass Sie dieses kulturelle Element löschen möchten?')) {
       try {
-        const updatedContent = {
-          ...cultureContent,
-          elements: cultureContent.elements.filter(element => element.id !== elementId)
+        const updatedContent: CultureContent = {
+          ...workingContent,
+          elements: workingContent.elements.filter(element => element.id !== elementId)
         };
         
         // Persist the deletion

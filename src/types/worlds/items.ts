@@ -27,6 +27,7 @@ export interface CustomField {
   type: FieldType;
   value: string;
   options?: FieldOption[]; // For dropdown fields
+  [key: string]: any; // Index signature to satisfy Json requirements
 }
 
 // Options for dropdown fields
@@ -34,6 +35,7 @@ export interface FieldOption {
   id: string;
   label: string;
   value: string;
+  [key: string]: any; // Index signature to satisfy Json requirements
 }
 
 // Helper function to create a new custom field

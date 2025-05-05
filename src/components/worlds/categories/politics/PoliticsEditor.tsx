@@ -1,15 +1,17 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus, Map } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
-import { PoliticalSystem } from '@/types/worlds';
+import { PoliticalSystem, PoliticsContent } from '@/types/worlds';
 import { toast } from "sonner";
 import PoliticalSystemList from './PoliticalSystemList';
 import PoliticalSystemForm from './PoliticalSystemForm';
+import { Json } from '@/integrations/supabase/types';
 
 interface PoliticsEditorProps {
   content: any;
-  onChange: (content: any) => void;
+  onChange: (content: PoliticsContent) => void;
 }
 
 const PoliticsEditor: React.FC<PoliticsEditorProps> = ({ content, onChange }) => {
@@ -17,12 +19,12 @@ const PoliticsEditor: React.FC<PoliticsEditorProps> = ({ content, onChange }) =>
   const [editingSystem, setEditingSystem] = useState<PoliticalSystem | null>(null);
   
   // Initialize content structure safely
-  const politicsContent = content && content.systems 
-    ? content 
-    : { systems: [] };
+  const politicsContent: PoliticsContent = content && content.systems 
+    ? content as PoliticsContent 
+    : { systems: [] as Array<PoliticalSystem & Record<string, Json>> };
   
   // Create a working copy for local edits
-  const [workingContent, setWorkingContent] = useState({
+  const [workingContent, setWorkingContent] = useState<PoliticsContent>({
     systems: [...(politicsContent.systems || [])]
   });
 
@@ -37,7 +39,7 @@ const PoliticsEditor: React.FC<PoliticsEditorProps> = ({ content, onChange }) =>
     };
     
     // Add to working copy only
-    const updatedSystems = [...workingContent.systems, newSystem];
+    const updatedSystems = [...workingContent.systems, newSystem as PoliticalSystem & Record<string, Json>];
     setWorkingContent({
       ...workingContent,
       systems: updatedSystems
@@ -51,11 +53,12 @@ const PoliticsEditor: React.FC<PoliticsEditorProps> = ({ content, onChange }) =>
     try {
       // Update the working copy first
       const updatedSystems = workingContent.systems.map(system => 
-        system.id === updatedSystem.id ? updatedSystem : system
+        system.id === updatedSystem.id ? updatedSystem as PoliticalSystem & Record<string, Json> : system
       );
       
       // Create a new content object to trigger a proper update
-      const updatedContent = {
+      const updatedContent: PoliticsContent = {
+        ...workingContent,
         systems: updatedSystems
       };
       
@@ -86,7 +89,7 @@ const PoliticsEditor: React.FC<PoliticsEditorProps> = ({ content, onChange }) =>
   const handleDeleteSystem = (systemId: string) => {
     if (window.confirm('Sind Sie sicher, dass Sie dieses politische System löschen möchten?')) {
       try {
-        const updatedContent = {
+        const updatedContent: PoliticsContent = {
           ...politicsContent,
           systems: politicsContent.systems.filter(system => system.id !== systemId)
         };

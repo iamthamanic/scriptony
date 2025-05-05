@@ -12,9 +12,11 @@ export interface GeographyContent {
 export interface Country extends CategoryItem {
   flag_url?: string;
   locations: Array<Location & Record<string, Json>>;
+  [key: string]: any; // Index signature to satisfy Json requirements
 }
 
 // Location extends CategoryItem
 export interface Location extends CategoryItem {
   coordinates?: { x: number; y: number }; // For map positioning
+  [key: string]: any; // Index signature to satisfy Json requirements
 }

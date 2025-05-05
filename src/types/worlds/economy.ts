@@ -12,4 +12,5 @@ export interface EconomyContent {
 export interface EconomicEntity extends CategoryItem {
   entity_type?: 'currency' | 'resource' | 'organization' | 'system';
   value?: string;
+  [key: string]: any; // Index signature to satisfy Json requirements
 }

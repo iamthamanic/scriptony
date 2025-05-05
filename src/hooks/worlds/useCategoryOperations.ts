@@ -5,7 +5,8 @@ import {
   deleteWorldCategory,
   updateCategoryOrder
 } from "@/services/worlds";
-import { WorldCategoryFormData, getEmptyCategoryContent } from "@/types/worlds";
+import { WorldCategoryFormData, getEmptyCategoryContent, WorldCategoryType } from "@/types/worlds";
+import { Json } from "@/integrations/supabase/types";
 
 export function useCategoryOperations(
   worlds: any[],
@@ -15,6 +16,54 @@ export function useCategoryOperations(
   setIsCategoryModalOpen: (open: boolean) => void
 ) {
   const { toast } = useToast();
+
+  // Helper to ensure content structures are preserved correctly
+  const ensureContentStructure = (type: WorldCategoryType, existingContent: Json | null): Json => {
+    console.log("Ensuring content structure for type:", type, "Existing:", existingContent);
+    
+    // Get default empty structure for this category type
+    const emptyContent = getEmptyCategoryContent(type);
+    
+    // Early return if no existing content
+    if (!existingContent) return emptyContent;
+    
+    // Ensure we have the expected structure based on category type
+    switch (type) {
+      case 'geography':
+        return {
+          countries: Array.isArray((existingContent as any)?.countries) ? 
+            (existingContent as any).countries : []
+        } as Json;
+      
+      case 'politics':
+        return {
+          systems: Array.isArray((existingContent as any)?.systems) ? 
+            (existingContent as any).systems : []
+        } as Json;
+      
+      case 'economy':
+        return {
+          entities: Array.isArray((existingContent as any)?.entities) ? 
+            (existingContent as any).entities : []
+        } as Json;
+      
+      case 'society':
+        return {
+          groups: Array.isArray((existingContent as any)?.groups) ? 
+            (existingContent as any).groups : []
+        } as Json;
+      
+      case 'culture':
+        return {
+          elements: Array.isArray((existingContent as any)?.elements) ? 
+            (existingContent as any).elements : []
+        } as Json;
+      
+      default:
+        // For custom or other categories, just keep what we have
+        return existingContent;
+    }
+  };
 
   // Category operations
   const handleCategorySubmit = async (data: WorldCategoryFormData) => {
@@ -30,59 +79,21 @@ export function useCategoryOperations(
       }
       
       if (selectedCategory) {
-        // For existing categories, make sure we preserve existing content structure
-        if (selectedCategory.type === data.type) {
-          // Keep existing content structure if type hasn't changed
-          const existingContent = selectedCategory.content || getEmptyCategoryContent(data.type);
-          
-          // Safely merge content based on category type
-          switch (data.type) {
-            case 'geography':
-              data.content = { 
-                countries: existingContent && Array.isArray(existingContent.countries) ? 
-                  [...existingContent.countries] : []
-              };
-              break;
-              
-            case 'politics':
-              data.content = { 
-                systems: existingContent && Array.isArray(existingContent.systems) ? 
-                  [...existingContent.systems] : []
-              };
-              break;
-              
-            case 'economy':
-              data.content = { 
-                entities: existingContent && Array.isArray(existingContent.entities) ? 
-                  [...existingContent.entities] : []
-              };
-              break;
-              
-            case 'society':
-              data.content = { 
-                groups: existingContent && Array.isArray(existingContent.groups) ? 
-                  [...existingContent.groups] : []
-              };
-              break;
-              
-            case 'culture':
-              data.content = { 
-                elements: existingContent && Array.isArray(existingContent.elements) ? 
-                  [...existingContent.elements] : []
-              };
-              break;
-              
-            default:
-              // For custom or other categories, just keep the existing content
-              data.content = existingContent;
-          }
-        } else {
-          // If type has changed, initialize with empty structure
+        console.log("Updating existing category:", data);
+        
+        // For existing categories with type change, initialize new structure
+        if (selectedCategory.type !== data.type) {
+          console.log("Category type changed from", selectedCategory.type, "to", data.type);
           data.content = getEmptyCategoryContent(data.type);
+        } else {
+          // Preserve existing content structure if type hasn't changed
+          data.content = ensureContentStructure(data.type, data.content as Json);
         }
         
         // Update existing category
         const updatedCategory = await updateWorldCategory(selectedCategory.id, data);
+        console.log("Category updated successfully:", updatedCategory);
+        
         const updatedWorld = {
           ...selectedWorld,
           categories: selectedWorld.categories.map((c: any) => 
@@ -97,8 +108,15 @@ export function useCategoryOperations(
           description: `"${data.name}" wurde erfolgreich aktualisiert.`
         });
       } else {
+        console.log("Creating new category:", data);
+        
+        // Initialize appropriate content structure for new category
+        data.content = getEmptyCategoryContent(data.type);
+        
         // Create new category
         const newCategory = await createWorldCategory(selectedWorld.id, data);
+        console.log("Category created successfully:", newCategory);
+        
         const updatedWorld = {
           ...selectedWorld,
           categories: [...selectedWorld.categories, newCategory]
