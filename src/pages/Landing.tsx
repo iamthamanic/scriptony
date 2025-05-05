@@ -1,8 +1,10 @@
+
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Check, X, AlertCircle } from "lucide-react";
+
 const Landing = () => {
   const navigate = useNavigate();
   return <div className="min-h-screen bg-background">
@@ -15,7 +17,7 @@ const Landing = () => {
                 Dein Assistent für jede Geschichte.
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground">
-                Egal ob Film, Serie, Hörspiel oder Theaterstück – ScriptBuddy hilft dir, kreative Ideen in strukturierte Skripte zu verwandeln. Visuell. Intuitiv. Story-fokussiert.
+                Egal ob Film, Serie, Hörspiel oder Theaterstück – Scriptony hilft dir, kreative Ideen in strukturierte Skripte zu verwandeln. Visuell. Intuitiv. Story-fokussiert.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button size="lg" className="bg-primary hover:bg-primary/90" onClick={() => navigate('/auth')}>
@@ -32,7 +34,7 @@ const Landing = () => {
             </div>
             <div className="flex-1 mt-8 md:mt-0">
               <div className="bg-card rounded-lg shadow-lg overflow-hidden">
-                <img alt="ScriptBuddy Demo Scene" className="w-full h-auto object-cover" src="/lovable-uploads/edf9e706-94e5-41dc-9bc6-c6a6e0642216.png" />
+                <img alt="Scriptony Demo Scene" className="w-full h-auto object-cover" src="/lovable-uploads/edf9e706-94e5-41dc-9bc6-c6a6e0642216.png" />
               </div>
             </div>
           </div>
@@ -43,7 +45,7 @@ const Landing = () => {
       <section className="py-16 bg-muted/50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">So funktioniert ScriptBuddy</h2>
+            <h2 className="text-3xl font-bold mb-4">So funktioniert Scriptony</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <Card className="bg-card hover:shadow-lg transition-shadow">
@@ -76,7 +78,7 @@ const Landing = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold mb-4">Für jede Art von Geschichte</h2>
-            <p className="text-lg text-muted-foreground">ScriptBuddy ist für alle kreativen Erzähler:innen gedacht:</p>
+            <p className="text-lg text-muted-foreground">Scriptony ist für alle kreativen Erzähler:innen gedacht:</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-center">
             <div className="p-4 hover:bg-accent rounded-lg transition-colors">
@@ -103,7 +105,7 @@ const Landing = () => {
       <section className="py-16 bg-muted/50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Was ScriptBuddy für dich macht</h2>
+            <h2 className="text-3xl font-bold mb-4">Was Scriptony für dich macht</h2>
           </div>
           <div className="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
             {["Szenen-Editor mit Bildern, Timecode & Sound", "Struktur-Generator mit Plot-Vorlagen", "Shotliste & visuelle Timeline", "Export als PDF, Markdown oder ZIP", "Projekte für Film, Audio oder Bühne", "KI-tauglich für visuelle Generierung"].map((feature, index) => <div key={index} className="flex items-center p-3 bg-card rounded-lg shadow">
@@ -118,9 +120,9 @@ const Landing = () => {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-4">Warum ScriptBuddy einzigartig ist</h2>
+            <h2 className="text-3xl font-bold mb-4">Warum Scriptony einzigartig ist</h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Im Vergleich zu klassischen Drehbuch-Tools und Story-Plattformen vereint ScriptBuddy alle kreativen & technischen Aspekte in einem einzigen Tool:
+              Im Vergleich zu klassischen Drehbuch-Tools und Story-Plattformen vereint Scriptony alle kreativen & technischen Aspekte in einem einzigen Tool:
             </p>
           </div>
           
@@ -129,7 +131,7 @@ const Landing = () => {
               <thead className="bg-muted">
                 <tr>
                   <th className="px-4 py-3 text-left">Funktion</th>
-                  <th className="px-4 py-3 text-center">ScriptBuddy</th>
+                  <th className="px-4 py-3 text-center">Scriptony</th>
                   <th className="px-4 py-3 text-center">Final Draft</th>
                   <th className="px-4 py-3 text-center">Celtx</th>
                   <th className="px-4 py-3 text-center">Plottr</th>
@@ -246,8 +248,8 @@ const Landing = () => {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
-              <span className="font-bold text-lg">ScriptBuddy</span>
-              <p className="text-sm text-muted-foreground">© 2025 ScriptBuddy. Alle Rechte vorbehalten.</p>
+              <span className="font-bold text-lg">Scriptony</span>
+              <p className="text-sm text-muted-foreground">© 2025 Scriptony. Alle Rechte vorbehalten.</p>
             </div>
             <div className="flex gap-4">
               <Link to="#" className="text-muted-foreground hover:text-foreground">Impressum</Link>

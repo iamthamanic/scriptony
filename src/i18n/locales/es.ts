@@ -1,10 +1,11 @@
+
 export default {
   common: {
     welcome: "Bienvenido de nuevo",
     createAccount: "Crear cuenta",
     login: "Iniciar sesión",
-    loginTo: "Inicia sesión en tu cuenta de ScriptBuddy",
-    joinCommunity: "Únete a la comunidad de ScriptBuddy",
+    loginTo: "Inicia sesión en tu cuenta de Scriptony",
+    joinCommunity: "Únete a la comunidad de Scriptony",
     continueWithGoogle: "Continuar con Google",
     or: "O",
     back: "Volver a la página principal",
@@ -21,12 +22,12 @@ export default {
   landing: {
     hero: {
       title: "Tu asistente para cada historia.",
-      subtitle: "Ya sea película, serie, drama de audio o obra de teatro – ScriptBuddy te ayuda a transformar ideas creativas en guiones estructurados. Visual. Intuitivo. Centrado en la historia.",
+      subtitle: "Ya sea película, serie, drama de audio o obra de teatro – Scriptony te ayuda a transformar ideas creativas en guiones estructurados. Visual. Intuitivo. Centrado en la historia.",
       start: "Comienza gratis con Google",
       login: "Iniciar sesión"
     },
     features: {
-      title: "Cómo funciona ScriptBuddy",
+      title: "Cómo funciona Scriptony",
       startProject: "Iniciar proyecto",
       startProjectDesc: "Crea un nuevo proyecto con logline, medio y género.",
       chooseStructure: "Elegir estructura",
@@ -36,14 +37,14 @@ export default {
     },
     media: {
       title: "Para todo tipo de historias",
-      subtitle: "ScriptBuddy es para todos los narradores creativos:",
+      subtitle: "Scriptony es para todos los narradores creativos:",
       film: "Película y serie",
       audio: "Drama de audio y podcast",
       theater: "Teatro y escenario",
       game: "Historia de juego y novelas visuales"
     },
     featureList: {
-      title: "Lo que ScriptBuddy hace por ti",
+      title: "Lo que Scriptony hace por ti",
       features: [
         "Editor de escenas con imágenes, código de tiempo y sonido",
         "Generador de estructura con plantillas de trama",
@@ -54,8 +55,8 @@ export default {
       ]
     },
     comparison: {
-      title: "Por qué ScriptBuddy es único",
-      subtitle: "En comparación con las herramientas de guión clásicas y plataformas de historias, ScriptBuddy combina todos los aspectos creativos y técnicos en una sola herramienta:",
+      title: "Por qué Scriptony es único",
+      subtitle: "En comparación con las herramientas de guión clásicas y plataformas de historias, Scriptony combina todos los aspectos creativos y técnicos en una sola herramienta:",
       features: {
         visualScene: "Edición visual de escenas",
         templates: "Plantillas de estructura (p.ej. viaje del héroe)",
@@ -65,7 +66,7 @@ export default {
         aiReady: "Compatible con IA (exportación a nivel de toma)"
       },
       competitors: {
-        scriptBuddy: "ScriptBuddy",
+        scriptBuddy: "Scriptony",
         finalDraft: "Final Draft",
         celtx: "Celtx",
         plottr: "Plottr",
@@ -94,7 +95,7 @@ export default {
     footer: {
       startProject: "Comienza tu primer proyecto hoy",
       startFree: "Comenzar gratis",
-      copyright: "© 2025 ScriptBuddy. Todos los derechos reservados.",
+      copyright: "© 2025 Scriptony. Todos los derechos reservados.",
       imprint: "Aviso legal",
       privacy: "Privacidad",
       contact: "Contacto"

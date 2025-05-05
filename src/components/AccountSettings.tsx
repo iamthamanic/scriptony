@@ -106,7 +106,7 @@ const AccountSettings = ({
               <div className="flex justify-between items-center">
                 <div>
                   <span className="text-lg font-bold">Free Tier</span>
-                  <p className="text-sm text-muted-foreground">Basic access to ScriptBuddy</p>
+                  <p className="text-sm text-muted-foreground">Basic access to Scriptony</p>
                 </div>
                 
                 <Button variant="outline" className="border-anime-purple text-anime-purple">
@@ -121,7 +121,7 @@ const AccountSettings = ({
               <div className="border rounded-lg p-4 hover:border-anime-purple transition-colors cursor-pointer">
                 <div className="flex justify-between items-center">
                   <div>
-                    <span className="text-lg font-bold">ScriptBuddy Pro</span>
+                    <span className="text-lg font-bold">Scriptony Pro</span>
                     <p className="text-sm text-muted-foreground">$9.99/month</p>
                   </div>
                   
@@ -140,7 +140,7 @@ const AccountSettings = ({
               <div className="border rounded-lg p-4 hover:border-anime-purple transition-colors cursor-pointer">
                 <div className="flex justify-between items-center">
                   <div>
-                    <span className="text-lg font-bold">ScriptBuddy Enterprise</span>
+                    <span className="text-lg font-bold">Scriptony Enterprise</span>
                     <p className="text-sm text-muted-foreground">$29.99/month</p>
                   </div>
                   
@@ -199,7 +199,7 @@ const AccountSettings = ({
                 <div className="bg-muted/30 p-4 rounded-lg">
                   <h3 className="font-medium mb-2">Freischaltcode eingeben</h3>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Wenn du einen Freischaltcode für ScriptBuddy erhalten hast, kannst du ihn hier eingeben, 
+                    Wenn du einen Freischaltcode für Scriptony erhalten hast, kannst du ihn hier eingeben, 
                     um erweiterte Funktionen freizuschalten oder den Admin-Modus zu aktivieren.
                   </p>
                   
