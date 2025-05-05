@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,16 +30,17 @@ const WorldCategoryCard = ({ category, onEdit, onDelete }: WorldCategoryCardProp
     
     // Safely check if content matches the expected GeographyContent structure
     const content = category.content;
-    const isValidGeographyContent = 
+    const isValidGeographyContent = (
       typeof content === 'object' && 
       content !== null && 
       !Array.isArray(content) &&
       'countries' in content && 
-      Array.isArray(content.countries);
+      Array.isArray((content as any).countries)
+    );
     
-    // If valid, use the content as GeographyContent, otherwise use an empty structure
+    // Create a properly typed geography content object
     const geographyContent: GeographyContent = isValidGeographyContent 
-      ? content as GeographyContent 
+      ? { countries: (content as any).countries } 
       : { countries: [] };
       
     const countries = geographyContent.countries || [];
