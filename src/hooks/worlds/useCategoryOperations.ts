@@ -34,9 +34,10 @@ export function useCategoryOperations(
         // For geography type, make sure we don't lose existing countries when updating
         if (selectedCategory.type === 'geography' && data.type === 'geography') {
           const existingContent = selectedCategory.content || { countries: [] };
+          // Fix: Ensure we're spreading an object, not potentially undefined or null
           data.content = { 
-            ...data.content,
-            countries: existingContent.countries || [] 
+            countries: existingContent && existingContent.countries ? 
+              [...existingContent.countries] : []
           };
         }
         
