@@ -1,14 +1,12 @@
 
 import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { DialogFooter } from '@/components/ui/dialog';
-import { WorldCategoryFormData, WorldCategoryType } from '@/types';
-import TypeSelector from './TypeSelector';
-import ContentEditorLoader from './ContentEditorLoader';
+import { WorldCategoryFormData } from '@/types';
+import CategoryNameField from './CategoryNameField';
+import TypeSelector from '../TypeSelector';
+import ContentEditorLoader from '../ContentEditorLoader';
+import ModalFooter from './ModalFooter';
 
-interface ModalFormProps {
+interface CategoryFormProps {
   formData: WorldCategoryFormData;
   onNameChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onTypeChange: (value: string) => void;
@@ -18,7 +16,7 @@ interface ModalFormProps {
   isEditing: boolean;
 }
 
-const ModalForm: React.FC<ModalFormProps> = ({
+const CategoryForm: React.FC<CategoryFormProps> = ({
   formData,
   onNameChange,
   onTypeChange,
@@ -44,17 +42,10 @@ const ModalForm: React.FC<ModalFormProps> = ({
 
   return (
     <form onSubmit={onSubmit} className="space-y-4 pt-2">
-      <div className="space-y-2">
-        <Label htmlFor="name">Name</Label>
-        <Input
-          id="name"
-          name="name"
-          value={formData.name}
-          onChange={onNameChange}
-          placeholder="z.B. Geografie"
-          required
-        />
-      </div>
+      <CategoryNameField 
+        value={formData.name} 
+        onChange={onNameChange} 
+      />
       
       <TypeSelector 
         value={formData.type} 
@@ -63,29 +54,18 @@ const ModalForm: React.FC<ModalFormProps> = ({
       />
       
       <ContentEditorLoader
-        type={formData.type as WorldCategoryType}
+        type={formData.type}
         content={formData.content}
         onChange={onContentChange}
       />
       
-      <DialogFooter className="pt-4">
-        <Button 
-          type="button" 
-          variant="outline" 
-          onClick={onClose}
-        >
-          Abbrechen
-        </Button>
-        <Button 
-          type="submit" 
-          className="bg-anime-purple hover:bg-anime-dark-purple"
-          disabled={!formData.name}
-        >
-          {isEditing ? 'Aktualisieren' : 'Erstellen'}
-        </Button>
-      </DialogFooter>
+      <ModalFooter 
+        onClose={onClose} 
+        isEditing={isEditing} 
+        isValid={!!formData.name} 
+      />
     </form>
   );
 };
 
-export default ModalForm;
+export default CategoryForm;
