@@ -2,17 +2,11 @@
 import React, { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { isDevelopmentMode } from "@/utils/devMode";
 
 interface AuthRouteProps {
   children: ReactNode;
 }
-
-// Check if we're in development mode
-const isDevelopmentMode = () => {
-  // Check if URL has a development mode parameter
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.has('devMode') || window.location.hostname.includes('lovableproject.com');
-};
 
 export const AuthRoute: React.FC<AuthRouteProps> = ({ children }) => {
   const { user, loading } = useAuth();
