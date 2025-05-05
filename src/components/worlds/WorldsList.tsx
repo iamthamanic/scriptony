@@ -1,9 +1,8 @@
 
 import React from 'react';
-import { Button } from "@/components/ui/button";
 import { World } from "@/types";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Map, Plus } from "lucide-react";
+import { Map } from "lucide-react";
 
 interface WorldsListProps {
   worlds: World[];
@@ -16,12 +15,6 @@ const WorldsList = ({ worlds, onSelectWorld, onNewWorld }: WorldsListProps) => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Deine Welten</h2>
-        <Button 
-          onClick={onNewWorld}
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          Neue Welt
-        </Button>
       </div>
       
       {worlds.length > 0 ? (
@@ -73,12 +66,6 @@ const WorldsList = ({ worlds, onSelectWorld, onNewWorld }: WorldsListProps) => {
           <p className="text-muted-foreground mb-4">
             Erstelle deine erste Welt und verbinde sie mit deinen Projekten
           </p>
-          <Button 
-            onClick={onNewWorld}
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            Erste Welt erstellen
-          </Button>
         </div>
       )}
     </div>
