@@ -44,10 +44,19 @@ const PageWithTransition = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+// Authenticated layout that includes the Topbar
+const AuthenticatedLayout = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <>
+      <Topbar />
+      <PageWithTransition>
+        {children}
+      </PageWithTransition>
+    </>
+  );
+};
+
 const App = () => {
-  // Always use development mode for testing
-  const forceDevMode = true;
-  
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -58,11 +67,8 @@ const App = () => {
             <ErrorDisplay />
             <BrowserRouter>
               <div className="flex flex-col w-full min-h-screen">
-                {/* Always show Topbar on all pages */}
-                <Topbar />
-                
                 <Routes>
-                  {/* Public routes */}
+                  {/* Public routes without topbar */}
                   <Route path="/landing" element={<Landing />} />
                   <Route path="/auth" element={
                     <PublicOnlyRoute>
@@ -75,49 +81,49 @@ const App = () => {
                   {/* All authenticated routes with the topbar */}
                   <Route path="/" element={
                     <AuthRoute>
-                      <PageWithTransition>
+                      <AuthenticatedLayout>
                         <Navigate to="/home" replace />
-                      </PageWithTransition>
+                      </AuthenticatedLayout>
                     </AuthRoute>
                   } />
                   
                   <Route path="/home" element={
                     <AuthRoute>
-                      <PageWithTransition>
+                      <AuthenticatedLayout>
                         <Home />
-                      </PageWithTransition>
+                      </AuthenticatedLayout>
                     </AuthRoute>
                   } />
                   
                   <Route path="/projects" element={
                     <AuthRoute>
-                      <PageWithTransition>
+                      <AuthenticatedLayout>
                         <Index />
-                      </PageWithTransition>
+                      </AuthenticatedLayout>
                     </AuthRoute>
                   } />
                   
                   <Route path="/worldbuilding" element={
                     <AuthRoute>
-                      <PageWithTransition>
+                      <AuthenticatedLayout>
                         <Worldbuilding />
-                      </PageWithTransition>
+                      </AuthenticatedLayout>
                     </AuthRoute>
                   } />
                   
                   <Route path="/upload" element={
                     <AuthRoute>
-                      <PageWithTransition>
+                      <AuthenticatedLayout>
                         <Upload />
-                      </PageWithTransition>
+                      </AuthenticatedLayout>
                     </AuthRoute>
                   } />
                   
                   <Route path="/account" element={
                     <AuthRoute>
-                      <PageWithTransition>
+                      <AuthenticatedLayout>
                         <Account />
-                      </PageWithTransition>
+                      </AuthenticatedLayout>
                     </AuthRoute>
                   } />
                   
