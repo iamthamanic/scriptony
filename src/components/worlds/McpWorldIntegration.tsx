@@ -19,7 +19,7 @@ const McpWorldIntegration: React.FC<McpWorldIntegrationProps> = () => {
         <DialogHeader>
           <DialogTitle>Model Context Protocol (MCP) Interface</DialogTitle>
           <DialogDescription>
-            Connect external AI assistants to ScriptBuddy via the Model Context Protocol
+            Connect external AI assistants to Scriptony via the Model Context Protocol
           </DialogDescription>
         </DialogHeader>
         

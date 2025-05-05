@@ -22,14 +22,14 @@ const Logo: React.FC<LogoProps> = ({ size = 'md', showText = true }) => {
     <div className="flex items-center gap-2">
       <img
         src="/lovable-uploads/49c12d7f-e474-417e-bdb5-39d785433846.png"
-        alt="ScriptBuddy Logo"
+        alt="Scriptony Logo"
         width={logoSize}
         height={logoSize}
         className="object-contain"
       />
       {showText && (
         <span className={`font-bold text-anime-purple ${textSize}`}>
-          ScriptBuddy
+          Scriptony
         </span>
       )}
     </div>
