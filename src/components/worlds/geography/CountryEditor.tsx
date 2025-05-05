@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Country, GeographyContent, Location } from '@/types/worlds';
 import { v4 as uuidv4 } from 'uuid';
@@ -13,17 +14,16 @@ interface CountryEditorProps {
 const CountryEditor: React.FC<CountryEditorProps> = ({ content, onChange }) => {
   const [expandedCountryId, setExpandedCountryId] = useState<string | null>(null);
   const [editingCountry, setEditingCountry] = useState<Country | null>(null);
-  // Add a working copy of the content to prevent immediate saves
-  const [workingContent, setWorkingContent] = useState<GeographyContent>(
-    content && content.countries 
-      ? content as GeographyContent 
-      : { countries: [] }
-  );
-
-  // Initialize content structure if it doesn't exist
+  
+  // Initialize content structure safely
   const geographyContent: GeographyContent = content && content.countries 
     ? content as GeographyContent 
     : { countries: [] };
+  
+  // Create a working copy for local edits
+  const [workingContent, setWorkingContent] = useState<GeographyContent>({
+    countries: [...(geographyContent.countries || [])]
+  });
 
   const handleAddCountry = () => {
     const newCountry: Country = {
@@ -34,58 +34,77 @@ const CountryEditor: React.FC<CountryEditorProps> = ({ content, onChange }) => {
       locations: []
     };
     
-    // Add to working copy only, not to the actual saved content
-    setWorkingContent(prev => ({
-      ...prev,
-      countries: [...prev.countries, newCountry]
-    }));
+    // Add to working copy only
+    const updatedCountries = [...workingContent.countries, newCountry];
+    setWorkingContent({
+      ...workingContent,
+      countries: updatedCountries
+    });
     
-    setEditingCountry(newCountry);
+    // Start editing the new country
+    setEditingCountry({...newCountry});
   };
 
   const handleUpdateCountry = (updatedCountry: Country) => {
-    // Save the country update to the actual content
-    const updatedContent: GeographyContent = {
-      ...geographyContent,
-      countries: geographyContent.countries.map(country => 
+    try {
+      // Update the working copy first
+      const updatedCountries = workingContent.countries.map(country => 
         country.id === updatedCountry.id ? updatedCountry : country
-      )
-    };
-    
-    // Only now do we call onChange to persist the changes
-    onChange(updatedContent);
-    setEditingCountry(null);
-    
-    toast.success("Land erfolgreich aktualisiert");
+      );
+      
+      // Create a new content object to trigger a proper update
+      const updatedContent: GeographyContent = {
+        countries: updatedCountries
+      };
+      
+      // Save to the actual content via onChange
+      onChange(updatedContent);
+      setEditingCountry(null);
+      
+      // Update our working copy too
+      setWorkingContent(updatedContent);
+      
+      toast.success("Land erfolgreich aktualisiert");
+    } catch (error) {
+      console.error("Error updating country:", error);
+      toast.error("Fehler beim Aktualisieren des Landes");
+    }
   };
 
   const handleCancelEdit = () => {
     // If cancelling, discard changes and reset to original content
     setEditingCountry(null);
+    
     // Reset working copy to match the actual content
-    setWorkingContent(
-      content && content.countries 
-        ? content as GeographyContent 
-        : { countries: [] }
-    );
+    setWorkingContent({
+      countries: [...(geographyContent.countries || [])]
+    });
   };
 
   const handleDeleteCountry = (countryId: string) => {
     if (window.confirm('Sind Sie sicher, dass Sie dieses Land löschen möchten?')) {
-      const updatedContent: GeographyContent = {
-        ...geographyContent,
-        countries: geographyContent.countries.filter(country => country.id !== countryId)
-      };
-      
-      // Persist the deletion immediately
-      onChange(updatedContent);
-      
-      if (expandedCountryId === countryId) {
-        setExpandedCountryId(null);
-      }
-      
-      if (editingCountry?.id === countryId) {
-        setEditingCountry(null);
+      try {
+        const updatedContent: GeographyContent = {
+          ...geographyContent,
+          countries: geographyContent.countries.filter(country => country.id !== countryId)
+        };
+        
+        // Persist the deletion
+        onChange(updatedContent);
+        
+        // Update working copy
+        setWorkingContent(updatedContent);
+        
+        if (expandedCountryId === countryId) {
+          setExpandedCountryId(null);
+        }
+        
+        if (editingCountry?.id === countryId) {
+          setEditingCountry(null);
+        }
+      } catch (error) {
+        console.error("Error deleting country:", error);
+        toast.error("Fehler beim Löschen des Landes");
       }
     }
   };
@@ -151,13 +170,13 @@ const CountryEditor: React.FC<CountryEditorProps> = ({ content, onChange }) => {
   // Otherwise show the list of countries
   return (
     <CountryList
-      countries={geographyContent.countries || []}
+      countries={workingContent.countries || []}
       expandedCountryId={expandedCountryId}
       onToggleExpand={toggleExpand}
       onAddCountry={handleAddCountry}
       onEditCountry={(country) => {
-        // Set the editing country to a new object to avoid reference issues
-        setEditingCountry({...country});
+        // Set the editing country to a deep copy to avoid reference issues
+        setEditingCountry(JSON.parse(JSON.stringify(country)));
       }}
       onDeleteCountry={handleDeleteCountry}
     />

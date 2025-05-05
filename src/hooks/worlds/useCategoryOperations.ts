@@ -25,7 +25,21 @@ export function useCategoryOperations(
       const selectedCategory = selectedWorld.categories.find((c: any) => 
         c.id === data.id);
       
+      // Ensure geography content has a proper structure
+      if (data.type === 'geography' && (!data.content || typeof data.content !== 'object')) {
+        data.content = { countries: [] };
+      }
+      
       if (selectedCategory) {
+        // For geography type, make sure we don't lose existing countries when updating
+        if (selectedCategory.type === 'geography' && data.type === 'geography') {
+          const existingContent = selectedCategory.content || { countries: [] };
+          data.content = { 
+            ...data.content,
+            countries: existingContent.countries || [] 
+          };
+        }
+        
         // Update existing category
         const updatedCategory = await updateWorldCategory(selectedCategory.id, data);
         const updatedWorld = {

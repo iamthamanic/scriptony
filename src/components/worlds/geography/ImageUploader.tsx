@@ -8,18 +8,19 @@ import { toast } from "sonner";
 interface ImageUploaderProps {
   imageUrl?: string;
   onImageChange: (url: string | undefined) => void;
-  // Adding a new prop to disable automatic saving after upload
   disableToast?: boolean;
 }
 
 const ImageUploader: React.FC<ImageUploaderProps> = ({ imageUrl, onImageChange, disableToast = false }) => {
   const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     try {
+      setError(null);
       setUploading(true);
 
       // Generate a unique file name
@@ -27,7 +28,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ imageUrl, onImageChange, 
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
       const filePath = `geography/${fileName}`;
 
-      // Make sure the storage bucket exists (you'd need to create it in Supabase first)
+      // Make sure the storage bucket exists
       const { error: uploadError } = await customSupabase.storage
         .from('covers')
         .upload(filePath, file);
@@ -41,6 +42,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ imageUrl, onImageChange, 
         .from('covers')
         .getPublicUrl(filePath);
 
+      // Only update the local state, don't trigger a save action
       onImageChange(data.publicUrl);
       
       // Only show toast if not disabled
@@ -49,6 +51,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ imageUrl, onImageChange, 
       }
     } catch (error: any) {
       console.error('Error uploading image:', error);
+      setError(error.message || 'Unbekannter Fehler');
       toast.error(`Fehler beim Hochladen: ${error.message || 'Unbekannter Fehler'}`);
     } finally {
       setUploading(false);
@@ -57,7 +60,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ imageUrl, onImageChange, 
 
   const handleRemoveImage = () => {
     // We don't delete from storage to avoid orphaned files
-    // Just remove the reference
+    // Just remove the reference from the local state
     onImageChange(undefined);
     
     // Only show toast if not disabled
@@ -84,6 +87,10 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ imageUrl, onImageChange, 
           </div>
         )}
       </div>
+      
+      {error && (
+        <p className="text-sm text-destructive">{error}</p>
+      )}
       
       <div className="flex gap-2">
         <Button 

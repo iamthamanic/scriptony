@@ -27,7 +27,7 @@ const CountryForm: React.FC<CountryFormProps> = ({
   onUpdateLocation,
   onDeleteLocation
 }) => {
-  const [editingCountry, setEditingCountry] = React.useState<Country>(country);
+  const [editingCountry, setEditingCountry] = React.useState<Country>({...country});
 
   // Create update handlers that only modify local state without triggering saves
   const handleCountryUpdate = (updates: Partial<Country>) => {
@@ -35,6 +35,10 @@ const CountryForm: React.FC<CountryFormProps> = ({
       ...prev,
       ...updates
     }));
+  };
+
+  const handleSave = () => {
+    onSave(editingCountry);
   };
 
   return (
@@ -126,7 +130,7 @@ const CountryForm: React.FC<CountryFormProps> = ({
         <div className="flex justify-end space-x-2 pt-4">
           <Button variant="outline" onClick={onCancel}>Abbrechen</Button>
           <Button 
-            onClick={() => onSave(editingCountry)}
+            onClick={handleSave}
             className="bg-anime-purple hover:bg-anime-dark-purple"
           >
             Speichern
