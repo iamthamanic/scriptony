@@ -10,7 +10,7 @@ import { isDevelopmentMode, getDevModeUser } from "@/utils/devMode";
 const getCurrentUser = async () => {
   // Use mock user in development mode
   if (isDevelopmentMode()) {
-    return { user: getDevModeUser() };
+    return { data: { user: getDevModeUser() } };
   }
   
   // Use actual authentication in production
@@ -20,7 +20,7 @@ const getCurrentUser = async () => {
 // Fetch all worlds for the current user
 export const fetchUserWorlds = async (): Promise<World[]> => {
   // Get the current user
-  const { user } = await getCurrentUser();
+  const { data: { user } } = await getCurrentUser();
   if (!user) throw new Error('User not authenticated');
 
   const { data: worlds, error } = await supabase
@@ -72,7 +72,7 @@ export const createWorld = async (data: NewWorldFormData): Promise<World> => {
   const { name, description, cover_image } = data;
   
   // Get the current user
-  const { user } = await getCurrentUser();
+  const { data: { user } } = await getCurrentUser();
   if (!user) throw new Error('User not authenticated');
   
   // Upload cover image if provided
