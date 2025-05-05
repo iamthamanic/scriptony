@@ -5,7 +5,7 @@ import { Json } from "@/integrations/supabase/types";
  * Helper to preserve image URLs and other special properties during JSON transformations
  */
 export const preserveImageProperties = (obj: any): any => {
-  if (!obj) return obj;
+  if (obj === null || obj === undefined) return obj;
   
   // For arrays, process each item
   if (Array.isArray(obj)) {
@@ -51,6 +51,11 @@ export const preserveImageProperties = (obj: any): any => {
  */
 export const safeJsonTransform = (data: any): any => {
   try {
+    // Check if data is null or undefined
+    if (data === null || data === undefined) {
+      return data;
+    }
+    
     // First serialize to JSON string
     const jsonString = JSON.stringify(data);
     
