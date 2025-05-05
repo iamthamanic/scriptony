@@ -1,7 +1,8 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
+import { useSearchParams } from 'react-router-dom';
 
 // Import the settings components
 import AccountTabsList from '@/components/settings/AccountTabsList';
@@ -10,9 +11,26 @@ import SubscriptionTab from '@/components/settings/SubscriptionTab';
 import SecurityTab from '@/components/settings/SecurityTab';
 import UnlockTab from '@/components/settings/UnlockTab';
 import IntegrationTab from '@/components/settings/IntegrationTab';
+import StorageTab from '@/components/settings/StorageTab';
 
 const Account = () => {
   const { user } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState('profile');
+  
+  // Set the active tab based on URL parameter or default to 'profile'
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam && ['profile', 'subscription', 'security', 'storage', 'unlock', 'mcp-integration'].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
+  
+  // Update URL when tab changes
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    setSearchParams({ tab: value });
+  };
   
   return (
     <div className="py-8 px-4 md:px-6 w-full animate-fade-in">
@@ -22,7 +40,7 @@ const Account = () => {
           <p className="text-muted-foreground">Verwalte dein Konto und deine Einstellungen</p>
         </header>
         
-        <Tabs defaultValue="profile" className="mt-4">
+        <Tabs value={activeTab} onValueChange={handleTabChange} className="mt-4">
           <AccountTabsList />
           
           {/* Profile Tab */}
@@ -41,6 +59,11 @@ const Account = () => {
           {/* Security Tab */}
           <TabsContent value="security">
             <SecurityTab />
+          </TabsContent>
+          
+          {/* Storage Tab */}
+          <TabsContent value="storage">
+            <StorageTab />
           </TabsContent>
           
           {/* Unlock Tab */}

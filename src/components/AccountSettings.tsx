@@ -11,6 +11,7 @@ import SubscriptionTab from './settings/SubscriptionTab';
 import SecurityTab from './settings/SecurityTab';
 import UnlockTab from './settings/UnlockTab';
 import IntegrationTab from './settings/IntegrationTab';
+import StorageTab from './settings/StorageTab';
 
 interface AccountSettingsProps {
   isOpen: boolean;
@@ -52,6 +53,11 @@ const AccountSettings = ({
           {/* Security Tab */}
           <TabsContent value="security">
             <SecurityTab onSignOut={onSignOut} />
+          </TabsContent>
+          
+          {/* Storage Tab */}
+          <TabsContent value="storage">
+            <StorageTab />
           </TabsContent>
           
           {/* Unlock Tab */}
