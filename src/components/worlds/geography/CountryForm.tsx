@@ -109,6 +109,7 @@ const CountryForm: React.FC<CountryFormProps> = ({
                     });
                   }}
                   disableToast={true}
+                  category="flag"
                 />
               </div>
               <div>
@@ -122,6 +123,7 @@ const CountryForm: React.FC<CountryFormProps> = ({
                     });
                   }}
                   disableToast={true}
+                  category="country-cover"
                 />
               </div>
             </div>

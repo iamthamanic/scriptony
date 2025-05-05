@@ -4,6 +4,7 @@ import { World, WorldCategory, WorldCategoryFormData, getEmptyCategoryContent } 
 import { createWorldCategory, updateWorldCategory, deleteWorldCategory, updateCategoryOrder } from "@/services/worlds";
 import { useCategoryHelpers } from "./useCategoryHelpers";
 import { Json } from "@/integrations/supabase/types";
+import { preserveImageProperties } from "@/utils/jsonPreserver";
 
 interface UseCategoryMutationsProps {
   worlds: World[];
@@ -37,7 +38,7 @@ export function useCategoryMutations({
       }
       
       if (selectedCategory) {
-        console.log("Updating existing category:", data);
+        console.log("Updating existing category:", data.name);
         console.log("Original category content:", selectedCategory.content);
         
         // For existing categories with type change, initialize new structure
@@ -45,8 +46,10 @@ export function useCategoryMutations({
           console.log("Category type changed from", selectedCategory.type, "to", data.type);
           data.content = getEmptyCategoryContent(data.type);
         } else {
-          // Preserve existing content structure if type hasn't changed
-          data.content = ensureContentStructure(data.type, data.content as Json);
+          // Preserve existing content structure and image URLs if type hasn't changed
+          data.content = preserveImageProperties(
+            ensureContentStructure(data.type, data.content as Json)
+          );
           console.log("Preserved category content:", data.content);
         }
         
@@ -68,7 +71,7 @@ export function useCategoryMutations({
           description: `"${data.name}" wurde erfolgreich aktualisiert.`
         });
       } else {
-        console.log("Creating new category:", data);
+        console.log("Creating new category:", data.name);
         
         // Initialize appropriate content structure for new category
         data.content = getEmptyCategoryContent(data.type);

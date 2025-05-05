@@ -4,6 +4,7 @@ import { Country, GeographyContent, Location } from '@/types/worlds';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from "sonner";
 import { Json } from '@/integrations/supabase/types';
+import { safeJsonTransform, preserveImageProperties } from "@/utils/jsonPreserver";
 
 interface UseCountryEditorProps {
   content: any;
@@ -46,25 +47,16 @@ export function useCountryEditor({ content, onChange }: UseCountryEditorProps) {
 
   const handleUpdateCountry = (updatedCountry: Country) => {
     try {
-      console.log('Updating country:', updatedCountry);
-      console.log('With flag_url:', updatedCountry.flag_url);
-      console.log('With cover_image_url:', updatedCountry.cover_image_url);
+      console.log('Updating country:', updatedCountry.name);
+      console.log('Flag URL before update:', updatedCountry.flag_url);
+      console.log('Cover image URL before update:', updatedCountry.cover_image_url);
       
-      // Create a deep clone to avoid reference issues
-      const countryForUpdate = JSON.parse(JSON.stringify(updatedCountry)) as Country & Record<string, Json>;
+      // Use the preserveImageProperties utility to ensure image URLs are preserved
+      const countryForUpdate = preserveImageProperties(updatedCountry) as Country & Record<string, Json>;
       
-      // Make sure the image URLs are preserved
-      countryForUpdate.flag_url = updatedCountry.flag_url;
-      countryForUpdate.cover_image_url = updatedCountry.cover_image_url;
-      
-      // Make sure the locations have their image URLs preserved too
-      if (updatedCountry.locations) {
-        countryForUpdate.locations = updatedCountry.locations.map(loc => {
-          const locationCopy = JSON.parse(JSON.stringify(loc)) as Location & Record<string, Json>;
-          locationCopy.cover_image_url = loc.cover_image_url;
-          return locationCopy;
-        });
-      }
+      // Log after transformation to verify URLs are preserved
+      console.log('Flag URL after transform:', countryForUpdate.flag_url);
+      console.log('Cover image URL after transform:', countryForUpdate.cover_image_url);
       
       // Update the working copy first
       const updatedCountries = workingContent.countries.map(country => 
@@ -77,7 +69,7 @@ export function useCountryEditor({ content, onChange }: UseCountryEditorProps) {
         countries: updatedCountries
       };
       
-      console.log('Updated content to save:', updatedContent);
+      console.log('Updated content before save:', JSON.stringify(updatedContent).substring(0, 100) + '...');
       
       // Save to the actual content via onChange
       onChange(updatedContent);
@@ -151,11 +143,8 @@ export function useCountryEditor({ content, onChange }: UseCountryEditorProps) {
   const handleUpdateLocation = (updatedLocation: Location) => {
     if (!editingCountry) return;
     
-    // Create a deep copy to avoid reference issues
-    const locationForUpdate = JSON.parse(JSON.stringify(updatedLocation)) as Location & Record<string, Json>;
-    
-    // Make sure the image URL is preserved
-    locationForUpdate.cover_image_url = updatedLocation.cover_image_url;
+    // Preserve image URLs and other special properties
+    const locationForUpdate = preserveImageProperties(updatedLocation) as Location & Record<string, Json>;
     
     // Update in the currently editing country only
     setEditingCountry({
@@ -182,21 +171,16 @@ export function useCountryEditor({ content, onChange }: UseCountryEditorProps) {
   };
 
   const handleEditCountry = (country: Country) => {
-    // Create a deep copy to avoid reference issues
-    const countryToEdit = JSON.parse(JSON.stringify(country));
+    console.log('Starting edit of country:', country.name);
+    console.log('Original flag_url:', country.flag_url);
+    console.log('Original cover_image_url:', country.cover_image_url);
     
-    // Make sure the image URLs are preserved during edit
-    countryToEdit.flag_url = country.flag_url;
-    countryToEdit.cover_image_url = country.cover_image_url;
+    // Create a deep copy with preserved image URLs
+    const countryToEdit = preserveImageProperties(country);
     
-    // Make sure the locations have their image URLs preserved too
-    if (country.locations) {
-      countryToEdit.locations = country.locations.map(loc => {
-        const locationCopy = JSON.parse(JSON.stringify(loc));
-        locationCopy.cover_image_url = loc.cover_image_url;
-        return locationCopy;
-      });
-    }
+    console.log('Country to edit after transform:');
+    console.log('- flag_url:', countryToEdit.flag_url);
+    console.log('- cover_image_url:', countryToEdit.cover_image_url);
     
     setEditingCountry(countryToEdit);
   };

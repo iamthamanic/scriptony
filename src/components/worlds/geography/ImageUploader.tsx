@@ -9,16 +9,22 @@ interface ImageUploaderProps {
   imageUrl?: string;
   onImageChange: (url: string | undefined) => void;
   disableToast?: boolean;
+  category?: string; // To specify which category the image belongs to
 }
 
-const ImageUploader: React.FC<ImageUploaderProps> = ({ imageUrl, onImageChange, disableToast = false }) => {
+const ImageUploader: React.FC<ImageUploaderProps> = ({ 
+  imageUrl, 
+  onImageChange, 
+  disableToast = false,
+  category = 'geography'
+}) => {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Log when component mounts or imageUrl changes
   React.useEffect(() => {
-    console.log('ImageUploader initialized with URL:', imageUrl);
-  }, [imageUrl]);
+    console.log(`ImageUploader (${category}) initialized with URL:`, imageUrl);
+  }, [imageUrl, category]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -27,11 +33,12 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ imageUrl, onImageChange, 
     try {
       setError(null);
       setUploading(true);
+      console.log(`Starting upload for ${category} with file:`, file.name);
 
       // Generate a unique file name
       const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
-      const filePath = `geography/${fileName}`;
+      const fileName = `${category}/${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+      const filePath = fileName;
 
       // Make sure the storage bucket exists
       const { error: uploadError } = await customSupabase.storage
@@ -39,6 +46,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ imageUrl, onImageChange, 
         .upload(filePath, file);
 
       if (uploadError) {
+        console.error('Upload error:', uploadError);
         throw uploadError;
       }
 
@@ -47,7 +55,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ imageUrl, onImageChange, 
         .from('covers')
         .getPublicUrl(filePath);
 
-      console.log('Image uploaded successfully, URL:', data.publicUrl);
+      console.log(`Image uploaded successfully for ${category}, URL:`, data.publicUrl);
       
       // Update the local state
       onImageChange(data.publicUrl);
@@ -57,7 +65,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ imageUrl, onImageChange, 
         toast.success('Bild erfolgreich hochgeladen');
       }
     } catch (error: any) {
-      console.error('Error uploading image:', error);
+      console.error(`Error uploading image for ${category}:`, error);
       setError(error.message || 'Unbekannter Fehler');
       toast.error(`Fehler beim Hochladen: ${error.message || 'Unbekannter Fehler'}`);
     } finally {
@@ -66,7 +74,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ imageUrl, onImageChange, 
   };
 
   const handleRemoveImage = () => {
-    console.log('Removing image:', imageUrl);
+    console.log(`Removing image for ${category}:`, imageUrl);
     
     // Remove the reference from the local state
     onImageChange(undefined);
@@ -105,7 +113,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ imageUrl, onImageChange, 
           variant="outline" 
           size="sm" 
           className="flex-1"
-          onClick={() => document.getElementById('image-upload')?.click()}
+          onClick={() => document.getElementById(`image-upload-${category}`)?.click()}
           disabled={uploading}
         >
           <Upload className="h-4 w-4 mr-2" /> {uploading ? 'Lädt...' : 'Bild hochladen'}
@@ -123,7 +131,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ imageUrl, onImageChange, 
         )}
         
         <input 
-          id="image-upload" 
+          id={`image-upload-${category}`} 
           type="file" 
           accept="image/*" 
           className="hidden" 
