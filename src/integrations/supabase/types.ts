@@ -342,6 +342,51 @@ export type Database = {
         }
         Relationships: []
       }
+      user_settings: {
+        Row: {
+          created_at: string
+          drive_access_token: string | null
+          drive_account_email: string | null
+          drive_folder_id: string | null
+          drive_folder_name: string | null
+          drive_refresh_token: string | null
+          drive_token_expiry: string | null
+          id: string
+          storage_provider: string | null
+          updated_at: string
+          upload_to_drive: boolean | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          drive_access_token?: string | null
+          drive_account_email?: string | null
+          drive_folder_id?: string | null
+          drive_folder_name?: string | null
+          drive_refresh_token?: string | null
+          drive_token_expiry?: string | null
+          id?: string
+          storage_provider?: string | null
+          updated_at?: string
+          upload_to_drive?: boolean | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          drive_access_token?: string | null
+          drive_account_email?: string | null
+          drive_folder_id?: string | null
+          drive_folder_name?: string | null
+          drive_refresh_token?: string | null
+          drive_token_expiry?: string | null
+          id?: string
+          storage_provider?: string | null
+          updated_at?: string
+          upload_to_drive?: boolean | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       world_categories: {
         Row: {
           content: Json | null

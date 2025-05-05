@@ -1,11 +1,11 @@
 
 import React from 'react';
 import { TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { User, CreditCard, Shield, Key, Code2 } from 'lucide-react';
+import { User, CreditCard, Shield, Key, Code2, Cloud } from 'lucide-react';
 
 const AccountTabsList = () => {
   return (
-    <TabsList className="grid grid-cols-5 mb-6">
+    <TabsList className="grid grid-cols-6 mb-6">
       <TabsTrigger value="profile" className="flex items-center gap-1">
         <User className="h-4 w-4" /> Profile
       </TabsTrigger>
@@ -14,6 +14,9 @@ const AccountTabsList = () => {
       </TabsTrigger>
       <TabsTrigger value="security" className="flex items-center gap-1">
         <Shield className="h-4 w-4" /> Security
+      </TabsTrigger>
+      <TabsTrigger value="storage" className="flex items-center gap-1">
+        <Cloud className="h-4 w-4" /> Speicher
       </TabsTrigger>
       <TabsTrigger value="unlock" className="flex items-center gap-1">
         <Key className="h-4 w-4" /> Unlock
