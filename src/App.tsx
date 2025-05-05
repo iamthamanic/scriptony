@@ -45,6 +45,9 @@ const PageWithTransition = ({ children }: { children: React.ReactNode }) => {
 };
 
 const App = () => {
+  // Always use development mode for testing
+  const forceDevMode = true;
+  
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -55,79 +58,66 @@ const App = () => {
             <ErrorDisplay />
             <BrowserRouter>
               <div className="flex flex-col w-full min-h-screen">
+                {/* Always show Topbar on all pages */}
+                <Topbar />
+                
                 <Routes>
-                  {/* Public routes that don't need the topbar */}
+                  {/* Public routes */}
                   <Route path="/landing" element={<Landing />} />
                   <Route path="/auth" element={
                     <PublicOnlyRoute>
-                      <Auth />
+                      <PageWithTransition>
+                        <Auth />
+                      </PageWithTransition>
                     </PublicOnlyRoute>
                   } />
                   
                   {/* All authenticated routes with the topbar */}
                   <Route path="/" element={
                     <AuthRoute>
-                      <>
-                        <Topbar />
-                        <PageWithTransition>
-                          <Navigate to="/home" replace />
-                        </PageWithTransition>
-                      </>
+                      <PageWithTransition>
+                        <Navigate to="/home" replace />
+                      </PageWithTransition>
                     </AuthRoute>
                   } />
                   
                   <Route path="/home" element={
                     <AuthRoute>
-                      <>
-                        <Topbar />
-                        <PageWithTransition>
-                          <Home />
-                        </PageWithTransition>
-                      </>
+                      <PageWithTransition>
+                        <Home />
+                      </PageWithTransition>
                     </AuthRoute>
                   } />
                   
                   <Route path="/projects" element={
                     <AuthRoute>
-                      <>
-                        <Topbar />
-                        <PageWithTransition>
-                          <Index />
-                        </PageWithTransition>
-                      </>
+                      <PageWithTransition>
+                        <Index />
+                      </PageWithTransition>
                     </AuthRoute>
                   } />
                   
                   <Route path="/worldbuilding" element={
                     <AuthRoute>
-                      <>
-                        <Topbar />
-                        <PageWithTransition>
-                          <Worldbuilding />
-                        </PageWithTransition>
-                      </>
+                      <PageWithTransition>
+                        <Worldbuilding />
+                      </PageWithTransition>
                     </AuthRoute>
                   } />
                   
                   <Route path="/upload" element={
                     <AuthRoute>
-                      <>
-                        <Topbar />
-                        <PageWithTransition>
-                          <Upload />
-                        </PageWithTransition>
-                      </>
+                      <PageWithTransition>
+                        <Upload />
+                      </PageWithTransition>
                     </AuthRoute>
                   } />
                   
                   <Route path="/account" element={
                     <AuthRoute>
-                      <>
-                        <Topbar />
-                        <PageWithTransition>
-                          <Account />
-                        </PageWithTransition>
-                      </>
+                      <PageWithTransition>
+                        <Account />
+                      </PageWithTransition>
                     </AuthRoute>
                   } />
                   
