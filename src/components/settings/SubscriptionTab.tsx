@@ -7,7 +7,7 @@ const SubscriptionTab = () => {
         <div className="flex justify-between items-center">
           <div>
             <span className="text-lg font-bold">Free Tier</span>
-            <p className="text-sm text-muted-foreground">✓ 25 Skript-Projekte</p>
+            <p className="text-sm text-muted-foreground">✓ 5 Skript-Projekte</p>
           </div>
           
           <Button variant="outline" className="border-anime-purple text-anime-purple">
