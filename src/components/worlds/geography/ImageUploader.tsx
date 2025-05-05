@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Image, Trash2, Upload } from 'lucide-react';
-import { customSupabase } from "@/integrations/supabase/customClient";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 interface ImageUploaderProps {
@@ -50,8 +50,8 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       const fileName = `${category}/${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
       const filePath = fileName;
 
-      // Make sure the storage bucket exists
-      const { error: uploadError, data: uploadData } = await customSupabase.storage
+      // Upload file to Supabase Storage
+      const { error: uploadError } = await supabase.storage
         .from('covers')
         .upload(filePath, file);
 
@@ -61,7 +61,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       }
 
       // Get the public URL
-      const { data } = customSupabase.storage
+      const { data } = supabase.storage
         .from('covers')
         .getPublicUrl(filePath);
 

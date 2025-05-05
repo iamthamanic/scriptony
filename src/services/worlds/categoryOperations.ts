@@ -1,5 +1,5 @@
 
-import { customSupabase } from "@/integrations/supabase/customClient";
+import { supabase } from "@/integrations/supabase/client";
 import { WorldCategory, WorldCategoryFormData } from "@/types/worlds";
 import { mapDbCategoryToAppCategory } from "./utils";
 import { preserveImageProperties } from "@/utils/jsonPreserver";
@@ -9,7 +9,7 @@ export const createWorldCategory = async (worldId: string, data: WorldCategoryFo
   const { name, type, icon, content } = data;
   
   // Get the highest order_index for this world
-  const { data: existingCategories, error: fetchError } = await customSupabase
+  const { data: existingCategories, error: fetchError } = await supabase
     .from('world_categories')
     .select('order_index')
     .eq('world_id', worldId)
@@ -29,7 +29,7 @@ export const createWorldCategory = async (worldId: string, data: WorldCategoryFo
   console.log('Creating category with content:', processedContent);
   
   // Create the new category
-  const { data: category, error } = await customSupabase
+  const { data: category, error } = await supabase
     .from('world_categories')
     .insert({
       world_id: worldId,
@@ -73,7 +73,7 @@ export const updateWorldCategory = async (categoryId: string, data: WorldCategor
     });
   }
   
-  const { data: category, error } = await customSupabase
+  const { data: category, error } = await supabase
     .from('world_categories')
     .update({
       name,
@@ -96,7 +96,7 @@ export const updateWorldCategory = async (categoryId: string, data: WorldCategor
 
 // Delete a world category
 export const deleteWorldCategory = async (categoryId: string): Promise<void> => {
-  const { error } = await customSupabase
+  const { error } = await supabase
     .from('world_categories')
     .delete()
     .eq('id', categoryId);
@@ -107,7 +107,7 @@ export const deleteWorldCategory = async (categoryId: string): Promise<void> => 
 // Update world category order
 export const updateCategoryOrder = async (categories: Partial<WorldCategory>[]): Promise<void> => {
   const updatePromises = categories.map(cat => {
-    return customSupabase
+    return supabase
       .from('world_categories')
       .update({ order_index: cat.order_index })
       .eq('id', cat.id);
@@ -123,7 +123,7 @@ export const uploadGeographyImage = async (file: File, category: string = 'geogr
   const fileExt = file.name.split('.').pop();
   const fileName = `${category}/${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
   
-  const { error } = await customSupabase.storage
+  const { error } = await supabase.storage
     .from('covers')
     .upload(fileName, file);
     
@@ -132,7 +132,7 @@ export const uploadGeographyImage = async (file: File, category: string = 'geogr
     throw error;
   }
   
-  const { data } = customSupabase.storage
+  const { data } = supabase.storage
     .from('covers')
     .getPublicUrl(fileName);
     
