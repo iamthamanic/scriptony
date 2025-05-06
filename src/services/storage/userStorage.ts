@@ -22,7 +22,11 @@ export const getUserStorageSettings = async (): Promise<UserStorageSettings | nu
     return null;
   }
   
-  return data as UserStorageSettings;
+  // Make sure is_connected has a value, defaulting to false if not present
+  return {
+    ...data,
+    is_connected: data.is_connected !== undefined ? data.is_connected : false
+  } as UserStorageSettings;
 };
 
 /**
@@ -55,7 +59,11 @@ export const updateDriveSettings = async (
     return null;
   }
   
-  return data as UserStorageSettings;
+  // Ensure is_connected has a value
+  return {
+    ...data,
+    is_connected: data.is_connected !== undefined ? data.is_connected : false
+  } as UserStorageSettings;
 };
 
 /**
@@ -82,7 +90,11 @@ export const disconnectGoogleDrive = async (): Promise<UserStorageSettings | nul
     return null;
   }
   
-  return data as UserStorageSettings;
+  // Ensure is_connected has a value (should be false at this point)
+  return {
+    ...data,
+    is_connected: false
+  } as UserStorageSettings;
 };
 
 /**
@@ -120,7 +132,11 @@ export const createDefaultStorageSettings = async (): Promise<UserStorageSetting
     return null;
   }
   
-  return data as UserStorageSettings;
+  // Ensure is_connected has a value
+  return {
+    ...data,
+    is_connected: data.is_connected !== undefined ? data.is_connected : false
+  } as UserStorageSettings;
 };
 
 /**
