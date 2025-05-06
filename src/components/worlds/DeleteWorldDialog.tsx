@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,6 +33,14 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
     }
   }, [isDeleting, onClose]);
   
+  // İletişim kutusu kapandığında silme durumunu sıfırla
+  useEffect(() => {
+    if (!isOpen) {
+      setIsDeleting(false);
+      setDeletionError(null);
+    }
+  }, [isOpen]);
+  
   // Silme işlemini yönet ve kullanıcıya bildirmeden önce bitirme
   const handleDelete = useCallback(async () => {
     if (isDeleting) return; // Çoklu tıklamaları engelle
@@ -43,10 +51,11 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
     try {
       console.log(`"${worldName}" dünyasının silinme işlemi başlıyor...`);
       
-      // Silme işlemini tamamla
+      // Silme işlemini tamamla - bu asenkron
       await onDelete();
       
       // İşlem başarılı olduğunda state'i temizle ve dialog'u kapat
+      // Not: Dialog onDelete işleminden sonra kapatılır
       setIsDeleting(false);
       handleCloseDialog();
       
