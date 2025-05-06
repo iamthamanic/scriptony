@@ -40,13 +40,11 @@ export const updateProject = async (projectId: string, projectData: Partial<Proj
     }
 
     // Ensure inspirations is properly formatted - convert to string for DB storage
-    let inspirationsForDB;
-    if (Array.isArray(projectData.inspirations)) {
+    let inspirationsForDB = '';
+    if (Array.isArray(projectData.inspirations) && projectData.inspirations.length > 0) {
       inspirationsForDB = projectData.inspirations.join(',');
-    } else if (projectData.inspirations) {
-      inspirationsForDB = projectData.inspirations.toString();
-    } else {
-      inspirationsForDB = '';
+    } else if (typeof projectData.inspirations === 'string') {
+      inspirationsForDB = projectData.inspirations;
     }
     
     // Update project in database with new fields
