@@ -26,7 +26,17 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
   const [deletionError, setDeletionError] = useState<string | null>(null);
   const { toast } = useToast();
   
-  // Handle deletion with improved error handling
+  // Handle clean dialog close
+  const handleCloseDialog = useCallback(() => {
+    // Only allow closing if not in the middle of deletion
+    if (!isDeleting) {
+      // Reset error state when closing
+      setDeletionError(null);
+      onClose();
+    }
+  }, [isDeleting, onClose]);
+  
+  // Handle deletion with improved cleanup
   const handleDelete = useCallback(async () => {
     if (isDeleting) return; // Prevent multiple clicks
     
@@ -36,11 +46,14 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
     try {
       console.log(`Starting deletion of world: ${worldName}`);
       
-      // Let parent component handle the actual deletion
-      await onDelete();
-      
-      // Close dialog on successful deletion
+      // First close the dialog UI to prevent animation issues
       onClose();
+      
+      // Short delay to ensure dialog closing animation completes
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Then perform the actual deletion
+      await onDelete();
       
     } catch (error) {
       console.error("Error during world deletion:", error);
@@ -54,7 +67,8 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
       toast({
         title: 'Fehler beim Löschen',
         description: errorMessage,
-        variant: 'destructive'
+        variant: 'destructive',
+        duration: 3000 // Shorter duration
       });
       
       // Reset deletion state
@@ -69,12 +83,11 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
 
   return (
     <AlertDialog open={isOpen} onOpenChange={(open) => {
-      // Only handle closing if not in the middle of deletion
-      if (!open && !isDeleting) {
-        onClose();
+      if (!open) {
+        handleCloseDialog();
       }
     }}>
-      <AlertDialogContent>
+      <AlertDialogContent className="max-w-md">
         <AlertDialogHeader>
           <AlertDialogTitle>Welt löschen</AlertDialogTitle>
           <AlertDialogDescription>
@@ -89,7 +102,7 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
         )}
         
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isDeleting}>Abbrechen</AlertDialogCancel>
+          <AlertDialogCancel disabled={isDeleting} onClick={handleCloseDialog}>Abbrechen</AlertDialogCancel>
           <AlertDialogAction asChild>
             <Button 
               onClick={handleDelete}
