@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,6 +25,23 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
   const [deletionError, setDeletionError] = useState<string | null>(null);
   const { toast } = useToast();
 
+  // Clean up state when dialog opens/closes
+  useEffect(() => {
+    if (!isOpen) {
+      // Small delay to ensure animations complete before resetting state
+      const timer = setTimeout(() => {
+        setIsDeleting(false);
+        setDeletionError(null);
+      }, 300);
+      
+      // Cleanup timeout on unmount
+      return () => clearTimeout(timer);
+    } else {
+      // Reset error when dialog opens
+      setDeletionError(null);
+    }
+  }, [isOpen]);
+
   const handleDelete = async () => {
     if (isDeleting) return; // Prevent multiple clicks
     
@@ -34,11 +51,9 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
     try {
       console.log(`Starting deletion of world: ${worldName}`);
       await onDelete();
-      toast({
-        title: 'Welt gelöscht',
-        description: `"${worldName}" wurde erfolgreich gelöscht.`
-      });
-      onClose(); // Close dialog on success
+      
+      // Let parent component handle success message and closing dialog
+      // onClose() is no longer called here as the parent component will handle it
     } catch (error) {
       console.error("Error during world deletion:", error);
       
@@ -53,21 +68,21 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
         description: errorMessage,
         variant: 'destructive'
       });
-      // Don't close the dialog on error so user can try again
-    } finally {
+      
+      // Set isDeleting to false to allow retry
       setIsDeleting(false);
     }
   };
 
-  // Reset error when dialog opens/closes
-  React.useEffect(() => {
-    if (isOpen) {
-      setDeletionError(null);
+  // Handle controlled closing of dialog
+  const handleDialogChange = (open: boolean) => {
+    if (!open && !isDeleting) {
+      onClose();
     }
-  }, [isOpen]);
+  };
 
   return (
-    <AlertDialog open={isOpen} onOpenChange={(open) => !isDeleting && !open && onClose()}>
+    <AlertDialog open={isOpen} onOpenChange={handleDialogChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Welt löschen</AlertDialogTitle>
