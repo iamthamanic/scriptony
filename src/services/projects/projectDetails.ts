@@ -87,10 +87,7 @@ export const fetchProjectDetails = async (projectId: string): Promise<{
     return { characters, episodes, scenes };
     
   } catch (error) {
-    handleApiError(error, { 
-      defaultMessage: "Failed to fetch project details",
-      showToast: true
-    });
+    handleApiError(error);
     return { characters: [], episodes: [], scenes: [] };
   }
 };

@@ -1,7 +1,8 @@
 
 import { customSupabase } from "@/integrations/supabase/customClient";
 import { Project } from "@/types";
-import { handleApiError, normalizeInspirations } from "../utils";
+import { handleApiError } from "../utils";
+import { normalizeInspirations } from "../utils";
 
 export const updateProject = async (projectId: string, projectData: Partial<Project>): Promise<boolean> => {
   try {
@@ -28,8 +29,13 @@ export const updateProject = async (projectId: string, projectData: Partial<Proj
       coverImageUrl = projectData.coverImage;
     }
 
-    // Ensure inspirations is properly formatted
-    const inspirations = normalizeInspirations(projectData.inspirations);
+    // Ensure inspirations is properly formatted - convert to string for DB storage
+    let inspirationsForDB;
+    if (Array.isArray(projectData.inspirations)) {
+      inspirationsForDB = projectData.inspirations.join(',');
+    } else {
+      inspirationsForDB = (projectData.inspirations || '').toString();
+    }
     
     // Update project in database with new fields
     const { error } = await customSupabase
@@ -41,7 +47,7 @@ export const updateProject = async (projectId: string, projectData: Partial<Proj
         logline: projectData.logline,
         genres: projectData.genres,
         duration: projectData.duration?.toString(),
-        inspirations: inspirations,
+        inspirations: inspirationsForDB,
         cover_image_url: coverImageUrl,
         narrative_structure: projectData.narrativeStructure,
         updated_at: new Date().toISOString()
@@ -53,6 +59,7 @@ export const updateProject = async (projectId: string, projectData: Partial<Proj
     return true;
     
   } catch (error) {
-    return handleApiError(error) ?? false;
+    handleApiError(error);
+    return false;
   }
 };
