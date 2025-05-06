@@ -2,1397 +2,1579 @@
 import { StructureTemplate } from './types';
 
 /**
- * Save the Cat narrative structure template
+ * Save the Cat - Blake Snyder's 15 beat structure
  */
 export const saveTheCatTemplate: StructureTemplate = {
-  id: 'save-the-cat',
   name: 'Save the Cat',
-  description: 'Blake Snyders 15-Beat Struktur für erfolgreiche Drehbücher.',
+  description: 'Blake Snyder\'s 15-beat story structure, commonly used in successful Hollywood screenplays.',
   scenes: [
     {
       sceneNumber: 1,
-      location: "Opening Image",
-      description: "Ein Bild, das den Ausgangszustand der Geschichte darstellt.",
-      emotionalSignificance: "introduction"
+      location: 'Opening Image',
+      description: 'Sets the tone and mood of the story',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 2,
-      location: "Theme Stated",
-      description: "Eine Aussage über das zentrale Thema der Geschichte.",
-      emotionalSignificance: "introduction"
+      location: 'Theme Stated',
+      description: 'Someone tells the main character what the movie is really about',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 3,
-      location: "Setup",
-      description: "Einführung der Hauptfigur und ihrer Welt.",
-      emotionalSignificance: "introduction"
+      location: 'Setup',
+      description: 'Show the character\'s world before it changes',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 4,
-      location: "Catalyst",
-      description: "Das auslösende Ereignis, das die Geschichte in Gang setzt.",
-      emotionalSignificance: "turning-point"
+      location: 'Catalyst',
+      description: 'Something happens that changes the main character\'s routine',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 5,
-      location: "Debate",
-      description: "Der Held zögert, die Herausforderung anzunehmen.",
-      emotionalSignificance: "buildup"
+      location: 'Debate',
+      description: 'Character questions whether to proceed with the journey',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 6,
-      location: "Break into Two",
-      description: "Der Held entscheidet sich, die Herausforderung anzunehmen.",
-      emotionalSignificance: "turning-point"
+      location: 'Break into Two',
+      description: 'Character decides to go on the journey',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 7,
-      location: "B Story",
-      description: "Beginn einer Nebenhandlung, oft eine Liebesgeschichte.",
-      emotionalSignificance: "buildup"
+      location: 'B Story',
+      description: 'A secondary story or relationship begins',
+      emotionalSignificance: 'buildup'
     },
     {
-      sceneNumber: 8,
-      location: "Fun and Games",
-      description: "Der 'Kern' des Films, in dem das Versprechen des Konzepts erfüllt wird.",
-      emotionalSignificance: "buildup"
+      sceneNumber: 8, 
+      location: 'Fun and Games',
+      description: 'The promise of the premise is explored',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 9,
-      location: "Midpoint",
-      description: "Ein wichtiger Wendepunkt in der Mitte des Films.",
-      emotionalSignificance: "turning-point"
+      location: 'Midpoint',
+      description: 'The fun and games lead to either a false victory or false defeat',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 10,
-      location: "Bad Guys Close In",
-      description: "Die Antagonisten erhöhen den Druck, und Zweifel tauchen auf.",
-      emotionalSignificance: "buildup"
+      location: 'Bad Guys Close In',
+      description: 'Pressure mounts, things fall apart',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 11,
-      location: "All Is Lost",
-      description: "Der tiefste Punkt für den Helden.",
-      emotionalSignificance: "climax"
+      location: 'All Is Lost',
+      description: 'The opposite of the midpoint happens',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 12,
-      location: "Dark Night of the Soul",
-      description: "Der Held steht am Abgrund und muss sich neu finden.",
-      emotionalSignificance: "climax"
+      location: 'Dark Night of the Soul',
+      description: 'The main character hits rock bottom',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 13,
-      location: "Break into Three",
-      description: "Der Held findet eine neue Lösung und geht zum Finale über.",
-      emotionalSignificance: "turning-point"
+      location: 'Break into Three',
+      description: 'The solution is discovered',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 14,
-      location: "Finale",
-      description: "Der Held setzt seinen Plan um und erreicht sein Ziel.",
-      emotionalSignificance: "finale"
+      location: 'Finale',
+      description: 'The main character applies what they\'ve learned',
+      emotionalSignificance: 'climax'
     },
     {
       sceneNumber: 15,
-      location: "Final Image",
-      description: "Ein Bild, das zeigt, wie sich die Welt verändert hat.",
-      emotionalSignificance: "resolution"
+      location: 'Final Image',
+      description: 'Shows how much the character has changed since the opening image',
+      emotionalSignificance: 'resolution'
     }
   ]
 };
 
+/**
+ * Story Circle - Dan Harmon's structure (based on Campbell's Hero's Journey)
+ */
 export const storyCircleTemplate: StructureTemplate = {
-  id: 'story-circle',
-  name: 'Dan Harmon\'s Story Circle',
-  description: 'Ein zyklisches 8-Stufen-Modell, basierend auf der Heldenreise.',
+  name: 'Story Circle',
+  description: 'Dan Harmon\'s circular story structure based on the hero\'s journey, used in shows like Rick & Morty.',
   scenes: [
     {
       sceneNumber: 1,
-      location: "You (Comfort Zone)",
-      description: "Einführung des Protagonisten in seiner gewohnten Umgebung.",
-      emotionalSignificance: "introduction"
+      location: '1: You',
+      description: 'Establish a protagonist in a zone of comfort',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 2,
-      location: "Need (Unerfülltes Bedürfnis)",
-      description: "Der Protagonist spürt ein unerfülltes Bedürfnis oder Verlangen.",
-      emotionalSignificance: "buildup"
+      location: '2: Need',
+      description: 'The protagonist wants something',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 3,
-      location: "Go (Überschreitung der Schwelle)",
-      description: "Der Protagonist verlässt seine Komfortzone und betritt die unbekannte Welt.",
-      emotionalSignificance: "turning-point"
+      location: '3: Go',
+      description: 'The protagonist enters an unfamiliar situation',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 4,
-      location: "Search (Suche und Anpassung)",
-      description: "Der Protagonist passt sich an die neue Situation an und sucht nach Lösungen.",
-      emotionalSignificance: "buildup"
+      location: '4: Search',
+      description: 'The protagonist adapts to the new situation',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 5,
-      location: "Find (Entdeckung)",
-      description: "Der Protagonist findet, wonach er gesucht hat, aber mit Komplikationen.",
-      emotionalSignificance: "turning-point"
+      location: '5: Find',
+      description: 'The protagonist gets what they wanted',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 6,
-      location: "Take (Preis zahlen)",
-      description: "Der Protagonist muss einen Preis für seine Entdeckung zahlen.",
-      emotionalSignificance: "climax"
+      location: '6: Take',
+      description: 'The protagonist pays a heavy price for their success',
+      emotionalSignificance: 'climax'
     },
     {
       sceneNumber: 7,
-      location: "Return (Rückkehr)",
-      description: "Der Protagonist kehrt mit dem Erlernten zurück in seine ursprüngliche Welt.",
-      emotionalSignificance: "resolution"
+      location: '7: Return',
+      description: 'The protagonist returns to their familiar situation',
+      emotionalSignificance: 'resolution'
     },
     {
       sceneNumber: 8,
-      location: "Change (Veränderung)",
-      description: "Die Welt (oder der Protagonist) hat sich durch die Reise verändert.",
-      emotionalSignificance: "finale"
+      location: '8: Change',
+      description: 'The protagonist has changed as a result of the journey',
+      emotionalSignificance: 'finale'
     }
   ]
 };
 
+/**
+ * Tragedy - Classic Aristotelian tragic structure
+ */
 export const tragedyTemplate: StructureTemplate = {
-  id: 'tragedy',
-  name: 'Tragic Structure',
-  description: 'Klassische Struktur für Tragödien mit dem Fall des Protagonisten',
+  name: 'Classical Tragedy',
+  description: 'Aristotle\'s tragic structure where a hero falls due to a fatal flaw.',
   scenes: [
     {
       sceneNumber: 1,
-      location: "Hybris",
-      description: "Der tragische Held zeigt Überheblichkeit oder Arroganz.",
-      emotionalSignificance: "introduction"
+      location: 'Prologue',
+      description: 'Introduction to the protagonist and setting',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 2,
-      location: "Nemesis",
-      description: "Die Gegenkraft oder der Antagonist tritt auf.",
-      emotionalSignificance: "buildup"
+      location: 'Parados',
+      description: 'The chorus enters and presents the theme',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 3,
-      location: "Hamartia",
-      description: "Der tragische Fehler oder die Schwäche des Helden wird offensichtlich.",
-      emotionalSignificance: "turning-point"
+      location: 'Episode 1: Hamartia',
+      description: 'The hero\'s tragic flaw is revealed',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 4,
-      location: "Peripeteia",
-      description: "Die Wende, bei der das Schicksal des Helden zu kippen beginnt.",
-      emotionalSignificance: "climax"
+      location: 'Stasimon 1',
+      description: 'Chorus reflects on Episode 1',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 5,
-      location: "Anagnorisis",
-      description: "Moment der Erkenntnis, in dem der Held seinen Fehler begreift.",
-      emotionalSignificance: "turning-point"
+      location: 'Episode 2: Peripeteia',
+      description: 'A reversal of fortune occurs',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 6,
-      location: "Katastrophe",
-      description: "Der endgültige Fall des Helden und die Konsequenzen seiner Handlungen.",
-      emotionalSignificance: "finale"
+      location: 'Stasimon 2',
+      description: 'Chorus reflects on the reversal',
+      emotionalSignificance: 'buildup'
+    },
+    {
+      sceneNumber: 7,
+      location: 'Episode 3: Anagnorisis',
+      description: 'The moment of critical discovery',
+      emotionalSignificance: 'turning-point'
+    },
+    {
+      sceneNumber: 8,
+      location: 'Stasimon 3',
+      description: 'Chorus comments on the discovery',
+      emotionalSignificance: 'buildup'
+    },
+    {
+      sceneNumber: 9,
+      location: 'Episode 4: Catastrophe',
+      description: 'The hero\'s downfall occurs',
+      emotionalSignificance: 'climax'
+    },
+    {
+      sceneNumber: 10,
+      location: 'Exodus',
+      description: 'The tragic conclusion and moral lesson',
+      emotionalSignificance: 'resolution'
     }
   ]
 };
 
+/**
+ * Cyclical Structure - Events repeat with variations
+ */
 export const cyclicalTemplate: StructureTemplate = {
-  id: 'cyclical',
   name: 'Cyclical Structure',
-  description: 'Eine zyklische Erzählstruktur, bei der die Geschichte zum Ausgangspunkt zurückkehrt',
+  description: 'Events repeat with variations showing how characters change (or don\'t) over time.',
   scenes: [
     {
       sceneNumber: 1,
-      location: "Ausgangspunkt",
-      description: "Der Startpunkt der Geschichte, zu dem sie am Ende zurückkehren wird.",
-      emotionalSignificance: "introduction"
+      location: 'Initial Situation',
+      description: 'Introduction to the characters and their world',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 2,
-      location: "Aufbruch",
-      description: "Der Protagonist verlässt seinen Ausgangspunkt.",
-      emotionalSignificance: "buildup"
+      location: 'First Iteration: Challenge',
+      description: 'Characters face a significant challenge',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 3,
-      location: "Erste Herausforderung",
-      description: "Die erste große Herausforderung auf dem Weg.",
-      emotionalSignificance: "buildup"
+      location: 'First Iteration: Response',
+      description: 'How characters respond to the challenge',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 4,
-      location: "Zentrale Krise",
-      description: "Der Wendepunkt der Geschichte und größte Herausforderung.",
-      emotionalSignificance: "climax"
+      location: 'First Iteration: Outcome',
+      description: 'The result of their response',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 5,
-      location: "Veränderung",
-      description: "Der Protagonist verändert sich durch die Erfahrungen.",
-      emotionalSignificance: "turning-point"
+      location: 'Second Iteration: Similar Challenge',
+      description: 'A similar challenge occurs again',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 6,
-      location: "Rückkehr",
-      description: "Rückkehr zum Ausgangspunkt, aber mit neuer Perspektive.",
-      emotionalSignificance: "resolution"
+      location: 'Second Iteration: Changed Response',
+      description: 'Characters respond differently based on experience',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 7,
-      location: "Neuer Zyklus",
-      description: "Andeutung eines neuen Beginns oder Wiederholung des Zyklus.",
-      emotionalSignificance: "finale"
+      location: 'Second Iteration: Different Outcome',
+      description: 'The new outcome based on changed behavior',
+      emotionalSignificance: 'turning-point'
+    },
+    {
+      sceneNumber: 8,
+      location: 'Final Iteration: Ultimate Challenge',
+      description: 'The ultimate version of the recurring challenge',
+      emotionalSignificance: 'climax'
+    },
+    {
+      sceneNumber: 9,
+      location: 'Final Iteration: Decisive Response',
+      description: 'The characters\' final approach to the challenge',
+      emotionalSignificance: 'climax'
+    },
+    {
+      sceneNumber: 10,
+      location: 'Final Iteration: Resolution',
+      description: 'The conclusion showing character growth or stasis',
+      emotionalSignificance: 'resolution'
     }
   ]
 };
 
-// New templates
+/**
+ * Five-Act Structure - Classical theatrical structure
+ */
 export const fiveActTemplate: StructureTemplate = {
-  id: 'five-act',
-  name: 'Fünf-Akt-Struktur (Freytag)',
-  description: 'Klassische Dramenstruktur nach Gustav Freytag mit fünf Akten',
+  name: 'Five-Act Structure',
+  description: 'Classical theatrical structure used by Shakespeare and other dramatists.',
   scenes: [
+    // Act 1: Exposition
     {
       sceneNumber: 1,
-      location: "Exposition",
-      description: "Einführung der Charaktere, des Settings und des grundlegenden Konflikts.",
-      emotionalSignificance: "introduction"
+      location: 'Act 1, Scene 1: Exposition',
+      description: 'Introduction to the characters and setting',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 2,
-      location: "Steigende Handlung",
-      description: "Die Handlung nimmt an Intensität zu, Konflikte werden komplexer.",
-      emotionalSignificance: "buildup"
+      location: 'Act 1, Scene 2: Inciting Incident',
+      description: 'An event that sets the story in motion',
+      emotionalSignificance: 'turning-point'
     },
+    
+    // Act 2: Rising Action
     {
       sceneNumber: 3,
-      location: "Höhepunkt",
-      description: "Der zentrale Wendepunkt des Stücks, maximale Intensität des Konflikts.",
-      emotionalSignificance: "climax"
+      location: 'Act 2, Scene 1: Complications Begin',
+      description: 'Introduction of obstacles and complications',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 4,
-      location: "Fallende Handlung",
-      description: "Die Konsequenzen des Höhepunkts entfalten sich, Spannung nimmt ab.",
-      emotionalSignificance: "turning-point"
+      location: 'Act 2, Scene 2: Rising Tension',
+      description: 'Increasing complexity and stakes',
+      emotionalSignificance: 'buildup'
     },
+    
+    // Act 3: Climax
     {
       sceneNumber: 5,
-      location: "Katastrophe",
-      description: "Die finale Auflösung, entweder tragisch oder versöhnlich.",
-      emotionalSignificance: "finale"
+      location: 'Act 3, Scene 1: Point of No Return',
+      description: 'A critical decision or action is taken',
+      emotionalSignificance: 'turning-point'
+    },
+    {
+      sceneNumber: 6,
+      location: 'Act 3, Scene 2: Central Climax',
+      description: 'The major turning point of the play',
+      emotionalSignificance: 'climax'
+    },
+    
+    // Act 4: Falling Action
+    {
+      sceneNumber: 7,
+      location: 'Act 4, Scene 1: Reversal',
+      description: 'The consequences begin to unfold',
+      emotionalSignificance: 'buildup'
+    },
+    {
+      sceneNumber: 8,
+      location: 'Act 4, Scene 2: Descent',
+      description: 'Moving toward the final resolution',
+      emotionalSignificance: 'buildup'
+    },
+    
+    // Act 5: Resolution
+    {
+      sceneNumber: 9,
+      location: 'Act 5, Scene 1: Final Confrontation',
+      description: 'The last major conflict or revelation',
+      emotionalSignificance: 'climax'
+    },
+    {
+      sceneNumber: 10,
+      location: 'Act 5, Scene 2: Denouement',
+      description: 'The final resolution and conclusion',
+      emotionalSignificance: 'resolution'
     }
   ]
 };
 
+/**
+ * Season Arc Structure - For TV series
+ */
 export const seasonArcTemplate: StructureTemplate = {
-  id: 'season-arc',
-  name: 'Serienbogen (Staffelstruktur)',
-  description: 'Übergreifender Handlungsbogen für eine komplette Staffel',
+  name: 'Season Arc Structure',
+  description: 'Overarching story structure for a full season of a television series.',
   scenes: [
     {
       sceneNumber: 1,
-      location: "Pilotkonfiguration",
-      description: "Einführung der Hauptfiguren, des Settings und des zentralen Konflikts.",
-      emotionalSignificance: "introduction"
+      location: 'Pilot/Premiere: Status Quo',
+      description: 'Establish the world and main characters',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 2,
-      location: "Etablierung des Staffelbogens",
-      description: "Frühzeitige Definition der saisonübergreifenden Handlungsstränge.",
-      emotionalSignificance: "introduction"
+      location: 'Episode 2-3: Inciting Incident',
+      description: 'Introduce the season\'s main conflict',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 3,
-      location: "Erste Komplikation",
-      description: "Erste größere Herausforderung für die Hauptfiguren.",
-      emotionalSignificance: "buildup"
+      location: 'Episodes 4-6: Complications',
+      description: 'Characters react to new challenges',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 4,
-      location: "Midseason-Wendepunkt",
-      description: "Bedeutender Wendepunkt in der Mitte der Staffel, der die Dynamik verändert.",
-      emotionalSignificance: "turning-point"
+      location: 'Midseason: Major Twist',
+      description: 'A significant revelation or change',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 5,
-      location: "Steigende Spannung",
-      description: "Die Konflikte werden intensiver, die Einsätze höher.",
-      emotionalSignificance: "buildup"
+      location: 'Episodes 8-10: Escalation',
+      description: 'Stakes rise, conflicts intensify',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 6,
-      location: "Vorbereitung auf das Finale",
-      description: "Zusammenführung der Handlungsstränge zur Vorbereitung auf den Höhepunkt.",
-      emotionalSignificance: "buildup"
+      location: 'Episode 11: Dark Moment',
+      description: 'Characters face their lowest point',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 7,
-      location: "Staffelhöhepunkt",
-      description: "Dramatischer Höhepunkt der Staffel, an dem die Hauptkonflikte kulminieren.",
-      emotionalSignificance: "climax"
+      location: 'Episode 12: Preparation',
+      description: 'Characters prepare for the final confrontation',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 8,
-      location: "Staffelfinale mit Cliffhanger",
-      description: "Teilweise Auflösung mit offenem Ende für die nächste Staffel.",
-      emotionalSignificance: "finale"
+      location: 'Finale Part 1: Climax',
+      description: 'The main conflict comes to a head',
+      emotionalSignificance: 'climax'
+    },
+    {
+      sceneNumber: 9,
+      location: 'Finale Part 2: Resolution',
+      description: 'Resolve the season\'s main arcs',
+      emotionalSignificance: 'resolution'
+    },
+    {
+      sceneNumber: 10,
+      location: 'Finale Cliffhanger',
+      description: 'Set up the next season',
+      emotionalSignificance: 'finale'
     }
   ]
 };
 
+/**
+ * Procedural Structure - Case-of-the-week format
+ */
 export const proceduralTemplate: StructureTemplate = {
-  id: 'procedural',
-  name: 'Procedural-Loop',
-  description: 'Sich wiederholendes Format mit "Fall der Woche"',
+  name: 'Procedural Structure',
+  description: 'Case-of-the-week format common in crime dramas and medical shows.',
   scenes: [
     {
       sceneNumber: 1,
-      location: "Präsentation des Falls/Problems",
-      description: "Einführung des zentralen Problems oder Falls der Episode.",
-      emotionalSignificance: "introduction"
+      location: 'Cold Open: The Inciting Incident',
+      description: 'Discovery of crime/case/problem',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 2,
-      location: "Team-Briefing/Versammlung",
-      description: "Die Hauptfiguren besprechen den Fall und planen ihr Vorgehen.",
-      emotionalSignificance: "introduction"
+      location: 'Act 1: Team Assembly',
+      description: 'Main characters discuss the case',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 3,
-      location: "Erste Untersuchung",
-      description: "Erste Schritte zur Lösung des Problems, sammeln erster Hinweise.",
-      emotionalSignificance: "buildup"
+      location: 'Act 1: Initial Investigation',
+      description: 'First steps in solving the case',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 4,
-      location: "Unerwartete Komplikation",
-      description: "Ein Hindernis oder eine unerwartete Wendung erschwert die Lösung.",
-      emotionalSignificance: "turning-point"
+      location: 'Act 2: First Complication',
+      description: 'An obstacle or misleading clue',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 5,
-      location: "Vertiefte Untersuchung",
-      description: "Tiefere Erforschung der Hintergründe und verborgenen Zusammenhänge.",
-      emotionalSignificance: "buildup"
+      location: 'Act 2: Subplot Development',
+      description: 'Character moments or B-story progression',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 6,
-      location: "Durchbruch",
-      description: "Entscheidende Erkenntnis, die zur Lösung führt.",
-      emotionalSignificance: "turning-point"
+      location: 'Act 3: Major Revelation',
+      description: 'A significant clue changes the investigation',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 7,
-      location: "Konfrontation/Auflösung",
-      description: "Konfrontation mit dem Täter oder Lösung des Problems.",
-      emotionalSignificance: "climax"
+      location: 'Act 3: New Approach',
+      description: 'Team adjusts their strategy',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 8,
-      location: "Abschluss & Team-Reflexion",
-      description: "Reflexion über den Fall und seine Auswirkungen auf die Charaktere.",
-      emotionalSignificance: "resolution"
+      location: 'Act 4: Crisis Point',
+      description: 'The situation becomes urgent',
+      emotionalSignificance: 'climax'
     },
     {
       sceneNumber: 9,
-      location: "B-Plot-Abschluss",
-      description: "Auflösung des persönlichen Nebenhandlungsstrangs der Episode.",
-      emotionalSignificance: "resolution"
+      location: 'Act 4: Resolution',
+      description: 'Case is solved',
+      emotionalSignificance: 'resolution'
     },
     {
       sceneNumber: 10,
-      location: "Vorschau auf kommende Episode",
-      description: "Andeutung des nächsten Falls oder Problems.",
-      emotionalSignificance: "finale"
+      location: 'Tag: Aftermath',
+      description: 'Character moments and setup for future episodes',
+      emotionalSignificance: 'finale'
     }
   ]
 };
 
+/**
+ * Character Arc Structure - Character-driven narrative
+ */
 export const characterArcTemplate: StructureTemplate = {
-  id: 'character-arc',
-  name: 'Staffel mit Charakterbogen',
-  description: 'Fokus auf Entwicklung der Hauptfiguren über die Staffel hinweg',
+  name: 'Character Arc Structure',
+  description: 'Character-focused narrative showing psychological transformation.',
   scenes: [
     {
       sceneNumber: 1,
-      location: "Charakterstatus Quo",
-      description: "Darstellung des Ausgangszustands der Hauptfigur und ihrer Schwächen.",
-      emotionalSignificance: "introduction"
+      location: 'Limited Awareness',
+      description: 'Character in their comfort zone with visible flaws',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 2,
-      location: "Auslösender Vorfall",
-      description: "Ereignis, das den Charakter zwingt, sich zu verändern.",
-      emotionalSignificance: "introduction"
+      location: 'Inciting Challenge',
+      description: 'An event forces the character to respond',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 3,
-      location: "Widerstand gegen Veränderung",
-      description: "Der Charakter wehrt sich gegen die notwendige Veränderung.",
-      emotionalSignificance: "buildup"
+      location: 'Resistance',
+      description: 'Character resists changing their behavior',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 4,
-      location: "Erster Transformationsversuch",
-      description: "Erster Versuch zur Veränderung, der teilweise misslingt.",
-      emotionalSignificance: "turning-point"
+      location: 'Glimpse of Potential',
+      description: 'A brief moment showing what change could bring',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 5,
-      location: "Midseason-Krise",
-      description: "Tiefpunkt, an dem alte Verhaltensmuster zurückkehren.",
-      emotionalSignificance: "climax"
+      location: 'Recommitment to Old Ways',
+      description: 'Character retreats back to familiar patterns',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 6,
-      location: "Neue Entschlossenheit",
-      description: "Erneute Entscheidung zur Veränderung mit größerer Überzeugung.",
-      emotionalSignificance: "turning-point"
+      location: 'Crisis of Faith',
+      description: 'Old methods fail catastrophically',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 7,
-      location: "Unterstützer und Gegenspieler",
-      description: "Charaktere, die die Entwicklung unterstützen oder behindern.",
-      emotionalSignificance: "buildup"
+      location: 'Acceptance of Need to Change',
+      description: 'Character acknowledges their flaws',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 8,
-      location: "Finale Prüfung",
-      description: "Entscheidende Situation, die zeigt, ob die Veränderung gelungen ist.",
-      emotionalSignificance: "climax"
+      location: 'Experimental Application',
+      description: 'Character tries new approaches',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 9,
-      location: "Neue Identität",
-      description: "Der Charakter etabliert seinen neuen, veränderten Zustand.",
-      emotionalSignificance: "resolution"
+      location: 'Ultimate Test',
+      description: 'Character faces their greatest challenge',
+      emotionalSignificance: 'climax'
     },
     {
       sceneNumber: 10,
-      location: "Ausblick auf weiteren Weg",
-      description: "Andeutung zukünftiger Herausforderungen für den veränderten Charakter.",
-      emotionalSignificance: "finale"
+      location: 'Integration',
+      description: 'Character embraces their new identity',
+      emotionalSignificance: 'resolution'
     }
   ]
 };
 
+/**
+ * Cyclic Beckett Structure - Absurdist circular narrative
+ */
 export const cyclicBeckettTemplate: StructureTemplate = {
-  id: 'cyclic-beckett',
-  name: 'Zyklische Struktur (Beckett)',
-  description: 'Sich wiederholende Ereignisse, Kreisstruktur, absurdes Theater',
+  name: 'Beckettian Structure',
+  description: 'Absurdist circular narrative where characters are trapped in repetition.',
   scenes: [
     {
       sceneNumber: 1,
-      location: "Grundsituation",
-      description: "Etablierung einer repetitiven oder statischen Grundsituation.",
-      emotionalSignificance: "introduction"
+      location: 'Initial Situation',
+      description: 'Characters in a state of waiting or routine',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 2,
-      location: "Routine/Ritual",
-      description: "Darstellung wiederkehrender Handlungsmuster oder Rituale.",
-      emotionalSignificance: "buildup"
+      location: 'Attempt to Change',
+      description: 'Characters discuss or attempt to alter their situation',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 3,
-      location: "Störung",
-      description: "Eine kleine Abweichung vom gewohnten Muster tritt auf.",
-      emotionalSignificance: "turning-point"
+      location: 'External Interruption',
+      description: 'A visitor or event briefly disrupts the routine',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 4,
-      location: "Versuch der Änderung",
-      description: "Figuren versuchen, aus dem Zyklus auszubrechen, ohne Erfolg.",
-      emotionalSignificance: "climax"
+      location: 'Failed Departure',
+      description: 'Characters try but fail to leave their situation',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 5,
-      location: "Resignation/Akzeptanz",
-      description: "Einsicht in die Unveränderlichkeit der Situation.",
-      emotionalSignificance: "turning-point"
+      location: 'Philosophical Rumination',
+      description: 'Characters contemplate the meaning of their existence',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 6,
-      location: "Rückkehr zum Anfang",
-      description: "Wiedereinsetzung des ursprünglichen Zustands, evtl. mit subtilen Unterschieden.",
-      emotionalSignificance: "resolution"
+      location: 'Memory/Past Reflection',
+      description: 'Characters recall or reinterpret their history',
+      emotionalSignificance: 'buildup'
+    },
+    {
+      sceneNumber: 7,
+      location: 'Momentary Hope',
+      description: 'Brief suggestion that change might be possible',
+      emotionalSignificance: 'turning-point'
+    },
+    {
+      sceneNumber: 8,
+      location: 'Return to Routine',
+      description: 'Characters retreat back to familiar patterns',
+      emotionalSignificance: 'buildup'
+    },
+    {
+      sceneNumber: 9,
+      location: 'Final Failed Attempt',
+      description: 'Last effort to change their circumstance',
+      emotionalSignificance: 'climax'
+    },
+    {
+      sceneNumber: 10,
+      location: 'Circular Ending',
+      description: 'Return to the beginning, suggesting endless repetition',
+      emotionalSignificance: 'finale'
     }
   ]
 };
 
+/**
+ * Brechtian Episodic Structure - Episodic scenes with alienation effect
+ */
 export const episodeBretchTemplate: StructureTemplate = {
-  id: 'episode-brecht',
-  name: 'Episodenstruktur (Brecht)',
-  description: 'Nicht-aristotelische Erzählstruktur mit eigenständigen Szenen und Verfremdungseffekten',
+  name: 'Brechtian Episodes',
+  description: 'Episodic scenes with alienation effect to provoke critical thinking.',
   scenes: [
     {
       sceneNumber: 1,
-      location: "Prolog/Ankündigung",
-      description: "Direkte Ansprache ans Publikum oder Ankündigung des Themas.",
-      emotionalSignificance: "introduction"
+      location: 'Prologue/Introduction',
+      description: 'Direct address to audience explaining the play\'s intention',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 2,
-      location: "Exposition der sozialen Umstände",
-      description: "Darstellung der gesellschaftlichen Verhältnisse und Konflikte.",
-      emotionalSignificance: "introduction"
+      location: 'Episode 1: Presenting the Social Problem',
+      description: 'Introduction of the central social issue',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 3,
-      location: "Erste Episode",
-      description: "Eigenständige Szene, die einen Aspekt des Themas beleuchtet.",
-      emotionalSignificance: "buildup"
+      location: 'Song/Commentary 1',
+      description: 'Musical or narrative interruption reflecting on Episode 1',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 4,
-      location: "Kommentar/Song",
-      description: "Reflexion über die gezeigte Episode, oft durch Lieder oder direkte Kommentare.",
-      emotionalSignificance: "turning-point"
+      location: 'Episode 2: Character Responses',
+      description: 'Characters react to the social problem in various ways',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 5,
-      location: "Zweite Episode",
-      description: "Weitere eigenständige Szene zu einem anderen Aspekt des Themas.",
-      emotionalSignificance: "buildup"
+      location: 'Song/Commentary 2',
+      description: 'Commentary on the characters\' choices',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 6,
-      location: "Verfremdungseffekt",
-      description: "Bewusster Bruch der Theaterillusion zur kritischen Distanzierung.",
-      emotionalSignificance: "turning-point"
+      location: 'Episode 3: Contradictions Emerge',
+      description: 'Socioeconomic contradictions become apparent',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 7,
-      location: "Dritte Episode",
-      description: "Zuspitzung des Konflikts in einer weiteren eigenständigen Szene.",
-      emotionalSignificance: "climax"
+      location: 'Placards/Projection',
+      description: 'Visual presentation of factual information',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 8,
-      location: "Offenes Ende/Appell",
-      description: "Keine vollständige Auflösung, sondern Aufforderung zum Nachdenken.",
-      emotionalSignificance: "finale"
+      location: 'Episode 4: Crisis Point',
+      description: 'The social problem reaches a critical moment',
+      emotionalSignificance: 'climax'
+    },
+    {
+      sceneNumber: 9,
+      location: 'Song/Commentary 3',
+      description: 'Final commentary on the situation',
+      emotionalSignificance: 'resolution'
+    },
+    {
+      sceneNumber: 10,
+      location: 'Epilogue: Direct Question',
+      description: 'Direct challenge to audience to consider solutions',
+      emotionalSignificance: 'finale'
     }
   ]
 };
 
+// Only export templates that might be needed in other parts of the codebase
+// You can continue adding more templates as needed in this file
+
+/**
+ * Three-Act Audio Structure - For audio dramas
+ */
 export const threeActAudioTemplate: StructureTemplate = {
-  id: 'three-act-audio',
-  name: 'Drei-Akt (hörspieloptimiert)',
-  description: 'An das Hörmedium angepasste Drei-Akt-Struktur',
+  name: 'Three-Act Audio Structure',
+  description: 'Classical three-act structure adapted for audio drama format.',
   scenes: [
     {
       sceneNumber: 1,
-      location: "Akustische Eröffnung",
-      description: "Charakteristischer Sound oder Musik zur Etablierung der Atmosphäre.",
-      emotionalSignificance: "introduction"
+      location: 'Opening Audio Hook',
+      description: 'Distinctive sound that grabs attention',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 2,
-      location: "Exposition durch Dialog",
-      description: "Einführung der Hauptfiguren und des Settings durch Dialoge.",
-      emotionalSignificance: "introduction"
+      location: 'Act 1: Exposition',
+      description: 'Character voices and situation introduced',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 3,
-      location: "Auslösender Konflikt",
-      description: "Akustisch dramatisiertes Ereignis, das die Handlung in Gang setzt.",
-      emotionalSignificance: "turning-point"
+      location: 'Act 1: Inciting Sound Event',
+      description: 'Audio event that triggers the main conflict',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 4,
-      location: "Erster Akt: Komplikation",
-      description: "Die Hauptfigur wird mit ersten Hindernissen konfrontiert.",
-      emotionalSignificance: "buildup"
+      location: 'Act 2: Rising Tension',
+      description: 'Sound cues indicate increasing stakes',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 5,
-      location: "Klangliche Überleitung",
-      description: "Akustisches Intermezzo zur Überleitung in den zweiten Akt.",
-      emotionalSignificance: "turning-point"
+      location: 'Act 2: Midpoint Reveal',
+      description: 'Key information revealed through dialogue or sound',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 6,
-      location: "Zweiter Akt: Konfrontation",
-      description: "Vertiefung des Konflikts und Steigerung der Spannung.",
-      emotionalSignificance: "buildup"
+      location: 'Act 2: Complications',
+      description: 'Audio montage of developing problems',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 7,
-      location: "Akustischer Höhepunkt",
-      description: "Dramatischer Wendepunkt mit intensiver Soundgestaltung.",
-      emotionalSignificance: "climax"
+      location: 'Act 2: Low Point',
+      description: 'Acoustic representation of failure or despair',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 8,
-      location: "Dritter Akt: Auflösung",
-      description: "Lösung des Konflikts und Abschluss der Handlungsstränge.",
-      emotionalSignificance: "resolution"
+      location: 'Act 3: Renewed Effort',
+      description: 'Shift in tone indicating new approach',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 9,
-      location: "Akustischer Epilog",
-      description: "Abschließende Klänge oder Stimmen, die einen Ausblick geben.",
-      emotionalSignificance: "finale"
+      location: 'Act 3: Climactic Audio Sequence',
+      description: 'Sound design reaches peak intensity',
+      emotionalSignificance: 'climax'
+    },
+    {
+      sceneNumber: 10,
+      location: 'Act 3: Resolution & Signature Sound',
+      description: 'Return to key audio motif with variation showing change',
+      emotionalSignificance: 'resolution'
     }
   ]
 };
 
+/**
+ * Narrator with Scenes - For audio dramas
+ */
 export const narratorScenesTemplate: StructureTemplate = {
-  id: 'narrator-scenes',
-  name: 'Erzähler + Szenen-Mix',
-  description: 'Wechsel zwischen Erzählerstimme und szenischen Elementen',
+  name: 'Narrator with Scenes',
+  description: 'Structure using narrator to connect dramatized scenes.',
   scenes: [
     {
       sceneNumber: 1,
-      location: "Erzähler: Einführung",
-      description: "Die Erzählerstimme führt in die Geschichte und die Charaktere ein.",
-      emotionalSignificance: "introduction"
+      location: 'Narrator Introduction',
+      description: 'Narrator establishes setting and premise',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 2,
-      location: "Szenischer Einstieg",
-      description: "Erste dialogische Szene mit den Hauptfiguren.",
-      emotionalSignificance: "introduction"
+      location: 'Scene 1: Character Introduction',
+      description: 'First dramatized scene establishing characters',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 3,
-      location: "Erzähler: Überleitung",
-      description: "Überleitung zur nächsten Szene mit zusätzlichen Informationen.",
-      emotionalSignificance: "buildup"
+      location: 'Narrator Bridge 1',
+      description: 'Narrator provides context and moves story forward',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 4,
-      location: "Szenische Entwicklung",
-      description: "Dialogszene, die den Konflikt etabliert.",
-      emotionalSignificance: "buildup"
+      location: 'Scene 2: Conflict Introduction',
+      description: 'Dramatized scene presenting the main problem',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 5,
-      location: "Erzähler: Hintergrund",
-      description: "Zusätzliche Informationen über Charaktere oder Setting.",
-      emotionalSignificance: "buildup"
+      location: 'Narrator Bridge 2',
+      description: 'Narrator reveals hidden information or inner thoughts',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 6,
-      location: "Szenischer Höhepunkt",
-      description: "Dialogische Darstellung des Höhepunkts ohne Erzählereingriff.",
-      emotionalSignificance: "climax"
+      location: 'Scene 3: Rising Action',
+      description: 'Dramatized scene showing stakes increasing',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 7,
-      location: "Erzähler: Konsequenzen",
-      description: "Reflexion über die Ereignisse und ihre Bedeutung.",
-      emotionalSignificance: "turning-point"
+      location: 'Narrator Bridge 3',
+      description: 'Narrator builds anticipation for climax',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 8,
-      location: "Szenische Auflösung",
-      description: "Finale Szene mit Dialog zur Auflösung des Konflikts.",
-      emotionalSignificance: "resolution"
+      location: 'Scene 4: Climax',
+      description: 'Dramatized climactic moment without narrator interruption',
+      emotionalSignificance: 'climax'
     },
     {
       sceneNumber: 9,
-      location: "Erzähler: Epilog",
-      description: "Abschließende Gedanken und Ausblick des Erzählers.",
-      emotionalSignificance: "finale"
+      location: 'Narrator Bridge 4',
+      description: 'Narrator reflects on the outcomes',
+      emotionalSignificance: 'resolution'
+    },
+    {
+      sceneNumber: 10,
+      location: 'Scene 5: Epilogue',
+      description: 'Final dramatized scene showing new status quo',
+      emotionalSignificance: 'finale'
     }
   ]
 };
 
+/**
+ * Inner Monologue Structure - For audio dramas
+ */
 export const innerMonologueTemplate: StructureTemplate = {
-  id: 'inner-monologue',
-  name: 'Innerer Monolog / Solo-Stück',
-  description: 'Fokus auf Gedankenwelt und inneren Dialog einer Hauptfigur',
+  name: 'Inner Monologue Structure',
+  description: 'Character thoughts and internal dialogue drive the narrative.',
   scenes: [
     {
       sceneNumber: 1,
-      location: "Gedankeneinstieg",
-      description: "Einführung in die Gedankenwelt und aktuelle Situation der Hauptfigur.",
-      emotionalSignificance: "introduction"
+      location: 'Opening Thought',
+      description: 'Protagonist\'s initial thought process and situation',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 2,
-      location: "Erinnerung 1",
-      description: "Erste wichtige Erinnerung, die den Charakter geprägt hat.",
-      emotionalSignificance: "buildup"
+      location: 'Memory Flashback',
+      description: 'Audio representation of past event',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 3,
-      location: "Gegenwartsproblem",
-      description: "Darstellung des aktuellen inneren Konflikts.",
-      emotionalSignificance: "turning-point"
+      location: 'Current Dilemma',
+      description: 'Character\'s internal debate about present situation',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 4,
-      location: "Erinnerung 2",
-      description: "Weitere Erinnerung, die zum Verständnis des Konflikts beiträgt.",
-      emotionalSignificance: "buildup"
+      location: 'External Interaction',
+      description: 'Brief scene of dialogue with contrasting inner thoughts',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 5,
-      location: "Innerer Dialog/Zwiespalt",
-      description: "Auseinandersetzung widerstreitender Gedanken oder Persönlichkeitsanteile.",
-      emotionalSignificance: "climax"
+      location: 'Deepening Understanding',
+      description: 'Character realizes something about themselves',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 6,
-      location: "Selbsterkenntnis",
-      description: "Moment der Einsicht oder Erkenntnis.",
-      emotionalSignificance: "turning-point"
+      location: 'Second External Interaction',
+      description: 'Another dialogue scene with evolved inner response',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 7,
-      location: "Entscheidung",
-      description: "Innerer Entschluss zur Lösung des Konflikts oder Akzeptanz.",
-      emotionalSignificance: "resolution"
+      location: 'Internal Crisis',
+      description: 'Character\'s thought process becomes chaotic or urgent',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 8,
-      location: "Ausblick",
-      description: "Gedanklicher Ausblick auf die Zukunft oder Konsequenzen.",
-      emotionalSignificance: "finale"
+      location: 'Moment of Clarity',
+      description: 'Character comes to a crucial realization',
+      emotionalSignificance: 'climax'
+    },
+    {
+      sceneNumber: 9,
+      location: 'Final External Action',
+      description: 'Character takes action based on internal journey',
+      emotionalSignificance: 'resolution'
+    },
+    {
+      sceneNumber: 10,
+      location: 'Concluding Thought',
+      description: 'Final inner reflection showing character growth',
+      emotionalSignificance: 'finale'
     }
   ]
 };
 
+/**
+ * Audio Series Structure - For audio series
+ */
 export const audioSeriesTemplate: StructureTemplate = {
-  id: 'audio-series',
-  name: 'Serienstruktur mit Cliffhangern',
-  description: 'Episodischer Aufbau mit Spannungsbögen am Ende jeder Folge',
+  name: 'Audio Series Arc',
+  description: 'Connected episodes for serialized audio narratives.',
   scenes: [
     {
       sceneNumber: 1,
-      location: "Rückblick/Intro",
-      description: "Kurze Zusammenfassung vorheriger Ereignisse oder markantes Intro.",
-      emotionalSignificance: "introduction"
+      location: 'Series Theme Introduction',
+      description: 'Distinctive audio signature that identifies the series',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 2,
-      location: "Einstieg aktuelle Folge",
-      description: "Etablierung des Hauptthemas oder Problems dieser Episode.",
-      emotionalSignificance: "introduction"
+      location: 'Episode Recap',
+      description: 'Brief audio montage of previous developments',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 3,
-      location: "A-Plot Entwicklung",
-      description: "Entwicklung des Haupthandlungsstrangs der Folge.",
-      emotionalSignificance: "buildup"
+      location: 'A-Plot Introduction',
+      description: 'Primary storyline of this episode begins',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 4,
-      location: "B-Plot Einführung",
-      description: "Etablierung eines Nebenhandlungsstrangs.",
-      emotionalSignificance: "buildup"
+      location: 'B-Plot Development',
+      description: 'Secondary storyline that advances series arc',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 5,
-      location: "A-Plot Komplikation",
-      description: "Unerwartetes Hindernis im Haupthandlungsstrang.",
-      emotionalSignificance: "turning-point"
+      location: 'A-Plot Complication',
+      description: 'Main storyline faces obstacle',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 6,
-      location: "B-Plot Entwicklung",
-      description: "Weiterentwicklung des Nebenhandlungsstrangs.",
-      emotionalSignificance: "buildup"
+      location: 'Character Moment',
+      description: 'Intimate scene developing a key character',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 7,
-      location: "A-Plot Höhepunkt",
-      description: "Klimax des Haupthandlungsstrangs.",
-      emotionalSignificance: "climax"
+      location: 'B-Plot Integration',
+      description: 'Secondary storyline intersects with main plot',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 8,
-      location: "B-Plot Auflösung",
-      description: "Abschluss des Nebenhandlungsstrangs, oft mit Verbindung zum Hauptstrang.",
-      emotionalSignificance: "resolution"
+      location: 'A-Plot Resolution',
+      description: 'Episode\'s main storyline concludes',
+      emotionalSignificance: 'climax'
     },
     {
       sceneNumber: 9,
-      location: "Episode-Abschluss",
-      description: "Teilweise Auflösung des Hauptkonflikts dieser Folge.",
-      emotionalSignificance: "resolution"
+      location: 'Series Arc Advancement',
+      description: 'Development that pushes the overall series forward',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 10,
-      location: "Cliffhanger",
-      description: "Spannungsvolle offene Situation als Überleitung zur nächsten Folge.",
-      emotionalSignificance: "finale"
+      location: 'Cliffhanger or Tease',
+      description: 'Unresolved element that leads to next episode',
+      emotionalSignificance: 'finale'
     }
   ]
 };
 
+/**
+ * Novel Three-Act Structure
+ */
 export const novelThreeActTemplate: StructureTemplate = {
-  id: 'novel-three-act',
-  name: 'Drei-Akt-Romanstruktur',
-  description: 'Klassische Romanstruktur mit Anfang, Mittelteil und Ende',
+  name: 'Novel Three-Act Structure',
+  description: 'Classic three-act structure adapted for novel format with more character development.',
   scenes: [
     {
       sceneNumber: 1,
-      location: "Exposition",
-      description: "Einführung der Hauptfigur, des Settings und der normalen Welt.",
-      emotionalSignificance: "introduction"
+      location: 'Opening Scene: Character Introduction',
+      description: 'Establish protagonist in their normal world',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 2,
-      location: "Auslösender Vorfall",
-      description: "Ereignis, das den Protagonisten aus seiner gewohnten Welt reißt.",
-      emotionalSignificance: "turning-point"
+      location: 'Inciting Incident',
+      description: 'Event that disrupts the protagonist\'s life',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 3,
-      location: "Erste Schwelle",
-      description: "Der Protagonist überschreitet die Schwelle zur unbekannten Welt.",
-      emotionalSignificance: "turning-point"
+      location: 'First Plot Point',
+      description: 'Protagonist commits to addressing the disruption',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 4,
-      location: "Steigende Handlung",
-      description: "Der Protagonist begegnet Verbündeten und Feinden, lernt die neuen Regeln.",
-      emotionalSignificance: "buildup"
+      location: 'First Pinch Point',
+      description: 'Antagonistic force shows its strength',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 5,
-      location: "Mittelpunkt",
-      description: "Wendepunkt in der Mitte der Geschichte, oft eine wichtige Enthüllung.",
-      emotionalSignificance: "turning-point"
+      location: 'Midpoint',
+      description: 'Protagonist shifts from reactive to proactive',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 6,
-      location: "Komplikationen",
-      description: "Rückschläge und zunehmende Hindernisse für den Protagonisten.",
-      emotionalSignificance: "buildup"
+      location: 'Second Pinch Point',
+      description: 'Antagonistic force applies maximum pressure',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 7,
-      location: "Tiefpunkt",
-      description: "Der dunkelste Moment, an dem alles verloren scheint.",
-      emotionalSignificance: "climax"
+      location: 'Second Plot Point',
+      description: 'Final piece of information needed to resolve conflict',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 8,
-      location: "Zweite Schwelle",
-      description: "Der Protagonist überwindet die zweite große Hürde, um zum Finale zu gelangen.",
-      emotionalSignificance: "turning-point"
+      location: 'Final Confrontation',
+      description: 'Protagonist faces the antagonistic force',
+      emotionalSignificance: 'climax'
     },
     {
       sceneNumber: 9,
-      location: "Klimax",
-      description: "Die finale Konfrontation mit dem Antagonisten oder Problem.",
-      emotionalSignificance: "climax"
+      location: 'Resolution',
+      description: 'Outcome of the confrontation is revealed',
+      emotionalSignificance: 'resolution'
     },
     {
       sceneNumber: 10,
-      location: "Auflösung",
-      description: "Abschluss der Handlungsstränge und Rückkehr in eine veränderte Welt.",
-      emotionalSignificance: "resolution"
+      location: 'Denouement',
+      description: 'New normal is established for the characters',
+      emotionalSignificance: 'finale'
     }
   ]
 };
 
+/**
+ * Seven-Point Story Structure
+ */
 export const sevenPointTemplate: StructureTemplate = {
-  id: 'seven-point',
-  name: 'Sieben-Punkt-Modell (Dan Wells)',
-  description: 'Sieben Schlüsselszenen als Gerüst für die Geschichte',
+  name: 'Seven-Point Story Structure',
+  description: 'Plot structure based on seven key events or turning points.',
   scenes: [
     {
       sceneNumber: 1,
-      location: "Endpunkt",
-      description: "Das Ziel oder der Endzustand, den der Protagonist erreichen will.",
-      emotionalSignificance: "introduction"
+      location: 'Hook',
+      description: 'Engaging opening that introduces character and conflict',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 2,
-      location: "Startpunkt",
-      description: "Der Ausgangspunkt des Protagonisten, oft das Gegenteil des Endpunkts.",
-      emotionalSignificance: "introduction"
+      location: 'Plot Turn 1',
+      description: 'Event that propels protagonist into the main conflict',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 3,
-      location: "Pinch Point 1",
-      description: "Erste große Herausforderung oder Begegnung mit dem Antagonisten.",
-      emotionalSignificance: "buildup"
+      location: 'Pinch 1',
+      description: 'Pressure applied that forces protagonist to act',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 4,
-      location: "Midpoint",
-      description: "Wendepunkt in der Mitte, an dem der Protagonist aktiv wird.",
-      emotionalSignificance: "turning-point"
+      location: 'Midpoint',
+      description: 'Protagonist moves from reaction to action',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 5,
-      location: "Pinch Point 2",
-      description: "Zweite große Herausforderung, oft mit einem scheinbaren Scheitern.",
-      emotionalSignificance: "climax"
+      location: 'Pinch 2',
+      description: 'Major setback that seems to doom the protagonist',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 6,
-      location: "Pre-Climax Reversal",
-      description: "Wendung vor dem Höhepunkt, die den Protagonisten zum Endkampf führt.",
-      emotionalSignificance: "turning-point"
+      location: 'Plot Turn 2',
+      description: 'Discovery that provides what\'s needed for resolution',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 7,
-      location: "Resolution",
-      description: "Die Erreichung (oder Nichterreichung) des Endpunkts und die Konsequenzen.",
-      emotionalSignificance: "resolution"
+      location: 'Resolution',
+      description: 'Protagonist resolves the conflict',
+      emotionalSignificance: 'resolution'
     }
   ]
 };
 
+/**
+ * Snowflake Method
+ */
 export const snowflakeTemplate: StructureTemplate = {
-  id: 'snowflake',
-  name: 'Snowflake-Methode',
-  description: 'Vom einfachen Konzept zum komplexen Roman durch iteratives Erweitern',
+  name: 'Snowflake Method',
+  description: 'Expanding from simple to complex story elements in layers.',
   scenes: [
     {
       sceneNumber: 1,
-      location: "Zentrale Prämisse",
-      description: "Ein-Satz-Zusammenfassung der gesamten Geschichte.",
-      emotionalSignificance: "introduction"
+      location: 'Core Premise',
+      description: 'One-sentence summary of the entire story',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 2,
-      location: "Erweiterte Prämisse",
-      description: "Ein-Absatz-Zusammenfassung mit Anfang, Mittelteil, Katastrophe und Ende.",
-      emotionalSignificance: "introduction"
+      location: 'Expanded Premise',
+      description: 'Paragraph describing setup, major disasters, and ending',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 3,
-      location: "Hauptfiguren-Setup",
-      description: "Definition der wichtigsten Charaktere und ihrer Entwicklungsbögen.",
-      emotionalSignificance: "introduction"
+      location: 'Character Introduction',
+      description: 'Main character\'s storyline and motivations',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 4,
-      location: "Erweiterte Synopsis",
-      description: "Eine Seite Zusammenfassung, die aus jedem Satz des Absatzes einen eigenen Absatz macht.",
-      emotionalSignificance: "buildup"
+      location: 'Plot Expansion: Beginning',
+      description: 'First quarter of the novel in greater detail',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 5,
-      location: "Erweiterte Charakterbeschreibungen",
-      description: "Ausführliche Beschreibungen der Hauptfiguren, ihrer Motivation und Entwicklung.",
-      emotionalSignificance: "buildup"
+      location: 'Plot Expansion: First Disaster',
+      description: 'Major setback at quarter point',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 6,
-      location: "Detaillierte Synopsis",
-      description: "Vier-Seiten-Zusammenfassung mit allen wichtigen Handlungssträngen.",
-      emotionalSignificance: "turning-point"
+      location: 'Plot Expansion: Midpoint',
+      description: 'Central turning point in detail',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 7,
-      location: "Szenenauflistung",
-      description: "Liste aller Szenen mit kurzen Beschreibungen ihres Inhalts.",
-      emotionalSignificance: "buildup"
+      location: 'Plot Expansion: Second Disaster',
+      description: 'Major setback at three-quarter point',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 8,
-      location: "Erster Entwurf",
-      description: "Ausarbeitung der Geschichte basierend auf der detaillierten Vorarbeit.",
-      emotionalSignificance: "resolution"
+      location: 'Plot Expansion: Final Confrontation',
+      description: 'Detailed climactic sequence',
+      emotionalSignificance: 'climax'
+    },
+    {
+      sceneNumber: 9,
+      location: 'Plot Expansion: Resolution',
+      description: 'Detailed ending and wrap-up',
+      emotionalSignificance: 'resolution'
+    },
+    {
+      sceneNumber: 10,
+      location: 'Scene List',
+      description: 'Expanded list of scenes developed from plot outlines',
+      emotionalSignificance: 'finale'
     }
   ]
 };
 
+/**
+ * Novel Hero's Journey
+ */
 export const novelHeroJourneyTemplate: StructureTemplate = {
-  id: 'novel-hero-journey',
-  name: 'Heldenreise für Romane',
-  description: 'An Romanerzählungen angepasste Version der klassischen Heldenreise',
+  name: 'Novel Hero\'s Journey',
+  description: 'Hero\'s Journey adapted for novel format with deeper character development.',
   scenes: [
     {
       sceneNumber: 1,
-      location: "Gewohnte Welt",
-      description: "Etablierung des Protagonisten in seiner alltäglichen Umgebung.",
-      emotionalSignificance: "introduction"
+      location: 'Ordinary World',
+      description: 'Detailed exploration of protagonist\'s daily life',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 2,
-      location: "Ruf zum Abenteuer",
-      description: "Herausforderung, Einladung oder Ereignis, das den Protagonisten in die Geschichte zieht.",
-      emotionalSignificance: "turning-point"
+      location: 'Call to Adventure',
+      description: 'Challenge or opportunity that disrupts normal life',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 3,
-      location: "Weigerung",
-      description: "Der Protagonist zögert oder lehnt den Ruf zunächst ab.",
-      emotionalSignificance: "buildup"
+      location: 'Refusal and Acceptance',
+      description: 'Internal struggle before committing to the journey',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 4,
-      location: "Begegnung mit dem Mentor",
-      description: "Eine Figur bietet Rat, Ausbildung oder magische Gegenstände.",
-      emotionalSignificance: "buildup"
+      location: 'Meeting the Mentor',
+      description: 'Encounter with guiding figure who provides wisdom',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 5,
-      location: "Überschreiten der ersten Schwelle",
-      description: "Der Protagonist verlässt die gewohnte Welt und betritt das Abenteuer.",
-      emotionalSignificance: "turning-point"
+      location: 'Crossing the Threshold',
+      description: 'Leaving the familiar world behind',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 6,
-      location: "Prüfungen, Verbündete, Feinde",
-      description: "Der Protagonist bewältigt Tests, findet Helfer und begegnet Gegnern.",
-      emotionalSignificance: "buildup"
+      location: 'Tests, Allies, and Enemies',
+      description: 'Series of challenges that transform the protagonist',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 7,
-      location: "Vordringen zur tiefsten Höhle",
-      description: "Annäherung an den gefährlichsten Ort oder die größte Herausforderung.",
-      emotionalSignificance: "buildup"
+      location: 'Approach to the Innermost Cave',
+      description: 'Preparation for major challenge',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 8,
-      location: "Entscheidende Prüfung",
-      description: "Die zentrale Krise der Geschichte, oft als Tod und Wiedergeburt dargestellt.",
-      emotionalSignificance: "climax"
+      location: 'Ordeal and Reward',
+      description: 'Central life-or-death crisis and its aftermath',
+      emotionalSignificance: 'climax'
     },
     {
       sceneNumber: 9,
-      location: "Belohnung",
-      description: "Der Protagonist erhält eine Belohnung, ein Elixier oder eine Erkenntnis.",
-      emotionalSignificance: "turning-point"
+      location: 'The Road Back',
+      description: 'Journey home with continued obstacles',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 10,
-      location: "Rückweg",
-      description: "Beginn der Rückkehr in die gewohnte Welt mit der gewonnenen Belohnung.",
-      emotionalSignificance: "buildup"
-    },
-    {
-      sceneNumber: 11,
-      location: "Auferstehung",
-      description: "Eine finale Prüfung, bei der der Protagonist seine Transformation zeigt.",
-      emotionalSignificance: "climax"
-    },
-    {
-      sceneNumber: 12,
-      location: "Rückkehr mit dem Elixier",
-      description: "Der Protagonist kehrt mit einem Schatz oder einer Lehre zurück, die anderen hilft.",
-      emotionalSignificance: "resolution"
+      location: 'Resurrection and Return',
+      description: 'Final test and bringing the lessons home',
+      emotionalSignificance: 'resolution'
     }
   ]
 };
 
+/**
+ * Hook-Impact-Punch Structure for social media
+ */
 export const hookImpactPunchTemplate: StructureTemplate = {
-  id: 'hook-impact-punch',
   name: 'Hook-Impact-Punch',
-  description: 'Aufmerksamkeit wecken, Inhalte liefern, starker Abschluss',
+  description: 'Three-part structure for short-form social media videos.',
   scenes: [
     {
       sceneNumber: 1,
-      location: "Hook (0-3 Sekunden)",
-      description: "Aufmerksamkeitsstarker Einstieg, der zum Weiterschauen animiert.",
-      emotionalSignificance: "introduction"
+      location: 'Hook (0-3 seconds)',
+      description: 'Attention-grabbing opening statement or visual',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 2,
-      location: "Pattern-Interrupt (3-5 Sekunden)",
-      description: "Unerwartete Wendung, die das Interesse weiter steigert.",
-      emotionalSignificance: "turning-point"
+      location: 'Context (3-5 seconds)',
+      description: 'Brief explanation of what the video is about',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 3,
-      location: "Impact (5-25 Sekunden)",
-      description: "Hauptinhalt des Videos, liefert den versprochenen Wert.",
-      emotionalSignificance: "climax"
+      location: 'Value Part 1 (5-15 seconds)',
+      description: 'First key piece of information or entertainment',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 4,
-      location: "Punch/CTA (25-30 Sekunden)",
-      description: "Starker Abschluss mit Handlungsaufforderung oder Pointe.",
-      emotionalSignificance: "finale"
+      location: 'Value Part 2 (15-25 seconds)',
+      description: 'Second key piece of information or development',
+      emotionalSignificance: 'buildup'
+    },
+    {
+      sceneNumber: 5,
+      location: 'Impact/Reveal (25-50 seconds)',
+      description: 'Main value delivery or revelation',
+      emotionalSignificance: 'climax'
+    },
+    {
+      sceneNumber: 6,
+      location: 'Punch/CTA (50-60 seconds)',
+      description: 'Memorable ending line and call to action',
+      emotionalSignificance: 'resolution'
     }
   ]
 };
 
+/**
+ * Micro Story Structure for social media
+ */
 export const microStoryTemplate: StructureTemplate = {
-  id: 'micro-story',
-  name: 'Micro-Story-Arc',
-  description: 'Komprimierte Erzählstruktur für Kurzformate',
+  name: 'Micro Story',
+  description: 'Complete tiny narrative arc for short-form videos.',
   scenes: [
     {
       sceneNumber: 1,
-      location: "Setup (0-5 Sekunden)",
-      description: "Schnelle Etablierung von Figur und Situation.",
-      emotionalSignificance: "introduction"
+      location: 'Setup (0-5 seconds)',
+      description: 'Establish character and situation',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 2,
-      location: "Konflikt (5-15 Sekunden)",
-      description: "Einführung eines Problems oder einer Herausforderung.",
-      emotionalSignificance: "turning-point"
+      location: 'Problem (5-15 seconds)',
+      description: 'Introduce conflict or challenge',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 3,
-      location: "Höhepunkt (15-25 Sekunden)",
-      description: "Dramatischer oder humorvoller Wendepunkt.",
-      emotionalSignificance: "climax"
+      location: 'Attempt (15-25 seconds)',
+      description: 'Character tries to solve problem',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 4,
-      location: "Auflösung (25-30 Sekunden)",
-      description: "Schnelle Lösung oder überraschende Pointe.",
-      emotionalSignificance: "finale"
+      location: 'Complication (25-35 seconds)',
+      description: 'Unexpected obstacle emerges',
+      emotionalSignificance: 'turning-point'
+    },
+    {
+      sceneNumber: 5,
+      location: 'Resolution (35-50 seconds)',
+      description: 'Character overcomes or adapts to challenge',
+      emotionalSignificance: 'climax'
+    },
+    {
+      sceneNumber: 6,
+      location: 'Punchline/Twist (50-60 seconds)',
+      description: 'Surprising or satisfying conclusion',
+      emotionalSignificance: 'resolution'
     }
   ]
 };
 
+/**
+ * Problem-Solution Structure for social media
+ */
 export const problemSolutionTemplate: StructureTemplate = {
-  id: 'problem-solution',
-  name: 'Problem–Lösung–CTA',
-  description: 'Problem identifizieren, Lösung anbieten, Call-to-Action',
+  name: 'Problem-Solution',
+  description: 'Present issue then solve it for educational content.',
   scenes: [
     {
       sceneNumber: 1,
-      location: "Problemaufstellung (0-5 Sekunden)",
-      description: "Identifikation eines Problems, das beim Publikum Resonanz findet.",
-      emotionalSignificance: "introduction"
+      location: 'Problem Statement (0-10 seconds)',
+      description: 'Clear statement of relatable problem',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 2,
-      location: "Verstärkung (5-10 Sekunden)",
-      description: "Verstärkung der Dringlichkeit oder Relevanz des Problems.",
-      emotionalSignificance: "buildup"
+      location: 'Problem Elaboration (10-20 seconds)',
+      description: 'Why this problem matters',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 3,
-      location: "Lösungspräsentation (10-20 Sekunden)",
-      description: "Vorstellung der Lösung oder des Tipps.",
-      emotionalSignificance: "turning-point"
+      location: 'Solution Tease (20-25 seconds)',
+      description: 'Hint at the solution approach',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 4,
-      location: "Beweis/Demonstration (20-25 Sekunden)",
-      description: "Demonstration der Wirksamkeit oder des Ergebnisses.",
-      emotionalSignificance: "climax"
+      location: 'Solution Step 1 (25-35 seconds)',
+      description: 'First part of solution process',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 5,
-      location: "Call-to-Action (25-30 Sekunden)",
-      description: "Klare Handlungsaufforderung an das Publikum.",
-      emotionalSignificance: "finale"
+      location: 'Solution Step 2 (35-45 seconds)',
+      description: 'Second part of solution process',
+      emotionalSignificance: 'buildup'
+    },
+    {
+      sceneNumber: 6,
+      location: 'Results & Benefits (45-55 seconds)',
+      description: 'Show outcome and advantages',
+      emotionalSignificance: 'climax'
+    },
+    {
+      sceneNumber: 7,
+      location: 'Call-to-Action (55-60 seconds)',
+      description: 'Tell viewer what to do next',
+      emotionalSignificance: 'resolution'
     }
   ]
 };
 
+/**
+ * YouTube Hero Journey for video
+ */
 export const youtubeHeroTemplate: StructureTemplate = {
-  id: 'youtube-hero',
-  name: 'YouTube Hero Structure',
-  description: 'Optimierte Erzählstruktur für längere YouTube-Videos',
+  name: 'YouTube Hero Journey',
+  description: 'Simplified hero journey for YouTube videos.',
   scenes: [
     {
       sceneNumber: 1,
-      location: "Hook (0-30 Sekunden)",
-      description: "Aufmerksamkeitsstarker Einstieg, der den Mehrwert des Videos verspricht.",
-      emotionalSignificance: "introduction"
+      location: 'Hook (0-15 seconds)',
+      description: 'Powerful opening that promises value',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 2,
-      location: "Intro (30-60 Sekunden)",
-      description: "Kurze Einführung des Themas und Überblick über den Videoinhalt.",
-      emotionalSignificance: "introduction"
+      location: 'Intro (15-60 seconds)',
+      description: 'Channel branding and video topic overview',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 3,
-      location: "Storytelling Setup (1-2 Minuten)",
-      description: "Persönliche Anekdote oder Kontext, der das Thema emotional verankert.",
-      emotionalSignificance: "buildup"
+      location: 'Context/Problem (1-2 minutes)',
+      description: 'Establish why the content matters',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 4,
-      location: "Value Segment 1 (2-4 Minuten)",
-      description: "Erster Hauptinhaltspunkt mit detaillierten Informationen.",
-      emotionalSignificance: "buildup"
+      location: 'First Value Point (2-4 minutes)',
+      description: 'Initial insight or information',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 5,
-      location: "Pattern Interrupt (4-5 Minuten)",
-      description: "Kurze Unterbrechung durch Humor, Frage oder visuellen Wechsel.",
-      emotionalSignificance: "turning-point"
+      location: 'Pattern Interrupt (4-5 minutes)',
+      description: 'Change of pace to maintain attention',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 6,
-      location: "Value Segment 2 (5-7 Minuten)",
-      description: "Zweiter Hauptinhaltspunkt, der auf dem ersten aufbaut.",
-      emotionalSignificance: "buildup"
+      location: 'Main Teaching (5-8 minutes)',
+      description: 'Primary content value delivery',
+      emotionalSignificance: 'climax'
     },
     {
       sceneNumber: 7,
-      location: "Challenge/Objection (7-8 Minuten)",
-      description: "Ansprechen von Einwänden oder Herausforderungen beim Thema.",
-      emotionalSignificance: "turning-point"
+      location: 'Practical Application (8-9 minutes)',
+      description: 'How to use the information provided',
+      emotionalSignificance: 'resolution'
     },
     {
       sceneNumber: 8,
-      location: "Value Segment 3 (8-10 Minuten)",
-      description: "Dritter Hauptinhaltspunkt oder Lösung der Challenge.",
-      emotionalSignificance: "climax"
-    },
-    {
-      sceneNumber: 9,
-      location: "Zusammenfassung (10-11 Minuten)",
-      description: "Wiederholung der wichtigsten Punkte und Erkenntnisse.",
-      emotionalSignificance: "resolution"
-    },
-    {
-      sceneNumber: 10,
-      location: "Call-to-Action (11-12 Minuten)",
-      description: "Aufforderung zum Liken, Abonnieren und Weiterverbreiten.",
-      emotionalSignificance: "finale"
+      location: 'Call-to-Action (9-10 minutes)',
+      description: 'Request for engagement and next steps',
+      emotionalSignificance: 'finale'
     }
   ]
 };
 
+/**
+ * List Structure for social media
+ */
 export const listStructureTemplate: StructureTemplate = {
-  id: 'list-structure',
-  name: 'Listenstruktur',
-  description: 'Aufbau nach Listenformat, z.B. Top 5, 10 Gründe für...',
+  name: 'List Structure',
+  description: 'Engaging countdown or ranking format for social videos.',
   scenes: [
     {
       sceneNumber: 1,
-      location: "Intro-Hook (0-45 Sekunden)",
-      description: "Spannende Einführung des Listenthemas und warum es wichtig ist.",
-      emotionalSignificance: "introduction"
+      location: 'Hook (0-5 seconds)',
+      description: 'Announce the list topic and why it matters',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 2,
-      location: "Überblick (45-60 Sekunden)",
-      description: "Kurze Vorschau auf die Liste und den Aufbau des Videos.",
-      emotionalSignificance: "introduction"
+      location: 'Format Explanation (5-10 seconds)',
+      description: 'Briefly explain how the list is organized',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 3,
-      location: "Punkt 1 (1-3 Minuten)",
-      description: "Meist beginnt man mit einem mittelstarken Punkt, um Interesse aufzubauen.",
-      emotionalSignificance: "buildup"
+      location: 'Item #1 (10-20 seconds)',
+      description: 'First list item with brief explanation',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 4,
-      location: "Punkt 2 (3-5 Minuten)",
-      description: "Zweiter Listenpunkt mit etwas mehr Tiefe oder Relevanz.",
-      emotionalSignificance: "buildup"
+      location: 'Item #2 (20-30 seconds)',
+      description: 'Second list item with brief explanation',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 5,
-      location: "Engagement Break (5-6 Minuten)",
-      description: "Kurze Interaktion mit dem Publikum, Frage oder Aufforderung zum Kommentieren.",
-      emotionalSignificance: "turning-point"
+      location: 'Item #3 (30-40 seconds)',
+      description: 'Third list item with brief explanation',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 6,
-      location: "Punkt 3 (6-8 Minuten)",
-      description: "Fortführung der Liste, oft mit steigendem Interesse oder Wichtigkeit.",
-      emotionalSignificance: "buildup"
+      location: 'Top Item Reveal (40-50 seconds)',
+      description: 'Most important or surprising list item',
+      emotionalSignificance: 'climax'
     },
     {
       sceneNumber: 7,
-      location: "Punkt 4 (8-10 Minuten)",
-      description: "Einer der stärkeren Punkte, der besondere Aufmerksamkeit verdient.",
-      emotionalSignificance: "buildup"
-    },
-    {
-      sceneNumber: 8,
-      location: "Spannung vor dem Höhepunkt (10-11 Minuten)",
-      description: "Aufbau von Spannung vor dem wichtigsten Punkt der Liste.",
-      emotionalSignificance: "turning-point"
-    },
-    {
-      sceneNumber: 9,
-      location: "Punkt 5 / Höhepunkt (11-13 Minuten)",
-      description: "Der wichtigste oder überraschendste Punkt der Liste.",
-      emotionalSignificance: "climax"
-    },
-    {
-      sceneNumber: 10,
-      location: "Zusammenfassung und CTA (13-15 Minuten)",
-      description: "Kurze Wiederholung der Liste und Call-to-Action.",
-      emotionalSignificance: "finale"
+      location: 'Summary & CTA (50-60 seconds)',
+      description: 'Wrap-up and audience prompt',
+      emotionalSignificance: 'resolution'
     }
   ]
 };
 
+/**
+ * Tutorial Structure for social media
+ */
 export const tutorialStructureTemplate: StructureTemplate = {
-  id: 'tutorial-structure',
-  name: 'Tutorial-Aufbau',
-  description: 'Schritt-für-Schritt-Anleitung mit Einführung und Zusammenfassung',
+  name: 'Tutorial Structure',
+  description: 'Step-by-step instructional format for educational content.',
   scenes: [
     {
       sceneNumber: 1,
-      location: "Problem-Hook (0-30 Sekunden)",
-      description: "Vorstellung des Problems, das durch das Tutorial gelöst wird.",
-      emotionalSignificance: "introduction"
+      location: 'Result Preview (0-5 seconds)',
+      description: 'Show what viewers will be able to create/do',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 2,
-      location: "Ergebnis-Vorschau (30-60 Sekunden)",
-      description: "Zeigen des Endergebnisses, um Motivation zu schaffen.",
-      emotionalSignificance: "introduction"
+      location: 'Materials/Requirements (5-10 seconds)',
+      description: 'What viewers need to follow along',
+      emotionalSignificance: 'introduction'
     },
     {
       sceneNumber: 3,
-      location: "Voraussetzungen (1-2 Minuten)",
-      description: "Erklärung der benötigten Werkzeuge, Fähigkeiten oder Materialien.",
-      emotionalSignificance: "introduction"
+      location: 'Step #1 (10-20 seconds)',
+      description: 'First instruction step clearly demonstrated',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 4,
-      location: "Schritt 1 (2-4 Minuten)",
-      description: "Detaillierte Anleitung für den ersten Schritt.",
-      emotionalSignificance: "buildup"
+      location: 'Step #2 (20-30 seconds)',
+      description: 'Second instruction step clearly demonstrated',
+      emotionalSignificance: 'buildup'
     },
     {
       sceneNumber: 5,
-      location: "Schritt 2 (4-6 Minuten)",
-      description: "Anleitung für den zweiten Schritt des Tutorials.",
-      emotionalSignificance: "buildup"
+      location: 'Potential Problem & Fix (30-40 seconds)',
+      description: 'Common issue and how to troubleshoot it',
+      emotionalSignificance: 'turning-point'
     },
     {
       sceneNumber: 6,
-      location: "Häufiger Fehler / Tipp (6-7 Minuten)",
-      description: "Hinweis auf typische Fehler und wie man sie vermeidet.",
-      emotionalSignificance: "turning-point"
+      location: 'Final Steps (40-50 seconds)',
+      description: 'Complete the project/task',
+      emotionalSignificance: 'climax'
     },
     {
       sceneNumber: 7,
-      location: "Schritt 3 (7-9 Minuten)",
-      description: "Anleitung für den dritten Schritt des Tutorials.",
-      emotionalSignificance: "buildup"
-    },
-    {
-      sceneNumber: 8,
-      location: "Schritt 4 (9-11 Minuten)",
-      description: "Anleitung für den vierten und oft komplexesten Schritt.",
-      emotionalSignificance: "climax"
-    },
-    {
-      sceneNumber: 9,
-      location: "Fertiges Ergebnis (11-12 Minuten)",
-      description: "Präsentation des fertigen Projekts oder der Lösung.",
-      emotionalSignificance: "resolution"
-    },
-    {
-      sceneNumber: 10,
-      location: "Alternative Ansätze (12-13 Minuten)",
-      description: "Kurze Erwähnung von Variationen oder alternativen Methoden.",
-      emotionalSignificance: "resolution"
-    },
-    {
-      sceneNumber: 11,
-      location: "Zusammenfassung und Nächste Schritte (13-15 Minuten)",
-      description: "Zusammenfassung des Gelernten und Vorschläge für Weiterführendes.",
-      emotionalSignificance: "finale"
+      location: 'Final Result & Tips (50-60 seconds)',
+      description: 'Show completed work and additional advice',
+      emotionalSignificance: 'resolution'
     }
   ]
 };

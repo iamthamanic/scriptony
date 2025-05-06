@@ -4,15 +4,29 @@ import { createProject, createScene } from "../../../services";
 import { Project, ProjectType, NarrativeStructureType, Scene, TimeOfDay, Genre, EmotionalSignificance } from "../../../types";
 import { useToast } from "../../use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { narrativeStructureTemplates } from "@/types/narrativeStructures";
 
-// Function to generate default scenes for a narrative structure template
-const generateDefaultSceneForTemplate = (structure: NarrativeStructureType): Partial<Scene>[] => {
-  // Basic placeholder implementation
-  return [
-    { location: "Opening location", description: "Starting scene", emotionalSignificance: "introduction" as EmotionalSignificance },
-    { location: "Middle location", description: "Development scene", emotionalSignificance: "buildup" as EmotionalSignificance },
-    { location: "Final location", description: "Closing scene", emotionalSignificance: "finale" as EmotionalSignificance },
-  ];
+// Function to generate scenes based on a narrative structure template
+const generateDefaultScenesForTemplate = (structure: NarrativeStructureType): Partial<Scene>[] => {
+  // Get the template for the selected structure
+  const template = narrativeStructureTemplates[structure];
+  
+  // If no template exists or it doesn't have scenes defined, return empty array
+  if (!template || (!template.scenes && !template.suggestedScenes)) {
+    return [];
+  }
+  
+  // Use either suggestedScenes or scenes property (for backward compatibility)
+  const sceneTemplates = template.suggestedScenes || template.scenes || [];
+  
+  // Map the scene templates to partial Scene objects
+  return sceneTemplates.map(sceneTemplate => ({
+    sceneNumber: sceneTemplate.sceneNumber,
+    location: sceneTemplate.location || "Location TBD",
+    timeOfDay: sceneTemplate.timeOfDay as TimeOfDay || "day",
+    description: sceneTemplate.description || "",
+    emotionalSignificance: sceneTemplate.emotionalSignificance || "regular" as EmotionalSignificance,
+  }));
 };
 
 export const useCreateProject = () => {
@@ -51,16 +65,16 @@ export const useCreateProject = () => {
 
       if (newProject) {
         // If a narrative structure was selected, generate scenes based on it
-        if (data.narrativeStructure && newProject.id) {
+        if (data.narrativeStructure && data.narrativeStructure !== 'none' && newProject.id) {
           // Create default scenes based on the narrative structure
           let scenePromises: Promise<any>[] = [];
-          const scenes = generateDefaultSceneForTemplate(data.narrativeStructure);
+          const scenes = generateDefaultScenesForTemplate(data.narrativeStructure);
 
           if (scenes && scenes.length > 0) {
             scenes.forEach((scene, index) => {
               const sceneData = {
                 projectId: newProject.id,
-                sceneNumber: index + 1,
+                sceneNumber: scene.sceneNumber || index + 1,
                 location: scene.location || "Unknown",
                 timeOfDay: scene.timeOfDay as TimeOfDay || "day",
                 timecodeStart: "00:00:00",
