@@ -1,7 +1,8 @@
 
 import { customSupabase } from "@/integrations/supabase/customClient";
-import { refreshDriveToken, getUserDriveSettings } from './auth';
+import { refreshDriveToken } from './tokenManagement';
 import { createProjectFolder } from './folders';
+import { getUserDriveSettings } from './connectionStatus';
 
 /**
  * Store file reference in database
