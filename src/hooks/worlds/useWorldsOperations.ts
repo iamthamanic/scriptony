@@ -1,3 +1,4 @@
+
 import { useToast } from "@/hooks/use-toast";
 import { 
   fetchUserWorlds, 
@@ -11,6 +12,7 @@ import {
 } from "@/services/worlds";
 import { NewWorldFormData, WorldCategoryFormData } from "@/types";
 import { isDevelopmentMode } from "@/utils/devMode";
+import { useState, useCallback } from "react";
 
 export function useWorldsOperations(
   userId: string | undefined,
@@ -27,6 +29,7 @@ export function useWorldsOperations(
   setSelectedCategory: (category: any) => void
 ) {
   const { toast } = useToast();
+  const [isProcessing, setIsProcessing] = useState(false);
   
   // Load worlds
   const loadWorlds = async () => {
@@ -106,10 +109,12 @@ export function useWorldsOperations(
     }
   };
 
-  const handleDeleteWorld = async (): Promise<void> => {
-    if (!selectedWorld) return Promise.resolve();
+  // Enhanced delete world operation with better state management
+  const handleDeleteWorld = useCallback(async (): Promise<void> => {
+    if (!selectedWorld || isProcessing) return Promise.resolve();
     
     try {
+      setIsProcessing(true);
       const isDevMode = isDevelopmentMode();
       console.log('Starting deletion process for world:', selectedWorld.id, 
                   'Development mode:', isDevMode ? 'YES' : 'NO');
@@ -118,42 +123,55 @@ export function useWorldsOperations(
       const worldName = selectedWorld.name;
       const worldId = selectedWorld.id;
       
-      // The actual deletion process in the service now handles dev mode headers
-      await deleteWorld(worldId);
+      // First, update local UI state to improve perceived performance
+      // First, close the dialog to remove it from DOM
+      setIsDeleteWorldDialogOpen(false);
       
-      console.log('World deletion successful, updating local state');
-      
-      // Update the worlds state first
+      // Update the worlds state first (optimistic update)
       const newWorlds = worlds.filter(w => w.id !== worldId);
-      setWorlds(newWorlds);
       
       // Clear selected world ID to return to worlds list
+      // This needs to happen before the actual deletion to avoid UI freezes
       setSelectedWorldId(null);
       
-      // Use a longer timeout to ensure all state changes are processed
-      // before removing the dialog from the DOM
+      // Small delay to let React process these UI updates
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Now perform the actual deletion
+      await deleteWorld(worldId);
+      
+      console.log('World deletion completed successfully, updating final state');
+      
+      // Now update the worlds list 
+      setWorlds(newWorlds);
+      
+      // Show success toast after all operations complete
       setTimeout(() => {
-        // First close the dialog with a significant delay
-        // to ensure React has processed all state updates
-        setIsDeleteWorldDialogOpen(false);
+        toast({
+          title: 'Welt gelöscht',
+          description: `"${worldName}" wurde erfolgreich gelöscht.`
+        });
         
-        // Show success toast after all UI operations are complete
-        // with another small delay
-        setTimeout(() => {
-          toast({
-            title: 'Welt gelöscht',
-            description: `"${worldName}" wurde erfolgreich gelöscht.`
-          });
-        }, 100);
-      }, 400); // Increased from 50ms to 400ms for more reliable cleanup
+        // Final cleanup
+        setIsProcessing(false);
+      }, 300);
       
       return Promise.resolve();
     } catch (error) {
       console.error('Error in handleDeleteWorld:', error);
+      
+      // Reset processing state
+      setIsProcessing(false);
+      
+      // Make sure dialog is closed even on error
+      setTimeout(() => {
+        setIsDeleteWorldDialogOpen(false);
+      }, 800);
+      
       // Let the error propagate to the DeleteWorldDialog component
       return Promise.reject(error);
     }
-  };
+  }, [selectedWorld, worlds, setWorlds, setSelectedWorldId, toast, setIsDeleteWorldDialogOpen, isProcessing]);
 
   return {
     loadWorlds,
