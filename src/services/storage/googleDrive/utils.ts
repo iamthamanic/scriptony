@@ -10,10 +10,12 @@ export const GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token';
 export const CLIENT_ID = '455373172517-jvu8nvr2kal1ovtdsei9plefp6qstvd5.apps.googleusercontent.com';
 export const CLIENT_SECRET = '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';
 
+// Import the redirect URI function from our new redirects utility
+import { getDriveRedirectURI } from '@/services/auth/redirects';
+
 // More reliable redirect URI handling
 export const getRedirectURI = (): string => {
-  // Return the current origin + the path for storage tab
-  return `${window.location.origin}/account?tab=storage`;
+  return getDriveRedirectURI();
 };
 
 // Export REDIRECT_URI for backward compatibility

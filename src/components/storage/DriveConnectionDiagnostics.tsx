@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Code, AlertCircle, Terminal, Copy, CheckCircle } from 'lucide-react';
 import { CLIENT_ID, getRedirectURI } from '@/services/storage/googleDrive/utils';
+import { getEnvironmentInfo } from '@/services/auth/redirects';
 
 interface DriveConnectionDiagnosticsProps {
   isOpen: boolean;
@@ -22,6 +23,7 @@ const DriveConnectionDiagnostics: React.FC<DriveConnectionDiagnosticsProps> = ({
 }) => {
   const [copied, setCopied] = useState<string | null>(null);
   const redirectUri = getRedirectURI();
+  const envInfo = getEnvironmentInfo();
   
   const copyToClipboard = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
@@ -42,6 +44,20 @@ const DriveConnectionDiagnostics: React.FC<DriveConnectionDiagnosticsProps> = ({
         </DialogHeader>
         
         <div className="space-y-4 py-4">
+          <div className="rounded-md bg-muted p-4">
+            <h3 className="text-sm font-medium mb-2">Umgebungsinformationen</h3>
+            <div className="grid gap-2">
+              <div className="flex justify-between items-center">
+                <span className="text-xs">Umgebungstyp:</span>
+                <code className="text-xs bg-background px-2 py-1 rounded">{envInfo.type}</code>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-xs">Hostname:</span>
+                <code className="text-xs bg-background px-2 py-1 rounded">{envInfo.hostname}</code>
+              </div>
+            </div>
+          </div>
+        
           <div className="rounded-md bg-muted p-4">
             <h3 className="text-sm font-medium mb-2">Verbindungsinformationen</h3>
             <div className="grid gap-2">
