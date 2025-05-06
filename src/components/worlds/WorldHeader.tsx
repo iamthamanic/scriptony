@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Edit, Trash2, MoreHorizontal } from "lucide-react";
+import { ChevronLeft, Edit, Trash2, MoreHorizontal, Copy } from "lucide-react";
 import { World } from "@/types";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
@@ -11,13 +11,15 @@ interface WorldHeaderProps {
   onBack: () => void;
   onEditWorld: () => void;
   onDeleteWorld: () => void;
+  onDuplicateWorld?: () => void;
 }
 
 const WorldHeader = ({
   world,
   onBack,
   onEditWorld,
-  onDeleteWorld
+  onDeleteWorld,
+  onDuplicateWorld
 }: WorldHeaderProps) => {
   return (
     <div className="flex flex-col md:flex-row md:items-center gap-4">
@@ -54,6 +56,14 @@ const WorldHeader = ({
               <Edit className="h-4 w-4 mr-2" />
               Welt bearbeiten
             </DropdownMenuItem>
+            
+            {onDuplicateWorld && (
+              <DropdownMenuItem onClick={onDuplicateWorld}>
+                <Copy className="h-4 w-4 mr-2" />
+                Welt duplizieren
+              </DropdownMenuItem>
+            )}
+            
             <DropdownMenuSeparator />
             <DropdownMenuItem 
               onClick={onDeleteWorld}

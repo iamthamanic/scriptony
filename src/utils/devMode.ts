@@ -4,9 +4,9 @@
  * with the development flag enabled
  */
 export const isDevelopmentMode = (): boolean => {
-  // Check if URL has a development mode parameter or if we're on the development domain
+  // Only check for the devMode URL parameter, not the hostname
   const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.has('devMode') || window.location.hostname.includes('lovableproject.com');
+  return urlParams.has('devMode');
 };
 
 /**

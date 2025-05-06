@@ -4,8 +4,9 @@ import { isDevelopmentMode } from "@/utils/devMode";
 
 /**
  * Creates a timeout Promise with proper cleanup to prevent memory leaks
+ * Using a shorter timeout to prevent long-hanging operations
  */
-export const createTimeout = (timeoutMs: number = 120000): { promise: Promise<never>, cancel: () => void } => {
+export const createTimeout = (timeoutMs: number = 30000): { promise: Promise<never>, cancel: () => void } => {
   let timeoutId: number;
   
   const promise = new Promise<never>((_, reject) => {
@@ -21,19 +22,19 @@ export const createTimeout = (timeoutMs: number = 120000): { promise: Promise<ne
 };
 
 /**
- * Delete a world and all its associated data with enhanced error handling and retries
+ * Delete a world and all its associated data with optimized error handling and fewer retries
  */
 export const deleteWorld = async (worldId: string): Promise<void> => {
   console.log('Starting world deletion process for world:', worldId);
   
-  // Explicitly check for development mode at the function level
+  // Check for development mode at the function level
   const devMode = isDevelopmentMode();
   if (devMode) {
     console.log('Development mode detected for world deletion');
   }
   
-  // Set a longer timeout to prevent indefinite hanging (120 seconds instead of 60)
-  const { promise: timeoutPromise, cancel: cancelTimeout } = createTimeout(120000);
+  // Set a shorter timeout to prevent indefinite hanging (30 seconds)
+  const { promise: timeoutPromise, cancel: cancelTimeout } = createTimeout(30000);
   
   // Flag to track operation completion for cleanup purposes
   let operationCompleted = false;
@@ -59,7 +60,7 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
     
     console.log('World found:', worldCheck);
     
-    // Clear any world_id references in projects with retry mechanism
+    // Clear any world_id references in projects with optimized retry mechanism
     const updateProjects = async (attempt = 1): Promise<void> => {
       try {
         console.log(`Updating project references to world (attempt ${attempt}):`, worldId);
@@ -70,9 +71,9 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
           .select('id');
           
         if (projectError) {
-          if (attempt < 4) {
+          if (attempt < 2) { // Reduced retry attempts to 2
             console.log(`Project update attempt ${attempt} failed, retrying...`);
-            await new Promise(resolve => setTimeout(resolve, 500 * attempt));
+            await new Promise(resolve => setTimeout(resolve, 300 * attempt)); // Reduced delay
             return updateProjects(attempt + 1);
           }
           throw new Error(`Failed to update project references: ${projectError.message}`);
@@ -80,16 +81,16 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
         
         console.log('Successfully updated project references');
       } catch (error) {
-        if (attempt < 4) {
+        if (attempt < 2) { // Reduced retry attempts to 2
           console.log(`Project update attempt ${attempt} failed with exception, retrying...`);
-          await new Promise(resolve => setTimeout(resolve, 500 * attempt));
+          await new Promise(resolve => setTimeout(resolve, 300 * attempt)); // Reduced delay
           return updateProjects(attempt + 1);
         }
         throw error;
       }
     };
     
-    // Delete categories with retry mechanism
+    // Delete categories with optimized retry mechanism
     const deleteCategories = async (attempt = 1): Promise<void> => {
       try {
         console.log(`Deleting categories for world (attempt ${attempt}):`, worldId);
@@ -100,9 +101,9 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
           .select('id');
           
         if (catError) {
-          if (attempt < 4) {
+          if (attempt < 2) { // Reduced retry attempts to 2
             console.log(`Category deletion attempt ${attempt} failed, retrying...`);
-            await new Promise(resolve => setTimeout(resolve, 500 * attempt));
+            await new Promise(resolve => setTimeout(resolve, 300 * attempt)); // Reduced delay
             return deleteCategories(attempt + 1);
           }
           throw new Error(`Failed to delete world categories: ${catError.message}`);
@@ -110,24 +111,22 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
         
         console.log('Categories deleted:', deletedCategories?.length || 0);
       } catch (error) {
-        if (attempt < 4) {
+        if (attempt < 2) { // Reduced retry attempts to 2
           console.log(`Category deletion attempt ${attempt} failed with exception, retrying...`);
-          await new Promise(resolve => setTimeout(resolve, 500 * attempt));
+          await new Promise(resolve => setTimeout(resolve, 300 * attempt)); // Reduced delay
           return deleteCategories(attempt + 1);
         }
         throw error;
       }
     };
     
-    // First update projects (less critical)
+    // Run these operations sequentially
     await updateProjects();
-    
-    // Then delete categories (more critical for referential integrity)
     await deleteCategories();
     
     console.log('Now deleting world itself');
     
-    // Now delete the world itself with a retry mechanism
+    // Now delete the world itself with an optimized retry mechanism
     const executeWorldDeletion = async (attempt = 1): Promise<any> => {
       try {
         const { data, error } = await customSupabase
@@ -137,9 +136,9 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
           .select();
           
         if (error) {
-          if (attempt < 5) { // Increased max attempts for world deletion
-            console.log(`World delete attempt ${attempt} failed, retrying in ${attempt * 500}ms...`);
-            await new Promise(resolve => setTimeout(resolve, attempt * 500));
+          if (attempt < 3) { // Reduced max attempts for world deletion
+            console.log(`World delete attempt ${attempt} failed, retrying in ${attempt * 300}ms...`);
+            await new Promise(resolve => setTimeout(resolve, attempt * 300)); // Reduced delay
             return executeWorldDeletion(attempt + 1);
           }
           throw error;
@@ -147,9 +146,9 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
         
         return { data, error: null };
       } catch (error) {
-        if (attempt < 5) { // Increased max attempts
+        if (attempt < 3) { // Reduced max attempts
           console.log(`World delete attempt ${attempt} failed with exception, retrying...`);
-          await new Promise(resolve => setTimeout(resolve, attempt * 500));
+          await new Promise(resolve => setTimeout(resolve, attempt * 300)); // Reduced delay
           return executeWorldDeletion(attempt + 1);
         }
         throw error;
@@ -173,7 +172,7 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
     console.log('World deleted successfully:', deletedWorld);
     
     // Add a small delay before resolving to ensure all state updates have time to propagate
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 300)); // Reduced delay
     
   } catch (error) {
     console.error('Error in delete world process:', error);

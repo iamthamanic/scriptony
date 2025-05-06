@@ -17,16 +17,20 @@ export function useWorldDeletion(
   const { toast } = useToast();
   const [deletionState, setDeletionState] = useState<DeletionState>('idle');
   const deleteCompletedAtRef = useRef<number | null>(null);
+  const operationInProgressRef = useRef<boolean>(false);
   
-  // Significantly improved delete world operation with state machine approach
+  // Significantly improved delete world operation with sequential state updates
   const handleDeleteWorld = useCallback(async (selectedWorld: World | null): Promise<void> => {
     // Block if already processing or no world selected
-    if (!selectedWorld || deletionState !== 'idle') {
-      console.log("Delete operation blocked - state:", deletionState);
+    if (!selectedWorld || deletionState !== 'idle' || operationInProgressRef.current) {
+      console.log("Delete operation blocked - state:", deletionState, "operation in progress:", operationInProgressRef.current);
       return Promise.resolve();
     }
     
     try {
+      // Set operation in progress flag
+      operationInProgressRef.current = true;
+      
       // 1. Track world details before deletion
       const worldName = selectedWorld.name;
       const worldId = selectedWorld.id;
@@ -34,59 +38,99 @@ export function useWorldDeletion(
       console.log('Starting deletion process for world:', worldId);
       setDeletionState('starting');
       
-      // 2. Update UI state immediately (optimistic update)
-      setDeletionState('processing');
-      
-      // 3. Clear selected world ID to return to worlds list (before API call)
+      // 2. Clear selected world ID to return to worlds list (before API call)
       setSelectedWorldId(null);
       
-      // 4. Remove from worlds list (optimistic update)
+      // 3. Brief delay to ensure UI updates
+      await new Promise(resolve => setTimeout(resolve, 50));
+      
+      // 4. Update UI state 
+      setDeletionState('processing');
+      
+      // 5. Remove from worlds list (optimistic update)
       const newWorlds = worlds.filter(w => w.id !== worldId);
       setWorlds(newWorlds);
       
-      // 5. Show loading state
+      // 6. Show loading state
       setIsLoading(true);
       
-      // 6. Brief delay to ensure UI updates have propagated
-      await new Promise(resolve => setTimeout(resolve, 200));
+      // 7. Another brief delay to ensure UI updates have propagated
+      await new Promise(resolve => setTimeout(resolve, 50));
       
-      // 7. Perform actual deletion in the background
-      const deletionPromise = deleteWorld(worldId);
-      
-      // 8. Record completion timestamp
-      const completionTimestamp = Date.now();
-      deleteCompletedAtRef.current = completionTimestamp;
-      
-      // 9. Update deletion state
-      setDeletionState('completed');
-      
-      // 10. Add UI cooldown period and show success message
-      toast({
-        title: 'Welt gelöscht',
-        description: `"${worldName}" wurde erfolgreich gelöscht.`,
-        duration: 3000
-      });
-      
-      // 11. Update loading state
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 500);
-      
-      // 12. Reset deletion state after cooldown
-      setTimeout(() => {
-        // Only reset if this is still the most recent deletion
-        if (deleteCompletedAtRef.current === completionTimestamp) {
-          setDeletionState('idle');
+      try {
+        // 8. Perform actual deletion
+        await deleteWorld(worldId);
+        
+        // 9. Record completion timestamp
+        const completionTimestamp = Date.now();
+        deleteCompletedAtRef.current = completionTimestamp;
+        
+        // 10. Update deletion state
+        setDeletionState('completed');
+        
+        // 11. Show success message
+        toast({
+          title: 'Welt gelöscht',
+          description: `"${worldName}" wurde erfolgreich gelöscht.`,
+          duration: 3000
+        });
+        
+        // 12. Reset loading state after a brief delay
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 300);
+        
+        // 13. Reset deletion state after cooldown
+        setTimeout(() => {
+          // Only reset if this is still the most recent deletion
+          if (deleteCompletedAtRef.current === completionTimestamp) {
+            setDeletionState('idle');
+          }
+          
+          // Clear the operation flag
+          operationInProgressRef.current = false;
+        }, 1000);
+        
+      } catch (deleteError) {
+        // Handle API delete error
+        console.error('Error in actual deletion API call:', deleteError);
+        
+        // Update state to error
+        setDeletionState('error');
+        
+        // Show error message
+        toast({
+          title: 'Fehler beim Löschen',
+          description: deleteError instanceof Error ? deleteError.message : 'Es ist ein Fehler aufgetreten',
+          variant: 'destructive',
+          duration: 3000
+        });
+        
+        // Reload worlds to reset state
+        try {
+          const worldsData = await fetchUserWorlds();
+          setWorlds(worldsData);
+        } catch (reloadError) {
+          console.error('Failed to reload worlds after error:', reloadError);
         }
-      }, 1500);
-      
-      // 13. Actually wait for the deletion to complete
-      await deletionPromise;
+        
+        // Reset loading and operation flags
+        setIsLoading(false);
+        
+        // Reset deletion state after error with a delay
+        setTimeout(() => {
+          setDeletionState('idle');
+          operationInProgressRef.current = false;
+        }, 500);
+        
+        return Promise.reject(deleteError);
+      }
       
       return Promise.resolve();
     } catch (error) {
       console.error('Error in handleDeleteWorld:', error);
       setDeletionState('error');
+      operationInProgressRef.current = false;
       
       // Show error message with reduced duration
       toast({
@@ -96,21 +140,13 @@ export function useWorldDeletion(
         duration: 3000
       });
       
-      // Reload worlds to reset state
-      try {
-        setIsLoading(true);
-        const worldsData = await fetchUserWorlds();
-        setWorlds(worldsData);
-        setIsLoading(false);
-      } catch (e) {
-        console.error('Failed to reload worlds after error:', e);
-        setIsLoading(false);
-      }
+      // Ensure loading is reset
+      setIsLoading(false);
       
       // Reset deletion state after error
       setTimeout(() => {
         setDeletionState('idle');
-      }, 1000);
+      }, 500);
       
       return Promise.reject(error);
     }
