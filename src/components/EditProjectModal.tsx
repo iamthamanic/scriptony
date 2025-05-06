@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -19,6 +20,18 @@ interface EditProjectModalProps {
 }
 
 const EditProjectModal = ({ isOpen, onClose, onSubmit, project }: EditProjectModalProps) => {
+  // Ensure inspirations is always an array before initializing state
+  const normalizeInspirations = (rawInspirations: string[] | string | undefined): string[] => {
+    if (!rawInspirations) return [];
+    if (Array.isArray(rawInspirations)) return rawInspirations;
+    if (typeof rawInspirations === 'string') {
+      // Handle comma-separated string format
+      return rawInspirations.split(',').map(item => item.trim()).filter(Boolean);
+    }
+    console.warn("Unexpected inspirations format:", rawInspirations);
+    return [];
+  };
+
   const [formData, setFormData] = useState<EditProjectFormData>({
     title: project.title,
     type: project.type,
@@ -26,7 +39,7 @@ const EditProjectModal = ({ isOpen, onClose, onSubmit, project }: EditProjectMod
     logline: project.logline,
     genres: project.genres,
     duration: project.duration,
-    inspirations: project.inspirations,
+    inspirations: normalizeInspirations(project.inspirations),
     coverImage: project.coverImage || undefined,
     narrativeStructure: project.narrativeStructure
   });
@@ -48,7 +61,7 @@ const EditProjectModal = ({ isOpen, onClose, onSubmit, project }: EditProjectMod
       logline: project.logline,
       genres: project.genres,
       duration: project.duration,
-      inspirations: project.inspirations,
+      inspirations: normalizeInspirations(project.inspirations),
       coverImage: project.coverImage || undefined,
       narrativeStructure: project.narrativeStructure
     });
@@ -303,24 +316,34 @@ const EditProjectModal = ({ isOpen, onClose, onSubmit, project }: EditProjectMod
           
           <div className="space-y-2">
             <Label>Inspirations</Label>
-            {formData.inspirations.map((inspiration, index) => (
-              <div key={index} className="flex items-center gap-2">
+            {formData.inspirations && formData.inspirations.length > 0 ? (
+              formData.inspirations.map((inspiration, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <Input
+                    value={inspiration}
+                    onChange={(e) => handleInspirationChange(index, e.target.value)}
+                    placeholder={`Inspiration ${index + 1}`}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleRemoveInspiration(index)}
+                    disabled={formData.inspirations.length <= 1}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))
+            ) : (
+              <div className="flex items-center gap-2">
                 <Input
-                  value={inspiration}
-                  onChange={(e) => handleInspirationChange(index, e.target.value)}
-                  placeholder={`Inspiration ${index + 1}`}
+                  value=""
+                  onChange={(e) => handleInspirationChange(0, e.target.value)}
+                  placeholder="Inspiration 1"
                 />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => handleRemoveInspiration(index)}
-                  disabled={formData.inspirations.length <= 1}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
               </div>
-            ))}
+            )}
             <Button
               type="button"
               variant="outline"
