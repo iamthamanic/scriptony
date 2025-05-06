@@ -1,8 +1,9 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { Scene, NewSceneFormData, TimeOfDay, EmotionalSignificance } from "../types";
-import { handleApiError } from "./utils";
+import { handleApiError, convertDbSceneToApp } from "./utils";
 
-export const createScene = async (projectId: string, sceneData: NewSceneFormData, editingScene: Scene | null): Promise<Scene | null> => {
+export const createScene = async (sceneData: NewSceneFormData): Promise<Scene | null> => {
   try {
     // If there's a keyframe image, upload it first
     let keyframeUrl = undefined;
@@ -23,7 +24,10 @@ export const createScene = async (projectId: string, sceneData: NewSceneFormData
       keyframeUrl = urlData.publicUrl;
     }
     
-    if (editingScene) {
+    // Determine if this is an update or create
+    const isUpdate = !!sceneData.id;
+    
+    if (isUpdate) {
       // Update existing scene
       const { data, error } = await supabase
         .from('scenes')
@@ -40,7 +44,7 @@ export const createScene = async (projectId: string, sceneData: NewSceneFormData
           color_grading: sceneData.colorGrading,
           sound_design: sceneData.soundDesign,
           special_effects: sceneData.specialEffects,
-          keyframe_image_url: keyframeUrl || editingScene.keyframeImage,
+          keyframe_image_url: keyframeUrl || undefined,
           description: sceneData.description,
           dialog: sceneData.dialog,
           transitions: sceneData.transitions,
@@ -50,46 +54,20 @@ export const createScene = async (projectId: string, sceneData: NewSceneFormData
           character_ids: sceneData.characterIds || [],
           updated_at: new Date().toISOString()
         })
-        .eq('id', editingScene.id)
+        .eq('id', sceneData.id)
         .select()
         .single();
         
       if (error) throw error;
       
-      // Convert to our application type
-      return {
-        id: data.id,
-        projectId: data.project_id,
-        episodeId: data.episode_id || undefined,
-        episodeTitle: data.episode_title || undefined,
-        sceneNumber: data.scene_number,
-        location: data.location,
-        timeOfDay: data.time_of_day as TimeOfDay,
-        timecodeStart: data.timecode_start,
-        timecodeEnd: data.timecode_end,
-        visualComposition: data.visual_composition || '',
-        lighting: data.lighting || '',
-        colorGrading: data.color_grading || '',
-        soundDesign: data.sound_design || '',
-        specialEffects: data.special_effects || '',
-        keyframeImage: data.keyframe_image_url,
-        description: data.description,
-        dialog: data.dialog || '',
-        transitions: data.transitions || '',
-        productionNotes: data.production_notes || '',
-        emotionalSignificance: data.emotional_significance as EmotionalSignificance || 'other',
-        emotionalNotes: data.emotional_notes || '',
-        characterIds: data.character_ids || [],
-        createdAt: new Date(data.created_at),
-        updatedAt: new Date(data.updated_at)
-      };
+      return convertDbSceneToApp(data);
       
     } else {
       // Create new scene
       const { data, error } = await supabase
         .from('scenes')
         .insert({
-          project_id: projectId,
+          project_id: sceneData.projectId,
           episode_id: sceneData.episodeId,
           episode_title: sceneData.episodeTitle,
           scene_number: sceneData.sceneNumber,
@@ -116,41 +94,11 @@ export const createScene = async (projectId: string, sceneData: NewSceneFormData
         
       if (error) throw error;
       
-      // Convert to our application type
-      return {
-        id: data.id,
-        projectId: data.project_id,
-        episodeId: data.episode_id || undefined,
-        episodeTitle: data.episode_title || undefined,
-        sceneNumber: data.scene_number,
-        location: data.location,
-        timeOfDay: data.time_of_day as TimeOfDay,
-        timecodeStart: data.timecode_start,
-        timecodeEnd: data.timecode_end,
-        visualComposition: data.visual_composition || '',
-        lighting: data.lighting || '',
-        colorGrading: data.color_grading || '',
-        soundDesign: data.sound_design || '',
-        specialEffects: data.special_effects || '',
-        keyframeImage: data.keyframe_image_url,
-        description: data.description,
-        dialog: data.dialog || '',
-        transitions: data.transitions || '',
-        productionNotes: data.production_notes || '',
-        emotionalSignificance: data.emotional_significance as EmotionalSignificance || 'other',
-        emotionalNotes: data.emotional_notes || '',
-        characterIds: data.character_ids || [],
-        createdAt: new Date(data.created_at),
-        updatedAt: new Date(data.updated_at)
-      };
+      return convertDbSceneToApp(data);
     }
     
   } catch (error) {
-    handleApiError(error, { 
-      defaultMessage: "Failed to save scene",
-      showToast: true
-    });
-    return null;
+    return handleApiError(error);
   }
 };
 
@@ -166,10 +114,6 @@ export const deleteScene = async (sceneId: string): Promise<boolean> => {
     return true;
     
   } catch (error) {
-    handleApiError(error, { 
-      defaultMessage: "Failed to delete scene",
-      showToast: true
-    });
-    return false;
+    return handleApiError(error) ?? false;
   }
 };

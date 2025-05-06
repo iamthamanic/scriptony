@@ -1,24 +1,25 @@
 
 import { useState } from "react";
 import { createProject, createScene } from "../../../services";
-import { useProjects } from "../useProjects";
+import { Project, ProjectType, NarrativeStructureType, Scene, TimeOfDay } from "../../../types";
 import { useToast } from "../../use-toast";
 import { generateDefaultSceneForTemplate } from "../../../utils/mockData";
-import { Project, ProjectType, NarrativeStructure, Scene, TimeOfDay } from "../../../types";
 import { useAuth } from "@/contexts/AuthContext";
 
 export const useCreateProject = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { addProject } = useProjects();
   const { toast } = useToast();
   const { user } = useAuth();
 
   const handleCreateProject = async (data: {
     title: string;
-    description: string;
     type: ProjectType;
-    narrativeStructure?: NarrativeStructure;
+    narrativeStructure?: NarrativeStructureType;
+    logline?: string;
     genre?: string;
+    genres?: string[];
+    duration?: number;
+    inspirations?: string[];
   }) => {
     if (!user) return;
 
@@ -28,10 +29,12 @@ export const useCreateProject = () => {
       // Create the project first
       const newProject = await createProject({
         title: data.title,
-        description: data.description,
         type: data.type,
         narrativeStructure: data.narrativeStructure,
-        genre: data.genre || "unknown"
+        logline: data.logline || '',
+        genres: data.genres || [],
+        duration: data.duration || 0,
+        inspirations: data.inspirations || []
       });
 
       if (newProject) {
@@ -72,9 +75,6 @@ export const useCreateProject = () => {
             newProject.scenes = createdScenes.filter(Boolean) as Scene[];
           }
         }
-
-        // Add the project to local state
-        addProject(newProject);
 
         toast({
           title: "Project created",

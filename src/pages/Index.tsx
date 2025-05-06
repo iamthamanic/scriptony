@@ -2,7 +2,7 @@
 import React, { useState, useRef } from "react";
 import { useProjectState } from "../hooks/project/useProjectState";
 import { useAuth } from "@/contexts/AuthContext";
-import { Scene, Episode, EditProjectFormData, NewCharacterFormData } from "../types";
+import { Scene, Episode, EditProjectFormData, NewCharacterFormData, Character } from "../types";
 import ScriptAnalysisResults from "@/components/script-analysis/ScriptAnalysisResults";
 import ProjectModals from "../components/ProjectModals";
 import ProjectPageHeader from "@/components/projects/ProjectPageHeader";
@@ -71,6 +71,23 @@ const Index = () => {
     }
   };
 
+  const handleEditCharacterWrapper = (character: Character) => {
+    handleEditCharacter(character.id, {
+      name: character.name,
+      role: character.role,
+      description: character.description,
+      avatar: character.avatar
+    });
+  };
+
+  const handleDeleteCharacterWrapper = (character: Character) => {
+    handleDeleteCharacter(character.id);
+  };
+
+  const handleDeleteEpisodeWrapper = (episode: Episode) => {
+    handleDeleteEpisode(episode.id);
+  };
+
   const handleCreateOrEditEpisode = (data: any) => {
     if (editingEpisode) {
       handleEditEpisode(editingEpisode.id, data);
@@ -79,6 +96,12 @@ const Index = () => {
     }
     setIsEpisodeModalOpen(false);
     setEditingEpisode(null);
+  };
+
+  const handleCreateSceneWrapper = (data: any) => {
+    handleCreateScene(data);
+    setIsNewSceneModalOpen(false);
+    setEditingScene(null);
   };
 
   const handleNewScene = () => {
@@ -91,6 +114,11 @@ const Index = () => {
   const handleSelectProject = (projectId: string) => {
     setSelectedProjectId(projectId);
     setSelectedEpisodeId(null); // Reset selected episode when switching projects
+  };
+
+  const handleCreateProjectWrapper = (data: any) => {
+    handleCreateProject(data);
+    setIsNewProjectModalOpen(false);
   };
 
   return (
@@ -115,11 +143,11 @@ const Index = () => {
         onDeleteProject={handleDeleteProject}
         onEditScene={handleEditScene}
         onDeleteScene={handleDeleteScene}
-        onEditCharacter={handleEditCharacter}
-        onDeleteCharacter={handleDeleteCharacter}
+        onEditCharacter={handleEditCharacterWrapper}
+        onDeleteCharacter={handleDeleteCharacterWrapper}
         onNewEpisode={handleNewEpisode}
         onEditEpisode={handleEditEpisodeClick}
-        onDeleteEpisode={handleDeleteEpisode}
+        onDeleteEpisode={handleDeleteEpisodeWrapper}
         onNewProject={handleNewProject}
       />
       
@@ -141,13 +169,9 @@ const Index = () => {
           setIsEpisodeModalOpen(false);
           setEditingEpisode(null);
         }}
-        onCreateProject={handleCreateProject}
+        onCreateProject={handleCreateProjectWrapper}
         onEditProject={handleEditProject}
-        onCreateScene={(data) => {
-          handleCreateScene(data, editingScene);
-          setIsNewSceneModalOpen(false);
-          setEditingScene(null);
-        }}
+        onCreateScene={handleCreateSceneWrapper}
         onCreateCharacter={handleCreateCharacter}
         onCreateOrEditEpisode={handleCreateOrEditEpisode}
         selectedProject={selectedProject}
@@ -160,10 +184,7 @@ const Index = () => {
         isOpen={isAnalysisResultsOpen}
         onClose={() => setIsAnalysisResultsOpen(false)}
         analysisResult={analysisResult}
-        onCreateProject={(data) => {
-          handleCreateProject(data);
-          setIsAnalysisResultsOpen(false);
-        }}
+        onCreateProject={handleCreateProjectWrapper}
         isLoading={isAnalyzing}
       />
     </div>

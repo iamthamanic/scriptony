@@ -7,7 +7,8 @@ import { createProject, deleteProject, updateProject } from './projects';
 import { createScene, deleteScene } from './scenes';
 import { createCharacter, updateCharacter, deleteCharacter } from './characters';
 import { createEpisode, updateEpisode, deleteEpisode } from './episodes';
-import { fetchUserProjects, fetchProjectDetails } from './projects/projectDetails';
+// Import from index files to avoid conflicts
+import { fetchUserProjects, fetchProjectDetails } from './projects/index';
 import * as utils from './utils';
 
 export { 

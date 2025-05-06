@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import SceneCard from "./SceneCard";
 import { Scene, Character, Episode } from "../types";
@@ -12,6 +11,7 @@ interface SceneListProps {
   onExportPDF: (scene: Scene) => void;
   onDeleteScene: (scene: Scene) => void;
   characters: Character[];
+  selectedEpisodeId?: string | null;
   showEpisodeFilter?: boolean;
   episodes?: Episode[];
 }
@@ -22,14 +22,15 @@ const SceneList = ({
   onExportPDF, 
   onDeleteScene, 
   characters,
+  selectedEpisodeId = null,
   showEpisodeFilter = false,
   episodes = []
 }: SceneListProps) => {
-  const [selectedEpisodeId, setSelectedEpisodeId] = useState<string>("all");
+  const [selectedEpisode, setSelectedEpisode] = useState<string>("all");
   
-  const filteredScenes = selectedEpisodeId === "all"
+  const filteredScenes = selectedEpisode === "all"
     ? scenes
-    : scenes.filter(scene => scene.episodeId === selectedEpisodeId);
+    : scenes.filter(scene => scene.episodeId === selectedEpisode);
     
   return (
     <div className="mt-8">
@@ -41,7 +42,7 @@ const SceneList = ({
         
         {showEpisodeFilter && episodes.length > 0 && (
           <div className="w-full sm:w-64">
-            <Select value={selectedEpisodeId} onValueChange={setSelectedEpisodeId}>
+            <Select value={selectedEpisode} onValueChange={setSelectedEpisode}>
               <SelectTrigger>
                 <SelectValue placeholder="Filter by episode" />
               </SelectTrigger>
@@ -80,11 +81,11 @@ const SceneList = ({
       ) : (
         <div className="bg-muted/30 rounded-md p-6 text-center">
           <p className="text-muted-foreground">No scenes to display</p>
-          {selectedEpisodeId !== "all" && (
+          {selectedEpisode !== "all" && (
             <Button 
               variant="ghost" 
               className="mt-2"
-              onClick={() => setSelectedEpisodeId("all")}
+              onClick={() => setSelectedEpisode("all")}
             >
               Show all scenes
             </Button>

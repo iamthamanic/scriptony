@@ -14,10 +14,6 @@ export const deleteProject = async (projectId: string): Promise<boolean> => {
     return true;
     
   } catch (error) {
-    handleApiError(error, { 
-      defaultMessage: "Failed to delete project",
-      showToast: true
-    });
-    return false;
+    return handleApiError(error) ?? false;
   }
 };

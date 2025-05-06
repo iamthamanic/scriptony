@@ -1,115 +1,88 @@
 
+import { v4 as uuidv4 } from "uuid";
 import { customSupabase } from "@/integrations/supabase/customClient";
-import { Project, NewProjectFormData } from "@/types";
+import { NewProjectFormData, Project } from "@/types";
 import { handleApiError, convertDbProjectToApp } from "../utils";
 import { isDevelopmentMode, getDevModeUser } from "@/utils/devMode";
 
-export const createProject = async (projectData: NewProjectFormData): Promise<Project | null> => {
+export const createProject = async (data: NewProjectFormData): Promise<Project | null> => {
   try {
-    // If there's a cover image, upload it first
-    let coverImageUrl = undefined;
-    
-    if (projectData.coverImage) {
-      const fileName = `${Date.now()}_${projectData.coverImage.name}`;
-      const { data: uploadData, error: uploadError } = await customSupabase.storage
-        .from('project_assets')
-        .upload(`project-covers/${fileName}`, projectData.coverImage);
-        
-      if (uploadError) throw uploadError;
-      
-      // Get the public URL
-      const { data: urlData } = customSupabase.storage
-        .from('project_assets')
-        .getPublicUrl(`project-covers/${fileName}`);
-        
-      coverImageUrl = urlData.publicUrl;
+    const user = isDevelopmentMode() ? getDevModeUser() : (await customSupabase.auth.getUser()).data.user;
+    if (!user) {
+      throw new Error("User not authenticated");
     }
+
+    let coverImageUrl: string | undefined;
     
-    // Get the current user, using development mode if enabled
-    let user;
-    if (isDevelopmentMode()) {
-      console.log("Using development mode user for project creation");
-      user = getDevModeUser();
-      console.log("Development user ID:", user.id);
+    // Handle cover image upload if provided
+    if (data.coverImage) {
+      const file = data.coverImage;
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${uuidv4()}.${fileExt}`;
+      const filePath = `${user.id}/projects/${fileName}`;
       
-      // In development mode, use supabase.rpc() to bypass RLS
-      // This allows us to insert projects as the development user
-      console.log("Creating project in development mode", {
-        title: projectData.title,
-        type: projectData.type,
-        userId: user.id
-      });
-      
-      const { data, error } = await customSupabase
-        .rpc('create_project_dev_mode', {
-          p_title: projectData.title,
-          p_type: projectData.type,
-          p_video_format: projectData.videoFormat,
-          p_logline: projectData.logline || "",
-          p_genres: projectData.genres || [],
-          p_duration: projectData.duration?.toString() || "",
-          p_inspirations: (projectData.inspirations || []).join(','),
-          p_cover_image_url: coverImageUrl,
-          p_narrative_structure: projectData.narrativeStructure || 'none',
-          p_user_id: user.id,
-          p_world_id: projectData.world_id
-        });
+      const { error: uploadError } = await customSupabase
+        .storage
+        .from('project_assets')
+        .upload(filePath, file);
         
-      if (error) {
-        console.error("Error in create_project_dev_mode:", error);
-        throw error;
+      if (uploadError) {
+        console.error('Error uploading cover image:', uploadError);
+      } else {
+        const { data: publicUrl } = customSupabase
+          .storage
+          .from('project_assets')
+          .getPublicUrl(filePath);
+          
+        coverImageUrl = publicUrl.publicUrl;
       }
-      
-      console.log("Project created in development mode, ID:", data);
-      
-      // Fetch the created project
-      const { data: projectResult, error: projectError } = await customSupabase
-        .from('projects')
-        .select('*')
-        .eq('id', data)
-        .single();
-        
-      if (projectError) {
-        console.error("Error fetching created project:", projectError);
-        throw projectError;
-      }
-      
-      return convertDbProjectToApp(projectResult);
-    } else {
-      // In production mode, use standard flow with authenticated user
-      const { data, error } = await customSupabase.auth.getUser();
-      if (error || !data.user) throw new Error("User not authenticated");
-      user = data.user;
-      
-      // Insert project into database with new fields
-      const { data: insertData, error: insertError } = await customSupabase
-        .from('projects')
-        .insert({
-          title: projectData.title,
-          type: projectData.type,
-          video_format: projectData.videoFormat,
-          logline: projectData.logline,
-          genres: projectData.genres,
-          duration: projectData.duration.toString(),
-          inspirations: projectData.inspirations.join(','),
-          cover_image_url: coverImageUrl,
-          narrative_structure: projectData.narrativeStructure || 'none',
-          user_id: user.id,
-          world_id: projectData.world_id
-        })
-        .select()
-        .single();
-        
-      if (insertError) throw insertError;
-      
-      return convertDbProjectToApp(insertData);
     }
+
+    // Format inspirations for database
+    const inspirationsStr = Array.isArray(data.inspirations) 
+      ? data.inspirations.join(',')
+      : (data.inspirations || '');
+
+    // Format project data for database
+    const projectData = {
+      id: uuidv4(),
+      title: data.title,
+      type: data.type,
+      user_id: user.id,
+      video_format: data.videoFormat,
+      logline: data.logline || '',
+      genres: data.genres || [],
+      duration: data.duration?.toString() || '0',
+      inspirations: inspirationsStr,
+      cover_image_url: coverImageUrl,
+      narrative_structure: data.narrativeStructure || 'none',
+      world_id: data.world_id,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+
+    // Insert project in database
+    const { data: dbProject, error } = await customSupabase
+      .from('projects')
+      .insert(projectData)
+      .select()
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    // Convert database project to app model
+    const appProject = convertDbProjectToApp(dbProject);
     
+    // Initialize with empty arrays for collections
+    return {
+      ...appProject,
+      scenes: [],
+      characters: [],
+      episodes: []
+    };
   } catch (error) {
-    handleApiError(error, { 
-      defaultMessage: "Failed to create project",
-      showToast: true
-    });
-    return null;
+    return handleApiError(error);
   }
 };
