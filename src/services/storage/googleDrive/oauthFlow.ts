@@ -83,7 +83,11 @@ export const handleDriveOAuthCallback = async (
   if (!savedState || savedState !== state) {
     return { 
       success: false, 
-      message: 'Sicherheitsfehler: State-Parameter stimmt nicht überein' 
+      message: 'Sicherheitsfehler: State-Parameter stimmt nicht überein',
+      error: {
+        code: 'STATE_MISMATCH',
+        details: 'The state parameter in the callback does not match the one saved in localStorage'
+      }
     };
   }
   
@@ -96,18 +100,22 @@ export const handleDriveOAuthCallback = async (
     
     console.log("Using redirect URI for token exchange:", redirectUri);
     
+    const tokenParams = new URLSearchParams({
+      code,
+      client_id: clientId,
+      client_secret: clientSecret,
+      redirect_uri: redirectUri,
+      grant_type: 'authorization_code',
+    });
+    
+    console.log("Token request parameters set up");
+    
     const tokenResponse = await fetch(GOOGLE_TOKEN_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: new URLSearchParams({
-        code,
-        client_id: clientId,
-        client_secret: clientSecret,
-        redirect_uri: redirectUri,
-        grant_type: 'authorization_code',
-      }),
+      body: tokenParams,
     });
     
     console.log("Token response status:", tokenResponse.status);

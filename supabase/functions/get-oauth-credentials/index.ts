@@ -13,6 +13,8 @@ serve(async (req) => {
   }
 
   try {
+    console.log("Processing get-oauth-credentials request");
+    
     // Create a Supabase client with the Auth context
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -31,11 +33,18 @@ serve(async (req) => {
     } = await supabaseClient.auth.getUser();
 
     if (userError || !user) {
+      console.error("Authentication error:", userError);
       throw new Error("Not authenticated");
     }
 
     // Path parameter to determine which credentials to return
-    const { service } = await req.json();
+    const requestBody = await req.json().catch(error => {
+      console.error("Failed to parse request body:", error);
+      return { service: "drive" }; // Default to drive if parsing fails
+    });
+    
+    const { service } = requestBody;
+    console.log(`Requested credentials for service: ${service}`);
 
     let clientId: string | null;
     let clientSecret: string | null;
@@ -45,13 +54,16 @@ serve(async (req) => {
       // Google Auth credentials
       clientId = "1021623717075-t1ugq54l5omei2nn73a63r7vlae2cggk.apps.googleusercontent.com";
       clientSecret = "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";
+      console.log("Returning Auth credentials (ID starting with):", clientId.substring(0, 12) + "...");
     } else {
       // Default to Google Drive credentials
       clientId = "336644646972-6ku9cjco0scifhu85qnmgquh8o6gj10c.apps.googleusercontent.com";
       clientSecret = "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";
+      console.log("Returning Drive credentials (ID starting with):", clientId.substring(0, 12) + "...");
     }
 
     if (!clientId || !clientSecret) {
+      console.error("OAuth credentials not configured");
       throw new Error("Google OAuth credentials are not configured");
     }
 
@@ -71,6 +83,8 @@ serve(async (req) => {
       }
     );
   } catch (error) {
+    console.error("Error in get-oauth-credentials:", error);
+    
     return new Response(
       JSON.stringify({
         error: error.message,
