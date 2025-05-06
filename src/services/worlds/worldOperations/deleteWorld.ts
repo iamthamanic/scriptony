@@ -47,8 +47,7 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
       .from('projects')
       .update({ world_id: null })
       .eq('world_id', worldId)
-      .select('id')
-      .is('id', 'not.null'); // Just to ensure the query runs fully
+      .select('id');
       
     if (projectError) {
       console.error('Error updating project references:', projectError);
