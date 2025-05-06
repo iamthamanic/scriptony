@@ -5,7 +5,7 @@ import { isDevelopmentMode } from "@/utils/devMode";
 /**
  * Creates a timeout Promise with proper cleanup to prevent memory leaks
  */
-export const createTimeout = (timeoutMs: number = 30000): { promise: Promise<never>, cancel: () => void } => {
+export const createTimeout = (timeoutMs: number = 45000): { promise: Promise<never>, cancel: () => void } => {
   let timeoutId: number;
   
   const promise = new Promise<never>((_, reject) => {
@@ -39,8 +39,8 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
     console.log('Added dev mode headers for all deletion requests');
   }
   
-  // Set a timeout to prevent indefinite hanging (30 seconds)
-  const { promise: timeoutPromise, cancel: cancelTimeout } = createTimeout(30000);
+  // Set a longer timeout to prevent indefinite hanging (45 seconds instead of 30)
+  const { promise: timeoutPromise, cancel: cancelTimeout } = createTimeout(45000);
   let operationCompleted = false;
 
   try {
@@ -89,12 +89,37 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
     
     console.log('Categories deleted:', deletedCategories?.length || 0, 'now deleting world');
     
-    // Now delete the world itself
-    const deletePromise = customSupabase
-      .from('worlds')
-      .delete()
-      .eq('id', worldId)
-      .select();
+    // Now delete the world itself with a retry mechanism
+    const executeWorldDeletion = async (attempt = 1): Promise<any> => {
+      try {
+        const { data, error } = await customSupabase
+          .from('worlds')
+          .delete()
+          .eq('id', worldId)
+          .select();
+          
+        if (error) {
+          if (attempt < 3) {
+            console.log(`Delete attempt ${attempt} failed, retrying...`);
+            await new Promise(resolve => setTimeout(resolve, 500));
+            return executeWorldDeletion(attempt + 1);
+          }
+          throw error;
+        }
+        
+        return { data, error: null };
+      } catch (error) {
+        if (attempt < 3) {
+          console.log(`Delete attempt ${attempt} failed with exception, retrying...`);
+          await new Promise(resolve => setTimeout(resolve, 500));
+          return executeWorldDeletion(attempt + 1);
+        }
+        throw error;
+      }
+    };
+    
+    // Execute world deletion with retries
+    const deletePromise = executeWorldDeletion();
     
     // Race against the timeout
     const { data: deletedWorld, error } = await Promise.race([deletePromise, timeoutPromise]);
@@ -113,12 +138,7 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
     throw error;
   } finally {
     // Always cancel the timeout to prevent memory leaks
-    if (!operationCompleted) {
-      console.log('Canceling timeout as operation completed or failed');
-      cancelTimeout();
-    } else {
-      // Ensure timeout is always canceled even when successful
-      cancelTimeout();
-    }
+    cancelTimeout();
+    console.log('Timeout canceled, cleanup complete');
   }
 };

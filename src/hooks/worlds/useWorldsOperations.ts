@@ -123,22 +123,29 @@ export function useWorldsOperations(
       
       console.log('World deletion successful, updating local state');
       
-      // Update local state first before closing dialog
+      // Update the worlds state first
       const newWorlds = worlds.filter(w => w.id !== worldId);
       setWorlds(newWorlds);
-      setSelectedWorldId(null); // Always return to worlds list after deletion
       
-      // Close the dialog last - this prevents UI from freezing
-      // Use a small delay to ensure React has processed the state updates
+      // Clear selected world ID to return to worlds list
+      setSelectedWorldId(null);
+      
+      // Use a longer timeout to ensure all state changes are processed
+      // before removing the dialog from the DOM
       setTimeout(() => {
+        // First close the dialog with a significant delay
+        // to ensure React has processed all state updates
         setIsDeleteWorldDialogOpen(false);
         
         // Show success toast after all UI operations are complete
-        toast({
-          title: 'Welt gelöscht',
-          description: `"${worldName}" wurde erfolgreich gelöscht.`
-        });
-      }, 50); // A very small delay to ensure state updates are processed
+        // with another small delay
+        setTimeout(() => {
+          toast({
+            title: 'Welt gelöscht',
+            description: `"${worldName}" wurde erfolgreich gelöscht.`
+          });
+        }, 100);
+      }, 400); // Increased from 50ms to 400ms for more reliable cleanup
       
       return Promise.resolve();
     } catch (error) {

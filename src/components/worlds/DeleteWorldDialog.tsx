@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,15 +24,25 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
   const [isDeleting, setIsDeleting] = useState(false);
   const [deletionError, setDeletionError] = useState<string | null>(null);
   const { toast } = useToast();
+  
+  // Force cleanup when unmounting
+  useEffect(() => {
+    return () => {
+      // This ensures we clean up any state when the component unmounts
+      setIsDeleting(false);
+      setDeletionError(null);
+    };
+  }, []);
 
-  // Clean up state when dialog opens/closes
+  // Clean up state when dialog opens/closes with improved timing
   useEffect(() => {
     if (!isOpen) {
-      // Reset state with a small delay to ensure animations complete
+      // Reset state with a longer delay to ensure animations complete
+      // and all React state updates have been processed
       const timer = setTimeout(() => {
         setIsDeleting(false);
         setDeletionError(null);
-      }, 300);
+      }, 500); // Increased from 300ms to 500ms
       
       // Cleanup timeout on unmount or when deps change
       return () => clearTimeout(timer);
@@ -42,7 +52,8 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
     }
   }, [isOpen]);
 
-  const handleDelete = async () => {
+  // Memoized delete handler to prevent unnecessary re-renders
+  const handleDelete = useCallback(async () => {
     if (isDeleting) return; // Prevent multiple clicks
     
     setIsDeleting(true);
@@ -74,15 +85,20 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
       // Set isDeleting to false to allow retry
       setIsDeleting(false);
     }
-  };
+  }, [isDeleting, onDelete, worldName, toast]);
 
   // Controlled closing of dialog to prevent issues with React's state updates
-  const handleDialogChange = (open: boolean) => {
+  const handleDialogChange = useCallback((open: boolean) => {
     // Only allow closing if not in the middle of deletion
     if (!open && !isDeleting) {
       onClose();
     }
-  };
+  }, [isDeleting, onClose]);
+
+  // If the dialog isn't open, don't render it at all to avoid portal issues
+  if (!isOpen) {
+    return null;
+  }
 
   return (
     <AlertDialog open={isOpen} onOpenChange={handleDialogChange}>
