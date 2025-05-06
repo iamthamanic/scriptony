@@ -5,12 +5,16 @@
 
 import { createProject, deleteProject, updateProject } from './projects';
 import { createScene as createSceneOld, deleteScene } from './scenes';
-import * as characters from './characters';
-import * as episodes from './episodes';
+import { createCharacter, updateCharacter, deleteCharacter } from './characters';
+import { createEpisode, updateEpisode, deleteEpisode } from './episodes';
+import { fetchUserProjects, fetchProjectDetails } from './projects/projectDetails';
 import * as utils from './utils';
 
 export { 
   createProject, deleteProject, updateProject,
   createSceneOld as createScene, deleteScene,
-  characters, episodes, utils
+  createCharacter, updateCharacter, deleteCharacter,
+  createEpisode, updateEpisode, deleteEpisode,
+  fetchUserProjects, fetchProjectDetails,
+  utils
 };
