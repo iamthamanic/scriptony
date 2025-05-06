@@ -6,7 +6,7 @@ import {
   GOOGLE_TOKEN_URL, 
   CLIENT_ID, 
   CLIENT_SECRET, 
-  REDIRECT_URI, 
+  getRedirectURI, 
   SCOPES, 
   generateRandomString,
   safeJsonParse
@@ -34,14 +34,20 @@ export interface DriveConnectionResponse {
 export const connectToGoogleDrive = (): void => {
   try {
     console.log("Starting Google Drive OAuth flow...");
-    console.log("Redirect URI:", REDIRECT_URI);
+    
+    // Get the redirect URI dynamically
+    const redirectUri = getRedirectURI();
+    console.log("Using redirect URI:", redirectUri);
     
     const state = generateRandomString(16);
     localStorage.setItem('driveOAuthState', state);
     
+    // Store the current URL in localStorage to help with redirect handling
+    localStorage.setItem('driveOAuthOriginUrl', window.location.href);
+    
     const authUrl = new URL(GOOGLE_AUTH_URL);
     authUrl.searchParams.append('client_id', CLIENT_ID);
-    authUrl.searchParams.append('redirect_uri', REDIRECT_URI);
+    authUrl.searchParams.append('redirect_uri', redirectUri);
     authUrl.searchParams.append('response_type', 'code');
     authUrl.searchParams.append('scope', SCOPES);
     authUrl.searchParams.append('state', state);
@@ -80,8 +86,8 @@ export const handleDriveOAuthCallback = async (
   try {
     // Exchange code for tokens
     console.log("Exchanging authorization code for tokens...");
-    console.log("Token URL:", GOOGLE_TOKEN_URL);
-    console.log("Redirect URI for token exchange:", REDIRECT_URI);
+    const redirectUri = getRedirectURI();
+    console.log("Using redirect URI for token exchange:", redirectUri);
     
     const tokenResponse = await fetch(GOOGLE_TOKEN_URL, {
       method: 'POST',
@@ -92,7 +98,7 @@ export const handleDriveOAuthCallback = async (
         code,
         client_id: CLIENT_ID,
         client_secret: CLIENT_SECRET,
-        redirect_uri: REDIRECT_URI,
+        redirect_uri: redirectUri,
         grant_type: 'authorization_code',
       }),
     });
