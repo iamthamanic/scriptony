@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { getEnvironmentInfo } from '@/services/auth/redirects';
 import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ExternalLink } from 'lucide-react';
 import { getClientId } from '@/services/storage/googleDrive/utils';
 
 interface DriveConnectionDiagnosticsProps {
@@ -38,8 +38,8 @@ const DriveConnectionDiagnostics: React.FC<DriveConnectionDiagnosticsProps> = ({
     
     // Test client ID
     try {
-      const clientId = await getClientId();
-      setClientIdFirstChars(clientId.substring(0, 8) + '...');
+      const clientId = await getClientId('drive');
+      setClientIdFirstChars(clientId.substring(0, 12) + '...');
       tests.clientId = true;
     } catch (error) {
       console.error('Error getting client ID:', error);
@@ -89,7 +89,7 @@ const DriveConnectionDiagnostics: React.FC<DriveConnectionDiagnosticsProps> = ({
                   <p><strong>Origin URL:</strong> {envInfo.originUrl}</p>
                   <p><strong>Drive Redirect URL:</strong> {envInfo.driveRedirectUrl}</p>
                   <p><strong>Auth Redirect URL:</strong> {envInfo.authRedirectUrl}</p>
-                  <p><strong>Client ID prüfen:</strong> {clientIdFirstChars ? 
+                  <p><strong>Client ID Prüfung:</strong> {clientIdFirstChars ? 
                     `Verfügbar (${clientIdFirstChars})` : 
                     'Nicht verfügbar'}</p>
                 </div>
@@ -121,8 +121,44 @@ const DriveConnectionDiagnostics: React.FC<DriveConnectionDiagnosticsProps> = ({
                 </div>
               )}
               
-              <div className="pt-4 flex justify-end">
-                <Button onClick={runTests}>Tests erneut ausführen</Button>
+              <div className="border-t pt-4 mt-4">
+                <h3 className="text-lg font-medium">Google Cloud Console Konfiguration</h3>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Prüfe, ob die folgende Konfiguration in der Google Cloud Console korrekt ist:
+                </p>
+                <div className="mt-3 space-y-2">
+                  <div className="p-2 bg-muted rounded-md">
+                    <p className="font-medium">Autorisierte JavaScript-Quellen:</p>
+                    <ul className="list-disc pl-5 text-sm">
+                      <li>{window.location.origin}</li>
+                      <li>https://app.scriptony.de</li>
+                      <li>https://preview.scriptony.de</li>
+                      <li>https://admin.scriptony.de</li>
+                    </ul>
+                  </div>
+                  <div className="p-2 bg-muted rounded-md">
+                    <p className="font-medium">Autorisierte Weiterleitungs-URIs:</p>
+                    <ul className="list-disc pl-5 text-sm">
+                      <li>{envInfo.driveRedirectUrl}</li>
+                      <li>https://app.scriptony.de/account?tab=storage</li>
+                      <li>https://preview.scriptony.de/account?tab=storage</li>
+                      <li>https://admin.scriptony.de/account?tab=storage</li>
+                    </ul>
+                  </div>
+                </div>
+                
+                <div className="flex justify-between mt-4">
+                  <Button variant="outline" onClick={runTests}>
+                    Tests erneut ausführen
+                  </Button>
+                  <Button 
+                    className="flex items-center gap-2"
+                    onClick={() => window.open('https://console.cloud.google.com/apis/credentials', '_blank')}
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    Google Cloud Console öffnen
+                  </Button>
+                </div>
               </div>
             </>
           )}
