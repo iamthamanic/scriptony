@@ -1,9 +1,9 @@
 
 import { useState } from "react";
-import { Project, NewProjectFormData, SceneTemplate } from "../../../types";
+import { Project, NewProjectFormData, SceneTemplate, TimeOfDay } from "../../../types";
 import { useToast } from "../../use-toast";
 import { narrativeStructureTemplates } from "../../../types/narrativeStructures";
-import { createProject, createScene } from "../../../services/projects";
+import { createProject, createScene } from "../../../services";
 import { useAuth } from "@/contexts/AuthContext";
 
 export const useCreateProject = (
@@ -49,7 +49,7 @@ export const useCreateProject = (
               projectId: newProjectData.id,
               sceneNumber: sceneTpl.sceneNumber || 0,
               location: sceneTpl.location || "",
-              timeOfDay: sceneTpl.timeOfDay || "day",
+              timeOfDay: (sceneTpl.timeOfDay || "day") as TimeOfDay,
               timecodeStart: "00:00:00",
               timecodeEnd: "00:00:00",
               visualComposition: "",

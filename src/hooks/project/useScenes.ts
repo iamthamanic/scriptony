@@ -1,7 +1,7 @@
 
 import { useToast } from "../use-toast";
 import { Scene, NewSceneFormData } from "../../types";
-import { createScene, deleteScene } from "../../services/database";
+import { createScene, deleteScene } from "../../services";
 import { useAuth } from "@/contexts/AuthContext";
 
 export const useScenes = (
@@ -14,16 +14,22 @@ export const useScenes = (
   const handleCreateScene = async (data: NewSceneFormData, editingScene: Scene | null) => {
     if (!selectedProject || !user) return;
 
-    const sceneData = await createScene(selectedProject.id, data, editingScene);
+    // Make sure projectId is set in the data
+    const sceneData = {
+      ...data,
+      projectId: selectedProject.id
+    };
+
+    const createdScene = await createScene(sceneData);
     
-    if (!sceneData) return;
+    if (!createdScene) return;
 
     if (editingScene) {
       // Update existing scene
       updateProjects(selectedProject.id, (project) => ({
         ...project,
         scenes: project.scenes
-          .map(scene => scene.id === editingScene.id ? sceneData : scene)
+          .map(scene => scene.id === editingScene.id ? createdScene : scene)
           .sort((a, b) => a.sceneNumber - b.sceneNumber),
         updatedAt: new Date()
       }));
@@ -37,7 +43,7 @@ export const useScenes = (
       // Create new scene
       updateProjects(selectedProject.id, (project) => ({
         ...project,
-        scenes: [...project.scenes, sceneData]
+        scenes: [...project.scenes, createdScene]
           .sort((a, b) => a.sceneNumber - b.sceneNumber),
         updatedAt: new Date()
       }));

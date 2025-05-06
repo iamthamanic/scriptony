@@ -1,6 +1,6 @@
 
 import { customSupabase } from "@/integrations/supabase/customClient";
-import { NewSceneFormData, Scene } from "@/types";
+import { NewSceneFormData, Scene, TimeOfDay } from "@/types";
 import { handleApiError, convertDbSceneToApp } from "../utils";
 import { isDevelopmentMode, getDevModeUser } from "@/utils/devMode";
 
