@@ -13,6 +13,7 @@ interface WorldsContentProps {
   onNewWorld: () => void;
   onEditWorld: () => void;
   onDeleteWorld: () => void;
+  onDuplicateWorld?: () => void; 
   onAddCategory: () => void;
   onEditCategory: (category: WorldCategory) => void;
   onDeleteCategory: (categoryId: string) => void;
@@ -27,6 +28,7 @@ const WorldsContent = ({
   onNewWorld,
   onEditWorld,
   onDeleteWorld,
+  onDuplicateWorld,
   onAddCategory,
   onEditCategory,
   onDeleteCategory,
@@ -48,6 +50,7 @@ const WorldsContent = ({
         onBack={() => onSelectWorld('')}
         onEditWorld={onEditWorld}
         onDeleteWorld={onDeleteWorld}
+        onDuplicateWorld={onDuplicateWorld}
         onAddCategory={onAddCategory}
         onEditCategory={onEditCategory}
         onDeleteCategory={onDeleteCategory}

@@ -28,6 +28,7 @@ const Worldbuilding = () => {
     handleCreateWorld,
     handleUpdateWorld,
     handleDeleteWorld,
+    handleDuplicateWorld,
     handleCategorySubmit,
     handleDeleteCategory,
     handleReorderCategories
@@ -63,6 +64,7 @@ const Worldbuilding = () => {
         onNewWorld={() => setIsNewWorldModalOpen(true)}
         onEditWorld={handleEditWorld}
         onDeleteWorld={() => setIsDeleteWorldDialogOpen(true)}
+        onDuplicateWorld={handleDuplicateWorld}
         onAddCategory={handleAddCategory}
         onEditCategory={handleEditCategory}
         onDeleteCategory={handleDeleteCategory}
