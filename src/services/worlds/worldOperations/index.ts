@@ -3,4 +3,9 @@
 export * from './utils';
 export * from './fetchWorlds';
 export * from './createUpdateWorld';
-export * from './deleteWorld';
+// Re-export from deleteWorld.ts but rename the createTimeout function to avoid conflict
+export { 
+  deleteWorld,
+  // Export it with a different name to avoid conflict with ./utils
+  createTimeout as createDeletionTimeout 
+} from './deleteWorld';
