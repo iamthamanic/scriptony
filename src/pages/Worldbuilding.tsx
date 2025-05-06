@@ -34,9 +34,12 @@ const Worldbuilding = () => {
     handleReorderCategories
   } = useWorldsState(user?.id);
 
+  // Worlds yükleme işlemini kullanıcı değiştiğinde gerçekleştir
   React.useEffect(() => {
-    loadWorlds();
-  }, [user]);
+    if (user?.id) {
+      loadWorlds();
+    }
+  }, [user?.id, loadWorlds]);
 
   const handleEditWorld = () => {
     if (!selectedWorld) return;
@@ -51,6 +54,14 @@ const Worldbuilding = () => {
   const handleEditCategory = (category: any) => {
     setSelectedCategory(category);
     setIsCategoryModalOpen(true);
+  };
+
+  // Daha güvenli dialog kapatma fonksiyonu
+  const handleCloseDeleteDialog = () => {
+    // Eğer yükleme durumu aktif değilse dialog'u kapat
+    if (!isLoading) {
+      setIsDeleteWorldDialogOpen(false);
+    }
   };
 
   return (
@@ -79,7 +90,7 @@ const Worldbuilding = () => {
         isCategoryModalOpen={isCategoryModalOpen}
         onCloseNewWorldModal={() => setIsNewWorldModalOpen(false)}
         onCloseEditWorldModal={() => setIsEditWorldModalOpen(false)}
-        onCloseDeleteWorldDialog={() => setIsDeleteWorldDialogOpen(false)}
+        onCloseDeleteWorldDialog={handleCloseDeleteDialog}
         onCloseCategoryModal={() => {
           setIsCategoryModalOpen(false);
           setSelectedCategory(null);

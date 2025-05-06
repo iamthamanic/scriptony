@@ -24,7 +24,7 @@ export function useWorldsOperations(
   setSelectedCategory: (category: any) => void
 ) {
   // Use our refactored hooks
-  const { loadWorlds } = useWorldLoading(
+  const { loadWorlds, setDeleteCompletedAt } = useWorldLoading(
     userId,
     setWorlds,
     selectedWorldId, 
@@ -58,13 +58,34 @@ export function useWorldsOperations(
     setSelectedWorldId
   );
 
-  // Create wrappers to maintain the same API
+  // Create wrappers to maintain the same API with safer operation handling
   const wrappedHandleUpdateWorld = (data: NewWorldFormData) => {
     return handleUpdateWorld(selectedWorld, data);
   };
   
   const wrappedHandleDeleteWorld = async () => {
-    return handleDeleteWorld(selectedWorld);
+    try {
+      // Dialog'u kapattıktan sonra bu işlemi gerçekleştireceğimiz için
+      // setIsDeleteWorldDialogOpen(false); burada çağrılmaz
+
+      // Silme işlemini başlat
+      const result = await handleDeleteWorld(selectedWorld);
+      
+      // Silme işlemi tamamlandıktan sonra dialog'u kapat
+      setTimeout(() => {
+        setIsDeleteWorldDialogOpen(false);
+      }, 100);
+      
+      // Silme işlemi tamamlandı zaman damgasını kaydet
+      setDeleteCompletedAt(Date.now());
+      
+      return result;
+    } catch (error) {
+      console.error("Wrapped delete world error:", error);
+      // Hata durumunda yine de dialog'u kapatmaya çalış
+      setIsDeleteWorldDialogOpen(false);
+      throw error;
+    }
   };
 
   const wrappedHandleDuplicateWorld = async () => {
