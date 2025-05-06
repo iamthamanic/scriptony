@@ -15,7 +15,11 @@ export const useProjects = () => {
   } = useProjectData();
 
   const { handleCreateProject, isLoading: isCreating } = useCreateProject();
+  
+  // Pass the required arguments to useEditProject
   const handleEditProject = useEditProject(projects, setProjects, selectedProject);
+  
+  // Pass the required arguments to useDeleteProject
   const handleDeleteProject = useDeleteProject(projects, setProjects, selectedProjectId, setSelectedProjectId);
 
   return {

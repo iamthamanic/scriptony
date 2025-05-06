@@ -1,10 +1,19 @@
 
 import { useState } from "react";
 import { createProject, createScene } from "../../../services";
-import { Project, ProjectType, NarrativeStructureType, Scene, TimeOfDay } from "../../../types";
+import { Project, ProjectType, NarrativeStructureType, Scene, TimeOfDay, Genre, EmotionalSignificance } from "../../../types";
 import { useToast } from "../../use-toast";
-import { generateDefaultSceneForTemplate } from "../../../utils/mockData";
 import { useAuth } from "@/contexts/AuthContext";
+
+// Function to generate default scenes for a narrative structure template
+const generateDefaultSceneForTemplate = (structure: NarrativeStructureType): Partial<Scene>[] => {
+  // Basic placeholder implementation
+  return [
+    { location: "Opening location", description: "Starting scene", emotionalSignificance: "introduction" as EmotionalSignificance },
+    { location: "Middle location", description: "Development scene", emotionalSignificance: "buildup" as EmotionalSignificance },
+    { location: "Final location", description: "Closing scene", emotionalSignificance: "finale" as EmotionalSignificance },
+  ];
+};
 
 export const useCreateProject = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -17,7 +26,7 @@ export const useCreateProject = () => {
     narrativeStructure?: NarrativeStructureType;
     logline?: string;
     genre?: string;
-    genres?: string[];
+    genres?: Genre[];
     duration?: number;
     inspirations?: string[];
   }) => {
@@ -26,13 +35,16 @@ export const useCreateProject = () => {
     setIsLoading(true);
 
     try {
+      // Ensure genres is properly typed as Genre[]
+      const typedGenres: Genre[] = (data.genres || []) as Genre[];
+      
       // Create the project first
       const newProject = await createProject({
         title: data.title,
         type: data.type,
         narrativeStructure: data.narrativeStructure,
         logline: data.logline || '',
-        genres: data.genres || [],
+        genres: typedGenres,
         duration: data.duration || 0,
         inspirations: data.inspirations || []
       });
@@ -62,7 +74,7 @@ export const useCreateProject = () => {
                 dialog: scene.dialog || "",
                 transitions: scene.transitions || "",
                 productionNotes: scene.productionNotes || "",
-                emotionalSignificance: scene.emotionalSignificance || "regular",
+                emotionalSignificance: scene.emotionalSignificance || "regular" as EmotionalSignificance,
                 characterIds: []
               };
               
