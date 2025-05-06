@@ -309,6 +309,50 @@ export type Database = {
           },
         ]
       }
+      stored_files: {
+        Row: {
+          created_at: string | null
+          drive_file_id: string
+          drive_url: string
+          file_name: string
+          file_type: string
+          folder_path: string
+          id: string
+          project_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          drive_file_id: string
+          drive_url: string
+          file_name: string
+          file_type: string
+          folder_path: string
+          id?: string
+          project_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          drive_file_id?: string
+          drive_url?: string
+          file_name?: string
+          file_type?: string
+          folder_path?: string
+          id?: string
+          project_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stored_files_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       unlock_codes: {
         Row: {
           code: string
@@ -352,6 +396,7 @@ export type Database = {
           drive_refresh_token: string | null
           drive_token_expiry: string | null
           id: string
+          is_connected: boolean | null
           storage_provider: string | null
           updated_at: string
           upload_to_drive: boolean | null
@@ -366,6 +411,7 @@ export type Database = {
           drive_refresh_token?: string | null
           drive_token_expiry?: string | null
           id?: string
+          is_connected?: boolean | null
           storage_provider?: string | null
           updated_at?: string
           upload_to_drive?: boolean | null
@@ -380,6 +426,7 @@ export type Database = {
           drive_refresh_token?: string | null
           drive_token_expiry?: string | null
           id?: string
+          is_connected?: boolean | null
           storage_provider?: string | null
           updated_at?: string
           upload_to_drive?: boolean | null
@@ -481,6 +528,18 @@ export type Database = {
           p_world_id?: string
         }
         Returns: string
+      }
+      insert_stored_file: {
+        Args: {
+          p_user_id: string
+          p_project_id: string
+          p_file_name: string
+          p_file_type: string
+          p_drive_file_id: string
+          p_drive_url: string
+          p_folder_path: string
+        }
+        Returns: undefined
       }
       is_development_mode: {
         Args: Record<PropertyKey, never>
