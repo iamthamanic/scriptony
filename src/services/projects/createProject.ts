@@ -2,6 +2,7 @@
 import { customSupabase } from "@/integrations/supabase/customClient";
 import { Project, NewProjectFormData } from "@/types";
 import { handleApiError, convertDbProjectToApp } from "../utils";
+import { isDevelopmentMode, getDevModeUser } from "@/utils/devMode";
 
 export const createProject = async (projectData: NewProjectFormData): Promise<Project | null> => {
   try {
@@ -24,9 +25,16 @@ export const createProject = async (projectData: NewProjectFormData): Promise<Pr
       coverImageUrl = urlData.publicUrl;
     }
     
-    // Get the current user
-    const { data: { user } } = await customSupabase.auth.getUser();
-    if (!user) throw new Error("User not authenticated");
+    // Get the current user, using development mode if enabled
+    let user;
+    if (isDevelopmentMode()) {
+      console.log("Using development mode user for project creation");
+      user = getDevModeUser();
+    } else {
+      const { data, error } = await customSupabase.auth.getUser();
+      if (error || !data.user) throw new Error("User not authenticated");
+      user = data.user;
+    }
     
     // Insert project into database with new fields
     const { data, error } = await customSupabase
