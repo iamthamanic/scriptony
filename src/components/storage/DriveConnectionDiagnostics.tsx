@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Code, AlertCircle, Terminal, Copy, CheckCircle } from 'lucide-react';
+import { Code, AlertCircle, Terminal, Copy, CheckCircle, Globe, Link } from 'lucide-react';
 import { CLIENT_ID, getRedirectURI } from '@/services/storage/googleDrive/utils';
 import { getEnvironmentInfo } from '@/services/auth/redirects';
 
@@ -22,7 +22,6 @@ const DriveConnectionDiagnostics: React.FC<DriveConnectionDiagnosticsProps> = ({
   lastError
 }) => {
   const [copied, setCopied] = useState<string | null>(null);
-  const redirectUri = getRedirectURI();
   const envInfo = getEnvironmentInfo();
   
   const copyToClipboard = (text: string, id: string) => {
@@ -55,6 +54,72 @@ const DriveConnectionDiagnostics: React.FC<DriveConnectionDiagnosticsProps> = ({
                 <span className="text-xs">Hostname:</span>
                 <code className="text-xs bg-background px-2 py-1 rounded">{envInfo.hostname}</code>
               </div>
+              <div className="flex justify-between items-center">
+                <span className="text-xs">Feste Redirects aktiviert:</span>
+                <code className="text-xs bg-background px-2 py-1 rounded">{envInfo.fixedRedirects ? 'Ja' : 'Nein'}</code>
+              </div>
+            </div>
+          </div>
+        
+          <div className="rounded-md bg-muted p-4">
+            <h3 className="text-sm font-medium mb-2 flex items-center gap-2">
+              <Link className="h-4 w-4" /> URL-Konfiguration für Google Cloud Console
+            </h3>
+            <div className="space-y-4">
+              <div>
+                <p className="text-xs font-medium mb-1">Authorized JavaScript origins:</p>
+                <div className="flex items-center gap-2 bg-background px-3 py-2 rounded border">
+                  <code className="text-xs flex-1 overflow-x-auto">{envInfo.originUrl}</code>
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    className="h-6 w-6"
+                    onClick={() => copyToClipboard(envInfo.originUrl, 'origin')}
+                  >
+                    {copied === 'origin' ? <CheckCircle className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                  </Button>
+                </div>
+                {envInfo.isLocal && (
+                  <div className="flex items-center gap-2 mt-1 bg-background px-3 py-2 rounded border">
+                    <code className="text-xs flex-1 overflow-x-auto">http://localhost:5173</code>
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => copyToClipboard('http://localhost:5173', 'localhost')}
+                    >
+                      {copied === 'localhost' ? <CheckCircle className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                    </Button>
+                  </div>
+                )}
+              </div>
+              
+              <div>
+                <p className="text-xs font-medium mb-1">Authorized redirect URIs:</p>
+                <div className="flex items-center gap-2 bg-background px-3 py-2 rounded border">
+                  <code className="text-xs flex-1 overflow-x-auto">{envInfo.driveRedirectUrl}</code>
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    className="h-6 w-6"
+                    onClick={() => copyToClipboard(envInfo.driveRedirectUrl, 'drive-redirect')}
+                  >
+                    {copied === 'drive-redirect' ? <CheckCircle className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                  </Button>
+                </div>
+                
+                <div className="flex items-center gap-2 mt-1 bg-background px-3 py-2 rounded border">
+                  <code className="text-xs flex-1 overflow-x-auto">{envInfo.authRedirectUrl}</code>
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    className="h-6 w-6"
+                    onClick={() => copyToClipboard(envInfo.authRedirectUrl, 'auth-redirect')}
+                  >
+                    {copied === 'auth-redirect' ? <CheckCircle className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         
@@ -66,12 +131,12 @@ const DriveConnectionDiagnostics: React.FC<DriveConnectionDiagnosticsProps> = ({
                 <code className="text-xs bg-background px-2 py-1 rounded">{CLIENT_ID}</code>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-xs">Redirect URI:</span>
-                <code className="text-xs bg-background px-2 py-1 rounded">{redirectUri}</code>
+                <span className="text-xs">Aktuelle Drive Redirect URI:</span>
+                <code className="text-xs bg-background px-2 py-1 rounded">{envInfo.driveRedirectUrl}</code>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-xs">Aktuelle URL:</span>
-                <code className="text-xs bg-background px-2 py-1 rounded">{window.location.href}</code>
+                <span className="text-xs">Aktuelle Auth Redirect URI:</span>
+                <code className="text-xs bg-background px-2 py-1 rounded">{envInfo.authRedirectUrl}</code>
               </div>
             </div>
           </div>
@@ -91,42 +156,19 @@ const DriveConnectionDiagnostics: React.FC<DriveConnectionDiagnosticsProps> = ({
           <div className="space-y-2">
             <h3 className="text-sm font-medium">Google Cloud Console Einstellungen prüfen</h3>
             <p className="text-sm text-muted-foreground">
-              Stellen Sie sicher, dass die folgenden Einstellungen in der Google Cloud Console korrekt sind:
+              Stelle sicher, dass die folgenden Einstellungen in der Google Cloud Console korrekt sind:
             </p>
             <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 pl-2">
               <li>Der OAuth consent screen ist konfiguriert</li>
               <li>Die OAuth-Client-ID ist korrekt</li>
-              <li>Authorized redirect URIs enthält: <code className="text-xs bg-muted px-1">{redirectUri}</code></li>
-              <li>Authorized JavaScript origins enthält: <code className="text-xs bg-muted px-1">{window.location.origin}</code></li>
+              <li>Authorized JavaScript origins enthält: <code className="text-xs bg-muted px-1">{envInfo.originUrl}</code></li>
+              <li>Authorized redirect URIs enthält: 
+                <ul className="list-disc list-inside ml-4">
+                  <li><code className="text-xs bg-muted px-1">{envInfo.driveRedirectUrl}</code></li>
+                  <li><code className="text-xs bg-muted px-1">{envInfo.authRedirectUrl}</code></li>
+                </ul>
+              </li>
             </ul>
-            
-            <div className="flex items-center gap-2 mt-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="text-xs"
-                onClick={() => copyToClipboard(redirectUri, 'redirect')}
-              >
-                {copied === 'redirect' ? (
-                  <><CheckCircle className="h-3 w-3 mr-1" /> Kopiert</>
-                ) : (
-                  <><Copy className="h-3 w-3 mr-1" /> Redirect URI kopieren</>
-                )}
-              </Button>
-              
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="text-xs"
-                onClick={() => copyToClipboard(window.location.origin, 'origin')}
-              >
-                {copied === 'origin' ? (
-                  <><CheckCircle className="h-3 w-3 mr-1" /> Kopiert</>
-                ) : (
-                  <><Copy className="h-3 w-3 mr-1" /> Origin kopieren</>
-                )}
-              </Button>
-            </div>
           </div>
           
           <div className="bg-muted rounded-md p-4">
@@ -138,14 +180,16 @@ const DriveConnectionDiagnostics: React.FC<DriveConnectionDiagnosticsProps> = ({
 {`OAuth consent screen:
 - User Type: External
 - Application name: Scriptony
-- Authorized domains: ${window.location.hostname}
+- Authorized domains: ${envInfo.hostname}
 
 Credentials > OAuth Client ID:
 - Application type: Web application
 - Authorized JavaScript origins:
-  * ${window.location.origin}
+  * ${envInfo.originUrl}
+  ${envInfo.isLocal ? '  * http://localhost:5173' : ''}
 - Authorized redirect URIs:
-  * ${redirectUri}`}
+  * ${envInfo.driveRedirectUrl}
+  * ${envInfo.authRedirectUrl}`}
             </pre>
           </div>
           
