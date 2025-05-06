@@ -25,34 +25,29 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
   const [deletionError, setDeletionError] = useState<string | null>(null);
   const { toast } = useToast();
   
-  // Force cleanup when unmounting
+  // Force cleanup when unmounting or when dialog opens/closes
   useEffect(() => {
-    return () => {
-      // This ensures we clean up any state when the component unmounts
-      setIsDeleting(false);
-      setDeletionError(null);
-    };
-  }, []);
-
-  // Clean up state when dialog opens/closes with improved timing
-  useEffect(() => {
+    // Reset state when dialog opens or closes
     if (!isOpen) {
-      // Reset state with a longer delay to ensure animations complete
-      // and all React state updates have been processed
       const timer = setTimeout(() => {
         setIsDeleting(false);
         setDeletionError(null);
-      }, 500); // Increased from 300ms to 500ms
+      }, 800); // Increased timeout for better cleanup
       
-      // Cleanup timeout on unmount or when deps change
       return () => clearTimeout(timer);
     } else {
       // Reset error when dialog opens
       setDeletionError(null);
     }
+    
+    // Complete cleanup when component unmounts
+    return () => {
+      setIsDeleting(false);
+      setDeletionError(null);
+    };
   }, [isOpen]);
 
-  // Memoized delete handler to prevent unnecessary re-renders
+  // Handle deletion with improved error handling
   const handleDelete = useCallback(async () => {
     if (isDeleting) return; // Prevent multiple clicks
     
@@ -65,8 +60,7 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
       // Let parent component handle the actual deletion
       await onDelete();
       
-      // Don't call onClose() here - it's now handled by the parent component
-      // after the state updates are applied
+      // Don't call onClose() here - it's handled by the parent
     } catch (error) {
       console.error("Error during world deletion:", error);
       
@@ -82,27 +76,35 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
         variant: 'destructive'
       });
       
-      // Set isDeleting to false to allow retry
+      // Reset deletion state
       setIsDeleting(false);
     }
   }, [isDeleting, onDelete, worldName, toast]);
 
-  // Controlled closing of dialog to prevent issues with React's state updates
+  // Improved dialog change handler to prevent issues with React's state updates
   const handleDialogChange = useCallback((open: boolean) => {
     // Only allow closing if not in the middle of deletion
     if (!open && !isDeleting) {
-      onClose();
+      // Call onClose with slight delay to ensure cleanup
+      setTimeout(() => {
+        onClose();
+      }, 50);
     }
   }, [isDeleting, onClose]);
 
-  // If the dialog isn't open, don't render it at all to avoid portal issues
+  // Return null when dialog is closed to ensure complete DOM cleanup
   if (!isOpen) {
     return null;
   }
 
   return (
     <AlertDialog open={isOpen} onOpenChange={handleDialogChange}>
-      <AlertDialogContent>
+      <AlertDialogContent className="z-50" onEscapeKeyDown={(e) => {
+        // Prevent escape key from closing dialog during deletion
+        if (isDeleting) {
+          e.preventDefault();
+        }
+      }}>
         <AlertDialogHeader>
           <AlertDialogTitle>Welt löschen</AlertDialogTitle>
           <AlertDialogDescription>
@@ -119,7 +121,10 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isDeleting}>Abbrechen</AlertDialogCancel>
           <AlertDialogAction 
-            onClick={handleDelete} 
+            onClick={(e) => {
+              e.preventDefault(); // Prevent default to have full control
+              handleDelete();
+            }} 
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             disabled={isDeleting}
           >
