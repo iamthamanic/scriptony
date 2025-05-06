@@ -1,8 +1,9 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ErrorProvider } from "@/contexts/ErrorContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { AuthRoute, PublicOnlyRoute } from "@/components/AuthRoute";
@@ -73,6 +74,15 @@ const App = () => {
               
               <div className="flex flex-col w-full min-h-screen">
                 <Routes>
+                  {/* Root route added to prevent 404 */}
+                  <Route path="/" element={
+                    <AuthRoute>
+                      <AuthenticatedLayout>
+                        <Home />
+                      </AuthenticatedLayout>
+                    </AuthRoute>
+                  } />
+                  
                   {/* Public routes without topbar */}
                   <Route path="/landing" element={<Landing />} />
                   <Route path="/auth" element={
@@ -84,7 +94,6 @@ const App = () => {
                   } />
                   
                   {/* All authenticated routes with the topbar */}
-                  {/* Root route "/" removed as planned */}
                   
                   <Route path="/home" element={
                     <AuthRoute>
