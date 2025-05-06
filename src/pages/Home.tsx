@@ -7,8 +7,11 @@ import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useProjects } from '@/hooks/project/useProjects';
 import { useWorldsState } from '@/hooks/useWorldsState';
+import { useTranslation } from 'react-i18next';
+import QuoteCarousel from '@/components/QuoteCarousel';
 
 const Home = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   
@@ -25,7 +28,7 @@ const Home = () => {
     <div className="py-8 px-4 md:px-6 w-full space-y-8 animate-fade-in">
       <div className="max-w-5xl mx-auto">
         <header className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Willkommen zurück, {user?.email?.split('@')[0] || "Dev"}!</h1>
+          <h1 className="text-3xl font-bold mb-2">{t('common.welcome')}, {user?.email?.split('@')[0] || "Dev"}!</h1>
           <p className="text-muted-foreground">Hier ist eine Übersicht deiner aktuellen Projekte und Welten.</p>
         </header>
         
@@ -65,6 +68,9 @@ const Home = () => {
               <p className="text-muted-foreground">Noch keine Projekte erstellt.</p>
             )}
           </section>
+          
+          {/* Quote Carousel */}
+          <QuoteCarousel className="py-8 border-y border-border" />
           
           {/* Recent Worlds */}
           <section>

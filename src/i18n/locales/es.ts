@@ -1,4 +1,3 @@
-
 export default {
   common: {
     welcome: "Bienvenido de nuevo",
@@ -120,5 +119,195 @@ export default {
     success: {
       login: "¡Inicio de sesión exitoso!"
     }
+  },
+  quotes: {
+    categories: {
+      film: "🎬 Cine y Teatro - Directores, Actores, Escritores",
+      writers: "🖋️ Escritores y Autores",
+      artists: "🖌️ Artistas, Diseñadores, Multidisciplinarios",
+      general: "🎭 General sobre Creatividad, Trabajo y Vocación"
+    },
+    items: [
+      {
+        text: "No estoy seguro de ser un genio. Pero estoy seguro de que he trabajado duro.",
+        author: "Stanley Kubrick, Director",
+        source: "Colección de entrevistas \"Kubrick\", Michel Ciment",
+        category: "film"
+      },
+      {
+        text: "El arte es una mentira que nos hace dar cuenta de la verdad.",
+        author: "Pablo Picasso, Pintor",
+        source: "\"Picasso Speaks\", 1935",
+        category: "artists"
+      },
+      {
+        text: "Una película nunca está realmente terminada - simplemente se lanza en un cierto punto.",
+        author: "George Lucas, Director y Guionista",
+        source: "Entrevistas, Making of \"Star Wars\"",
+        category: "film"
+      },
+      {
+        text: "El actor es un atleta del alma.",
+        author: "Antonin Artaud, Teórico del Teatro",
+        source: "\"El Teatro y su Doble\", 1938",
+        category: "film"
+      },
+      {
+        text: "La historia es la moneda del entendimiento humano.",
+        author: "Robert McKee, Gurú de Guiones",
+        source: "\"Story: Substance, Structure, Style\"",
+        category: "film"
+      },
+      {
+        text: "La cámara nunca miente - a menos que la inclines.",
+        author: "Orson Welles, Director",
+        source: "Entrevistas",
+        category: "film"
+      },
+      {
+        text: "Todos tienen una historia. Solo hay que escuchar.",
+        author: "Chimamanda Ngozi Adichie, Escritora",
+        source: "TED Talk \"El peligro de una sola historia\"",
+        category: "writers"
+      },
+      {
+        text: "El teatro es el lugar donde el mundo se explica a sí mismo.",
+        author: "Peter Brook, Director de Teatro",
+        source: "\"El Espacio Vacío\", 1968",
+        category: "film"
+      },
+      {
+        text: "Escribo para descubrir lo que estoy pensando.",
+        author: "Stephen King, Autor",
+        source: "\"Mientras escribo\", 2000",
+        category: "writers"
+      },
+      {
+        text: "Un guión es una sugerencia - un poema es una orden.",
+        author: "Jean-Luc Godard, Director",
+        source: "Colección de entrevistas",
+        category: "film"
+      },
+      {
+        text: "La pluma es la lengua de la mente.",
+        author: "Miguel de Cervantes, Escritor",
+        source: "\"Don Quijote\", 1605",
+        category: "writers"
+      },
+      {
+        text: "Escribir es leerse a uno mismo.",
+        author: "Max Frisch, Dramaturgo y Autor",
+        source: "Diarios 1946–1949",
+        category: "writers"
+      },
+      {
+        text: "El comienzo es siempre un acto de valor.",
+        author: "Johann Wolfgang von Goethe, Poeta",
+        source: "\"Fausto I\", Introducción",
+        category: "writers"
+      },
+      {
+        text: "Narrar es resistencia.",
+        author: "Elif Shafak, Autora",
+        source: "\"La política de la ficción\" – Charla TED",
+        category: "writers"
+      },
+      {
+        text: "Cuando cuentas una historia, mantente fiel a la verdad. Pero cuéntala a lo grande.",
+        author: "Tennessee Williams, Dramaturgo",
+        source: "Entrevistas sobre \"El Zoológico de Cristal\"",
+        category: "writers"
+      },
+      {
+        text: "No escribo lo que sé. Escribo para descubrir lo que sé.",
+        author: "Patricia Highsmith, Escritora de crimen",
+        source: "Diarios, publicados en 2021",
+        category: "writers"
+      },
+      {
+        text: "El arte debería mostrar la herida y el cuchillo que la hizo.",
+        author: "Bertolt Brecht, Dramaturgo",
+        source: "Notas sobre el teatro épico",
+        category: "writers"
+      },
+      {
+        text: "La novela es la única herramienta con la que puedes capturar el tiempo.",
+        author: "Virginia Woolf, Autora",
+        source: "\"Una habitación propia\", 1929",
+        category: "writers"
+      },
+      {
+        text: "Solo puedo escribir cuando siento algo. De lo contrario, queda vacío.",
+        author: "Ingeborg Bachmann, Poeta",
+        source: "Entrevistas, Cartas",
+        category: "writers"
+      },
+      {
+        text: "Una buena historia no es una escapada - es un mapa.",
+        author: "Neil Gaiman, Autor",
+        source: "Charlas y \"La vista desde los asientos baratos\"",
+        category: "writers"
+      },
+      {
+        text: "El acto creativo es una rebelión contra el olvido.",
+        author: "Ai Weiwei, Artista y Activista",
+        source: "Entrevistas y \"Never Sorry\", 2012",
+        category: "artists"
+      },
+      {
+        text: "El diseño no es solo lo que se ve y se siente. El diseño es cómo funciona.",
+        author: "Steve Jobs, Emprendedor y Visionario del Diseño",
+        source: "\"El Diseño del iPhone\", 2007",
+        category: "artists"
+      },
+      {
+        text: "Cada línea debe ser una decisión.",
+        author: "Paul Klee, Pintor",
+        source: "\"Cuadernos\", 1921",
+        category: "artists"
+      },
+      {
+        text: "El arte comienza donde termina el plan.",
+        author: "Yayoi Kusama, Artista",
+        source: "Autobiografía",
+        category: "artists"
+      },
+      {
+        text: "Dibuja lo que sientes, no lo que ves.",
+        author: "Edvard Munch, Pintor",
+        source: "Diarios, 1890s",
+        category: "artists"
+      },
+      {
+        text: "Una imagen no lo dice todo - pero abre un espacio.",
+        author: "Gerhard Richter, Pintor",
+        source: "\"Texto – Escritos, Entrevistas y Cartas\"",
+        category: "artists"
+      },
+      {
+        text: "No pinto lo que veo - pinto lo que soy.",
+        author: "Mark Rothko, Pintor",
+        source: "\"La realidad del artista\", 2004",
+        category: "artists"
+      },
+      {
+        text: "La creatividad es la inteligencia divirtiéndose.",
+        author: "Albert Einstein, Físico (¡pero pensador muy creativo!)",
+        source: "Frecuentemente citado en cartas",
+        category: "general"
+      },
+      {
+        text: "Necesitas caos dentro de ti para dar a luz una estrella bailarina.",
+        author: "Friedrich Nietzsche, Filósofo",
+        source: "\"Así habló Zaratustra\", 1883",
+        category: "general"
+      },
+      {
+        text: "El arte es la forma más fuerte de esperanza.",
+        author: "Banksy, Artista callejero",
+        source: "Redes sociales / Catálogo de exposición",
+        category: "general"
+      }
+    ]
   }
 };
