@@ -1,7 +1,24 @@
 
 import { customSupabase } from "@/integrations/supabase/customClient";
-import { createTimeout } from "./utils";
 import { isDevelopmentMode } from "@/utils/devMode";
+
+/**
+ * Creates a timeout Promise with proper cleanup to prevent memory leaks
+ */
+export const createTimeout = (timeoutMs: number = 30000): { promise: Promise<never>, cancel: () => void } => {
+  let timeoutId: number;
+  
+  const promise = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(() => {
+      reject(new Error(`Operation timed out after ${timeoutMs}ms. Please try again later.`));
+    }, timeoutMs) as unknown as number;
+  });
+  
+  return {
+    promise,
+    cancel: () => clearTimeout(timeoutId)
+  };
+};
 
 /**
  * Delete a world and all its associated data
@@ -23,7 +40,8 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
   }
   
   // Set a timeout to prevent indefinite hanging (30 seconds)
-  const timeoutPromise = createTimeout(30000);
+  const { promise: timeoutPromise, cancel: cancelTimeout } = createTimeout(30000);
+  let operationCompleted = false;
 
   try {
     // First, check if the world exists
@@ -81,6 +99,8 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
     // Race against the timeout
     const { data: deletedWorld, error } = await Promise.race([deletePromise, timeoutPromise]);
       
+    operationCompleted = true;
+    
     if (error) {
       console.error('Error deleting world:', error);
       throw new Error(`Failed to delete world: ${error.message}`);
@@ -90,5 +110,11 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
   } catch (error) {
     console.error('Error in delete world process:', error);
     throw error;
+  } finally {
+    // Always cancel the timeout to prevent memory leaks
+    if (!operationCompleted) {
+      console.log('Canceling timeout as operation completed or failed');
+      cancelTimeout();
+    }
   }
 };

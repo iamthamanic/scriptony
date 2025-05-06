@@ -115,16 +115,32 @@ export function useWorldsOperations(
       console.log('Starting deletion process for world:', selectedWorld.id, 
                   'Development mode:', isDevMode ? 'YES' : 'NO');
       
+      // Store world name and ID before deletion for toast message
+      const worldName = selectedWorld.name;
+      const worldId = selectedWorld.id;
+      
       // The actual deletion process in the service now handles dev mode headers
-      await deleteWorld(selectedWorld.id);
+      await deleteWorld(worldId);
       
       console.log('World deletion successful, updating local state');
       
-      // Update local state after successful deletion
-      const newWorlds = worlds.filter(w => w.id !== selectedWorld.id);
-      setWorlds(newWorlds);
-      setSelectedWorldId(null); // Always return to worlds list after deletion
+      // First close the dialog before updating the list to avoid race conditions
       setIsDeleteWorldDialogOpen(false);
+      
+      // Add a small delay before updating state to ensure dialog animation completes
+      // This helps prevent UI freezes due to state updates during transitions
+      setTimeout(() => {
+        // Update local state after successful deletion
+        const newWorlds = worlds.filter(w => w.id !== worldId);
+        setWorlds(newWorlds);
+        setSelectedWorldId(null); // Always return to worlds list after deletion
+        
+        // Show success toast
+        toast({
+          title: 'Welt gelöscht',
+          description: `"${worldName}" wurde erfolgreich gelöscht.`
+        });
+      }, 300);
       
       return Promise.resolve();
     } catch (error) {
