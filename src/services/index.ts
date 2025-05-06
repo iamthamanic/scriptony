@@ -7,3 +7,4 @@ export * from './scenes';
 export * from './utils';
 export * from './worlds';
 export * from './scriptAnalysis';
+export * from './storage';
