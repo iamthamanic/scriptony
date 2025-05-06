@@ -15,8 +15,8 @@ import * as storage from './storage';
 // Re-export with careful naming to avoid conflicts
 export {
   createProject, deleteProject, updateProject,
-  projectsCreateScene as createScene, // This is our preferred implementation
-  scenesCreateScene as createSceneOld, // Keep this for backward compatibility
+  projectsCreateScene, // Export with its original name to avoid ambiguity
+  scenesCreateScene, // Export with its original name to avoid ambiguity  
   deleteScene,
   characters, episodes, utils, worlds, scriptAnalysis, storage
 };

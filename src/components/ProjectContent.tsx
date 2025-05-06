@@ -1,149 +1,125 @@
-
-import React, { useState } from "react";
-import ProjectHeader from "./ProjectHeader";
-import CharacterList from "./CharacterList";
-import SceneList from "./SceneList";
-import EpisodeList from "./episodes/EpisodeList";
-import EmptyState from "./EmptyState";
-import ScenePdfExport from "./ScenePdfExport";
-import { Character, Project, Scene, EditCharacterFormData, Episode } from "../types";
-import { useToast } from "@/hooks/use-toast";
+import React from 'react';
+import { Scene, Episode, Character } from '../types';
+import SceneList from './scenes/SceneList';
+import CharacterList from './characters/CharacterList';
+import EpisodeList from './episodes/EpisodeList';
+import NewSceneModal from './NewSceneModal';
 
 interface ProjectContentProps {
-  project: Project;
-  onNewScene: () => void;
-  onEditProject: () => void;
-  onNewCharacter: () => void;
-  onDeleteProject: () => void;
+  selectedProject: {
+    id: string;
+    type: string;
+    scenes: Scene[];
+    episodes: Episode[];
+    characters: Character[];
+  } | null;
+  isNewSceneModalOpen: boolean;
+  onCloseNewSceneModal: () => void;
+  onCreateScene: (data: any) => void;
   onEditScene: (scene: Scene) => void;
   onDeleteScene: (scene: Scene) => void;
-  onEditCharacter: (characterId: string, data: EditCharacterFormData) => void;
-  onDeleteCharacter: (characterId: string) => void;
-  onNewEpisode: () => void;
+  editingScene: Scene | null;
+  onEditCharacter: (character: Character) => void;
+  onDeleteCharacter: (character: Character) => void;
   onEditEpisode: (episodeId: string) => void;
-  onDeleteEpisode: (episodeId: string) => void;
+  onDeleteEpisode: (episode: Episode) => void;
+  onNewEpisode: () => void;
+  selectedEpisodeId: string | null;
+  setSelectedEpisodeId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-const ProjectContent = ({
-  project,
-  onNewScene,
-  onEditProject,
-  onNewCharacter,
-  onDeleteProject,
+const ProjectContent = ({ 
+  selectedProject,
+  isNewSceneModalOpen,
+  onCloseNewSceneModal,
+  onCreateScene,
   onEditScene,
   onDeleteScene,
+  editingScene,
   onEditCharacter,
   onDeleteCharacter,
-  onNewEpisode,
   onEditEpisode,
-  onDeleteEpisode
+  onDeleteEpisode,
+  onNewEpisode,
+  selectedEpisodeId,
+  setSelectedEpisodeId
 }: ProjectContentProps) => {
-  const { toast } = useToast();
-  const [selectedEpisodeId, setSelectedEpisodeId] = useState<string | null>(null);
 
-  const handleExportScenePDF = (scene: Scene) => {
-    toast({
-      title: "Generating PDF",
-      description: `Preparing Scene ${scene.sceneNumber} for export...`,
-      duration: 2000
-    });
-  };
-
-  const handleNewSceneClick = () => {
-    // For series projects, require an episode selection before creating a scene
-    if (project.type === 'series' && !selectedEpisodeId && project.episodes.length > 0) {
-      toast({
-        title: "Episode Required",
-        description: "Please select an episode before creating a scene",
-        duration: 3000
-      });
-      return;
-    }
-    
-    onNewScene();
+  const getLastSceneNumber = () => {
+    if (!selectedProject || !selectedProject.scenes) return 0;
+    return selectedProject.scenes.reduce((max, scene) => Math.max(max, scene.sceneNumber), 0);
   };
 
   return (
-    <div className="animate-fade-in">
-      <ProjectHeader 
-        project={project} 
-        onNewScene={handleNewSceneClick}
-        onEditProject={onEditProject}
-        onNewCharacter={onNewCharacter}
-        onDeleteProject={onDeleteProject}
-        onNewEpisode={project.type === 'series' ? onNewEpisode : undefined}
-      />
-      
-      {project.characters.length > 0 && (
-        <CharacterList 
-          characters={project.characters} 
-          onNewCharacter={onNewCharacter}
-          onEditCharacter={onEditCharacter}
-          onDeleteCharacter={onDeleteCharacter}
-        />
-      )}
-      
-      {/* Display Episodes for series projects */}
-      {project.type === 'series' && (
-        <>
-          {project.episodes && project.episodes.length > 0 ? (
-            <EpisodeList
-              episodes={project.episodes}
-              onNewEpisode={onNewEpisode}
-              onEditEpisode={onEditEpisode}
-              onDeleteEpisode={onDeleteEpisode}
-              selectedEpisodeId={selectedEpisodeId}
-              onSelectEpisode={setSelectedEpisodeId}
-            />
-          ) : (
-            <EmptyState
-              title="No Episodes Yet"
-              description={`Start by adding your first episode to ${project.title}`}
-              buttonText="Create First Episode"
-              onClick={onNewEpisode}
-            />
+    <div className="flex-1 overflow-auto">
+      {selectedProject ? (
+        <div className="p-4">
+          {/* Episode List */}
+          {selectedProject.type === 'series' && (
+            <div className="mb-6">
+              <div className="flex justify-between items-center mb-2">
+                <h2 className="text-xl font-semibold">Episodes</h2>
+                <button onClick={onNewEpisode} className="px-4 py-2 bg-anime-purple text-white rounded hover:bg-anime-dark-purple">
+                  New Episode
+                </button>
+              </div>
+              <EpisodeList
+                episodes={selectedProject.episodes}
+                onEditEpisode={onEditEpisode}
+                onDeleteEpisode={onDeleteEpisode}
+                selectedEpisodeId={selectedEpisodeId}
+                setSelectedEpisodeId={setSelectedEpisodeId}
+              />
+            </div>
           )}
-        </>
-      )}
-      
-      {/* Filter scenes by episode for series projects */}
-      {project.scenes.length > 0 ? (
-        <SceneList 
-          scenes={
-            project.type === 'series' && selectedEpisodeId 
-              ? project.scenes.filter(scene => scene.episodeId === selectedEpisodeId)
-              : project.scenes
-          }
-          onEditScene={onEditScene}
-          onExportPDF={handleExportScenePDF}
-          onDeleteScene={onDeleteScene}
-          characters={project.characters}
-          showEpisodeFilter={project.type === 'series' && !selectedEpisodeId}
-          episodes={project.episodes}
-        />
-      ) : (
-        <EmptyState
-          title={
-            project.type === 'series' && selectedEpisodeId
-              ? "No Scenes in This Episode Yet"
-              : "No Scenes Yet"
-          }
-          description={
-            project.type === 'series' && selectedEpisodeId
-              ? `Start by adding your first scene to this episode`
-              : `Start by adding your first scene to ${project.title}`
-          }
-          buttonText="Create First Scene"
-          onClick={handleNewSceneClick}
-        />
-      )}
-      
-      {/* PDF Export Component (hidden) */}
-      {project.scenes.map(scene => (
-        <div key={scene.id} className="hidden">
-          <ScenePdfExport scene={scene} project={project} />
+
+          {/* Scene List */}
+          <div className="mb-6">
+            <div className="flex justify-between items-center mb-2">
+              <h2 className="text-xl font-semibold">Scenes</h2>
+              <button onClick={onCloseNewSceneModal} className="px-4 py-2 bg-anime-purple text-white rounded hover:bg-anime-dark-purple">
+                New Scene
+              </button>
+            </div>
+            <SceneList
+              scenes={selectedProject.scenes}
+              onEditScene={onEditScene}
+              onDeleteScene={onDeleteScene}
+              selectedEpisodeId={selectedEpisodeId}
+            />
+          </div>
+
+          {/* Character List */}
+          <div>
+            <h2 className="text-xl font-semibold mb-2">Characters</h2>
+            <CharacterList
+              characters={selectedProject.characters}
+              onEditCharacter={onEditCharacter}
+              onDeleteCharacter={onDeleteCharacter}
+            />
+          </div>
         </div>
-      ))}
+      ) : (
+        <div className="p-4 text-center text-gray-500">
+          No project selected. Please select a project to view its content.
+        </div>
+      )}
+      
+      {/* Pass projectId to NewSceneModal */}
+      {selectedProject && (
+        <NewSceneModal
+          isOpen={isNewSceneModalOpen}
+          onClose={onCloseNewSceneModal}
+          onSubmit={onCreateScene}
+          projectType={selectedProject.type}
+          lastSceneNumber={getLastSceneNumber()}
+          editScene={editingScene}
+          characters={selectedProject.characters || []}
+          episodes={selectedProject.episodes || []}
+          selectedEpisodeId={selectedEpisodeId}
+          projectId={selectedProject.id}
+        />
+      )}
     </div>
   );
 };

@@ -22,6 +22,7 @@ interface NewSceneModalProps {
   characters: Character[];
   episodes: Episode[];
   selectedEpisodeId: string | null;
+  projectId: string; // Add projectId to props
 }
 
 const NewSceneModal = ({ 
@@ -33,9 +34,11 @@ const NewSceneModal = ({
   editScene, 
   characters = [],
   episodes = [],
-  selectedEpisodeId = null
+  selectedEpisodeId = null,
+  projectId  // Add projectId to props destructuring
 }: NewSceneModalProps) => {
   const [formData, setFormData] = useState<NewSceneFormData>({
+    projectId, // Set projectId in initial state
     sceneNumber: lastSceneNumber + 1,
     location: '',
     timeOfDay: 'day',
@@ -66,6 +69,7 @@ const NewSceneModal = ({
   useEffect(() => {
     if (editScene) {
       setFormData({
+        projectId, // Set projectId
         sceneNumber: editScene.sceneNumber,
         location: editScene.location,
         timeOfDay: editScene.timeOfDay,
@@ -100,6 +104,7 @@ const NewSceneModal = ({
         : null;
         
       setFormData({
+        projectId, // Set projectId
         sceneNumber: lastSceneNumber + 1,
         location: '',
         timeOfDay: 'day',
@@ -125,7 +130,7 @@ const NewSceneModal = ({
       setLastSaved(null);
     }
     setIsFormDirty(false);
-  }, [editScene, lastSceneNumber, projectType, selectedEpisodeId, episodes]);
+  }, [editScene, lastSceneNumber, projectType, selectedEpisodeId, episodes, projectId]); // Add projectId to dependencies
 
   // AutoSave function
   useEffect(() => {
