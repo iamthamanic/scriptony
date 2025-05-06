@@ -34,9 +34,22 @@ serve(async (req) => {
       throw new Error("Not authenticated");
     }
 
-    // Load environment variables for Google OAuth credentials
-    const clientId = Deno.env.get("GOOGLE_CLIENT_ID");
-    const clientSecret = Deno.env.get("GOOGLE_CLIENT_SECRET");
+    // Path parameter to determine which credentials to return
+    const { service } = await req.json();
+
+    let clientId: string | null;
+    let clientSecret: string | null;
+
+    // Determine which credentials to return based on service parameter
+    if (service === "auth") {
+      // Google Auth credentials
+      clientId = "YOUR_GOOGLE_AUTH_CLIENT_ID.apps.googleusercontent.com";
+      clientSecret = "YOUR_GOOGLE_AUTH_CLIENT_SECRET";
+    } else {
+      // Default to Google Drive credentials
+      clientId = "YOUR_GOOGLE_DRIVE_CLIENT_ID.apps.googleusercontent.com";
+      clientSecret = "YOUR_GOOGLE_DRIVE_CLIENT_SECRET";
+    }
 
     if (!clientId || !clientSecret) {
       throw new Error("Google OAuth credentials are not configured");

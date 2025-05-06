@@ -39,9 +39,9 @@ export const connectToGoogleDrive = async (): Promise<void> => {
     const redirectUri = getRedirectURI();
     console.log("Using redirect URI:", redirectUri);
     
-    // Get client ID dynamically
-    const clientId = await getClientId();
-    console.log("Using client ID:", clientId.substring(0, 8) + "...");
+    // Get client ID dynamically for drive service
+    const clientId = await getClientId('drive');
+    console.log("Using Drive client ID:", clientId.substring(0, 8) + "...");
     
     const state = generateRandomString(16);
     localStorage.setItem('driveOAuthState', state);
@@ -91,8 +91,8 @@ export const handleDriveOAuthCallback = async (
     // Exchange code for tokens
     console.log("Exchanging authorization code for tokens...");
     const redirectUri = getRedirectURI();
-    const clientId = await getClientId();
-    const clientSecret = await getClientSecret();
+    const clientId = await getClientId('drive');
+    const clientSecret = await getClientSecret('drive');
     
     console.log("Using redirect URI for token exchange:", redirectUri);
     

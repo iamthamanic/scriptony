@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, AlertTriangle, Link } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { getAuthRedirectURI, getEnvironmentInfo } from '@/services/auth/redirects';
+import { getClientId, getClientSecret } from '@/services/storage/googleDrive/utils';
 
 interface GoogleLoginButtonProps {
   loading: boolean;
@@ -52,6 +53,13 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
 
     // Test connectivity to Google and Supabase domains
     testConnectivity();
+    
+    // Log Google Client ID for auth
+    getClientId('auth').then(clientId => {
+      console.log("Using Google Auth Client ID:", clientId.substring(0, 12) + "...");
+    }).catch(err => {
+      console.error("Failed to retrieve Google Auth Client ID:", err);
+    });
   }, []);
   
   const testConnectivity = async () => {
