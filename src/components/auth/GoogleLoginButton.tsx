@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 import { customSupabase } from "@/integrations/supabase/customClient";
 import { Button } from "@/components/ui/button";
-import { Loader2, AlertTriangle } from "lucide-react";
+import { Loader2, AlertTriangle, Link } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { getAuthRedirectURI, getEnvironmentInfo } from '@/services/auth/redirects';
 
@@ -44,7 +44,8 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
     console.log("Current URL origin:", window.location.origin);
     console.log("Current full URL:", window.location.href);
     console.log("Current path:", window.location.pathname);
-    console.log("Redirect URI:", getAuthRedirectURI());
+    console.log("Fixed redirects enabled:", envInfo.fixedRedirects);
+    console.log("Auth Redirect URI:", envInfo.authRedirectUrl);
     console.log("Supabase project URL: https://suvxmnrnldfhfwxvkntv.supabase.co");
     console.log("Supabase callback URL: https://suvxmnrnldfhfwxvkntv.supabase.co/auth/v1/callback");
     console.log("==========================================");
@@ -236,13 +237,23 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
             <p className="mt-2 text-xs">
               Please verify Google OAuth settings in Google Cloud Console and Supabase.
             </p>
-            <Button 
-              variant="link" 
-              className="p-0 h-auto mt-1 text-xs"
-              onClick={() => setShowDebugInfo(!showDebugInfo)}
-            >
-              {showDebugInfo ? "Hide Debug Info" : "Show Debug Info"}
-            </Button>
+            <div className="flex flex-col gap-2 mt-2">
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="text-xs flex items-center gap-1"
+              >
+                <Link className="h-3 w-3" />
+                Google OAuth Configuration
+              </Button>
+              <Button 
+                variant="link" 
+                className="p-0 h-auto text-xs"
+                onClick={() => setShowDebugInfo(!showDebugInfo)}
+              >
+                {showDebugInfo ? "Hide Debug Info" : "Show Debug Info"}
+              </Button>
+            </div>
           </AlertDescription>
         </Alert>
       )}
@@ -251,13 +262,13 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
         <div className="mt-2 p-3 bg-muted/50 rounded-md border text-xs font-mono overflow-x-auto space-y-1">
           <p><strong>Environment:</strong> {getEnvironmentInfo().type} ({getEnvironmentInfo().hostname})</p>
           <p><strong>Current URL:</strong> {currentURL}</p>
-          <p><strong>Redirect URL:</strong> {getAuthRedirectURI()}</p>
+          <p><strong>Auth Redirect URL:</strong> {getAuthRedirectURI()}</p>
           <p><strong>Supabase Project:</strong> suvxmnrnldfhfwxvkntv.supabase.co</p>
           {connectionTestResult && (
             <p><strong>Connection Test:</strong> {connectionTestResult}</p>
           )}
           <p className="mt-2 text-xs text-muted-foreground">
-            This debugging information may be helpful for configuration troubleshooting.
+            These URLs need to be properly configured in the Google Cloud Console.
           </p>
           <div className="mt-4 p-2 bg-background rounded border border-destructive/40">
             <p className="font-semibold text-destructive">Google connection refused error</p>
