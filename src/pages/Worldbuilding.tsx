@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 import { useWorldsState } from "@/hooks/useWorldsState";
 import WorldsContent from "../components/worlds/WorldsContent";
@@ -31,12 +31,16 @@ const Worldbuilding = () => {
     handleDuplicateWorld,
     handleCategorySubmit,
     handleDeleteCategory,
-    handleReorderCategories
+    handleReorderCategories,
+    deletionState
   } = useWorldsState(user?.id);
 
   React.useEffect(() => {
-    loadWorlds();
-  }, [user]);
+    // Kullanıcı kimliği varsa dünyaları yükle
+    if (user?.id) {
+      loadWorlds();
+    }
+  }, [user, loadWorlds]);
 
   const handleEditWorld = () => {
     if (!selectedWorld) return;
@@ -52,6 +56,14 @@ const Worldbuilding = () => {
     setSelectedCategory(category);
     setIsCategoryModalOpen(true);
   };
+
+  // Dünya silme dialogunu kapatma işlemi - silme işlemi sırasında kapatmayı önle
+  const handleCloseDeleteDialog = useCallback(() => {
+    // Eğer silme işlemi devam etmiyorsa dialog'u kapatmaya izin ver
+    if (deletionState !== 'deleting' && !isLoading) {
+      setIsDeleteWorldDialogOpen(false);
+    }
+  }, [deletionState, isLoading, setIsDeleteWorldDialogOpen]);
 
   return (
     <div className="py-6 px-4 md:px-6 w-full">
@@ -79,7 +91,7 @@ const Worldbuilding = () => {
         isCategoryModalOpen={isCategoryModalOpen}
         onCloseNewWorldModal={() => setIsNewWorldModalOpen(false)}
         onCloseEditWorldModal={() => setIsEditWorldModalOpen(false)}
-        onCloseDeleteWorldDialog={() => setIsDeleteWorldDialogOpen(false)}
+        onCloseDeleteWorldDialog={handleCloseDeleteDialog}
         onCloseCategoryModal={() => {
           setIsCategoryModalOpen(false);
           setSelectedCategory(null);

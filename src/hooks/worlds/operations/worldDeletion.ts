@@ -34,18 +34,18 @@ export function useWorldDeletion(
       
       console.log('Silme işlemi başlatıldı:', worldId);
       
-      // 3. Optimistik UI güncellemesi - dünyayı listeden sil
+      // 3. Yükleme durumunu ayarla - bu erken yapılmalı
+      setIsLoading(true);
+      
+      // 4. Gerçek silme işlemini gerçekleştir (önce backend işlemi)
+      await deleteWorld(worldId);
+      
+      // 5. Optimistik UI güncellemesi - dünyayı listeden sil
       const newWorlds = worlds.filter(w => w.id !== worldId);
       setWorlds(newWorlds);
       
-      // 4. Kullanıcıyı dünya listesine geri döndür
+      // 6. Kullanıcıyı dünya listesine geri döndür
       setSelectedWorldId(null);
-
-      // 5. Yükleme durumunu kısa süreliğine ayarla
-      setIsLoading(true);
-      
-      // 6. Gerçek silme işlemini gerçekleştir
-      await deleteWorld(worldId);
       
       // 7. Başarı durumunu güncelle
       setDeletionState('completed');
