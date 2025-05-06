@@ -1,12 +1,12 @@
 
-import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { NewWorldFormData } from "@/types";
 import { 
   useWorldCreation,
   useWorldDeletion, 
   useWorldLoading, 
-  useWorldUpdate
+  useWorldUpdate,
+  useWorldDuplicate
 } from "./operations";
 
 export function useWorldsOperations(
@@ -52,6 +52,12 @@ export function useWorldsOperations(
     setIsLoading
   );
 
+  const { handleDuplicateWorld } = useWorldDuplicate(
+    worlds,
+    setWorlds,
+    setSelectedWorldId
+  );
+
   // Create wrappers to maintain the same API
   const wrappedHandleUpdateWorld = (data: NewWorldFormData) => {
     return handleUpdateWorld(selectedWorld, data);
@@ -61,11 +67,16 @@ export function useWorldsOperations(
     return handleDeleteWorld(selectedWorld);
   };
 
+  const wrappedHandleDuplicateWorld = async () => {
+    return handleDuplicateWorld(selectedWorld);
+  };
+
   return {
     loadWorlds,
     handleCreateWorld,
     handleUpdateWorld: wrappedHandleUpdateWorld,
     handleDeleteWorld: wrappedHandleDeleteWorld,
+    handleDuplicateWorld: wrappedHandleDuplicateWorld,
     deletionState
   };
 }

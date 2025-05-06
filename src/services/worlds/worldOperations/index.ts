@@ -9,3 +9,4 @@ export {
   // Export it with a different name to avoid conflict with ./utils
   createTimeout as createDeletionTimeout 
 } from './deleteWorld';
+export { duplicateWorld } from './duplicateWorld';
