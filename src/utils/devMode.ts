@@ -10,10 +10,22 @@ export const isDevelopmentMode = (): boolean => {
   
   // Check if we're on localhost or a development domain
   const isLocalhost = window.location.hostname === 'localhost';
-  const isPreviewDomain = window.location.hostname.includes('lovableproject');
+  
+  // Check for Lovable domains
+  const isLovableDomain = window.location.hostname.includes('lovable.app');
+  const isPreviewDomain = window.location.hostname.includes('preview');
+  
+  // Logging for debugging purposes
+  console.log('Development mode check:', {
+    hostname: window.location.hostname,
+    hasDevModeParam,
+    isLocalhost,
+    isLovableDomain,
+    isPreviewDomain
+  });
   
   // Return true if any of the conditions are met
-  return hasDevModeParam || isLocalhost || isPreviewDomain;
+  return hasDevModeParam || isLocalhost || isLovableDomain || isPreviewDomain;
 };
 
 /**
