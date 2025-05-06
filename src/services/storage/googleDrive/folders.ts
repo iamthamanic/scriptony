@@ -1,5 +1,6 @@
 
 import { GOOGLE_API_URL } from './utils';
+import { getUserDriveSettings } from './connectionStatus';
 
 /**
  * Creates or finds the main Scriptony folder in Google Drive
@@ -131,7 +132,6 @@ export const createProjectFolder = async (
 ): Promise<{ id: string; name: string; path: string }> => {
   try {
     // First get settings to find the projects folder
-    const { getUserDriveSettings } = await import('./auth');
     const settings = await getUserDriveSettings();
     
     if (!settings?.drive_folder_id) {
