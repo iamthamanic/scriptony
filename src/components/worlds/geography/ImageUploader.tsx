@@ -2,25 +2,31 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Image, Trash2, Upload } from 'lucide-react';
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { uploadFile, handleUploadError } from "@/services/storage/fileStorage";
+import DriveConnectionModal from '@/components/storage/DriveConnectionModal';
 
 interface ImageUploaderProps {
   imageUrl?: string;
   onImageChange: (url: string | undefined) => void;
   disableToast?: boolean;
-  category?: string; // To specify which category the image belongs to
+  category?: string;
+  projectId?: string;
+  projectName?: string;
 }
 
 const ImageUploader: React.FC<ImageUploaderProps> = ({ 
   imageUrl, 
   onImageChange, 
   disableToast = false,
-  category = 'geography'
+  category = 'images',
+  projectId,
+  projectName
 }) => {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [componentId] = useState(`uploader-${Math.random().toString(36).substring(2, 9)}`);
+  const [showDriveModal, setShowDriveModal] = useState(false);
 
   // Log when component mounts or imageUrl changes
   useEffect(() => {
@@ -45,31 +51,27 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       setUploading(true);
       console.log(`[${componentId}] Starting upload for ${category} with file:`, file.name);
 
-      // Generate a unique file name
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${category}/${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
-      const filePath = fileName;
-
-      // Upload file to Supabase Storage
-      const { error: uploadError } = await supabase.storage
-        .from('covers')
-        .upload(filePath, file);
-
-      if (uploadError) {
-        console.error(`[${componentId}] Upload error:`, uploadError);
-        throw uploadError;
+      const uploadResult = await uploadFile(file, {
+        category,
+        projectId,
+        projectName
+      });
+      
+      // Check if connection to Drive is required
+      if (!uploadResult.success) {
+        if (uploadResult.requiresDriveConnection) {
+          setShowDriveModal(true);
+          return;
+        }
+        
+        throw new Error(uploadResult.error || 'Upload fehlgeschlagen');
       }
 
-      // Get the public URL
-      const { data } = supabase.storage
-        .from('covers')
-        .getPublicUrl(filePath);
-
-      console.log(`[${componentId}] Image uploaded successfully for ${category}, URL:`, data.publicUrl);
+      console.log(`[${componentId}] Image uploaded successfully for ${category}, URL:`, uploadResult.fileUrl);
       
       // Update the local state
-      onImageChange(data.publicUrl);
-      console.log(`[${componentId}] Called onImageChange with URL:`, data.publicUrl);
+      onImageChange(uploadResult.fileUrl);
+      console.log(`[${componentId}] Called onImageChange with URL:`, uploadResult.fileUrl);
       
       // Only show toast if not disabled
       if (!disableToast) {
@@ -156,6 +158,13 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
           disabled={uploading}
         />
       </div>
+      
+      {/* Drive Connection Modal */}
+      <DriveConnectionModal 
+        isOpen={showDriveModal} 
+        onClose={() => setShowDriveModal(false)}
+        showCloseButton={true}
+      />
     </div>
   );
 };

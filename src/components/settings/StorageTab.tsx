@@ -1,20 +1,18 @@
+
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { Upload, Download, FileText, Cloud, Link, Unlink } from 'lucide-react';
 import { 
   getUserStorageSettings, 
-  updateStorageProvider, 
-  disconnectGoogleDrive, 
-  UserStorageSettings,
   connectToGoogleDrive,
-  handleDriveOAuthCallback
+  handleDriveOAuthCallback,
+  disconnectGoogleDrive,
+  UserStorageSettings
 } from '@/services/storage';
 
 const StorageTab = () => {
@@ -22,8 +20,7 @@ const StorageTab = () => {
   const { toast } = useToast();
   const [settings, setSettings] = useState<UserStorageSettings | null>(null);
   const [loading, setLoading] = useState(true);
-  const [updating, setUpdating] = useState(false);
-  const [connectingDrive, setConnectingDrive] = useState(false);
+  const [connecting, setConnecting] = useState(false);
 
   // Load user storage settings
   const loadSettings = async () => {
@@ -43,36 +40,33 @@ const StorageTab = () => {
     }
   };
 
-  // Handle provider change
-  const handleProviderChange = async (value: string) => {
+  // Handle Google Drive disconnection
+  const handleDisconnectDrive = async () => {
     try {
-      setUpdating(true);
-      const provider = value as 'scriptony' | 'googleDrive';
+      const confirmed = window.confirm(
+        'Wenn du die Verbindung zu Google Drive trennst, kannst du keine Dateien mehr hochladen oder exportieren. ' +
+        'Bestehende Dateien in deinem Google Drive bleiben erhalten. Bist du sicher?'
+      );
       
-      // If user selected Google Drive, start OAuth flow
-      if (provider === 'googleDrive' && settings?.storage_provider !== 'googleDrive') {
-        connectToGoogleDrive();
-        return; // OAuth redirection will happen
-      }
+      if (!confirmed) return;
       
-      // Otherwise just update the provider
-      const updated = await updateStorageProvider(provider);
-      if (updated) {
-        setSettings(updated);
-        toast({
-          title: 'Speicherort aktualisiert',
-          description: `Deine Dateien werden jetzt ${provider === 'scriptony' ? 'bei Scriptony' : 'in Google Drive'} gespeichert`,
-        });
-      }
+      setConnecting(true);
+      await disconnectGoogleDrive();
+      toast({
+        title: 'Verbindung getrennt',
+        description: 'Die Verbindung zu Google Drive wurde getrennt. Einige Funktionen sind eingeschränkt.',
+        variant: 'destructive'
+      });
+      loadSettings();
     } catch (error) {
-      console.error('Error updating storage provider:', error);
+      console.error('Error disconnecting Google Drive:', error);
       toast({
         title: 'Fehler',
-        description: 'Der Speicherort konnte nicht aktualisiert werden',
+        description: 'Die Verbindung konnte nicht getrennt werden',
         variant: 'destructive',
       });
     } finally {
-      setUpdating(false);
+      setConnecting(false);
     }
   };
 
@@ -83,7 +77,7 @@ const StorageTab = () => {
     
     if (code && state) {
       try {
-        setConnectingDrive(true);
+        setConnecting(true);
         const result = await handleDriveOAuthCallback(code, state);
         
         if (result.success) {
@@ -91,9 +85,6 @@ const StorageTab = () => {
             title: 'Erfolgreich verbunden',
             description: `Google Drive wurde verknüpft (${result.email})`,
           });
-          
-          // Update provider to Google Drive
-          await updateStorageProvider('googleDrive');
           
           // Reload settings
           await loadSettings();
@@ -112,66 +103,12 @@ const StorageTab = () => {
           variant: 'destructive',
         });
       } finally {
-        setConnectingDrive(false);
+        setConnecting(false);
         
         // Clear URL parameters
         const newUrl = window.location.pathname + window.location.search.split('&code')[0].split('?code')[0] + '?tab=storage';
         window.history.replaceState({}, '', newUrl);
       }
-    }
-  };
-
-  // Handle Drive disconnect
-  const handleDisconnectDrive = async () => {
-    try {
-      setUpdating(true);
-      const updated = await disconnectGoogleDrive();
-      if (updated) {
-        setSettings(updated);
-        toast({
-          title: 'Verbindung getrennt',
-          description: 'Die Verbindung zu Google Drive wurde getrennt',
-        });
-      }
-    } catch (error) {
-      console.error('Error disconnecting Google Drive:', error);
-      toast({
-        title: 'Fehler',
-        description: 'Die Verbindung konnte nicht getrennt werden',
-        variant: 'destructive',
-      });
-    } finally {
-      setUpdating(false);
-    }
-  };
-
-  // Toggle upload to Drive setting
-  const toggleUploadToDrive = async () => {
-    if (!settings) return;
-    
-    try {
-      setUpdating(true);
-      const updated = await updateStorageProvider(
-        settings.upload_to_drive ? 'scriptony' : 'googleDrive'
-      );
-      if (updated) {
-        setSettings(updated);
-        toast({
-          title: 'Einstellung aktualisiert',
-          description: updated.upload_to_drive 
-            ? 'Neue Dateien werden in Google Drive gespeichert' 
-            : 'Neue Dateien werden bei Scriptony gespeichert',
-        });
-      }
-    } catch (error) {
-      console.error('Error updating upload setting:', error);
-      toast({
-        title: 'Fehler',
-        description: 'Die Einstellung konnte nicht aktualisiert werden',
-        variant: 'destructive',
-      });
-    } finally {
-      setUpdating(false);
     }
   };
 
@@ -184,6 +121,22 @@ const StorageTab = () => {
       handleOAuthCallback();
     }
   }, []);
+
+  // Handle connection to Google Drive
+  const handleConnectDrive = () => {
+    try {
+      setConnecting(true);
+      connectToGoogleDrive();
+    } catch (error) {
+      console.error('Error connecting to Google Drive:', error);
+      setConnecting(false);
+      toast({
+        title: 'Verbindungsfehler',
+        description: 'Fehler bei der Verbindung mit Google Drive',
+        variant: 'destructive',
+      });
+    }
+  };
 
   if (loading) {
     return (
@@ -199,6 +152,8 @@ const StorageTab = () => {
     );
   }
 
+  const isConnected = settings?.drive_account_email && settings?.drive_folder_id;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2">
@@ -208,47 +163,17 @@ const StorageTab = () => {
       
       <Card>
         <CardHeader>
-          <CardTitle>Dateispeicherung</CardTitle>
+          <CardTitle>Google Drive Verbindung</CardTitle>
           <CardDescription>
-            Lege fest, wo deine Dateien (Skripte, Bilder, Audio) gespeichert werden sollen
+            Scriptony speichert deine Inhalte direkt in deinem eigenen Google Drive.
+            So behältst du volle Datenhoheit über deine kreativen Inhalte.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <RadioGroup 
-            value={settings?.storage_provider || 'scriptony'} 
-            onValueChange={handleProviderChange}
-            className="space-y-4"
-            disabled={updating || connectingDrive}
-          >
-            <div className="flex items-start space-x-3 space-y-0">
-              <RadioGroupItem value="scriptony" id="scriptony" />
-              <div className="grid gap-1.5 leading-none">
-                <Label htmlFor="scriptony" className="text-base font-medium">
-                  Standard (Scriptony-Server)
-                </Label>
-                <p className="text-sm text-muted-foreground">
-                  Dateien werden sicher auf unseren Servern gespeichert
-                </p>
-              </div>
-            </div>
-            
-            <div className="flex items-start space-x-3 space-y-0">
-              <RadioGroupItem value="googleDrive" id="googleDrive" />
-              <div className="grid gap-1.5 leading-none">
-                <Label htmlFor="googleDrive" className="text-base font-medium">
-                  Google Drive
-                </Label>
-                <p className="text-sm text-muted-foreground">
-                  Dateien werden in deinem Google Drive-Konto gespeichert
-                </p>
-              </div>
-            </div>
-          </RadioGroup>
-          
-          {settings?.storage_provider === 'googleDrive' && settings?.drive_account_email && (
-            <Alert className="mt-4">
+          {isConnected ? (
+            <Alert>
               <Cloud className="h-4 w-4" />
-              <AlertTitle>Google Drive verbunden</AlertTitle>
+              <AlertTitle>Google Drive verbunden ✅</AlertTitle>
               <AlertDescription className="space-y-4">
                 <div>
                   <p className="text-sm">
@@ -258,43 +183,52 @@ const StorageTab = () => {
                     <strong>Ordner:</strong> {settings.drive_folder_name || 'Scriptony'}
                   </p>
                 </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Switch 
-                      id="upload-to-drive" 
-                      checked={settings.upload_to_drive} 
-                      onCheckedChange={toggleUploadToDrive}
-                      disabled={updating}
-                    />
-                    <Label htmlFor="upload-to-drive">
-                      Alle neuen Uploads in Drive speichern
-                    </Label>
-                  </div>
+                <div className="flex justify-end">
                   <Button 
                     variant="outline" 
                     size="sm" 
                     onClick={handleDisconnectDrive}
-                    disabled={updating}
+                    disabled={connecting}
                   >
                     <Unlink className="h-4 w-4 mr-2" />
                     Verbindung trennen
                   </Button>
                 </div>
+                <p className="text-sm text-muted-foreground">
+                  Deine Dateien werden in deinem Google Drive gespeichert. 
+                  Du behältst die volle Kontrolle über deine Daten.
+                </p>
               </AlertDescription>
             </Alert>
-          )}
-          
-          {settings?.storage_provider === 'googleDrive' && !settings?.drive_account_email && (
-            <Button 
-              variant="outline" 
-              onClick={() => connectToGoogleDrive()}
-              disabled={updating || connectingDrive}
-              className="mt-4"
-            >
-              <Link className="h-4 w-4 mr-2" />
-              Mit Google Drive verbinden
-              {connectingDrive && <span className="ml-2 animate-spin">⟳</span>}
-            </Button>
+          ) : (
+            <div className="space-y-4">
+              <Alert variant="destructive">
+                <AlertTitle>Google Drive nicht verbunden ❌</AlertTitle>
+                <AlertDescription>
+                  Scriptony speichert alle Dateien (Bilder, PDFs, Audio) in deinem Google Drive.
+                  Eine Verbindung ist für das Hochladen und Exportieren von Dateien erforderlich.
+                </AlertDescription>
+              </Alert>
+              
+              <div className="flex flex-col items-center justify-center py-8 space-y-4 border-2 border-dashed rounded-lg">
+                <Cloud className="h-12 w-12 text-muted-foreground" />
+                <div className="text-center">
+                  <h3 className="text-lg font-semibold">Google Drive verbinden</h3>
+                  <p className="text-sm text-muted-foreground max-w-md mx-auto mb-4">
+                    Scriptony benötigt deine Erlaubnis, um Dateien in einem speziellen
+                    Ordner in deinem Google Drive zu speichern und zu verwalten.
+                  </p>
+                </div>
+                <Button 
+                  onClick={handleConnectDrive}
+                  disabled={connecting}
+                  className="flex items-center gap-2"
+                >
+                  <Link className="h-4 w-4" />
+                  {connecting ? 'Verbindung wird hergestellt...' : 'Google Drive verbinden'}
+                </Button>
+              </div>
+            </div>
           )}
         </CardContent>
       </Card>
@@ -315,7 +249,7 @@ const StorageTab = () => {
               <div>
                 <h4 className="font-medium">Upload</h4>
                 <p className="text-sm text-muted-foreground">
-                  Automatischer Upload aller Projektdateien
+                  Automatischer Upload aller Projektdateien nach Google Drive
                 </p>
               </div>
             </div>
@@ -325,9 +259,9 @@ const StorageTab = () => {
                 <Download className="h-5 w-5 text-muted-foreground" />
               </div>
               <div>
-                <h4 className="font-medium">Download</h4>
+                <h4 className="font-medium">Direktzugriff</h4>
                 <p className="text-sm text-muted-foreground">
-                  Herunterladen von Projektdateien bei Bedarf
+                  Zugriff auf deine Dateien direkt über Google Drive
                 </p>
               </div>
             </div>
@@ -349,9 +283,9 @@ const StorageTab = () => {
                 <Cloud className="h-5 w-5 text-muted-foreground" />
               </div>
               <div>
-                <h4 className="font-medium">Eigene Kontrolle</h4>
+                <h4 className="font-medium">Datenhoheit</h4>
                 <p className="text-sm text-muted-foreground">
-                  Volle Kontrolle über Speicherort und Zugriff
+                  Volle Kontrolle über deine Dateien auch nach Scriptony-Nutzung
                 </p>
               </div>
             </div>
