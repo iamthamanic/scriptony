@@ -15,8 +15,8 @@ import DeleteCharacterDialog from './DeleteCharacterDialog';
 interface CharacterListProps {
   characters: Character[];
   onNewCharacter: () => void;
-  onEditCharacter: (characterId: string, data: EditCharacterFormData) => void;
-  onDeleteCharacter: (characterId: string) => void;
+  onEditCharacter: (character: Character) => void;
+  onDeleteCharacter: (character: Character) => void;
 }
 
 const CharacterList = ({ 
@@ -35,7 +35,7 @@ const CharacterList = ({
 
   const handleEditSubmit = (data: EditCharacterFormData) => {
     if (editingCharacter) {
-      onEditCharacter(editingCharacter.id, data);
+      onEditCharacter(editingCharacter);
       setEditingCharacter(null);
     }
   };
@@ -46,7 +46,7 @@ const CharacterList = ({
 
   const handleConfirmDelete = () => {
     if (characterToDelete) {
-      onDeleteCharacter(characterToDelete.id);
+      onDeleteCharacter(characterToDelete);
       setCharacterToDelete(null);
     }
   };
