@@ -63,7 +63,8 @@ export function useWorldsOperations(
       toast({
         title: 'Fehler beim Laden',
         description: 'Welten konnten nicht geladen werden.',
-        variant: 'destructive'
+        variant: 'destructive',
+        duration: 5000 // Set reasonable toast duration
       });
     } finally {
       setIsLoading(false);
@@ -80,14 +81,16 @@ export function useWorldsOperations(
       
       toast({
         title: 'Welt erstellt',
-        description: `"${data.name}" wurde erfolgreich erstellt.`
+        description: `"${data.name}" wurde erfolgreich erstellt.`,
+        duration: 3000 // Set reasonable toast duration
       });
     } catch (error) {
       console.error('Error creating world:', error);
       toast({
         title: 'Fehler',
         description: 'Die Welt konnte nicht erstellt werden.',
-        variant: 'destructive'
+        variant: 'destructive',
+        duration: 5000 // Set reasonable toast duration
       });
     }
   };
@@ -102,19 +105,21 @@ export function useWorldsOperations(
       
       toast({
         title: 'Welt aktualisiert',
-        description: `"${data.name}" wurde erfolgreich aktualisiert.`
+        description: `"${data.name}" wurde erfolgreich aktualisiert.`,
+        duration: 3000 // Set reasonable toast duration
       });
     } catch (error) {
       console.error('Error updating world:', error);
       toast({
         title: 'Fehler',
         description: 'Die Welt konnte nicht aktualisiert werden.',
-        variant: 'destructive'
+        variant: 'destructive',
+        duration: 5000 // Set reasonable toast duration
       });
     }
   };
 
-  // Enhanced delete world operation with better state management and cooldown
+  // Enhanced delete world operation with simplified state management
   const handleDeleteWorld = useCallback(async (): Promise<void> => {
     if (!selectedWorld || isProcessing) return Promise.resolve();
     
@@ -129,40 +134,33 @@ export function useWorldsOperations(
       // 1. First, close the dialog - do this before other state changes
       setIsDeleteWorldDialogOpen(false);
       
-      // 2. Brief pause to let the dialog close animation start
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      // 3. Clear selected world ID to return to worlds list
+      // 2. Clear selected world ID to return to worlds list
       setSelectedWorldId(null);
       
-      // 4. Optimistic update (remove from list)
+      // 3. Optimistic update (remove from list)
       const newWorlds = worlds.filter(w => w.id !== worldId);
       setWorlds(newWorlds);
       
-      // 5. Show loading state
+      // 4. Show loading state
       setIsLoading(true);
       
-      // 6. Small delay to allow UI updates to complete
-      await new Promise(resolve => setTimeout(resolve, 150));
-      
-      // 7. Perform actual deletion
+      // 5. Perform actual deletion
       await deleteWorld(worldId);
       
-      // 8. Set deletion timestamp to prevent immediate reloading
+      // 6. Set deletion timestamp to prevent immediate reloading
       setDeleteCompletedAt(Date.now());
       
-      // 9. Wait briefly before showing success message
-      await new Promise(resolve => setTimeout(resolve, 200));
-      
-      // 10. Update isLoading state and show success message
+      // 7. Update isLoading state
       setIsLoading(false);
       
+      // 8. Show success message
       toast({
         title: 'Welt gelöscht',
-        description: `"${worldName}" wurde erfolgreich gelöscht.`
+        description: `"${worldName}" wurde erfolgreich gelöscht.`,
+        duration: 3000 // Set reasonable toast duration
       });
       
-      // 11. Final cleanup with delay
+      // 9. Reset processing state after a short delay
       setTimeout(() => {
         setIsProcessing(false);
       }, 300);
@@ -171,11 +169,12 @@ export function useWorldsOperations(
     } catch (error) {
       console.error('Error in handleDeleteWorld:', error);
       
-      // Show error state but don't close loading
+      // Show error message
       toast({
         title: 'Fehler beim Löschen',
         description: error instanceof Error ? error.message : 'Es ist ein Fehler aufgetreten',
-        variant: 'destructive'
+        variant: 'destructive',
+        duration: 5000 // Set reasonable toast duration
       });
       
       // Reload worlds and reset state
@@ -186,12 +185,9 @@ export function useWorldsOperations(
         console.error('Failed to reload worlds after error:', e);
       }
       
-      // Reset states with delay
-      setTimeout(() => {
-        setIsLoading(false);
-        setIsProcessing(false);
-        setIsDeleteWorldDialogOpen(false);
-      }, 800);
+      // Reset states
+      setIsLoading(false);
+      setIsProcessing(false);
       
       return Promise.reject(error);
     }
