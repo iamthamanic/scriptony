@@ -34,34 +34,36 @@ export function useWorldDeletion(
       
       console.log('Silme işlemi başlatıldı:', worldId);
       
-      // 3. Kullanıcıyı dünya listesine geri döndür, ancak yükleme durumu güncelle
-      setSelectedWorldId(null);
-      setIsLoading(true);
-      
-      // 4. Optimistik UI güncellemesi - dünyayı listeden sil
+      // 3. Optimistik UI güncellemesi - dünyayı listeden sil
       const newWorlds = worlds.filter(w => w.id !== worldId);
       setWorlds(newWorlds);
       
-      // 5. Gerçek silme işlemini gerçekleştir
+      // 4. Kullanıcıyı dünya listesine geri döndür
+      setSelectedWorldId(null);
+
+      // 5. Yükleme durumunu kısa süreliğine ayarla
+      setIsLoading(true);
+      
+      // 6. Gerçek silme işlemini gerçekleştir
       await deleteWorld(worldId);
       
-      // 6. Başarı durumunu güncelle
+      // 7. Başarı durumunu güncelle
       setDeletionState('completed');
       
-      // 7. Başarı mesajı göster
+      // 8. Başarı mesajı göster
       toast({
         title: 'Dünya silindi',
         description: `"${worldName}" dünyası başarıyla silindi.`,
         duration: 3000
       });
       
-      // 8. Yükleme durumunu kapat
+      // 9. Yükleme durumunu kapat
       setIsLoading(false);
       
-      // 9. Tamamlama sonrası silme durumunu sıfırla
+      // 10. Tamamlama sonrası silme durumunu sıfırla
       setTimeout(() => {
         setDeletionState('idle');
-      }, 500);
+      }, 100);
       
       return Promise.resolve();
       
@@ -85,7 +87,7 @@ export function useWorldDeletion(
       // Hata sonrası silme durumunu sıfırla
       setTimeout(() => {
         setDeletionState('idle');
-      }, 500);
+      }, 100);
       
       return Promise.reject(error);
     }
