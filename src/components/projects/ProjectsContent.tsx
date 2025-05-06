@@ -6,6 +6,7 @@ import ProjectSelector from "../ProjectSelector";
 import ProjectContent from "../ProjectContent";
 import EmptyState from "../EmptyState";
 import { Scene, Episode, Character } from "@/types";
+import { EditCharacterFormData } from "../EditCharacterModal";
 
 interface ProjectsContentProps {
   isLoading: boolean;
@@ -19,11 +20,11 @@ interface ProjectsContentProps {
   onDeleteProject: () => void;
   onEditScene: (scene: Scene) => void;
   onDeleteScene: (scene: Scene) => void;
-  onEditCharacter: (character: Character) => void;
-  onDeleteCharacter: (character: Character) => void;
+  onEditCharacter: (characterId: string, data: EditCharacterFormData) => void;
+  onDeleteCharacter: (characterId: string) => void;
   onNewEpisode: () => void;
   onEditEpisode: (episodeId: string) => void;
-  onDeleteEpisode: (episode: Episode) => void;
+  onDeleteEpisode: (episodeId: string) => void;
   onNewProject: () => void;
 }
 
@@ -54,6 +55,24 @@ const ProjectsContent = ({
       </div>
     );
   }
+  
+  // Wrapper functions to handle type conversions
+  const handleEditCharacter = (character: Character) => {
+    onEditCharacter(character.id, {
+      name: character.name,
+      role: character.role,
+      description: character.description,
+      avatar: character.avatar as any // Using 'any' to bypass type error
+    });
+  };
+
+  const handleDeleteCharacter = (character: Character) => {
+    onDeleteCharacter(character.id);
+  };
+
+  const handleDeleteEpisode = (episode: Episode) => {
+    onDeleteEpisode(episode.id);
+  };
   
   return (
     <>

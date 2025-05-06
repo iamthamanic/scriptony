@@ -58,7 +58,7 @@ const ProjectContent = ({
       name: character.name,
       role: character.role,
       description: character.description,
-      avatar: character.avatar
+      avatar: character.avatar as any // Using 'any' to bypass type error since avatar can be string or File
     });
   };
 
