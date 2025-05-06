@@ -22,7 +22,7 @@ const SubscriptionTab = () => {
         <div className="border rounded-lg p-4 hover:border-anime-purple transition-colors cursor-pointer">
           <div className="flex justify-between items-center">
             <div>
-              <span className="text-lg font-bold">Scriptony Pro</span>
+              <span className="text-lg font-bold">Scriptony Creator</span>
               <p className="text-sm text-muted-foreground">€14.99/month</p>
             </div>
             
@@ -41,9 +41,8 @@ const SubscriptionTab = () => {
         <div className="border rounded-lg p-4 hover:border-anime-purple transition-colors cursor-pointer">
           <div className="flex justify-between items-center">
             <div>
-              <span className="text-lg font-bold">Scriptony Studio
-            </span>
-              <p className="text-sm text-muted-foreground">€49.99/month</p>
+              <span className="text-lg font-bold">Scriptony Pro</span>
+              <p className="text-sm text-muted-foreground">€24.99/month</p>
             </div>
             
             <Button className="bg-anime-purple hover:bg-anime-dark-purple">
@@ -55,7 +54,8 @@ const SubscriptionTab = () => {
             <li>✓ Unlimited Welten</li>
             <li>✓ PDF Dossier Export</li>
             <li>✓ AI-MCP Integration</li>
-            <li>✓ 5 Teammitglieder inklusive (4,99€ pro weiteren)</li>
+            <li>
+          </li>
           </ul>
         </div>
       </div>
