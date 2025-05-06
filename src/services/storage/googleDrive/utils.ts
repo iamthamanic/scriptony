@@ -16,14 +16,16 @@ let cachedCredentials: { clientId: string; clientSecret: string } | null = null;
  * Retrieve OAuth credentials from Supabase secrets
  * This function caches the credentials to avoid unnecessary API calls
  */
-export const getOAuthCredentials = async (): Promise<{ clientId: string; clientSecret: string }> => {
+export const getOAuthCredentials = async (service: 'auth' | 'drive' = 'drive'): Promise<{ clientId: string; clientSecret: string }> => {
   if (cachedCredentials) {
     return cachedCredentials;
   }
   
   try {
     // Attempt to fetch credentials from Supabase secrets
-    const { data, error } = await customSupabase.functions.invoke('get-oauth-credentials');
+    const { data, error } = await customSupabase.functions.invoke('get-oauth-credentials', {
+      body: { service }
+    });
     
     if (error) {
       console.error('Error fetching OAuth credentials:', error);
@@ -42,36 +44,40 @@ export const getOAuthCredentials = async (): Promise<{ clientId: string; clientS
   } catch (error) {
     console.error('Failed to get OAuth credentials:', error);
     
-    // Fallback for development purposes only
-    const fallbackClientId = '455373172517-jvu8nvr2kal1ovtdsei9plefp6qstvd5.apps.googleusercontent.com';
-    const fallbackClientSecret = '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';
+    // Fallback depending on service
+    const fallbackCredentials = service === 'auth'
+      ? {
+          clientId: '1021623717075-t1ugq54l5omei2nn73a63r7vlae2cggk.apps.googleusercontent.com',
+          clientSecret: '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'
+        }
+      : {
+          clientId: '336644646972-6ku9cjco0scifhu85qnmgquh8o6gj10c.apps.googleusercontent.com',
+          clientSecret: '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'
+        };
     
     console.warn('Using fallback OAuth credentials. This should only happen in development.');
     
-    cachedCredentials = {
-      clientId: fallbackClientId,
-      clientSecret: fallbackClientSecret
-    };
+    cachedCredentials = fallbackCredentials;
     
     return cachedCredentials;
   }
 };
 
 // Export async function to get CLIENT_ID
-export const getClientId = async (): Promise<string> => {
-  const credentials = await getOAuthCredentials();
+export const getClientId = async (service: 'auth' | 'drive' = 'drive'): Promise<string> => {
+  const credentials = await getOAuthCredentials(service);
   return credentials.clientId;
 };
 
 // Export async function to get CLIENT_SECRET
-export const getClientSecret = async (): Promise<string> => {
-  const credentials = await getOAuthCredentials();
+export const getClientSecret = async (service: 'auth' | 'drive' = 'drive'): Promise<string> => {
+  const credentials = await getOAuthCredentials(service);
   return credentials.clientSecret;
 };
 
 // Export constants for backward compatibility (will be deprecated)
-export const CLIENT_ID = '455373172517-jvu8nvr2kal1ovtdsei9plefp6qstvd5.apps.googleusercontent.com';
-export const CLIENT_SECRET = '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';
+export const CLIENT_ID = '336644646972-6ku9cjco0scifhu85qnmgquh8o6gj10c.apps.googleusercontent.com';
+export const CLIENT_SECRET = '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';
 
 // Import the redirect URI function from our new redirects utility
 import { getDriveRedirectURI } from '@/services/auth/redirects';

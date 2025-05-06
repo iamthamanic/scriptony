@@ -10,8 +10,8 @@ export const refreshDriveToken = async (refreshToken: string): Promise<{
   expires_in: number;
 }> => {
   try {
-    const clientId = await getClientId();
-    const clientSecret = await getClientSecret();
+    const clientId = await getClientId('drive');
+    const clientSecret = await getClientSecret('drive');
     
     const response = await fetch(GOOGLE_TOKEN_URL, {
       method: 'POST',
