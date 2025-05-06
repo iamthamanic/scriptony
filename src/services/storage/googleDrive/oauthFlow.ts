@@ -8,9 +8,11 @@ import {
   CLIENT_SECRET, 
   REDIRECT_URI, 
   SCOPES, 
-  generateRandomString 
+  generateRandomString,
+  safeJsonParse
 } from './utils';
 import { createOrFindScriptonyMainFolder, createOrFindScriptonySubfolder } from './folders';
+import { toast } from 'sonner';
 
 export interface DriveConnectionResponse {
   success: boolean;
@@ -20,25 +22,41 @@ export interface DriveConnectionResponse {
     id: string;
     name: string;
   };
+  error?: {
+    code: string;
+    details: string;
+  };
 }
 
 /**
  * Initiates the Google Drive OAuth flow
  */
 export const connectToGoogleDrive = (): void => {
-  const state = generateRandomString(16);
-  localStorage.setItem('driveOAuthState', state);
-  
-  const authUrl = new URL(GOOGLE_AUTH_URL);
-  authUrl.searchParams.append('client_id', CLIENT_ID);
-  authUrl.searchParams.append('redirect_uri', REDIRECT_URI);
-  authUrl.searchParams.append('response_type', 'code');
-  authUrl.searchParams.append('scope', SCOPES);
-  authUrl.searchParams.append('state', state);
-  authUrl.searchParams.append('access_type', 'offline');
-  authUrl.searchParams.append('prompt', 'consent');
-  
-  window.location.href = authUrl.toString();
+  try {
+    console.log("Starting Google Drive OAuth flow...");
+    console.log("Redirect URI:", REDIRECT_URI);
+    
+    const state = generateRandomString(16);
+    localStorage.setItem('driveOAuthState', state);
+    
+    const authUrl = new URL(GOOGLE_AUTH_URL);
+    authUrl.searchParams.append('client_id', CLIENT_ID);
+    authUrl.searchParams.append('redirect_uri', REDIRECT_URI);
+    authUrl.searchParams.append('response_type', 'code');
+    authUrl.searchParams.append('scope', SCOPES);
+    authUrl.searchParams.append('state', state);
+    authUrl.searchParams.append('access_type', 'offline');
+    authUrl.searchParams.append('prompt', 'consent');
+    
+    console.log("Generated OAuth URL:", authUrl.toString());
+    
+    window.location.href = authUrl.toString();
+  } catch (error) {
+    console.error("Error initiating Google Drive connection:", error);
+    toast.error("Fehler bei der Verbindung mit Google Drive", {
+      description: "Bitte versuche es erneut oder kontaktiere den Support."
+    });
+  }
 };
 
 /**
@@ -48,6 +66,9 @@ export const handleDriveOAuthCallback = async (
   code: string, 
   state: string
 ): Promise<DriveConnectionResponse> => {
+  console.log("Handling Google Drive OAuth callback...");
+  console.log("Code received (length):", code.length);
+  
   const savedState = localStorage.getItem('driveOAuthState');
   if (!savedState || savedState !== state) {
     return { 
@@ -58,6 +79,10 @@ export const handleDriveOAuthCallback = async (
   
   try {
     // Exchange code for tokens
+    console.log("Exchanging authorization code for tokens...");
+    console.log("Token URL:", GOOGLE_TOKEN_URL);
+    console.log("Redirect URI for token exchange:", REDIRECT_URI);
+    
     const tokenResponse = await fetch(GOOGLE_TOKEN_URL, {
       method: 'POST',
       headers: {
@@ -72,13 +97,48 @@ export const handleDriveOAuthCallback = async (
       }),
     });
     
+    console.log("Token response status:", tokenResponse.status);
+    
     if (!tokenResponse.ok) {
-      throw new Error('Failed to exchange code for token');
+      const errorText = await tokenResponse.text();
+      console.error("Token exchange error:", errorText);
+      
+      // Try to parse error as JSON if possible
+      let errorDetails = "Unknown error";
+      try {
+        const errorJson = JSON.parse(errorText);
+        errorDetails = errorJson.error_description || errorJson.error || errorText;
+      } catch (e) {
+        errorDetails = errorText;
+      }
+      
+      return {
+        success: false,
+        message: `Token-Austausch fehlgeschlagen (${tokenResponse.status})`,
+        error: {
+          code: `HTTP_${tokenResponse.status}`,
+          details: errorDetails
+        }
+      };
     }
     
-    const tokenData = await tokenResponse.json();
+    const tokenData = await safeJsonParse(tokenResponse);
+    console.log("Token received, expires_in:", tokenData.expires_in);
+    
+    if (!tokenData.access_token) {
+      console.error("No access token received:", tokenData);
+      return {
+        success: false,
+        message: "Kein Access-Token erhalten",
+        error: {
+          code: "NO_ACCESS_TOKEN",
+          details: JSON.stringify(tokenData)
+        }
+      };
+    }
     
     // Get user info to display account email
+    console.log("Fetching user info...");
     const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
       headers: {
         'Authorization': `Bearer ${tokenData.access_token}`,
@@ -86,22 +146,36 @@ export const handleDriveOAuthCallback = async (
     });
     
     if (!userInfoResponse.ok) {
-      throw new Error('Failed to fetch user info');
+      console.error("User info fetch failed:", userInfoResponse.status);
+      return {
+        success: false,
+        message: 'Fehler beim Abrufen der Nutzerinformationen',
+        error: {
+          code: `USER_INFO_HTTP_${userInfoResponse.status}`,
+          details: await userInfoResponse.text()
+        }
+      };
     }
     
-    const userInfo = await userInfoResponse.json();
+    const userInfo = await safeJsonParse(userInfoResponse);
+    console.log("User email retrieved:", userInfo.email);
     
     // Create main Scriptony folder in Drive
+    console.log("Creating/finding Scriptony folder...");
     const scriptonyFolder = await createOrFindScriptonyMainFolder(tokenData.access_token);
+    console.log("Scriptony folder:", scriptonyFolder);
     
     // Create Projects subfolder
+    console.log("Creating/finding Projects subfolder...");
     const projectsFolder = await createOrFindScriptonySubfolder(
       tokenData.access_token,
       scriptonyFolder.id,
       'Projekte'
     );
+    console.log("Projects folder:", projectsFolder);
     
     // Save tokens and folder info to database
+    console.log("Saving drive settings to database...");
     await updateDriveSettings({
       drive_access_token: tokenData.access_token,
       drive_refresh_token: tokenData.refresh_token,
@@ -113,6 +187,7 @@ export const handleDriveOAuthCallback = async (
       is_connected: true
     });
     
+    console.log("Google Drive connection successful!");
     return {
       success: true,
       message: 'Erfolgreich mit Google Drive verbunden',
@@ -121,9 +196,17 @@ export const handleDriveOAuthCallback = async (
     };
   } catch (error) {
     console.error('Error handling OAuth callback:', error);
+    const errorMessage = error instanceof Error 
+      ? error.message 
+      : 'Unbekannter Fehler';
+      
     return {
       success: false,
-      message: `Fehler bei der Verbindung mit Google Drive: ${error instanceof Error ? error.message : 'Unbekannter Fehler'}`,
+      message: `Fehler bei der Verbindung mit Google Drive: ${errorMessage}`,
+      error: {
+        code: "OAUTH_PROCESS_ERROR",
+        details: errorMessage
+      }
     };
   } finally {
     // Clean up state from localStorage

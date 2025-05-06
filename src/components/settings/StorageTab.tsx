@@ -12,6 +12,7 @@ const StorageTab = () => {
   const { toast } = useToast();
   const [settings, setSettings] = useState<UserStorageSettings | null>(null);
   const [loading, setLoading] = useState(true);
+  const [connectionError, setConnectionError] = useState<{code: string, details: string} | undefined>(undefined);
   const { hasCallback, connecting, processOAuthCallback } = useOAuthCallback();
 
   // Load user storage settings
@@ -49,6 +50,7 @@ const StorageTab = () => {
         variant: 'destructive'
       });
       loadSettings();
+      setConnectionError(undefined);
     } catch (error) {
       console.error('Error disconnecting Google Drive:', error);
       toast({
@@ -59,15 +61,42 @@ const StorageTab = () => {
     }
   };
 
+  // Handle OAuth callback result
+  const handleOAuthResult = (result: any) => {
+    if (!result.success && result.error) {
+      setConnectionError(result.error);
+    } else {
+      setConnectionError(undefined);
+    }
+  };
+
   // Check for OAuth callback on mount and load settings
   useEffect(() => {
     loadSettings();
     
     // Check if we have an OAuth callback
     if (hasCallback) {
-      processOAuthCallback(loadSettings);
+      processOAuthCallback(loadSettings).then(handleOAuthResult);
     }
   }, [hasCallback]);
+
+  // Look for error info in URL params
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const errorCode = params.get('error');
+    const errorMessage = params.get('error_description');
+    
+    if (errorCode) {
+      setConnectionError({
+        code: errorCode,
+        details: errorMessage || 'Unbekannter Fehler'
+      });
+      
+      // Clean URL
+      const baseUrl = window.location.pathname + '?tab=storage';
+      window.history.replaceState({}, '', baseUrl);
+    }
+  }, []);
 
   if (loading) {
     return <StorageLoading />;
@@ -84,6 +113,7 @@ const StorageTab = () => {
         settings={settings}
         connecting={connecting}
         onDisconnect={handleDisconnectDrive}
+        connectionError={connectionError}
       />
       
       <FileAccessInfo />
