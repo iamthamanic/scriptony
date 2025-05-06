@@ -1,4 +1,3 @@
-
 import { useToast } from "@/hooks/use-toast";
 import { 
   fetchUserWorlds, 
@@ -124,29 +123,27 @@ export function useWorldsOperations(
       
       console.log('World deletion successful, updating local state');
       
-      // First close the dialog before updating the list to avoid race conditions
-      setIsDeleteWorldDialogOpen(false);
+      // Update local state first before closing dialog
+      const newWorlds = worlds.filter(w => w.id !== worldId);
+      setWorlds(newWorlds);
+      setSelectedWorldId(null); // Always return to worlds list after deletion
       
-      // Add a small delay before updating state to ensure dialog animation completes
-      // This helps prevent UI freezes due to state updates during transitions
+      // Close the dialog last - this prevents UI from freezing
+      // Use a small delay to ensure React has processed the state updates
       setTimeout(() => {
-        // Update local state after successful deletion
-        const newWorlds = worlds.filter(w => w.id !== worldId);
-        setWorlds(newWorlds);
-        setSelectedWorldId(null); // Always return to worlds list after deletion
+        setIsDeleteWorldDialogOpen(false);
         
-        // Show success toast
+        // Show success toast after all UI operations are complete
         toast({
           title: 'Welt gelöscht',
           description: `"${worldName}" wurde erfolgreich gelöscht.`
         });
-      }, 300);
+      }, 50); // A very small delay to ensure state updates are processed
       
       return Promise.resolve();
     } catch (error) {
       console.error('Error in handleDeleteWorld:', error);
       // Let the error propagate to the DeleteWorldDialog component
-      // which now handles error display
       return Promise.reject(error);
     }
   };

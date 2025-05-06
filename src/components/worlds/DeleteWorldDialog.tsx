@@ -28,13 +28,13 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
   // Clean up state when dialog opens/closes
   useEffect(() => {
     if (!isOpen) {
-      // Small delay to ensure animations complete before resetting state
+      // Reset state with a small delay to ensure animations complete
       const timer = setTimeout(() => {
         setIsDeleting(false);
         setDeletionError(null);
       }, 300);
       
-      // Cleanup timeout on unmount
+      // Cleanup timeout on unmount or when deps change
       return () => clearTimeout(timer);
     } else {
       // Reset error when dialog opens
@@ -50,10 +50,12 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
     
     try {
       console.log(`Starting deletion of world: ${worldName}`);
+      
+      // Let parent component handle the actual deletion
       await onDelete();
       
-      // Let parent component handle success message and closing dialog
-      // onClose() is no longer called here as the parent component will handle it
+      // Don't call onClose() here - it's now handled by the parent component
+      // after the state updates are applied
     } catch (error) {
       console.error("Error during world deletion:", error);
       
@@ -74,8 +76,9 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
     }
   };
 
-  // Handle controlled closing of dialog
+  // Controlled closing of dialog to prevent issues with React's state updates
   const handleDialogChange = (open: boolean) => {
+    // Only allow closing if not in the middle of deletion
     if (!open && !isDeleting) {
       onClose();
     }
