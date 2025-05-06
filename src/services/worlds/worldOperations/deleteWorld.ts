@@ -99,6 +99,7 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
     // Race against the timeout
     const { data: deletedWorld, error } = await Promise.race([deletePromise, timeoutPromise]);
       
+    // Mark operation as completed successfully to ensure proper cleanup
     operationCompleted = true;
     
     if (error) {
@@ -114,6 +115,9 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
     // Always cancel the timeout to prevent memory leaks
     if (!operationCompleted) {
       console.log('Canceling timeout as operation completed or failed');
+      cancelTimeout();
+    } else {
+      // Ensure timeout is always canceled even when successful
       cancelTimeout();
     }
   }
