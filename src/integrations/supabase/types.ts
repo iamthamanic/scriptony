@@ -466,6 +466,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_project_dev_mode: {
+        Args: {
+          p_title: string
+          p_type: string
+          p_user_id: string
+          p_logline?: string
+          p_genres?: string[]
+          p_duration?: string
+          p_video_format?: string
+          p_narrative_structure?: string
+          p_cover_image_url?: string
+          p_inspirations?: string
+          p_world_id?: string
+        }
+        Returns: string
+      }
       is_development_mode: {
         Args: Record<PropertyKey, never>
         Returns: boolean
