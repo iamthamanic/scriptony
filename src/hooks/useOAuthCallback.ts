@@ -1,12 +1,12 @@
-
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { handleDriveOAuthCallback } from '@/services/storage';
 import { DriveConnectionResponse } from '@/services/storage/googleDrive/oauthFlow';
 
 export const useOAuthCallback = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [connecting, setConnecting] = useState(false);
 
@@ -60,9 +60,19 @@ export const useOAuthCallback = () => {
       } finally {
         setConnecting(false);
         
-        // Clear URL parameters
-        const newUrl = window.location.pathname + window.location.search.split('&code')[0].split('?code')[0] + '?tab=storage';
-        window.history.replaceState({}, '', newUrl);
+        // Check if we have an original URL to return to
+        const originalUrl = localStorage.getItem('driveOAuthOriginUrl');
+        localStorage.removeItem('driveOAuthOriginUrl');
+        
+        // Clean URL parameters - keep the tab parameter
+        if (originalUrl) {
+          // Try to go back to the original URL if possible
+          navigate(originalUrl);
+        } else {
+          // Default fallback - just clear the auth parameters
+          const newUrl = window.location.pathname + '?tab=storage';
+          window.history.replaceState({}, '', newUrl);
+        }
       }
     }
     

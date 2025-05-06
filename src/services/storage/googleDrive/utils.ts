@@ -9,7 +9,16 @@ export const GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token';
 // For development purposes we're using direct values
 export const CLIENT_ID = '455373172517-jvu8nvr2kal1ovtdsei9plefp6qstvd5.apps.googleusercontent.com';
 export const CLIENT_SECRET = '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';
-export const REDIRECT_URI = window.location.origin + '/account?tab=storage';
+
+// More reliable redirect URI handling
+export const getRedirectURI = (): string => {
+  // Return the current origin + the path for storage tab
+  return `${window.location.origin}/account?tab=storage`;
+};
+
+// Export REDIRECT_URI for backward compatibility
+export const REDIRECT_URI = getRedirectURI();
+
 export const SCOPES = ['https://www.googleapis.com/auth/drive.file'].join(' ');
 
 /**

@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Code, AlertCircle, Terminal, Copy, CheckCircle } from 'lucide-react';
-import { CLIENT_ID, REDIRECT_URI } from '@/services/storage/googleDrive/utils';
+import { CLIENT_ID, getRedirectURI } from '@/services/storage/googleDrive/utils';
 
 interface DriveConnectionDiagnosticsProps {
   isOpen: boolean;
@@ -21,6 +21,7 @@ const DriveConnectionDiagnostics: React.FC<DriveConnectionDiagnosticsProps> = ({
   lastError
 }) => {
   const [copied, setCopied] = useState<string | null>(null);
+  const redirectUri = getRedirectURI();
   
   const copyToClipboard = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
@@ -50,7 +51,7 @@ const DriveConnectionDiagnostics: React.FC<DriveConnectionDiagnosticsProps> = ({
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-xs">Redirect URI:</span>
-                <code className="text-xs bg-background px-2 py-1 rounded">{REDIRECT_URI}</code>
+                <code className="text-xs bg-background px-2 py-1 rounded">{redirectUri}</code>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-xs">Aktuelle URL:</span>
@@ -79,7 +80,7 @@ const DriveConnectionDiagnostics: React.FC<DriveConnectionDiagnosticsProps> = ({
             <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 pl-2">
               <li>Der OAuth consent screen ist konfiguriert</li>
               <li>Die OAuth-Client-ID ist korrekt</li>
-              <li>Authorized redirect URIs enthält: <code className="text-xs bg-muted px-1">{REDIRECT_URI}</code></li>
+              <li>Authorized redirect URIs enthält: <code className="text-xs bg-muted px-1">{redirectUri}</code></li>
               <li>Authorized JavaScript origins enthält: <code className="text-xs bg-muted px-1">{window.location.origin}</code></li>
             </ul>
             
@@ -88,7 +89,7 @@ const DriveConnectionDiagnostics: React.FC<DriveConnectionDiagnosticsProps> = ({
                 variant="outline" 
                 size="sm" 
                 className="text-xs"
-                onClick={() => copyToClipboard(REDIRECT_URI, 'redirect')}
+                onClick={() => copyToClipboard(redirectUri, 'redirect')}
               >
                 {copied === 'redirect' ? (
                   <><CheckCircle className="h-3 w-3 mr-1" /> Kopiert</>
@@ -128,7 +129,7 @@ Credentials > OAuth Client ID:
 - Authorized JavaScript origins:
   * ${window.location.origin}
 - Authorized redirect URIs:
-  * ${REDIRECT_URI}`}
+  * ${redirectUri}`}
             </pre>
           </div>
           
