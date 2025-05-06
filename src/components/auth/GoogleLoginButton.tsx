@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from "sonner";
@@ -6,6 +7,7 @@ import { customSupabase } from "@/integrations/supabase/customClient";
 import { Button } from "@/components/ui/button";
 import { Loader2, AlertTriangle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { getAuthRedirectURI, getEnvironmentInfo } from '@/services/auth/redirects';
 
 interface GoogleLoginButtonProps {
   loading: boolean;
@@ -34,10 +36,15 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
 
   // Log auth settings on component mount for debugging
   useEffect(() => {
+    const envInfo = getEnvironmentInfo();
+    
     console.log("======== GOOGLE AUTH DEBUGGING INFO ========");
+    console.log("Environment type:", envInfo.type);
+    console.log("Hostname:", envInfo.hostname);
     console.log("Current URL origin:", window.location.origin);
     console.log("Current full URL:", window.location.href);
     console.log("Current path:", window.location.pathname);
+    console.log("Redirect URI:", getAuthRedirectURI());
     console.log("Supabase project URL: https://suvxmnrnldfhfwxvkntv.supabase.co");
     console.log("Supabase callback URL: https://suvxmnrnldfhfwxvkntv.supabase.co/auth/v1/callback");
     console.log("==========================================");
@@ -110,7 +117,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
       await testConnectivity();
       
       // Explicitly set redirectTo to ensure consistent behavior across environments
-      const redirectUrl = `${window.location.origin}/auth`;
+      const redirectUrl = getAuthRedirectURI();
       console.log("Setting explicit redirectTo URL:", redirectUrl);
       
       const { data, error } = await customSupabase.auth.signInWithOAuth({
@@ -242,8 +249,9 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ loading, setLoadi
       
       {errorDetails && showDebugInfo && (
         <div className="mt-2 p-3 bg-muted/50 rounded-md border text-xs font-mono overflow-x-auto space-y-1">
+          <p><strong>Environment:</strong> {getEnvironmentInfo().type} ({getEnvironmentInfo().hostname})</p>
           <p><strong>Current URL:</strong> {currentURL}</p>
-          <p><strong>Redirect URL:</strong> {window.location.origin}/auth</p>
+          <p><strong>Redirect URL:</strong> {getAuthRedirectURI()}</p>
           <p><strong>Supabase Project:</strong> suvxmnrnldfhfwxvkntv.supabase.co</p>
           {connectionTestResult && (
             <p><strong>Connection Test:</strong> {connectionTestResult}</p>
