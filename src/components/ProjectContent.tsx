@@ -5,6 +5,7 @@ import SceneList from './SceneList';
 import CharacterList from './CharacterList';
 import EpisodeList from './episodes/EpisodeList';
 import NewSceneModal from './NewSceneModal';
+import { EditCharacterFormData } from './EditCharacterModal';
 
 interface ProjectContentProps {
   selectedProject: {
@@ -20,10 +21,10 @@ interface ProjectContentProps {
   onEditScene: (scene: Scene) => void;
   onDeleteScene: (scene: Scene) => void;
   editingScene: Scene | null;
-  onEditCharacter: (character: Character) => void;
-  onDeleteCharacter: (character: Character) => void;
+  onEditCharacter: (characterId: string, data: EditCharacterFormData) => void;
+  onDeleteCharacter: (characterId: string) => void;
   onEditEpisode: (episodeId: string) => void;
-  onDeleteEpisode: (episode: Episode) => void;
+  onDeleteEpisode: (episodeId: string) => void;
   onNewEpisode: () => void;
   selectedEpisodeId: string | null;
   setSelectedEpisodeId: React.Dispatch<React.SetStateAction<string | null>>;
@@ -51,6 +52,24 @@ const ProjectContent = ({
     return selectedProject.scenes.reduce((max, scene) => Math.max(max, scene.sceneNumber), 0);
   };
 
+  // Wrapper functions to match the expected prop types
+  const handleEditCharacter = (character: Character) => {
+    onEditCharacter(character.id, {
+      name: character.name,
+      role: character.role,
+      description: character.description,
+      avatar: character.avatar
+    });
+  };
+
+  const handleDeleteCharacter = (character: Character) => {
+    onDeleteCharacter(character.id);
+  };
+
+  const handleDeleteEpisode = (episode: Episode) => {
+    onDeleteEpisode(episode.id);
+  };
+
   return (
     <div className="flex-1 overflow-auto">
       {selectedProject ? (
@@ -67,8 +86,10 @@ const ProjectContent = ({
               <EpisodeList
                 episodes={selectedProject.episodes}
                 onEditEpisode={onEditEpisode}
-                onDeleteEpisode={(episode) => onDeleteEpisode(episode)}
+                onDeleteEpisode={handleDeleteEpisode}
                 selectedEpisodeId={selectedEpisodeId}
+                onNewEpisode={onNewEpisode}
+                onSelectEpisode={setSelectedEpisodeId}
               />
             </div>
           )}
@@ -85,7 +106,6 @@ const ProjectContent = ({
               scenes={selectedProject.scenes}
               onEditScene={onEditScene}
               onDeleteScene={onDeleteScene}
-              selectedEpisodeId={selectedEpisodeId}
               characters={selectedProject.characters || []}
               onExportPDF={() => {}}
             />
@@ -96,8 +116,8 @@ const ProjectContent = ({
             <h2 className="text-xl font-semibold mb-2">Characters</h2>
             <CharacterList
               characters={selectedProject.characters}
-              onEditCharacter={onEditCharacter}
-              onDeleteCharacter={onDeleteCharacter}
+              onEditCharacter={handleEditCharacter}
+              onDeleteCharacter={handleDeleteCharacter}
               onNewCharacter={() => {}}
             />
           </div>
@@ -114,7 +134,7 @@ const ProjectContent = ({
           isOpen={isNewSceneModalOpen}
           onClose={onCloseNewSceneModal}
           onSubmit={onCreateScene}
-          projectType={selectedProject.type}
+          projectType={selectedProject.type as any}
           lastSceneNumber={getLastSceneNumber()}
           editScene={editingScene}
           characters={selectedProject.characters || []}

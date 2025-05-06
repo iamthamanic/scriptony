@@ -9,7 +9,7 @@ interface EpisodeListProps {
   episodes: Episode[];
   onNewEpisode: () => void;
   onEditEpisode: (episodeId: string) => void;
-  onDeleteEpisode: (episodeId: string) => void;
+  onDeleteEpisode: (episode: Episode) => void;
   selectedEpisodeId?: string | null;
   onSelectEpisode?: (episodeId: string | null) => void;
 }
@@ -83,7 +83,7 @@ const EpisodeList = ({
                 
                 <DeleteEpisodeDialog 
                   episode={episode}
-                  onConfirm={() => onDeleteEpisode(episode.id)}
+                  onConfirm={() => onDeleteEpisode(episode)}
                   trigger={
                     <Button 
                       variant="outline" 

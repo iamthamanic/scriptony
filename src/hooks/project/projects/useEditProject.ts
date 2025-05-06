@@ -3,7 +3,17 @@ import { Project, ProjectWithCoverImageFile, EditProjectFormData } from "../../.
 import { useToast } from "../../use-toast";
 import { updateProject } from "../../../services/database";
 import { useAuth } from "@/contexts/AuthContext";
-import { normalizeInspirations } from "@/services/utils";
+
+// Helper function to normalize inspirations to ensure they're always in array format
+const normalizeInspirations = (inspirations: string[] | string | undefined): string[] => {
+  if (!inspirations) return [];
+  
+  if (Array.isArray(inspirations)) {
+    return inspirations;
+  }
+  
+  return inspirations.split(',').filter(Boolean);
+};
 
 // Helper function to safely convert ProjectWithCoverImageFile to Project
 const convertToProject = (project: ProjectWithCoverImageFile): Project => {

@@ -1,8 +1,8 @@
 
-import { Scene } from '@/types';
+import { Scene, EmotionalSignificance, TimeOfDay } from '@/types';
 
-export const handleApiError = (error: any, options = { defaultMessage: "API Error", showToast: false }) => {
-  console.error(options.defaultMessage + ":", error);
+export const handleApiError = (error: any) => {
+  console.error("API Error:", error);
   // Additional error handling logic can be added here
   return null;
 };
@@ -15,7 +15,7 @@ export const convertDbSceneToApp = (dbScene: any): Scene => {
     episodeTitle: dbScene.episode_title,
     sceneNumber: dbScene.scene_number,
     location: dbScene.location,
-    timeOfDay: dbScene.time_of_day,
+    timeOfDay: dbScene.time_of_day as TimeOfDay,
     timecodeStart: dbScene.timecode_start,
     timecodeEnd: dbScene.timecode_end,
     visualComposition: dbScene.visual_composition,
@@ -29,7 +29,7 @@ export const convertDbSceneToApp = (dbScene: any): Scene => {
     characterDialogs: dbScene.character_dialogs,
     transitions: dbScene.transitions,
     productionNotes: dbScene.production_notes,
-    emotionalSignificance: dbScene.emotional_significance,
+    emotionalSignificance: dbScene.emotional_significance as EmotionalSignificance,
     emotionalNotes: dbScene.emotional_notes,
     characterIds: dbScene.character_ids || [],
     colorReferences: dbScene.color_references,
@@ -62,12 +62,12 @@ export const convertDbProjectToApp = (dbProject: any) => {
   };
 };
 
-export const normalizeInspirations = (inspirations: string[] | string | undefined): string => {
-  if (!inspirations) return '';
+export const normalizeInspirations = (inspirations: string[] | string | undefined): string[] => {
+  if (!inspirations) return [];
   
   if (Array.isArray(inspirations)) {
-    return inspirations.join(',');
+    return inspirations;
   }
   
-  return inspirations;
+  return inspirations.split(',').filter(Boolean);
 };
