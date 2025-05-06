@@ -14,11 +14,13 @@ export const useOAuthCallback = () => {
   ) => {
     const code = searchParams.get('code');
     const state = searchParams.get('state');
+    let result = { success: false, message: 'No callback parameters found' };
     
     if (code && state) {
       try {
+        console.log("Processing OAuth callback with code and state");
         setConnecting(true);
-        const result = await handleDriveOAuthCallback(code, state);
+        result = await handleDriveOAuthCallback(code, state);
         
         if (result.success) {
           toast({
@@ -42,6 +44,15 @@ export const useOAuthCallback = () => {
           description: 'Fehler bei der Verbindung mit Google Drive',
           variant: 'destructive',
         });
+        
+        result = {
+          success: false,
+          message: error instanceof Error ? error.message : 'Unbekannter Fehler',
+          error: {
+            code: 'CALLBACK_EXCEPTION',
+            details: error instanceof Error ? error.message : 'Unknown error'
+          }
+        };
       } finally {
         setConnecting(false);
         
@@ -50,6 +61,8 @@ export const useOAuthCallback = () => {
         window.history.replaceState({}, '', newUrl);
       }
     }
+    
+    return result;
   };
 
   return {
