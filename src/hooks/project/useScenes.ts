@@ -11,7 +11,7 @@ export const useScenes = (
   const { toast } = useToast();
   const { user } = useAuth();
 
-  const handleCreateScene = async (data: NewSceneFormData, editingScene: Scene | null) => {
+  const handleCreateScene = async (data: NewSceneFormData) => {
     if (!selectedProject || !user) return;
 
     // Make sure projectId is set in the data
@@ -24,12 +24,12 @@ export const useScenes = (
     
     if (!createdScene) return;
 
-    if (editingScene) {
+    if (data.id) {
       // Update existing scene
       updateProjects(selectedProject.id, (project) => ({
         ...project,
         scenes: project.scenes
-          .map(scene => scene.id === editingScene.id ? createdScene : scene)
+          .map(scene => scene.id === data.id ? createdScene : scene)
           .sort((a, b) => a.sceneNumber - b.sceneNumber),
         updatedAt: new Date()
       }));

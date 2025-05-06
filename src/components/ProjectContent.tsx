@@ -1,7 +1,8 @@
+
 import React from 'react';
 import { Scene, Episode, Character } from '../types';
-import SceneList from './scenes/SceneList';
-import CharacterList from './characters/CharacterList';
+import SceneList from './SceneList';
+import CharacterList from './CharacterList';
 import EpisodeList from './episodes/EpisodeList';
 import NewSceneModal from './NewSceneModal';
 
@@ -66,7 +67,7 @@ const ProjectContent = ({
               <EpisodeList
                 episodes={selectedProject.episodes}
                 onEditEpisode={onEditEpisode}
-                onDeleteEpisode={onDeleteEpisode}
+                onDeleteEpisode={(episode) => onDeleteEpisode(episode)}
                 selectedEpisodeId={selectedEpisodeId}
                 setSelectedEpisodeId={setSelectedEpisodeId}
               />
@@ -86,6 +87,8 @@ const ProjectContent = ({
               onEditScene={onEditScene}
               onDeleteScene={onDeleteScene}
               selectedEpisodeId={selectedEpisodeId}
+              characters={selectedProject.characters || []}
+              onExportPDF={() => {}}
             />
           </div>
 
@@ -96,6 +99,7 @@ const ProjectContent = ({
               characters={selectedProject.characters}
               onEditCharacter={onEditCharacter}
               onDeleteCharacter={onDeleteCharacter}
+              onNewCharacter={() => {}}
             />
           </div>
         </div>
