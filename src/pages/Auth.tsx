@@ -1,6 +1,7 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 import AuthContainer from '@/components/auth/AuthContainer';
 import AuthContent from '@/components/auth/AuthContent';
@@ -9,9 +10,12 @@ import AuthSwitcher from '@/components/auth/AuthSwitcher';
 import { useAuthState } from '@/hooks/useAuthState';
 import { useAuthCallback } from '@/hooks/useAuthCallback';
 import { useSessionCheck } from '@/hooks/useSessionCheck';
+import { isDevelopmentMode } from '@/utils/devMode';
+import { toast } from 'sonner';
 
 const Auth = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   
   // Auth mode state management (login, register, password reset)
   const { isLogin, isPasswordReset, toggleMode, togglePasswordReset } = useAuthState();
@@ -21,6 +25,15 @@ const Auth = () => {
 
   // Check if user is already logged in
   const sessionHandler = useSessionCheck();
+  
+  // Check if we're in development mode
+  useEffect(() => {
+    const devMode = isDevelopmentMode();
+    if (devMode) {
+      toast.info("Development Mode: Redirecting to home page");
+      navigate('/');
+    }
+  }, [navigate]);
   
   // Combine state from hooks
   const [loading, setLoading] = useState(

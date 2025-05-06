@@ -41,6 +41,9 @@ export const useAuthListener = () => {
       setSession(mockSession);
       setLoading(false);
       
+      // In development mode, show a toast to indicate we're using a mock user
+      toast.info("Development Mode: Using mock user");
+      
       return () => { isMounted = false; };
     }
     
