@@ -2,12 +2,7 @@
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-
-// Check if we're in development mode
-const isDevelopmentMode = () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.has('devMode') || window.location.hostname.includes('lovableproject.com');
-};
+import { isDevelopmentMode } from '@/utils/devMode';
 
 export const useRedirectUnauthenticated = () => {
   const { user, loading } = useAuth();

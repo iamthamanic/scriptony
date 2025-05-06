@@ -4,9 +4,12 @@
  * with the development flag enabled
  */
 export const isDevelopmentMode = (): boolean => {
-  // Only check for the devMode URL parameter, not the hostname
+  // Check for the devMode URL parameter
   const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.has('devMode');
+  const hasDevModeParam = urlParams.has('devMode');
+  
+  // Return true only if the URL parameter is present
+  return hasDevModeParam;
 };
 
 /**
