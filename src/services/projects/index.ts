@@ -3,5 +3,6 @@
 export * from './fetchProjects';
 export * from './projectDetails';
 export * from './createProject';
+export * from './createScene';
 export * from './updateProject';
 export * from './deleteProject';

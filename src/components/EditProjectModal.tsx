@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -11,6 +10,8 @@ import { genreOptions, projectTypeOptions, videoFormatOptions } from '../utils/m
 import { X, Plus, Upload, HelpCircle } from 'lucide-react';
 import { getStructureOptions } from '../types/narrativeStructures';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { narrativeStructureTemplates } from '../types/narrativeStructures';
 
 interface EditProjectModalProps {
   isOpen: boolean;
@@ -164,6 +165,12 @@ const EditProjectModal = ({ isOpen, onClose, onSubmit, project }: EditProjectMod
     option => option.value === formData.narrativeStructure
   )?.description || '';
 
+  const getStructureTooltipDescription = (value: string) => {
+    const template = narrativeStructureTemplates[value];
+    if (!template) return '';
+    return template.description || '';
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -253,11 +260,20 @@ const EditProjectModal = ({ isOpen, onClose, onSubmit, project }: EditProjectMod
                 <SelectValue placeholder="Select narrative structure" />
               </SelectTrigger>
               <SelectContent>
-                {structureOptions.map(option => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
+                <TooltipProvider>
+                  {structureOptions.map(option => (
+                    <Tooltip key={option.value}>
+                      <TooltipTrigger asChild>
+                        <SelectItem value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      </TooltipTrigger>
+                      <TooltipContent side="right" className="max-w-sm">
+                        <p>{getStructureTooltipDescription(option.value) || option.description}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  ))}
+                </TooltipProvider>
               </SelectContent>
             </Select>
             <p className="text-xs text-muted-foreground mt-1">
