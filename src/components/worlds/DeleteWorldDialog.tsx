@@ -46,7 +46,8 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
       // Silme işlemini tamamla
       await onDelete();
       
-      // İşlem başarılı olduğunda dialog'u kapat
+      // İşlem başarılı olduğunda state'i temizle ve dialog'u kapat
+      setIsDeleting(false);
       handleCloseDialog();
       
     } catch (error) {
@@ -71,7 +72,7 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
 
   return (
     <AlertDialog open={isOpen} onOpenChange={(open) => {
-      if (!open) {
+      if (!open && !isDeleting) {
         handleCloseDialog();
       }
     }}>
@@ -91,22 +92,20 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
         
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isDeleting}>İptal</AlertDialogCancel>
-          <AlertDialogAction asChild>
-            <Button 
-              onClick={handleDelete}
-              variant="destructive"
-              disabled={isDeleting}
-            >
-              {isDeleting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Siliniyor...
-                </>
-              ) : (
-                'Sil'
-              )}
-            </Button>
-          </AlertDialogAction>
+          <Button 
+            onClick={handleDelete}
+            variant="destructive"
+            disabled={isDeleting}
+          >
+            {isDeleting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Siliniyor...
+              </>
+            ) : (
+              'Sil'
+            )}
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

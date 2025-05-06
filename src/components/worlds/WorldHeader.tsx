@@ -25,7 +25,24 @@ const WorldHeader = ({
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    // Silme işlemi için onDeleteWorld fonksiyonunu çağır
     onDeleteWorld();
+  };
+
+  const handleEditClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Düzenleme işlemi için onEditWorld fonksiyonunu çağır
+    onEditWorld();
+  };
+
+  const handleDuplicateClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Kopyalama işlemi için onDuplicateWorld fonksiyonunu çağır (varsa)
+    if (onDuplicateWorld) {
+      onDuplicateWorld();
+    }
   };
 
   return (
@@ -59,13 +76,13 @@ const WorldHeader = ({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={onEditWorld}>
+            <DropdownMenuItem onClick={handleEditClick}>
               <Edit className="h-4 w-4 mr-2" />
               Welt bearbeiten
             </DropdownMenuItem>
             
             {onDuplicateWorld && (
-              <DropdownMenuItem onClick={onDuplicateWorld}>
+              <DropdownMenuItem onClick={handleDuplicateClick}>
                 <Copy className="h-4 w-4 mr-2" />
                 Welt duplizieren
               </DropdownMenuItem>
