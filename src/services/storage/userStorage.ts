@@ -1,21 +1,7 @@
 
 import { customSupabase } from "@/integrations/supabase/customClient";
 import { getCurrentUser } from "../worlds/worldOperations/utils";
-
-export interface UserStorageSettings {
-  id: string;
-  user_id: string;
-  storage_provider: 'scriptony' | 'googleDrive';
-  drive_folder_id?: string;
-  drive_folder_name?: string;
-  upload_to_drive: boolean;
-  drive_account_email?: string;
-  drive_access_token?: string;
-  drive_refresh_token?: string;
-  drive_token_expiry?: string;
-  created_at: string;
-  updated_at: string;
-}
+import { UserStorageSettings } from "./types";
 
 /**
  * Fetches the user's storage settings
@@ -40,40 +26,14 @@ export const getUserStorageSettings = async (): Promise<UserStorageSettings | nu
 };
 
 /**
- * Updates the user's storage provider setting
- */
-export const updateStorageProvider = async (
-  storageProvider: 'scriptony' | 'googleDrive'
-): Promise<UserStorageSettings | null> => {
-  // Get the current user
-  const { data: { user } } = await getCurrentUser();
-  if (!user) throw new Error('User not authenticated');
-
-  const { data, error } = await customSupabase
-    .from('user_settings')
-    .update({ 
-      storage_provider: storageProvider,
-      updated_at: new Date().toISOString()
-    })
-    .eq('user_id', user.id)
-    .select()
-    .single();
-    
-  if (error) {
-    console.error("Error updating storage provider:", error);
-    return null;
-  }
-  
-  return data as UserStorageSettings;
-};
-
-/**
  * Updates Google Drive integration settings
  */
 export const updateDriveSettings = async (
   settings: Partial<Pick<UserStorageSettings, 
-    'drive_folder_id' | 'drive_folder_name' | 'upload_to_drive' | 
-    'drive_account_email' | 'drive_access_token' | 'drive_refresh_token' | 'drive_token_expiry'
+    'drive_folder_id' | 'drive_folder_name' | 
+    'drive_account_email' | 'drive_access_token' | 
+    'drive_refresh_token' | 'drive_token_expiry' |
+    'storage_provider' | 'is_connected'
   >>
 ): Promise<UserStorageSettings | null> => {
   // Get the current user
@@ -99,7 +59,8 @@ export const updateDriveSettings = async (
 };
 
 /**
- * Disconnects Google Drive integration
+ * Disconnects Google Drive integration - but only sets connection state to false
+ * keeping the tokens for potential reconnection
  */
 export const disconnectGoogleDrive = async (): Promise<UserStorageSettings | null> => {
   // Get the current user
@@ -109,14 +70,7 @@ export const disconnectGoogleDrive = async (): Promise<UserStorageSettings | nul
   const { data, error } = await customSupabase
     .from('user_settings')
     .update({ 
-      storage_provider: 'scriptony',
-      drive_folder_id: null,
-      drive_folder_name: null,
-      upload_to_drive: false,
-      drive_account_email: null,
-      drive_access_token: null,
-      drive_refresh_token: null,
-      drive_token_expiry: null,
+      is_connected: false,
       updated_at: new Date().toISOString()
     })
     .eq('user_id', user.id)
@@ -129,4 +83,59 @@ export const disconnectGoogleDrive = async (): Promise<UserStorageSettings | nul
   }
   
   return data as UserStorageSettings;
+};
+
+/**
+ * Creates default storage settings for a new user
+ * if not already created by the database trigger
+ */
+export const createDefaultStorageSettings = async (): Promise<UserStorageSettings | null> => {
+  const { data: { user } } = await getCurrentUser();
+  if (!user) throw new Error('User not authenticated');
+  
+  // First check if settings already exist
+  const { data: existingSettings } = await customSupabase
+    .from('user_settings')
+    .select('id')
+    .eq('user_id', user.id)
+    .single();
+    
+  if (existingSettings?.id) {
+    return getUserStorageSettings();
+  }
+  
+  // Create new settings
+  const { data, error } = await customSupabase
+    .from('user_settings')
+    .insert({
+      user_id: user.id,
+      storage_provider: 'googleDrive',
+      is_connected: false
+    })
+    .select()
+    .single();
+    
+  if (error) {
+    console.error("Error creating storage settings:", error);
+    return null;
+  }
+  
+  return data as UserStorageSettings;
+};
+
+/**
+ * Checks if drive connection is required and not completed
+ */
+export const checkDriveConnectionRequired = async (): Promise<boolean> => {
+  try {
+    const settings = await getUserStorageSettings();
+    
+    // If no settings found, or user has no drive connection
+    const driveNotConnected = !settings || !settings.drive_account_email || !settings.drive_folder_id;
+    
+    return driveNotConnected;
+  } catch (error) {
+    console.error("Error checking drive connection requirement:", error);
+    return true; // Assume connection required if error
+  }
 };

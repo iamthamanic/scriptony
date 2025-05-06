@@ -95,8 +95,15 @@ export const handleDriveOAuthCallback = async (
     
     const userInfo = await userInfoResponse.json();
     
-    // Create or find Scriptony folder in Drive
-    const folder = await createOrFindScriptonyFolder(tokenData.access_token);
+    // Create main Scriptony folder in Drive
+    const scriptonyFolder = await createOrFindScriptonyMainFolder(tokenData.access_token);
+    
+    // Create Projects subfolder
+    const projectsFolder = await createOrFindScriptonySubfolder(
+      tokenData.access_token,
+      scriptonyFolder.id,
+      'Projekte'
+    );
     
     // Save tokens and folder info to database
     await updateDriveSettings({
@@ -104,15 +111,17 @@ export const handleDriveOAuthCallback = async (
       drive_refresh_token: tokenData.refresh_token,
       drive_token_expiry: new Date(Date.now() + tokenData.expires_in * 1000).toISOString(),
       drive_account_email: userInfo.email,
-      drive_folder_id: folder.id,
-      drive_folder_name: folder.name,
+      drive_folder_id: scriptonyFolder.id,
+      drive_folder_name: scriptonyFolder.name,
+      storage_provider: 'googleDrive',
+      is_connected: true
     });
     
     return {
       success: true,
       message: 'Erfolgreich mit Google Drive verbunden',
       email: userInfo.email,
-      folder: folder,
+      folder: scriptonyFolder,
     };
   } catch (error) {
     console.error('Error handling OAuth callback:', error);
@@ -127,9 +136,9 @@ export const handleDriveOAuthCallback = async (
 };
 
 /**
- * Creates or finds the Scriptony folder in Google Drive
+ * Creates or finds the main Scriptony folder in Google Drive
  */
-const createOrFindScriptonyFolder = async (accessToken: string): Promise<{ id: string; name: string }> => {
+const createOrFindScriptonyMainFolder = async (accessToken: string): Promise<{ id: string; name: string }> => {
   try {
     // First, check if the folder already exists
     const searchResponse = await fetch(
@@ -185,17 +194,140 @@ const createOrFindScriptonyFolder = async (accessToken: string): Promise<{ id: s
 };
 
 /**
- * Uploads a file to Google Drive
+ * Creates or finds a subfolder within the Scriptony folder
+ */
+const createOrFindScriptonySubfolder = async (
+  accessToken: string,
+  parentFolderId: string,
+  folderName: string
+): Promise<{ id: string; name: string }> => {
+  try {
+    // First, check if the folder already exists
+    const searchResponse = await fetch(
+      `${GOOGLE_API_URL}/files?q=name='${folderName}' and mimeType='application/vnd.google-apps.folder' and '${parentFolderId}' in parents and trashed=false`,
+      {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+        },
+      }
+    );
+    
+    if (!searchResponse.ok) {
+      throw new Error(`Failed to search for ${folderName} folder`);
+    }
+    
+    const searchData = await searchResponse.json();
+    
+    if (searchData.files && searchData.files.length > 0) {
+      // Folder already exists, return the first match
+      return {
+        id: searchData.files[0].id,
+        name: searchData.files[0].name,
+      };
+    }
+    
+    // Folder doesn't exist, create it
+    const createResponse = await fetch(`${GOOGLE_API_URL}/files`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: folderName,
+        mimeType: 'application/vnd.google-apps.folder',
+        parents: [parentFolderId]
+      }),
+    });
+    
+    if (!createResponse.ok) {
+      throw new Error(`Failed to create ${folderName} folder`);
+    }
+    
+    const createdFolder = await createResponse.json();
+    
+    return {
+      id: createdFolder.id,
+      name: createdFolder.name,
+    };
+  } catch (error) {
+    console.error(`Error with Drive folder ${folderName}:`, error);
+    throw error;
+  }
+};
+
+/**
+ * Creates a project folder in Google Drive
+ */
+export const createProjectFolder = async (
+  projectName: string,
+  accessToken: string
+): Promise<{ id: string; name: string; path: string }> => {
+  // First get settings to find the projects folder
+  const settings = await getUserDriveSettings();
+  
+  if (!settings?.drive_folder_id) {
+    throw new Error('Google Drive not connected');
+  }
+  
+  // Find "Projekte" folder
+  const projectsFolder = await createOrFindScriptonySubfolder(
+    accessToken,
+    settings.drive_folder_id,
+    'Projekte'
+  );
+  
+  // Create project folder with sanitized name
+  const safeName = projectName.replace(/[^a-z0-9äöüß\s-]/gi, '') || 'Untitled';
+  
+  const folder = await createOrFindScriptonySubfolder(
+    accessToken,
+    projectsFolder.id,
+    safeName
+  );
+  
+  return {
+    id: folder.id,
+    name: folder.name,
+    path: `Scriptony/Projekte/${safeName}`
+  };
+};
+
+/**
+ * Uploads a file to Google Drive in the specified project folder
  */
 export const uploadFileToDrive = async (
-  file: File, 
-  folderId: string, 
-  accessToken: string
-): Promise<string> => {
+  file: File,
+  projectId: string,
+  projectName: string
+): Promise<{fileId: string, fileUrl: string, filePath: string}> => {
   try {
+    // First, check if we have a valid token
+    const settings = await getUserDriveSettings();
+    
+    if (!settings?.drive_access_token) {
+      throw new Error('Google Drive is not connected. Please connect your Google Drive account.');
+    }
+    
+    let accessToken = settings.drive_access_token;
+    
+    // Check if token is expired and refresh if needed
+    if (settings.drive_token_expiry && new Date(settings.drive_token_expiry) <= new Date()) {
+      if (!settings.drive_refresh_token) {
+        throw new Error('Google Drive token expired and cannot be refreshed. Please reconnect your account.');
+      }
+      
+      const refreshResult = await refreshDriveToken(settings.drive_refresh_token);
+      accessToken = refreshResult.access_token;
+    }
+    
+    // Create or find project folder
+    const projectFolder = await createProjectFolder(projectName, accessToken);
+    
+    // Upload file to the project folder
     const metadata = {
       name: file.name,
-      parents: [folderId],
+      parents: [projectFolder.id],
     };
     
     const form = new FormData();
@@ -203,7 +335,7 @@ export const uploadFileToDrive = async (
     form.append('file', file);
     
     const uploadResponse = await fetch(
-      'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',
+      'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink',
       {
         method: 'POST',
         headers: {
@@ -218,11 +350,80 @@ export const uploadFileToDrive = async (
     }
     
     const uploadedFile = await uploadResponse.json();
-    return uploadedFile.id;
+    
+    // Store file reference in database
+    await storeFileReference({
+      user_id: settings.user_id,
+      project_id: projectId,
+      file_name: file.name,
+      file_type: file.type,
+      drive_file_id: uploadedFile.id,
+      drive_url: uploadedFile.webViewLink,
+      folder_path: projectFolder.path
+    });
+    
+    return {
+      fileId: uploadedFile.id,
+      fileUrl: uploadedFile.webViewLink,
+      filePath: `${projectFolder.path}/${file.name}`
+    };
   } catch (error) {
     console.error('Error uploading to Drive:', error);
     throw error;
   }
+};
+
+/**
+ * Store file reference in database
+ */
+const storeFileReference = async (fileData: {
+  user_id: string;
+  project_id?: string;
+  file_name: string;
+  file_type: string;
+  drive_file_id: string;
+  drive_url: string;
+  folder_path: string;
+}): Promise<void> => {
+  try {
+    const { error } = await customSupabase
+      .from('stored_files')
+      .insert({
+        user_id: fileData.user_id,
+        project_id: fileData.project_id,
+        file_name: fileData.file_name,
+        file_type: fileData.file_type,
+        drive_file_id: fileData.drive_file_id,
+        drive_url: fileData.drive_url,
+        folder_path: fileData.folder_path
+      });
+      
+    if (error) throw error;
+  } catch (error) {
+    console.error('Error storing file reference:', error);
+    // Don't throw here - if DB storage fails, we still want the file upload to succeed
+  }
+};
+
+/**
+ * Gets the user's Google Drive settings
+ */
+const getUserDriveSettings = async () => {
+  const { data: { user } } = await getCurrentUser();
+  if (!user) throw new Error('User not authenticated');
+
+  const { data, error } = await customSupabase
+    .from('user_settings')
+    .select('*')
+    .eq('user_id', user.id)
+    .single();
+    
+  if (error) {
+    console.error("Error fetching user drive settings:", error);
+    throw error;
+  }
+  
+  return data;
 };
 
 /**
@@ -278,4 +479,40 @@ const generateRandomString = (length: number): string => {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
   return text;
+};
+
+/**
+ * Check if user has connected Google Drive
+ */
+export const isDriveConnected = async (): Promise<boolean> => {
+  try {
+    const settings = await getUserDriveSettings();
+    return !!(settings?.drive_account_email && settings?.drive_folder_id);
+  } catch (error) {
+    console.error('Error checking Drive connection:', error);
+    return false;
+  }
+};
+
+/**
+ * Get the Google Drive connection status with details
+ */
+export const getDriveConnectionStatus = async (): Promise<{
+  connected: boolean;
+  email?: string;
+  folderName?: string;
+}> => {
+  try {
+    const settings = await getUserDriveSettings();
+    const connected = !!(settings?.drive_account_email && settings?.drive_folder_id);
+    
+    return {
+      connected,
+      email: settings?.drive_account_email,
+      folderName: settings?.drive_folder_name
+    };
+  } catch (error) {
+    console.error('Error getting Drive connection status:', error);
+    return { connected: false };
+  }
 };
