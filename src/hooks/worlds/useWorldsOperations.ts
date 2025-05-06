@@ -1,3 +1,4 @@
+
 import { useToast } from "@/hooks/use-toast";
 import { 
   fetchUserWorlds, 
@@ -10,6 +11,7 @@ import {
   updateCategoryOrder
 } from "@/services/worlds";
 import { NewWorldFormData, WorldCategoryFormData } from "@/types";
+import { isDevelopmentMode } from "@/utils/devMode";
 
 export function useWorldsOperations(
   userId: string | undefined,
@@ -26,7 +28,7 @@ export function useWorldsOperations(
   setSelectedCategory: (category: any) => void
 ) {
   const { toast } = useToast();
-
+  
   // Load worlds
   const loadWorlds = async () => {
     if (!userId) {
@@ -109,20 +111,26 @@ export function useWorldsOperations(
     if (!selectedWorld) return Promise.resolve();
     
     try {
-      console.log('Starting deletion process for world:', selectedWorld.id);
-      // The actual deletion process and loading state is now handled in the DeleteWorldDialog component
+      const isDevMode = isDevelopmentMode();
+      console.log('Starting deletion process for world:', selectedWorld.id, 
+                  'Development mode:', isDevMode ? 'YES' : 'NO');
+      
+      // The actual deletion process in the service now handles dev mode headers
       await deleteWorld(selectedWorld.id);
+      
+      console.log('World deletion successful, updating local state');
       
       // Update local state after successful deletion
       const newWorlds = worlds.filter(w => w.id !== selectedWorld.id);
       setWorlds(newWorlds);
       setSelectedWorldId(null); // Always return to worlds list after deletion
+      setIsDeleteWorldDialogOpen(false);
       
-      // Note: The dialog is now responsible for showing success messages and closing itself
       return Promise.resolve();
     } catch (error) {
       console.error('Error in handleDeleteWorld:', error);
-      // The dialog component now handles the error display, so we don't need to show a toast here
+      // Let the error propagate to the DeleteWorldDialog component
+      // which now handles error display
       return Promise.reject(error);
     }
   };

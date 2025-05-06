@@ -29,4 +29,24 @@ const createCustomClient = () => {
   return createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, options);
 };
 
+// Create the client instance
 export const customSupabase = createCustomClient();
+
+// Export function to get a fresh client with guaranteed dev mode headers
+export const getDevModeClient = () => {
+  // Always create a new client with dev mode headers
+  const devClient = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+    },
+    global: {
+      headers: {
+        'x-dev-mode': 'true',
+      },
+    },
+  });
+  
+  console.log('Created dedicated dev mode client with forced headers');
+  return devClient;
+};

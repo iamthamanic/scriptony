@@ -22,12 +22,15 @@ interface DeleteWorldDialogProps {
 
 const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorldDialogProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
+  const [deletionError, setDeletionError] = useState<string | null>(null);
   const { toast } = useToast();
 
   const handleDelete = async () => {
     if (isDeleting) return; // Prevent multiple clicks
     
     setIsDeleting(true);
+    setDeletionError(null);
+    
     try {
       console.log(`Starting deletion of world: ${worldName}`);
       await onDelete();
@@ -35,12 +38,14 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
         title: 'Welt gelöscht',
         description: `"${worldName}" wurde erfolgreich gelöscht.`
       });
+      onClose(); // Close dialog on success
     } catch (error) {
       console.error("Error during world deletion:", error);
       
       let errorMessage = 'Die Welt konnte nicht gelöscht werden.';
       if (error instanceof Error) {
         errorMessage = `Fehler: ${error.message}`;
+        setDeletionError(errorMessage);
       }
       
       toast({
@@ -48,11 +53,18 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
         description: errorMessage,
         variant: 'destructive'
       });
+      // Don't close the dialog on error so user can try again
     } finally {
       setIsDeleting(false);
-      onClose(); // Always close the dialog when done, even if there was an error
     }
   };
+
+  // Reset error when dialog opens/closes
+  React.useEffect(() => {
+    if (isOpen) {
+      setDeletionError(null);
+    }
+  }, [isOpen]);
 
   return (
     <AlertDialog open={isOpen} onOpenChange={(open) => !isDeleting && !open && onClose()}>
@@ -63,6 +75,13 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
             Bist du sicher, dass du die Welt &quot;{worldName}&quot; löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden.
           </AlertDialogDescription>
         </AlertDialogHeader>
+        
+        {deletionError && (
+          <div className="bg-destructive/20 p-3 rounded-md text-sm text-destructive">
+            {deletionError}
+          </div>
+        )}
+        
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isDeleting}>Abbrechen</AlertDialogCancel>
           <AlertDialogAction 
