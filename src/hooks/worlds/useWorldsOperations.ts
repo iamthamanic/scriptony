@@ -1,4 +1,3 @@
-
 import { useToast } from "@/hooks/use-toast";
 import { 
   fetchUserWorlds, 
@@ -30,9 +29,15 @@ export function useWorldsOperations(
 ) {
   const { toast } = useToast();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [deleteCompletedAt, setDeleteCompletedAt] = useState<number | null>(null);
   
   // Load worlds
   const loadWorlds = async () => {
+    // Don't reload immediately after deletion to prevent UI issues
+    if (deleteCompletedAt && (Date.now() - deleteCompletedAt < 1500)) {
+      return;
+    }
+    
     if (!userId) {
       setWorlds([]);
       setSelectedWorldId(null);
@@ -109,50 +114,56 @@ export function useWorldsOperations(
     }
   };
 
-  // Enhanced delete world operation with better state management
+  // Enhanced delete world operation with better state management and cooldown
   const handleDeleteWorld = useCallback(async (): Promise<void> => {
     if (!selectedWorld || isProcessing) return Promise.resolve();
     
     try {
+      // Set processing flag first
       setIsProcessing(true);
-      const isDevMode = isDevelopmentMode();
-      console.log('Starting deletion process for world:', selectedWorld.id, 
-                  'Development mode:', isDevMode ? 'YES' : 'NO');
-      
-      // Store world name and ID before deletion for toast message
       const worldName = selectedWorld.name;
       const worldId = selectedWorld.id;
       
-      // First, update local UI state to improve perceived performance
-      // First, close the dialog to remove it from DOM
+      console.log('Starting deletion process for world:', selectedWorld.id);
+      
+      // 1. First, close the dialog - do this before other state changes
       setIsDeleteWorldDialogOpen(false);
       
-      // Update the worlds state first (optimistic update)
-      const newWorlds = worlds.filter(w => w.id !== worldId);
-      
-      // Clear selected world ID to return to worlds list
-      // This needs to happen before the actual deletion to avoid UI freezes
-      setSelectedWorldId(null);
-      
-      // Small delay to let React process these UI updates
+      // 2. Brief pause to let the dialog close animation start
       await new Promise(resolve => setTimeout(resolve, 100));
       
-      // Now perform the actual deletion
-      await deleteWorld(worldId);
+      // 3. Clear selected world ID to return to worlds list
+      setSelectedWorldId(null);
       
-      console.log('World deletion completed successfully, updating final state');
-      
-      // Now update the worlds list 
+      // 4. Optimistic update (remove from list)
+      const newWorlds = worlds.filter(w => w.id !== worldId);
       setWorlds(newWorlds);
       
-      // Show success toast after all operations complete
+      // 5. Show loading state
+      setIsLoading(true);
+      
+      // 6. Small delay to allow UI updates to complete
+      await new Promise(resolve => setTimeout(resolve, 150));
+      
+      // 7. Perform actual deletion
+      await deleteWorld(worldId);
+      
+      // 8. Set deletion timestamp to prevent immediate reloading
+      setDeleteCompletedAt(Date.now());
+      
+      // 9. Wait briefly before showing success message
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      // 10. Update isLoading state and show success message
+      setIsLoading(false);
+      
+      toast({
+        title: 'Welt gelöscht',
+        description: `"${worldName}" wurde erfolgreich gelöscht.`
+      });
+      
+      // 11. Final cleanup with delay
       setTimeout(() => {
-        toast({
-          title: 'Welt gelöscht',
-          description: `"${worldName}" wurde erfolgreich gelöscht.`
-        });
-        
-        // Final cleanup
         setIsProcessing(false);
       }, 300);
       
@@ -160,18 +171,31 @@ export function useWorldsOperations(
     } catch (error) {
       console.error('Error in handleDeleteWorld:', error);
       
-      // Reset processing state
-      setIsProcessing(false);
+      // Show error state but don't close loading
+      toast({
+        title: 'Fehler beim Löschen',
+        description: error instanceof Error ? error.message : 'Es ist ein Fehler aufgetreten',
+        variant: 'destructive'
+      });
       
-      // Make sure dialog is closed even on error
+      // Reload worlds and reset state
+      try {
+        const worldsData = await fetchUserWorlds();
+        setWorlds(worldsData);
+      } catch (e) {
+        console.error('Failed to reload worlds after error:', e);
+      }
+      
+      // Reset states with delay
       setTimeout(() => {
+        setIsLoading(false);
+        setIsProcessing(false);
         setIsDeleteWorldDialogOpen(false);
       }, 800);
       
-      // Let the error propagate to the DeleteWorldDialog component
       return Promise.reject(error);
     }
-  }, [selectedWorld, worlds, setWorlds, setSelectedWorldId, toast, setIsDeleteWorldDialogOpen, isProcessing]);
+  }, [selectedWorld, worlds, setWorlds, setSelectedWorldId, toast, setIsDeleteWorldDialogOpen, isProcessing, setIsLoading]);
 
   return {
     loadWorlds,
