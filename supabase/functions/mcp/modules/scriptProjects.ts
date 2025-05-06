@@ -194,27 +194,24 @@ export const createProjectDevMode: McpFunction = {
 
     // Create the project using the service role client which bypasses RLS
     const { data, error } = await supabase
-      .from('projects')
-      .insert({
-        title,
-        type,
-        user_id,
-        logline,
-        genres,
-        duration,
-        video_format,
-        narrative_structure,
-        cover_image_url,
-        inspirations,
-        world_id
-      })
-      .select('id')
-      .single();
+      .rpc('create_project_dev_mode', {
+        p_title: title,
+        p_type: type,
+        p_user_id: user_id,
+        p_logline: logline,
+        p_genres: genres,
+        p_duration: duration,
+        p_video_format: video_format,
+        p_narrative_structure: narrative_structure,
+        p_cover_image_url: cover_image_url,
+        p_inspirations: inspirations,
+        p_world_id: world_id
+      });
 
     if (error) {
       throw new Error(`Failed to create project in dev mode: ${error.message}`);
     }
 
-    return data.id;
+    return data;
   }
 };

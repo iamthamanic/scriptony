@@ -51,7 +51,7 @@ export const createProject = async (projectData: NewProjectFormData): Promise<Pr
       if (error) throw error;
       
       // Fetch the created project
-      const { data: projectData, error: projectError } = await customSupabase
+      const { data: projectResult, error: projectError } = await customSupabase
         .from('projects')
         .select('*')
         .eq('id', data)
@@ -59,7 +59,7 @@ export const createProject = async (projectData: NewProjectFormData): Promise<Pr
         
       if (projectError) throw projectError;
       
-      return convertDbProjectToApp(projectData);
+      return convertDbProjectToApp(projectResult);
     } else {
       // In production mode, use standard flow with authenticated user
       const { data, error } = await customSupabase.auth.getUser();
