@@ -30,25 +30,37 @@ export const createProject = async (projectData: NewProjectFormData): Promise<Pr
     if (isDevelopmentMode()) {
       console.log("Using development mode user for project creation");
       user = getDevModeUser();
+      console.log("Development user ID:", user.id);
       
       // In development mode, use supabase.rpc() to bypass RLS
       // This allows us to insert projects as the development user
+      console.log("Creating project in development mode", {
+        title: projectData.title,
+        type: projectData.type,
+        userId: user.id
+      });
+      
       const { data, error } = await customSupabase
         .rpc('create_project_dev_mode', {
           p_title: projectData.title,
           p_type: projectData.type,
           p_video_format: projectData.videoFormat,
-          p_logline: projectData.logline,
-          p_genres: projectData.genres,
-          p_duration: projectData.duration.toString(),
-          p_inspirations: projectData.inspirations.join(','),
+          p_logline: projectData.logline || "",
+          p_genres: projectData.genres || [],
+          p_duration: projectData.duration?.toString() || "",
+          p_inspirations: (projectData.inspirations || []).join(','),
           p_cover_image_url: coverImageUrl,
           p_narrative_structure: projectData.narrativeStructure || 'none',
           p_user_id: user.id,
           p_world_id: projectData.world_id
         });
         
-      if (error) throw error;
+      if (error) {
+        console.error("Error in create_project_dev_mode:", error);
+        throw error;
+      }
+      
+      console.log("Project created in development mode, ID:", data);
       
       // Fetch the created project
       const { data: projectResult, error: projectError } = await customSupabase
@@ -57,7 +69,10 @@ export const createProject = async (projectData: NewProjectFormData): Promise<Pr
         .eq('id', data)
         .single();
         
-      if (projectError) throw projectError;
+      if (projectError) {
+        console.error("Error fetching created project:", projectError);
+        throw projectError;
+      }
       
       return convertDbProjectToApp(projectResult);
     } else {
