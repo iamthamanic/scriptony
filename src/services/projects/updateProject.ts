@@ -2,7 +2,17 @@
 import { customSupabase } from "@/integrations/supabase/customClient";
 import { Project } from "@/types";
 import { handleApiError } from "../utils";
-import { normalizeInspirations } from "../utils";
+
+// Helper function to normalize inspirations to ensure they're always in array format
+export const normalizeInspirations = (inspirations: string[] | string | undefined): string[] => {
+  if (!inspirations) return [];
+  
+  if (Array.isArray(inspirations)) {
+    return inspirations;
+  }
+  
+  return inspirations.split(',').filter(Boolean);
+};
 
 export const updateProject = async (projectId: string, projectData: Partial<Project>): Promise<boolean> => {
   try {
@@ -33,8 +43,10 @@ export const updateProject = async (projectId: string, projectData: Partial<Proj
     let inspirationsForDB;
     if (Array.isArray(projectData.inspirations)) {
       inspirationsForDB = projectData.inspirations.join(',');
+    } else if (projectData.inspirations) {
+      inspirationsForDB = projectData.inspirations.toString();
     } else {
-      inspirationsForDB = (projectData.inspirations || '').toString();
+      inspirationsForDB = '';
     }
     
     // Update project in database with new fields

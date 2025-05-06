@@ -88,8 +88,8 @@ const ProjectContent = ({
                 onEditEpisode={onEditEpisode}
                 onDeleteEpisode={handleDeleteEpisode}
                 selectedEpisodeId={selectedEpisodeId}
-                onNewEpisode={onNewEpisode}
                 onSelectEpisode={setSelectedEpisodeId}
+                onNewEpisode={onNewEpisode}
               />
             </div>
           )}
@@ -134,7 +134,7 @@ const ProjectContent = ({
           isOpen={isNewSceneModalOpen}
           onClose={onCloseNewSceneModal}
           onSubmit={onCreateScene}
-          projectType={selectedProject.type as any}
+          projectType={selectedProject.type}
           lastSceneNumber={getLastSceneNumber()}
           editScene={editingScene}
           characters={selectedProject.characters || []}
