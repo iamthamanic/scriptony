@@ -1,3 +1,4 @@
+
 import { customSupabase } from "@/integrations/supabase/customClient";
 import { getCurrentUser } from "../worlds/worldOperations/utils";
 import { createTimeout } from "../worlds/worldOperations/utils";
@@ -385,15 +386,17 @@ const storeFileReference = async (fileData: {
   folder_path: string;
 }): Promise<void> => {
   try {
-    // Use raw insert query instead of the from() method with type checking
-    const { error } = await customSupabase.rpc('insert_stored_file', {
-      p_user_id: fileData.user_id,
-      p_project_id: fileData.project_id,
-      p_file_name: fileData.file_name,
-      p_file_type: fileData.file_type,
-      p_drive_file_id: fileData.drive_file_id,
-      p_drive_url: fileData.drive_url,
-      p_folder_path: fileData.folder_path
+    // Use SQL function to insert the file reference
+    const { error } = await customSupabase.functions.invoke('insert-stored-file', {
+      body: {
+        user_id: fileData.user_id,
+        project_id: fileData.project_id,
+        file_name: fileData.file_name,
+        file_type: fileData.file_type,
+        drive_file_id: fileData.drive_file_id,
+        drive_url: fileData.drive_url,
+        folder_path: fileData.folder_path
+      }
     });
       
     if (error) throw error;
