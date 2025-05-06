@@ -1,7 +1,6 @@
 
 import { checkDriveConnectionRequired, getUserStorageSettings } from './userStorage';
 import { uploadFileToDrive, isDriveConnected } from './googleDrive';
-import { Project } from '@/types';
 import { toast } from 'sonner';
 
 /**
