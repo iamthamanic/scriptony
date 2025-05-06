@@ -1,92 +1,102 @@
 
 import { useState } from "react";
-import { Project, NewProjectFormData, SceneTemplate, TimeOfDay } from "../../../types";
-import { useToast } from "../../use-toast";
-import { narrativeStructureTemplates } from "../../../types/narrativeStructures";
 import { createProject, createScene } from "../../../services";
+import { useProjects } from "../useProjects";
+import { useToast } from "../../use-toast";
+import { generateDefaultSceneForTemplate } from "../../../utils/mockData";
+import { Project, ProjectType, NarrativeStructure, Scene, TimeOfDay } from "../../../types";
 import { useAuth } from "@/contexts/AuthContext";
 
-export const useCreateProject = (
-  projects: Project[],
-  setProjects: React.Dispatch<React.SetStateAction<Project[]>>,
-  setSelectedProjectId: React.Dispatch<React.SetStateAction<string | null>>
-) => {
+export const useCreateProject = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { addProject } = useProjects();
   const { toast } = useToast();
   const { user } = useAuth();
 
-  const handleCreateProject = async (data: NewProjectFormData) => {
-    if (!user) {
-      toast({
-        title: "Authentication required",
-        description: "Please log in to create a project",
-        variant: "destructive"
+  const handleCreateProject = async (data: {
+    title: string;
+    description: string;
+    type: ProjectType;
+    narrativeStructure?: NarrativeStructure;
+    genre?: string;
+  }) => {
+    if (!user) return;
+
+    setIsLoading(true);
+
+    try {
+      // Create the project first
+      const newProject = await createProject({
+        title: data.title,
+        description: data.description,
+        type: data.type,
+        narrativeStructure: data.narrativeStructure,
+        genre: data.genre || "unknown"
       });
-      return;
-    }
-    
-    const newProjectData = await createProject(data);
-    
-    if (newProjectData) {
-      // Create a new project object to store scenes that will be added
-      const newProject = {
-        ...newProjectData,
-        scenes: [],  // Will be populated if template scenes are created
-        characters: [],
-        episodes: []
-      };
-      
-      // Generate scenes from template if needed
-      if (data.narrativeStructure && data.narrativeStructure !== 'none') {
-        const template = narrativeStructureTemplates[data.narrativeStructure];
-        
-        if (template) {
-          // Use scenes or suggestedScenes array from the template
-          const templateScenes = (template.scenes || template.suggestedScenes || []) as SceneTemplate[];
-          
-          // Create each scene in the database AND add to local state
-          for (const sceneTpl of templateScenes) {
-            const sceneData = {
-              projectId: newProjectData.id,
-              sceneNumber: sceneTpl.sceneNumber || 0,
-              location: sceneTpl.location || "",
-              timeOfDay: (sceneTpl.timeOfDay || "day") as TimeOfDay,
-              timecodeStart: "00:00:00",
-              timecodeEnd: "00:00:00",
-              visualComposition: "",
-              lighting: "",
-              colorGrading: "",
-              soundDesign: "",
-              specialEffects: "",
-              description: sceneTpl.description || "",
-              dialog: "",
-              transitions: "",
-              productionNotes: "",
-              emotionalSignificance: sceneTpl.emotionalSignificance || "other",
-              characterIds: [],
-            };
-            
-            // Create scene in database
-            const createdScene = await createScene(sceneData);
-            
-            // Add the created scene to our local project object
-            if (createdScene) {
-              newProject.scenes.push(createdScene);
-            }
+
+      if (newProject) {
+        // If a narrative structure was selected, generate scenes based on it
+        if (data.narrativeStructure && newProject.id) {
+          // Create default scenes based on the narrative structure
+          let scenePromises: Promise<any>[] = [];
+          const scenes = generateDefaultSceneForTemplate(data.narrativeStructure);
+
+          if (scenes && scenes.length > 0) {
+            scenes.forEach((scene, index) => {
+              const sceneData = {
+                projectId: newProject.id,
+                sceneNumber: index + 1,
+                location: scene.location || "Unknown",
+                timeOfDay: scene.timeOfDay as TimeOfDay || "day",
+                timecodeStart: "00:00:00",
+                timecodeEnd: "00:01:00",
+                visualComposition: scene.visualComposition || "",
+                lighting: scene.lighting || "",
+                colorGrading: scene.colorGrading || "",
+                soundDesign: scene.soundDesign || "",
+                specialEffects: scene.specialEffects || "",
+                description: scene.description || "",
+                dialog: scene.dialog || "",
+                transitions: scene.transitions || "",
+                productionNotes: scene.productionNotes || "",
+                emotionalSignificance: scene.emotionalSignificance || "regular",
+                characterIds: []
+              };
+              
+              // Add to our list of promises
+              scenePromises.push(createScene(sceneData));
+            });
+
+            // Wait for all scenes to be created
+            const createdScenes = await Promise.all(scenePromises);
+            newProject.scenes = createdScenes.filter(Boolean) as Scene[];
           }
         }
+
+        // Add the project to local state
+        addProject(newProject);
+
+        toast({
+          title: "Project created",
+          description: `${data.title} has been created successfully.`,
+        });
+
+        return newProject;
       }
-      
-      // Update projects state with the new project including all scenes
-      setProjects([...projects, newProject]);
-      setSelectedProjectId(newProject.id);
-      
+    } catch (error) {
+      console.error("Failed to create project:", error);
       toast({
-        title: "Project Created",
-        description: `${data.title} has been created successfully.`,
-        duration: 3000
+        title: "Error",
+        description: "Failed to create project. Please try again.",
+        variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  return handleCreateProject;
+  return {
+    handleCreateProject,
+    isLoading,
+  };
 };

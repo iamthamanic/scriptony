@@ -38,7 +38,8 @@ export interface Scene {
 }
 
 export interface NewSceneFormData {
-  projectId: string; // Add projectId to the type
+  id?: string;
+  projectId: string;
   episodeId?: string;
   episodeTitle?: string;
   sceneNumber: number;

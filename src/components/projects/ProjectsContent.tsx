@@ -5,7 +5,7 @@ import { Project } from "@/types";
 import ProjectSelector from "../ProjectSelector";
 import ProjectContent from "../ProjectContent";
 import EmptyState from "../EmptyState";
-import { Scene, Episode } from "@/types";
+import { Scene, Episode, Character } from "@/types";
 
 interface ProjectsContentProps {
   isLoading: boolean;
@@ -19,11 +19,11 @@ interface ProjectsContentProps {
   onDeleteProject: () => void;
   onEditScene: (scene: Scene) => void;
   onDeleteScene: (scene: Scene) => void;
-  onEditCharacter: (characterId: string, data: any) => void;
-  onDeleteCharacter: (characterId: string) => void;
+  onEditCharacter: (character: Character) => void;
+  onDeleteCharacter: (character: Character) => void;
   onNewEpisode: () => void;
   onEditEpisode: (episodeId: string) => void;
-  onDeleteEpisode: (episodeId: string) => void;
+  onDeleteEpisode: (episode: Episode) => void;
   onNewProject: () => void;
 }
 
@@ -67,18 +67,20 @@ const ProjectsContent = ({
       
       {selectedProject ? (
         <ProjectContent 
-          project={selectedProject}
-          onNewScene={onNewScene}
-          onEditProject={onEditProject}
-          onNewCharacter={onNewCharacter}
-          onDeleteProject={onDeleteProject}
+          selectedProject={selectedProject}
+          isNewSceneModalOpen={false}
+          onCloseNewSceneModal={onNewScene}
+          onCreateScene={(data) => {}}
           onEditScene={onEditScene}
           onDeleteScene={onDeleteScene}
+          editingScene={null}
           onEditCharacter={onEditCharacter}
           onDeleteCharacter={onDeleteCharacter}
-          onNewEpisode={onNewEpisode}
           onEditEpisode={onEditEpisode}
           onDeleteEpisode={onDeleteEpisode}
+          onNewEpisode={onNewEpisode}
+          selectedEpisodeId={null}
+          setSelectedEpisodeId={() => {}}
         />
       ) : (
         <EmptyState

@@ -81,7 +81,7 @@ const ProjectModals = ({
           characters={selectedProject.characters || []}
           episodes={selectedProject.episodes || []}
           selectedEpisodeId={null}
-          projectId={selectedProject.id} // Pass projectId to NewSceneModal
+          projectId={selectedProject.id}
         />
       )}
       
@@ -91,7 +91,6 @@ const ProjectModals = ({
           isOpen={isNewCharacterModalOpen}
           onClose={onCloseNewCharacter}
           onSubmit={onCreateCharacter}
-          projectId={selectedProject.id}
         />
       )}
       
@@ -101,7 +100,6 @@ const ProjectModals = ({
           isOpen={isEpisodeModalOpen}
           onClose={onCloseEpisodeModal}
           onSubmit={onCreateOrEditEpisode}
-          projectId={selectedProject.id}
           episode={editingEpisode}
         />
       )}
