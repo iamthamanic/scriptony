@@ -72,26 +72,37 @@ export const createProjectDevMode: McpFunction = {
       throw new Error("Missing required parameters");
     }
 
-    // Create the project using the service role client which bypasses RLS
-    const { data, error } = await supabase
-      .rpc('create_project_dev_mode', {
-        p_title: title,
-        p_type: type,
-        p_user_id: user_id,
-        p_logline: logline,
-        p_genres: genres,
-        p_duration: duration,
-        p_video_format: video_format,
-        p_narrative_structure: narrative_structure,
-        p_cover_image_url: cover_image_url,
-        p_inspirations: inspirations,
-        p_world_id: world_id
-      });
+    try {
+      // Create the project using the service role client which bypasses RLS
+      const { data, error } = await supabase
+        .rpc('create_project_dev_mode', {
+          p_title: title,
+          p_type: type,
+          p_user_id: user_id,
+          p_logline: logline,
+          p_genres: genres,
+          p_duration: duration,
+          p_video_format: video_format,
+          p_narrative_structure: narrative_structure,
+          p_cover_image_url: cover_image_url,
+          p_inspirations: inspirations,
+          p_world_id: world_id
+        });
 
-    if (error) {
-      throw new Error(`Failed to create project in dev mode: ${error.message}`);
+      if (error) {
+        console.error('Error creating project in dev mode:', error);
+        throw new Error(`Failed to create project in dev mode: ${error.message}`);
+      }
+
+      if (!data) {
+        throw new Error('No project ID returned from create_project_dev_mode');
+      }
+
+      console.log('Project created successfully in dev mode:', data);
+      return data;
+    } catch (e) {
+      console.error('Exception creating project in dev mode:', e);
+      throw e;
     }
-
-    return data;
   }
 };

@@ -34,11 +34,14 @@ export const isDevelopmentMode = (): boolean => {
 
 /**
  * Get a mock user for development mode
- * This creates a complete mock of the Supabase User type with all required properties
+ * This creates a complete mock of the Supabase User type with all required properties,
+ * but uses a valid user ID from the database to avoid foreign key constraint violations
  */
 export const getDevModeUser = () => {
   return {
-    id: "00000000-0000-0000-0000-000000000000",
+    // Using a valid user ID that exists in the database to avoid foreign key constraint violations
+    // This is specifically for development purposes only
+    id: "a56da893-d5ca-43d6-818a-4caff9159139",
     email: "dev@example.com",
     app_metadata: { provider: "email", providers: ["email"] },
     user_metadata: { name: "Development User" },
