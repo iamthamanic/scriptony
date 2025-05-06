@@ -3,6 +3,7 @@ import { Project, ProjectWithCoverImageFile, EditProjectFormData } from "../../.
 import { useToast } from "../../use-toast";
 import { updateProject } from "../../../services/database";
 import { useAuth } from "@/contexts/AuthContext";
+import { normalizeInspirations } from "@/services/utils";
 
 // Helper function to safely convert ProjectWithCoverImageFile to Project
 const convertToProject = (project: ProjectWithCoverImageFile): Project => {
@@ -24,6 +25,9 @@ export const useEditProject = (
   const handleEditProject = async (data: EditProjectFormData) => {
     if (!selectedProject || !user) return;
 
+    // Ensure inspirations are in array format before calling API
+    const inspirationsArray = normalizeInspirations(data.inspirations);
+
     // Create update data with proper typing for API call
     const updateData: Partial<Project> = {
       title: data.title,
@@ -31,7 +35,7 @@ export const useEditProject = (
       logline: data.logline,
       genres: data.genres,
       duration: data.duration,
-      inspirations: data.inspirations,
+      inspirations: inspirationsArray,
       narrativeStructure: data.narrativeStructure || selectedProject.narrativeStructure
     };
     
@@ -52,7 +56,7 @@ export const useEditProject = (
         logline: data.logline,
         genres: data.genres,
         duration: data.duration,
-        inspirations: data.inspirations,
+        inspirations: inspirationsArray,
         narrativeStructure: data.narrativeStructure || selectedProject.narrativeStructure,
         coverImage: data.coverImage,
         updatedAt: new Date()

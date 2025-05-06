@@ -1,7 +1,7 @@
 
 import { customSupabase } from "@/integrations/supabase/customClient";
 import { Project } from "@/types";
-import { handleApiError } from "../utils";
+import { handleApiError, normalizeInspirations } from "../utils";
 
 export const updateProject = async (projectId: string, projectData: Partial<Project>): Promise<boolean> => {
   try {
@@ -27,6 +27,11 @@ export const updateProject = async (projectId: string, projectData: Partial<Proj
       // If it's a URL string, use it directly
       coverImageUrl = projectData.coverImage;
     }
+
+    // Ensure inspirations is properly formatted
+    const inspirations = Array.isArray(projectData.inspirations) 
+      ? projectData.inspirations.join(',')
+      : (projectData.inspirations || '');
     
     // Update project in database with new fields
     const { error } = await customSupabase
@@ -34,11 +39,11 @@ export const updateProject = async (projectId: string, projectData: Partial<Proj
       .update({
         title: projectData.title,
         type: projectData.type,
-        video_format: projectData.videoFormat, // New field
+        video_format: projectData.videoFormat,
         logline: projectData.logline,
         genres: projectData.genres,
         duration: projectData.duration?.toString(),
-        inspirations: Array.isArray(projectData.inspirations) ? projectData.inspirations.join(',') : projectData.inspirations,
+        inspirations: inspirations,
         cover_image_url: coverImageUrl,
         narrative_structure: projectData.narrativeStructure,
         updated_at: new Date().toISOString()

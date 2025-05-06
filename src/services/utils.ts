@@ -22,8 +22,30 @@ export const handleApiError = (error: any, options: ErrorHandlingOptions = {}) =
   }
 };
 
+// Helper function to normalize inspirations to array format
+export const normalizeInspirations = (inspirations: string | string[] | null | undefined): string[] => {
+  if (!inspirations) return [];
+  if (Array.isArray(inspirations)) return inspirations;
+  if (typeof inspirations === 'string') {
+    return inspirations.split(',').map(item => item.trim()).filter(Boolean);
+  }
+  return [];
+};
+
 // Function to convert a database project to our application Project type
 export const convertDbProjectToApp = (dbProject: any): Project => {
+  // Handle inspirations carefully to ensure it's always an array
+  let inspirations = [];
+  if (dbProject.inspirations) {
+    if (Array.isArray(dbProject.inspirations)) {
+      inspirations = dbProject.inspirations;
+    } else if (typeof dbProject.inspirations === 'string') {
+      inspirations = dbProject.inspirations.split(',').map((s: string) => s.trim()).filter(Boolean);
+    } else {
+      console.warn("Unexpected inspirations format:", dbProject.inspirations);
+    }
+  }
+
   return {
     id: dbProject.id,
     title: dbProject.title,
@@ -32,9 +54,7 @@ export const convertDbProjectToApp = (dbProject: any): Project => {
     logline: dbProject.logline || '',
     genres: (dbProject.genres || []) as Genre[],
     duration: parseInt(dbProject.duration),
-    inspirations: dbProject.inspirations ? 
-      (dbProject.inspirations.includes(',') ? dbProject.inspirations.split(',') : JSON.parse(dbProject.inspirations)) 
-      : [],
+    inspirations: inspirations,
     coverImage: dbProject.cover_image_url || null,
     scenes: [],  
     characters: [],
