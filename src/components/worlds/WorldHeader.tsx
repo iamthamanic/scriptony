@@ -21,6 +21,13 @@ const WorldHeader = ({
   onDeleteWorld,
   onDuplicateWorld
 }: WorldHeaderProps) => {
+  // Dünya silme işlevini ele al
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onDeleteWorld();
+  };
+
   return (
     <div className="flex flex-col md:flex-row md:items-center gap-4">
       <Button 
@@ -66,7 +73,7 @@ const WorldHeader = ({
             
             <DropdownMenuSeparator />
             <DropdownMenuItem 
-              onClick={onDeleteWorld}
+              onClick={handleDeleteClick}
               className="text-red-500 focus:text-red-500"
             >
               <Trash2 className="h-4 w-4 mr-2" />

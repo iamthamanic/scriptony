@@ -24,50 +24,47 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
   const [isDeleting, setIsDeleting] = useState(false);
   const [deletionError, setDeletionError] = useState<string | null>(null);
   
-  // Handle clean dialog close
+  // Dialog'u yalnızca işlem devam etmiyorsa kapatabilme
   const handleCloseDialog = useCallback(() => {
-    // Only allow closing if not in the middle of deletion
+    // Silme işlemi devam ediyorsa kapatmaya izin verme
     if (!isDeleting) {
-      // Reset error state when closing
       setDeletionError(null);
       onClose();
     }
   }, [isDeleting, onClose]);
   
-  // Handle deletion with improved cleanup
+  // Silme işlemini yönet ve kullanıcıya bildirmeden önce bitirme
   const handleDelete = useCallback(async () => {
-    if (isDeleting) return; // Prevent multiple clicks
+    if (isDeleting) return; // Çoklu tıklamaları engelle
     
     setIsDeleting(true);
     setDeletionError(null);
     
     try {
-      console.log(`Starting deletion of world: ${worldName}`);
+      console.log(`"${worldName}" dünyasının silinme işlemi başlıyor...`);
       
-      // First close the dialog UI to prevent animation issues
-      onClose();
-      
-      // Short delay to ensure dialog closing animation completes
-      await new Promise(resolve => setTimeout(resolve, 50));
-      
-      // Then perform the actual deletion
+      // Silme işlemini tamamla
       await onDelete();
       
+      // İşlem başarılı olduğunda dialog'u kapat
+      handleCloseDialog();
+      
     } catch (error) {
-      console.error("Error during world deletion:", error);
+      console.error("Dünya silinirken hata:", error);
       
-      let errorMessage = 'Die Welt konnte nicht gelöscht werden.';
+      // Hata mesajını kullanıcıya göster
+      let errorMessage = 'Dünya silinirken bir hata oluştu.';
       if (error instanceof Error) {
-        errorMessage = `Fehler: ${error.message}`;
-        setDeletionError(errorMessage);
+        errorMessage = `Hata: ${error.message}`;
       }
+      setDeletionError(errorMessage);
       
-      // Reset deletion state
+      // Silme durumunu sıfırla
       setIsDeleting(false);
     }
-  }, [isDeleting, onDelete, worldName, onClose]);
+  }, [isDeleting, onDelete, worldName, handleCloseDialog]);
 
-  // Return null when dialog is closed
+  // Dialog kapalıysa null döndür
   if (!isOpen) {
     return null;
   }
@@ -80,9 +77,9 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
     }}>
       <AlertDialogContent className="max-w-md">
         <AlertDialogHeader>
-          <AlertDialogTitle>Welt löschen</AlertDialogTitle>
+          <AlertDialogTitle>Dünyayı Sil</AlertDialogTitle>
           <AlertDialogDescription>
-            Bist du sicher, dass du die Welt &quot;{worldName}&quot; löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden.
+            "{worldName}" dünyasını silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.
           </AlertDialogDescription>
         </AlertDialogHeader>
         
@@ -93,7 +90,7 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
         )}
         
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isDeleting} onClick={handleCloseDialog}>Abbrechen</AlertDialogCancel>
+          <AlertDialogCancel disabled={isDeleting}>İptal</AlertDialogCancel>
           <AlertDialogAction asChild>
             <Button 
               onClick={handleDelete}
@@ -103,10 +100,10 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
               {isDeleting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Löschen...
+                  Siliniyor...
                 </>
               ) : (
-                'Löschen'
+                'Sil'
               )}
             </Button>
           </AlertDialogAction>

@@ -1,12 +1,11 @@
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { deleteWorld } from "@/services/worlds";
 import { World } from "@/types";
-import { fetchUserWorlds } from "@/services/worlds";
 
-// Deletion states to clearly manage the process
-export type DeletionState = 'idle' | 'starting' | 'processing' | 'completed' | 'error';
+// Basitleştirilmiş silme durumları
+export type DeletionState = 'idle' | 'deleting' | 'completed' | 'error';
 
 export function useWorldDeletion(
   worlds: World[],
@@ -16,134 +15,74 @@ export function useWorldDeletion(
 ) {
   const { toast } = useToast();
   const [deletionState, setDeletionState] = useState<DeletionState>('idle');
-  const deleteCompletedAtRef = useRef<number | null>(null);
-  const operationInProgressRef = useRef<boolean>(false);
   
-  // Significantly improved delete world operation with sequential state updates
+  // Basitleştirilmiş ve düzleştirilmiş dünya silme işlevi
   const handleDeleteWorld = useCallback(async (selectedWorld: World | null): Promise<void> => {
-    // Block if already processing or no world selected
-    if (!selectedWorld || deletionState !== 'idle' || operationInProgressRef.current) {
-      console.log("Delete operation blocked - state:", deletionState, "operation in progress:", operationInProgressRef.current);
+    // Dünya seçilmemişse veya zaten silme işlemi devam ediyorsa engelle
+    if (!selectedWorld || deletionState === 'deleting') {
+      console.log("Silme işlemi gerçekleştirilemedi - durum:", deletionState, "dünya:", selectedWorld?.id);
       return Promise.resolve();
     }
     
     try {
-      // Set operation in progress flag
-      operationInProgressRef.current = true;
+      // 1. Silme durumunu güncelle
+      setDeletionState('deleting');
       
-      // 1. Track world details before deletion
+      // 2. Dünya adı ve ID'sini kaydet
       const worldName = selectedWorld.name;
       const worldId = selectedWorld.id;
       
-      console.log('Starting deletion process for world:', worldId);
-      setDeletionState('starting');
+      console.log('Silme işlemi başlatıldı:', worldId);
       
-      // 2. Clear selected world ID to return to worlds list (before API call)
+      // 3. Kullanıcıyı dünya listesine geri döndür, ancak yükleme durumu güncelle
       setSelectedWorldId(null);
+      setIsLoading(true);
       
-      // 3. Brief delay to ensure UI updates
-      await new Promise(resolve => setTimeout(resolve, 50));
-      
-      // 4. Update UI state 
-      setDeletionState('processing');
-      
-      // 5. Remove from worlds list (optimistic update)
+      // 4. Optimistik UI güncellemesi - dünyayı listeden sil
       const newWorlds = worlds.filter(w => w.id !== worldId);
       setWorlds(newWorlds);
       
-      // 6. Show loading state
-      setIsLoading(true);
+      // 5. Gerçek silme işlemini gerçekleştir
+      await deleteWorld(worldId);
       
-      // 7. Another brief delay to ensure UI updates have propagated
-      await new Promise(resolve => setTimeout(resolve, 50));
+      // 6. Başarı durumunu güncelle
+      setDeletionState('completed');
       
-      try {
-        // 8. Perform actual deletion
-        await deleteWorld(worldId);
-        
-        // 9. Record completion timestamp
-        const completionTimestamp = Date.now();
-        deleteCompletedAtRef.current = completionTimestamp;
-        
-        // 10. Update deletion state
-        setDeletionState('completed');
-        
-        // 11. Show success message
-        toast({
-          title: 'Welt gelöscht',
-          description: `"${worldName}" wurde erfolgreich gelöscht.`,
-          duration: 3000
-        });
-        
-        // 12. Reset loading state after a brief delay
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 300);
-        
-        // 13. Reset deletion state after cooldown
-        setTimeout(() => {
-          // Only reset if this is still the most recent deletion
-          if (deleteCompletedAtRef.current === completionTimestamp) {
-            setDeletionState('idle');
-          }
-          
-          // Clear the operation flag
-          operationInProgressRef.current = false;
-        }, 1000);
-        
-      } catch (deleteError) {
-        // Handle API delete error
-        console.error('Error in actual deletion API call:', deleteError);
-        
-        // Update state to error
-        setDeletionState('error');
-        
-        // Show error message
-        toast({
-          title: 'Fehler beim Löschen',
-          description: deleteError instanceof Error ? deleteError.message : 'Es ist ein Fehler aufgetreten',
-          variant: 'destructive',
-          duration: 3000
-        });
-        
-        // Reload worlds to reset state
-        try {
-          const worldsData = await fetchUserWorlds();
-          setWorlds(worldsData);
-        } catch (reloadError) {
-          console.error('Failed to reload worlds after error:', reloadError);
-        }
-        
-        // Reset loading and operation flags
-        setIsLoading(false);
-        
-        // Reset deletion state after error with a delay
-        setTimeout(() => {
-          setDeletionState('idle');
-          operationInProgressRef.current = false;
-        }, 500);
-        
-        return Promise.reject(deleteError);
-      }
+      // 7. Başarı mesajı göster
+      toast({
+        title: 'Dünya silindi',
+        description: `"${worldName}" dünyası başarıyla silindi.`,
+        duration: 3000
+      });
+      
+      // 8. Yükleme durumunu kapat
+      setIsLoading(false);
+      
+      // 9. Tamamlama sonrası silme durumunu sıfırla
+      setTimeout(() => {
+        setDeletionState('idle');
+      }, 500);
       
       return Promise.resolve();
-    } catch (error) {
-      console.error('Error in handleDeleteWorld:', error);
-      setDeletionState('error');
-      operationInProgressRef.current = false;
       
-      // Show error message with reduced duration
+    } catch (error) {
+      console.error('Dünya silinirken hata:', error);
+      
+      // Hata durumunu güncelle
+      setDeletionState('error');
+      
+      // Hata mesajı göster
       toast({
-        title: 'Fehler beim Löschen',
-        description: error instanceof Error ? error.message : 'Es ist ein Fehler aufgetreten',
+        title: 'Silme hatası',
+        description: error instanceof Error ? error.message : 'Dünya silinirken bir hata oluştu',
         variant: 'destructive',
         duration: 3000
       });
       
-      // Ensure loading is reset
+      // Yükleme durumunu kapat
       setIsLoading(false);
       
-      // Reset deletion state after error
+      // Hata sonrası silme durumunu sıfırla
       setTimeout(() => {
         setDeletionState('idle');
       }, 500);
