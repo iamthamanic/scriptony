@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Scene, Episode, Character } from '../types';
 import SceneList from './SceneList';
 import CharacterList from './CharacterList';
@@ -108,6 +108,8 @@ const ProjectContent = ({
               onDeleteScene={onDeleteScene}
               characters={selectedProject.characters || []}
               onExportPDF={() => {}}
+              showEpisodeFilter={selectedProject.type === 'series'}
+              episodes={selectedProject.episodes || []}
             />
           </div>
 

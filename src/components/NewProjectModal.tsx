@@ -7,15 +7,12 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { NewProjectFormData, ProjectType, Genre, VideoFormat, World } from '../types';
 import { genreOptions, projectTypeOptions, videoFormatOptions } from '../utils/mockData';
-import { X, Plus, Upload, HelpCircle } from 'lucide-react';
-import { getStructureOptions } from '../types/narrativeStructures';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { X, Plus, Upload } from 'lucide-react';
 import WorldSelector from './worlds/WorldSelector';
 import { fetchUserWorlds, createWorld } from '../services/worlds';
 import { useToast } from '@/hooks/use-toast';
 import NewWorldModal from './worlds/NewWorldModal';
-import { narrativeStructureTemplates } from '../types/narrativeStructures';
+import NarrativeStructureSelector from './narrative-structures/NarrativeStructureSelector';
 
 interface NewProjectModalProps {
   isOpen: boolean;
@@ -35,21 +32,9 @@ const NewProjectModal = ({ isOpen, onClose, onSubmit }: NewProjectModalProps) =>
   });
   
   const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null);
-  const [structureOptions, setStructureOptions] = useState(getStructureOptions('movie'));
   const [worlds, setWorlds] = useState<World[]>([]);
   const [isNewWorldModalOpen, setIsNewWorldModalOpen] = useState(false);
   const { toast } = useToast();
-
-  useEffect(() => {
-    // Update narrative structure options when project type changes
-    setStructureOptions(getStructureOptions(formData.type));
-    
-    // Reset narrative structure if the current one isn't available in the new options
-    const availableValues = structureOptions.map(option => option.value);
-    if (formData.narrativeStructure && !availableValues.includes(formData.narrativeStructure)) {
-      setFormData(prev => ({ ...prev, narrativeStructure: 'none' }));
-    }
-  }, [formData.type, formData.videoFormat]);
   
   useEffect(() => {
     if (isOpen) {
@@ -174,17 +159,6 @@ const NewProjectModal = ({ isOpen, onClose, onSubmit }: NewProjectModalProps) =>
     onSubmit(cleanedData);
   };
 
-  // Find the description for the current narrative structure
-  const currentStructureDescription = structureOptions.find(
-    option => option.value === formData.narrativeStructure
-  )?.description || '';
-
-  const getStructureTooltipDescription = (value: string) => {
-    const template = narrativeStructureTemplates[value];
-    if (!template) return '';
-    return template.description || '';
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -248,52 +222,12 @@ const NewProjectModal = ({ isOpen, onClose, onSubmit }: NewProjectModalProps) =>
             </div>
           )}
           
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Label htmlFor="narrativeStructure">Narrative Structure</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-5 w-5">
-                    <HelpCircle className="h-4 w-4 text-muted-foreground" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-80 p-4">
-                  <h4 className="font-medium mb-2">Narrative Structure</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Die Plotstruktur bestimmt den grundlegenden Aufbau deiner Geschichte. 
-                    Basierend auf dem gewählten Projekttyp werden passende Strukturen angezeigt.
-                  </p>
-                </PopoverContent>
-              </Popover>
-            </div>
-            <Select
-              value={formData.narrativeStructure}
-              onValueChange={handleNarrativeStructureChange}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select narrative structure" />
-              </SelectTrigger>
-              <SelectContent>
-                <TooltipProvider>
-                  {structureOptions.map(option => (
-                    <Tooltip key={option.value}>
-                      <TooltipTrigger asChild>
-                        <SelectItem value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      </TooltipTrigger>
-                      <TooltipContent side="right" className="max-w-sm">
-                        <p>{getStructureTooltipDescription(option.value) || option.description}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  ))}
-                </TooltipProvider>
-              </SelectContent>
-            </Select>
-            <p className="text-xs text-muted-foreground mt-1">
-              {currentStructureDescription}
-            </p>
-          </div>
+          <NarrativeStructureSelector
+            value={formData.narrativeStructure}
+            onValueChange={handleNarrativeStructureChange}
+            projectType={formData.type}
+            videoFormat={formData.videoFormat}
+          />
           
           <div className="space-y-2">
             <Label htmlFor="worldId">Welt verknüpfen (optional)</Label>

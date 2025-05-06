@@ -8,10 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { EditProjectFormData, Project, ProjectType, Genre, VideoFormat } from '../types';
 import { genreOptions, projectTypeOptions, videoFormatOptions } from '../utils/mockData';
 import { X, Plus, Upload, HelpCircle } from 'lucide-react';
-import { getStructureOptions } from '../types/narrativeStructures';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { narrativeStructureTemplates } from '../types/narrativeStructures';
+import NarrativeStructureSelector from './narrative-structures/NarrativeStructureSelector';
 
 interface EditProjectModalProps {
   isOpen: boolean;
@@ -48,10 +46,6 @@ const EditProjectModal = ({ isOpen, onClose, onSubmit, project }: EditProjectMod
   const [coverImagePreview, setCoverImagePreview] = useState<string | null>(
     project.coverImage || null
   );
-  
-  const [structureOptions, setStructureOptions] = useState(
-    getStructureOptions(project.type)
-  );
 
   useEffect(() => {
     // Initialize form data when project changes
@@ -67,19 +61,7 @@ const EditProjectModal = ({ isOpen, onClose, onSubmit, project }: EditProjectMod
       narrativeStructure: project.narrativeStructure
     });
     setCoverImagePreview(project.coverImage || null);
-    setStructureOptions(getStructureOptions(project.type));
   }, [project]);
-
-  useEffect(() => {
-    // Update narrative structure options when project type changes
-    setStructureOptions(getStructureOptions(formData.type));
-    
-    // Reset narrative structure if the current one isn't available in the new options
-    const availableValues = structureOptions.map(option => option.value);
-    if (formData.narrativeStructure && !availableValues.includes(formData.narrativeStructure)) {
-      setFormData(prev => ({ ...prev, narrativeStructure: 'none' }));
-    }
-  }, [formData.type, formData.videoFormat]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -159,17 +141,6 @@ const EditProjectModal = ({ isOpen, onClose, onSubmit, project }: EditProjectMod
     };
     onSubmit(cleanedData);
   };
-  
-  // Find the description for the current narrative structure
-  const currentStructureDescription = structureOptions.find(
-    option => option.value === formData.narrativeStructure
-  )?.description || '';
-
-  const getStructureTooltipDescription = (value: string) => {
-    const template = narrativeStructureTemplates[value];
-    if (!template) return '';
-    return template.description || '';
-  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -234,52 +205,12 @@ const EditProjectModal = ({ isOpen, onClose, onSubmit, project }: EditProjectMod
             </div>
           )}
           
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Label htmlFor="narrativeStructure">Narrative Structure</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-5 w-5">
-                    <HelpCircle className="h-4 w-4 text-muted-foreground" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-80 p-4">
-                  <h4 className="font-medium mb-2">Narrative Structure</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Die Plotstruktur bestimmt den grundlegenden Aufbau deiner Geschichte. 
-                    Basierend auf dem gewählten Projekttyp werden passende Strukturen angezeigt.
-                  </p>
-                </PopoverContent>
-              </Popover>
-            </div>
-            <Select
-              value={formData.narrativeStructure}
-              onValueChange={handleNarrativeStructureChange}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select narrative structure" />
-              </SelectTrigger>
-              <SelectContent>
-                <TooltipProvider>
-                  {structureOptions.map(option => (
-                    <Tooltip key={option.value}>
-                      <TooltipTrigger asChild>
-                        <SelectItem value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      </TooltipTrigger>
-                      <TooltipContent side="right" className="max-w-sm">
-                        <p>{getStructureTooltipDescription(option.value) || option.description}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  ))}
-                </TooltipProvider>
-              </SelectContent>
-            </Select>
-            <p className="text-xs text-muted-foreground mt-1">
-              {currentStructureDescription}
-            </p>
-          </div>
+          <NarrativeStructureSelector
+            value={formData.narrativeStructure}
+            onValueChange={handleNarrativeStructureChange}
+            projectType={formData.type}
+            videoFormat={formData.videoFormat}
+          />
           
           <div className="space-y-2">
             <Label htmlFor="logline">Logline</Label>
