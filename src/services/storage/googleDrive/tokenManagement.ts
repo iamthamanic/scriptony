@@ -1,6 +1,6 @@
 
 import { updateDriveSettings } from "../userStorage";
-import { GOOGLE_TOKEN_URL, CLIENT_ID, CLIENT_SECRET } from './utils';
+import { GOOGLE_TOKEN_URL, getClientId, getClientSecret, safeJsonParse } from './utils';
 
 /**
  * Refreshes the Google Drive access token
@@ -10,6 +10,9 @@ export const refreshDriveToken = async (refreshToken: string): Promise<{
   expires_in: number;
 }> => {
   try {
+    const clientId = await getClientId();
+    const clientSecret = await getClientSecret();
+    
     const response = await fetch(GOOGLE_TOKEN_URL, {
       method: 'POST',
       headers: {
@@ -17,17 +20,19 @@ export const refreshDriveToken = async (refreshToken: string): Promise<{
       },
       body: new URLSearchParams({
         refresh_token: refreshToken,
-        client_id: CLIENT_ID,
-        client_secret: CLIENT_SECRET,
+        client_id: clientId,
+        client_secret: clientSecret,
         grant_type: 'refresh_token',
       }),
     });
     
     if (!response.ok) {
-      throw new Error('Failed to refresh token');
+      const errorText = await response.text();
+      console.error("Token refresh error:", errorText);
+      throw new Error(`Failed to refresh token: ${response.status} ${errorText}`);
     }
     
-    const data = await response.json();
+    const data = await safeJsonParse(response);
     
     // Update token in database
     await updateDriveSettings({

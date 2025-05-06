@@ -4,8 +4,8 @@ import { updateDriveSettings } from "../userStorage";
 import { 
   GOOGLE_AUTH_URL,
   GOOGLE_TOKEN_URL, 
-  CLIENT_ID, 
-  CLIENT_SECRET, 
+  getClientId,
+  getClientSecret,
   getRedirectURI, 
   SCOPES, 
   generateRandomString,
@@ -31,13 +31,17 @@ export interface DriveConnectionResponse {
 /**
  * Initiates the Google Drive OAuth flow
  */
-export const connectToGoogleDrive = (): void => {
+export const connectToGoogleDrive = async (): Promise<void> => {
   try {
     console.log("Starting Google Drive OAuth flow...");
     
     // Get the redirect URI dynamically
     const redirectUri = getRedirectURI();
     console.log("Using redirect URI:", redirectUri);
+    
+    // Get client ID dynamically
+    const clientId = await getClientId();
+    console.log("Using client ID:", clientId.substring(0, 8) + "...");
     
     const state = generateRandomString(16);
     localStorage.setItem('driveOAuthState', state);
@@ -46,7 +50,7 @@ export const connectToGoogleDrive = (): void => {
     localStorage.setItem('driveOAuthOriginUrl', window.location.href);
     
     const authUrl = new URL(GOOGLE_AUTH_URL);
-    authUrl.searchParams.append('client_id', CLIENT_ID);
+    authUrl.searchParams.append('client_id', clientId);
     authUrl.searchParams.append('redirect_uri', redirectUri);
     authUrl.searchParams.append('response_type', 'code');
     authUrl.searchParams.append('scope', SCOPES);
@@ -87,6 +91,9 @@ export const handleDriveOAuthCallback = async (
     // Exchange code for tokens
     console.log("Exchanging authorization code for tokens...");
     const redirectUri = getRedirectURI();
+    const clientId = await getClientId();
+    const clientSecret = await getClientSecret();
+    
     console.log("Using redirect URI for token exchange:", redirectUri);
     
     const tokenResponse = await fetch(GOOGLE_TOKEN_URL, {
@@ -96,8 +103,8 @@ export const handleDriveOAuthCallback = async (
       },
       body: new URLSearchParams({
         code,
-        client_id: CLIENT_ID,
-        client_secret: CLIENT_SECRET,
+        client_id: clientId,
+        client_secret: clientSecret,
         redirect_uri: redirectUri,
         grant_type: 'authorization_code',
       }),

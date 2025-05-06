@@ -9,6 +9,7 @@ const USE_FIXED_REDIRECTS = true; // Keep this true to use fixed redirects
 // Domain configuration for different environments
 const LOVABLE_DOMAINS = ['lovable.dev', 'lovable.app'];
 const LOCAL_DOMAINS = ['localhost', '127.0.0.1'];
+const SCRIPTONY_DOMAINS = ['app.scriptony.de', 'preview.scriptony.de', 'admin.scriptony.de'];
 
 // Environment detection
 export const isLocalDevelopment = (): boolean => {
@@ -20,12 +21,17 @@ export const isLovableEnvironment = (): boolean => {
   return LOVABLE_DOMAINS.some(domain => window.location.hostname.includes(domain));
 };
 
+export const isScriptonyDomain = (): boolean => {
+  return SCRIPTONY_DOMAINS.some(domain => window.location.hostname === domain);
+};
+
 /**
  * Get the actual fixed redirect URI for Google Drive OAuth
  * 
  * For Google Cloud Console configuration, use these URLs:
  * - If testing locally: http://localhost:5173/account?tab=storage
  * - For Lovable: https://your-project-name.lovable.dev/account?tab=storage
+ * - For Scriptony: https://app.scriptony.de/account?tab=storage
  */
 export const getDriveRedirectURI = (): string => {
   // With USE_FIXED_REDIRECTS enabled, we return environment-specific URLs
@@ -38,6 +44,12 @@ export const getDriveRedirectURI = (): string => {
   if (isLocalDevelopment()) {
     // For local testing with vite default port
     return 'http://localhost:5173/account?tab=storage';
+  }
+  
+  // Scriptony custom domains
+  if (isScriptonyDomain()) {
+    // Use the actual domain for Scriptony environments
+    return `${window.location.origin}/account?tab=storage`;
   }
   
   // Lovable environment (preview/production)
@@ -56,6 +68,7 @@ export const getDriveRedirectURI = (): string => {
  * For Google Cloud Console configuration, use these URLs:
  * - If testing locally: http://localhost:5173/auth
  * - For Lovable: https://your-project-name.lovable.dev/auth
+ * - For Scriptony: https://app.scriptony.de/auth
  */
 export const getAuthRedirectURI = (): string => {
   // With USE_FIXED_REDIRECTS enabled, we return environment-specific URLs
@@ -68,6 +81,12 @@ export const getAuthRedirectURI = (): string => {
   if (isLocalDevelopment()) {
     // For local testing with vite default port
     return 'http://localhost:5173/auth';
+  }
+  
+  // Scriptony custom domains
+  if (isScriptonyDomain()) {
+    // Use the actual domain for Scriptony environments
+    return `${window.location.origin}/auth`;
   }
   
   // Lovable environment (preview/production)
@@ -88,6 +107,7 @@ export const getEnvironmentInfo = (): {
   hostname: string;
   isLocal: boolean;
   isLovable: boolean;
+  isScriptony: boolean;
   fixedRedirects: boolean;
   originUrl: string;
   driveRedirectUrl: string;
@@ -95,10 +115,13 @@ export const getEnvironmentInfo = (): {
 } => {
   const isLocal = isLocalDevelopment();
   const isLovable = isLovableEnvironment();
+  const isScriptony = isScriptonyDomain();
   
   let type = "unknown";
   if (isLocal) {
     type = "local development";
+  } else if (isScriptony) {
+    type = "Scriptony production";
   } else if (isLovable) {
     type = "Lovable environment";
   }
@@ -108,6 +131,7 @@ export const getEnvironmentInfo = (): {
     hostname: window.location.hostname,
     isLocal,
     isLovable,
+    isScriptony,
     fixedRedirects: USE_FIXED_REDIRECTS,
     originUrl: window.location.origin,
     driveRedirectUrl: getDriveRedirectURI(),
