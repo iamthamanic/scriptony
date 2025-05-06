@@ -1,6 +1,6 @@
 
 import { toast } from "sonner";
-import { Project, NarrativeStructureType, ProjectType, Genre, VideoFormat } from "../types";
+import { Project, NarrativeStructureType, ProjectType, Genre, VideoFormat, Scene, TimeOfDay, EmotionalSignificance } from "../types";
 
 interface ErrorHandlingOptions {
   defaultMessage?: string;
@@ -62,5 +62,35 @@ export const convertDbProjectToApp = (dbProject: any): Project => {
     narrativeStructure: dbProject.narrative_structure as NarrativeStructureType,
     createdAt: new Date(dbProject.created_at),
     updatedAt: new Date(dbProject.updated_at)
+  };
+};
+
+// Function to convert a database scene to our application Scene type
+export const convertDbSceneToApp = (dbScene: any): Scene => {
+  return {
+    id: dbScene.id,
+    projectId: dbScene.project_id,
+    episodeId: dbScene.episode_id || undefined,
+    episodeTitle: dbScene.episode_title || undefined,
+    sceneNumber: dbScene.scene_number,
+    location: dbScene.location,
+    timeOfDay: dbScene.time_of_day as TimeOfDay,
+    timecodeStart: dbScene.timecode_start,
+    timecodeEnd: dbScene.timecode_end,
+    visualComposition: dbScene.visual_composition || '',
+    lighting: dbScene.lighting || '',
+    colorGrading: dbScene.color_grading || '',
+    soundDesign: dbScene.sound_design || '',
+    specialEffects: dbScene.special_effects || '',
+    keyframeImage: dbScene.keyframe_image_url,
+    description: dbScene.description,
+    dialog: dbScene.dialog || '',
+    transitions: dbScene.transitions || '',
+    productionNotes: dbScene.production_notes || '',
+    emotionalSignificance: dbScene.emotional_significance as EmotionalSignificance || 'other',
+    emotionalNotes: dbScene.emotional_notes || '',
+    characterIds: dbScene.character_ids || [],
+    createdAt: new Date(dbScene.created_at),
+    updatedAt: new Date(dbScene.updated_at)
   };
 };
