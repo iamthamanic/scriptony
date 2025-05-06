@@ -29,9 +29,7 @@ export const updateProject = async (projectId: string, projectData: Partial<Proj
     }
 
     // Ensure inspirations is properly formatted
-    const inspirations = Array.isArray(projectData.inspirations) 
-      ? projectData.inspirations.join(',')
-      : (projectData.inspirations || '');
+    const inspirations = normalizeInspirations(projectData.inspirations);
     
     // Update project in database with new fields
     const { error } = await customSupabase
@@ -55,10 +53,6 @@ export const updateProject = async (projectId: string, projectData: Partial<Proj
     return true;
     
   } catch (error) {
-    handleApiError(error, { 
-      defaultMessage: "Failed to update project",
-      showToast: true
-    });
-    return false;
+    return handleApiError(error) ?? false;
   }
 };

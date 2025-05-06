@@ -21,7 +21,7 @@ export const fetchUserProjects = async (): Promise<Project[]> => {
       logline: dbProject.logline || '',
       genres: (dbProject.genres || []) as Genre[],
       duration: parseInt(dbProject.duration),
-      inspirations: dbProject.inspirations ? JSON.parse(dbProject.inspirations) : [],
+      inspirations: dbProject.inspirations ? dbProject.inspirations.split(',').filter(Boolean) : [],
       coverImage: dbProject.cover_image_url || null,
       scenes: [],  // We'll fetch scenes separately
       characters: [],  // We'll fetch characters separately
@@ -32,10 +32,6 @@ export const fetchUserProjects = async (): Promise<Project[]> => {
     }));
     
   } catch (error) {
-    handleApiError(error, { 
-      defaultMessage: "Failed to fetch projects",
-      showToast: true
-    });
-    return [];
+    return handleApiError(error) ?? [];
   }
 };

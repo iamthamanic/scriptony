@@ -53,11 +53,7 @@ export const createEpisode = async (projectId: string, episodeData: NewEpisodeFo
     };
     
   } catch (error) {
-    handleApiError(error, { 
-      defaultMessage: "Failed to create episode",
-      showToast: true
-    });
-    return null;
+    return handleApiError(error);
   }
 };
 
@@ -103,11 +99,7 @@ export const updateEpisode = async (episodeId: string, episodeData: Partial<Epis
     return true;
     
   } catch (error) {
-    handleApiError(error, { 
-      defaultMessage: "Failed to update episode",
-      showToast: true
-    });
-    return false;
+    return handleApiError(error) ?? false;
   }
 };
 
@@ -123,10 +115,6 @@ export const deleteEpisode = async (episodeId: string): Promise<boolean> => {
     return true;
     
   } catch (error) {
-    handleApiError(error, { 
-      defaultMessage: "Failed to delete episode",
-      showToast: true
-    });
-    return false;
+    return handleApiError(error) ?? false;
   }
 };

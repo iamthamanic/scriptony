@@ -69,7 +69,6 @@ const ProjectContent = ({
                 onEditEpisode={onEditEpisode}
                 onDeleteEpisode={(episode) => onDeleteEpisode(episode)}
                 selectedEpisodeId={selectedEpisodeId}
-                setSelectedEpisodeId={setSelectedEpisodeId}
               />
             </div>
           )}

@@ -53,11 +53,7 @@ export const createCharacter = async (projectId: string, characterData: NewChara
     };
     
   } catch (error) {
-    handleApiError(error, { 
-      defaultMessage: "Failed to create character",
-      showToast: true
-    });
-    return null;
+    return handleApiError(error);
   }
 };
 
@@ -103,11 +99,7 @@ export const updateCharacter = async (characterId: string, characterData: Partia
     return true;
     
   } catch (error) {
-    handleApiError(error, { 
-      defaultMessage: "Failed to update character",
-      showToast: true
-    });
-    return false;
+    return handleApiError(error) ?? false;
   }
 };
 
@@ -123,10 +115,6 @@ export const deleteCharacter = async (characterId: string): Promise<boolean> => 
     return true;
     
   } catch (error) {
-    handleApiError(error, { 
-      defaultMessage: "Failed to delete character",
-      showToast: true
-    });
-    return false;
+    return handleApiError(error) ?? false;
   }
 };

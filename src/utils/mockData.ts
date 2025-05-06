@@ -1,5 +1,6 @@
 import { ProjectType, Genre, TimeOfDay, EmotionalSignificance, VideoFormat } from "../types";
 import { projectTypes, genres, timesOfDay, emotionalSignificances, videoFormats } from "./constants";
+import { NarrativeStructureType } from "@/types";
 
 export const projectTypeOptions = projectTypes.map((type) => {
   let label: string;
@@ -84,4 +85,26 @@ export const getRandomEntry = <T>(array: T[]): T | undefined => {
   }
   const randomIndex = Math.floor(Math.random() * array.length);
   return array[randomIndex];
+};
+
+export const generateDefaultSceneForTemplate = (structureType: NarrativeStructureType) => {
+  // Basic scene template
+  const sceneTemplates = [
+    {
+      location: 'INT. MAIN LOCATION',
+      timeOfDay: 'day',
+      visualComposition: 'Medium shot',
+      lighting: 'Natural lighting',
+      colorGrading: 'Neutral',
+      soundDesign: 'Ambient sounds',
+      specialEffects: 'None',
+      description: 'Opening scene description.',
+      dialog: 'Character dialog goes here.',
+      transitions: 'CUT TO:',
+      productionNotes: 'Setup the story world.',
+      emotionalSignificance: 'introduction'
+    }
+  ];
+  
+  return sceneTemplates;
 };
