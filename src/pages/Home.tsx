@@ -69,9 +69,6 @@ const Home = () => {
             )}
           </section>
           
-          {/* Quote Carousel */}
-          <QuoteCarousel className="py-8 border-y border-border" />
-          
           {/* Recent Worlds */}
           <section>
             <div className="flex items-center justify-between mb-4">
@@ -109,6 +106,9 @@ const Home = () => {
           </section>
         </div>
       </div>
+      
+      {/* Quote Carousel - moved to the bottom of the page */}
+      <QuoteCarousel className="mt-16" />
     </div>
   );
 };

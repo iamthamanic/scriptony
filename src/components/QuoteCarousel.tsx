@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -73,63 +74,69 @@ const QuoteCarousel: React.FC<QuoteCarouselProps> = ({
   }
 
   return (
-    <div className={cn("w-full py-8", className)}>
-      <h2 className="text-xl font-semibold text-center mb-8">
-        Inspiration
-      </h2>
-      
-      <Carousel
-        setApi={setApi}
-        className="w-full max-w-3xl mx-auto"
-        opts={{
-          align: "center",
-          loop: true,
-        }}
-      >
-        <CarouselContent>
-          {quotes.map((quote, index) => (
-            <CarouselItem key={index}>
-              <Card className="border-none">
-                <CardContent className="p-6 text-center flex flex-col items-center justify-between min-h-[16rem]">
-                  <div className="space-y-4">
-                    <p className="text-lg md:text-xl italic mb-4 leading-relaxed">
-                      "{quote.text}"
-                    </p>
-                    <p className="font-medium text-sm md:text-base">
-                      {quote.author}
-                    </p>
-                    <p className="text-muted-foreground text-xs md:text-sm">
-                      {quote.source}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-
-        <div className="hidden md:block">
-          <CarouselPrevious className="left-1" />
-          <CarouselNext className="right-1" />
-        </div>
+    <div className={cn("w-full py-16 bg-gradient-to-b from-background to-secondary/20", className)}>
+      <div className="max-w-4xl mx-auto px-4">
+        <h2 className="text-2xl font-semibold text-center mb-12 text-foreground/90">
+          Inspiration
+        </h2>
         
-        {/* Slide indicators */}
-        <div className="flex justify-center gap-1 mt-4">
-          {quotes.map((_, index) => (
-            <button
-              key={index}
-              className={cn(
-                "w-2 h-2 rounded-full transition-all duration-300",
-                currentIndex === index 
-                  ? "bg-primary scale-125" 
-                  : "bg-muted hover:bg-primary/50"
-              )}
-              onClick={() => api?.scrollTo(index)}
-              aria-label={`Go to quote ${index + 1}`}
-            />
-          ))}
-        </div>
-      </Carousel>
+        <Carousel
+          setApi={setApi}
+          className="w-full mx-auto"
+          opts={{
+            align: "center",
+            loop: true,
+          }}
+        >
+          <CarouselContent>
+            {quotes.map((quote, index) => (
+              <CarouselItem key={index}>
+                <Card className="border-none bg-transparent shadow-none">
+                  <CardContent className="p-8 text-center flex flex-col items-center justify-between min-h-[22rem]">
+                    <div className="relative space-y-6">
+                      <span className="absolute -top-10 -left-6 text-6xl font-serif text-primary/30">"</span>
+                      <p className="text-lg md:text-2xl italic mb-8 leading-relaxed relative z-10">
+                        {quote.text}
+                      </p>
+                      <span className="absolute -bottom-16 -right-6 text-6xl font-serif text-primary/30">"</span>
+                      <div className="pt-4">
+                        <p className="font-medium text-base md:text-lg">
+                          {quote.author}
+                        </p>
+                        <p className="text-muted-foreground text-sm md:text-base mt-2">
+                          {quote.source}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+
+          <div className="hidden md:block">
+            <CarouselPrevious className="left-1 border-primary/40 bg-background/80 backdrop-blur-sm hover:bg-primary/10" />
+            <CarouselNext className="right-1 border-primary/40 bg-background/80 backdrop-blur-sm hover:bg-primary/10" />
+          </div>
+          
+          {/* Slide indicators */}
+          <div className="flex justify-center gap-2 mt-8">
+            {quotes.map((_, index) => (
+              <button
+                key={index}
+                className={cn(
+                  "w-3 h-3 rounded-full transition-all duration-500",
+                  currentIndex === index 
+                    ? "bg-primary scale-125" 
+                    : "bg-muted hover:bg-primary/50"
+                )}
+                onClick={() => api?.scrollTo(index)}
+                aria-label={`Go to quote ${index + 1}`}
+              />
+            ))}
+          </div>
+        </Carousel>
+      </div>
     </div>
   );
 };
