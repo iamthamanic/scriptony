@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from '@/lib/utils';
 interface Quote {
@@ -91,11 +91,8 @@ const QuoteCarousel: React.FC<QuoteCarouselProps> = ({
                 </Card>
               </CarouselItem>)}
           </CarouselContent>
+          
 
-          <div className="hidden md:block">
-            <CarouselPrevious className="left-1 border-primary/40 bg-background/80 backdrop-blur-sm hover:bg-primary/10" />
-            <CarouselNext className="right-1 border-primary/40 bg-background/80 backdrop-blur-sm hover:bg-primary/10" />
-          </div>
           
           {/* Slide indicators */}
           <div className="flex justify-center gap-2 mt-8">
