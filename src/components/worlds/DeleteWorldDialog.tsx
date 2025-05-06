@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from 'lucide-react';
-import { useToast } from "@/hooks/use-toast";
 
 interface DeleteWorldDialogProps {
   isOpen: boolean;
@@ -24,7 +23,6 @@ interface DeleteWorldDialogProps {
 const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorldDialogProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [deletionError, setDeletionError] = useState<string | null>(null);
-  const { toast } = useToast();
   
   // Handle clean dialog close
   const handleCloseDialog = useCallback(() => {
@@ -50,7 +48,7 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
       onClose();
       
       // Short delay to ensure dialog closing animation completes
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 50));
       
       // Then perform the actual deletion
       await onDelete();
@@ -64,17 +62,10 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
         setDeletionError(errorMessage);
       }
       
-      toast({
-        title: 'Fehler beim Löschen',
-        description: errorMessage,
-        variant: 'destructive',
-        duration: 3000 // Shorter duration
-      });
-      
       // Reset deletion state
       setIsDeleting(false);
     }
-  }, [isDeleting, onDelete, worldName, toast, onClose]);
+  }, [isDeleting, onDelete, worldName, onClose]);
 
   // Return null when dialog is closed
   if (!isOpen) {

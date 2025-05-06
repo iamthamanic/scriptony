@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { World, WorldCategory } from "@/types";
 import { toast } from "sonner";
@@ -14,7 +13,7 @@ interface WorldDetailProps {
   onBack: () => void;
   onEditWorld: () => void;
   onDeleteWorld: () => void;
-  onDuplicateWorld?: () => void; // Added the missing prop with optional type
+  onDuplicateWorld?: () => void; // Optional prop for duplicating worlds
   onAddCategory: () => void;
   onEditCategory: (category: WorldCategory) => void;
   onDeleteCategory: (categoryId: string) => void;
@@ -68,6 +67,7 @@ const WorldDetail = ({
         onBack={onBack}
         onEditWorld={onEditWorld}
         onDeleteWorld={onDeleteWorld}
+        onDuplicateWorld={onDuplicateWorld}
       />
       
       {world.cover_image_url && (
