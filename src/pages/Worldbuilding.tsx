@@ -1,5 +1,5 @@
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 import { useWorldsState } from "@/hooks/useWorldsState";
 import WorldsContent from "../components/worlds/WorldsContent";
@@ -35,12 +35,13 @@ const Worldbuilding = () => {
     deletionState
   } = useWorldsState(user?.id);
 
-  React.useEffect(() => {
-    // Kullanıcı kimliği varsa dünyaları yükle
+  // Always load worlds when component mounts if user exists
+  useEffect(() => {
+    console.log("Worldbuilding component mounted, userId:", user?.id, "loading worlds");
     if (user?.id) {
       loadWorlds();
     }
-  }, [user, loadWorlds]);
+  }, [user?.id, loadWorlds]);
 
   const handleEditWorld = () => {
     if (!selectedWorld) return;
@@ -57,13 +58,15 @@ const Worldbuilding = () => {
     setIsCategoryModalOpen(true);
   };
 
-  // Dünya silme dialogunu kapatma işlemi - silme işlemi sırasında kapatmayı önle
+  // Dialog closing handler - prevent closing during deletion
   const handleCloseDeleteDialog = useCallback(() => {
-    // Eğer silme işlemi devam etmiyorsa dialog'u kapatmaya izin ver
+    // Only allow dialog closing if deletion is not in progress
     if (deletionState !== 'deleting' && !isLoading) {
       setIsDeleteWorldDialogOpen(false);
     }
   }, [deletionState, isLoading, setIsDeleteWorldDialogOpen]);
+
+  console.log("Worldbuilding render - isLoading:", isLoading, "worlds count:", worlds.length);
 
   return (
     <div className="py-6 px-4 md:px-6 w-full">

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
 import { Clock } from 'lucide-react';
@@ -19,10 +19,22 @@ const Home = () => {
   const { projects, isLoading: projectsLoading } = useProjects();
   
   // Get recent worlds
-  const { worlds, isLoading: worldsLoading } = useWorldsState(user?.id);
+  const { 
+    worlds, 
+    isLoading: worldsLoading, 
+    loadWorlds 
+  } = useWorldsState(user?.id);
   
+  // Ensure worlds are loaded when component mounts
+  useEffect(() => {
+    console.log("Home component mount, calling loadWorlds");
+    loadWorlds();
+  }, [loadWorlds]);
+
   const recentProjects = projects.slice(0, 3);
   const recentWorlds = worlds.slice(0, 3);
+
+  console.log("Home render - worldsLoading:", worldsLoading, "worlds count:", worlds.length);
 
   return (
     <div className="py-8 px-4 md:px-6 w-full space-y-8 animate-fade-in">
@@ -84,7 +96,7 @@ const Home = () => {
             
             {worldsLoading ? (
               <p className="text-muted-foreground">Welten werden geladen...</p>
-            ) : recentWorlds.length > 0 ? (
+            ) : worlds.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {recentWorlds.map(world => (
                   <Card key={world.id} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate('/worldbuilding')}>

@@ -1,3 +1,4 @@
+
 import { useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { fetchUserWorlds } from "@/services/worlds";
@@ -15,6 +16,8 @@ export function useWorldLoading(
   
   // Load worlds with cooldown protection
   const loadWorlds = async () => {
+    console.log("loadWorlds called, userId:", userId, "isLoading being set to true");
+    
     // Prevent loading immediately after deletion to avoid flicker
     if (deleteCompletedAtRef.current && (Date.now() - deleteCompletedAtRef.current < 1500)) {
       console.log("Skipping reload due to recent deletion");
@@ -30,6 +33,7 @@ export function useWorldLoading(
     lastOperationTimestampRef.current = now;
     
     if (!userId) {
+      console.log("No userId provided, setting worlds to empty array and isLoading to false");
       setWorlds([]);
       setSelectedWorldId(null);
       setIsLoading(false);
@@ -39,6 +43,7 @@ export function useWorldLoading(
     try {
       setIsLoading(true);
       const worldsData = await fetchUserWorlds();
+      console.log("Worlds fetched successfully:", worldsData.length);
       
       // Add small delay before updating state to ensure smooth UI updates
       await new Promise(resolve => setTimeout(resolve, 100));
@@ -60,7 +65,8 @@ export function useWorldLoading(
         duration: 3000 // Shorter toast duration
       });
     } finally {
-      // Ensure loading state is eventually cleared
+      // Always ensure loading state is cleared
+      console.log("Setting isLoading to false in finally block");
       setIsLoading(false);
     }
   };

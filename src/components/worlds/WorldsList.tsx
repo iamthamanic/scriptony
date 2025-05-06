@@ -12,7 +12,9 @@ interface WorldsListProps {
 }
 
 const WorldsList = ({ worlds, onSelectWorld, onNewWorld }: WorldsListProps) => {
-  if (worlds.length === 0) {
+  console.log("WorldsList render - worlds count:", worlds.length);
+  
+  if (!worlds || worlds.length === 0) {
     return (
       <EmptyState
         title="Keine Welten vorhanden"

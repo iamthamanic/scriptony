@@ -3,9 +3,10 @@ import { useState } from 'react';
 import { World, WorldCategory } from "@/types";
 
 export function useWorldsCore(userId: string | undefined) {
+  // Initialize isLoading to false if there's no userId
   const [worlds, setWorlds] = useState<World[]>([]);
   const [selectedWorldId, setSelectedWorldId] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(!!userId);
 
   // Modal states
   const [isNewWorldModalOpen, setIsNewWorldModalOpen] = useState(false);
