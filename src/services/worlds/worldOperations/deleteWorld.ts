@@ -5,7 +5,7 @@ import { isDevelopmentMode } from "@/utils/devMode";
 /**
  * Creates a timeout Promise with proper cleanup to prevent memory leaks
  */
-export const createTimeout = (timeoutMs: number = 60000): { promise: Promise<never>, cancel: () => void } => {
+export const createTimeout = (timeoutMs: number = 120000): { promise: Promise<never>, cancel: () => void } => {
   let timeoutId: number;
   
   const promise = new Promise<never>((_, reject) => {
@@ -32,15 +32,8 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
     console.log('Development mode detected for world deletion');
   }
   
-  // Configure headers for all requests in this function
-  const headers: Record<string, string> = {};
-  if (devMode) {
-    headers['x-dev-mode'] = 'true';
-    console.log('Added dev mode headers for all deletion requests');
-  }
-  
-  // Set a longer timeout to prevent indefinite hanging (60 seconds instead of 45)
-  const { promise: timeoutPromise, cancel: cancelTimeout } = createTimeout(60000);
+  // Set a longer timeout to prevent indefinite hanging (120 seconds instead of 60)
+  const { promise: timeoutPromise, cancel: cancelTimeout } = createTimeout(120000);
   
   // Flag to track operation completion for cleanup purposes
   let operationCompleted = false;
@@ -52,11 +45,16 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
       .from('worlds')
       .select('id, name')
       .eq('id', worldId)
-      .single();
+      .maybeSingle();
       
     if (worldCheckError) {
       console.error('Error checking world existence:', worldCheckError);
       throw new Error(`World not found or access denied: ${worldCheckError.message}`);
+    }
+    
+    if (!worldCheck) {
+      console.log('World not found in database, may already be deleted');
+      return;
     }
     
     console.log('World found:', worldCheck);
@@ -72,9 +70,9 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
           .select('id');
           
         if (projectError) {
-          if (attempt < 3) {
+          if (attempt < 4) {
             console.log(`Project update attempt ${attempt} failed, retrying...`);
-            await new Promise(resolve => setTimeout(resolve, 500));
+            await new Promise(resolve => setTimeout(resolve, 500 * attempt));
             return updateProjects(attempt + 1);
           }
           throw new Error(`Failed to update project references: ${projectError.message}`);
@@ -82,9 +80,9 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
         
         console.log('Successfully updated project references');
       } catch (error) {
-        if (attempt < 3) {
+        if (attempt < 4) {
           console.log(`Project update attempt ${attempt} failed with exception, retrying...`);
-          await new Promise(resolve => setTimeout(resolve, 500));
+          await new Promise(resolve => setTimeout(resolve, 500 * attempt));
           return updateProjects(attempt + 1);
         }
         throw error;
@@ -102,9 +100,9 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
           .select('id');
           
         if (catError) {
-          if (attempt < 3) {
+          if (attempt < 4) {
             console.log(`Category deletion attempt ${attempt} failed, retrying...`);
-            await new Promise(resolve => setTimeout(resolve, 500));
+            await new Promise(resolve => setTimeout(resolve, 500 * attempt));
             return deleteCategories(attempt + 1);
           }
           throw new Error(`Failed to delete world categories: ${catError.message}`);
@@ -112,9 +110,9 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
         
         console.log('Categories deleted:', deletedCategories?.length || 0);
       } catch (error) {
-        if (attempt < 3) {
+        if (attempt < 4) {
           console.log(`Category deletion attempt ${attempt} failed with exception, retrying...`);
-          await new Promise(resolve => setTimeout(resolve, 500));
+          await new Promise(resolve => setTimeout(resolve, 500 * attempt));
           return deleteCategories(attempt + 1);
         }
         throw error;
@@ -139,9 +137,9 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
           .select();
           
         if (error) {
-          if (attempt < 4) { // Increased max attempts for world deletion
-            console.log(`World delete attempt ${attempt} failed, retrying in ${attempt * 300}ms...`);
-            await new Promise(resolve => setTimeout(resolve, attempt * 300));
+          if (attempt < 5) { // Increased max attempts for world deletion
+            console.log(`World delete attempt ${attempt} failed, retrying in ${attempt * 500}ms...`);
+            await new Promise(resolve => setTimeout(resolve, attempt * 500));
             return executeWorldDeletion(attempt + 1);
           }
           throw error;
@@ -149,9 +147,9 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
         
         return { data, error: null };
       } catch (error) {
-        if (attempt < 4) { // Increased max attempts
+        if (attempt < 5) { // Increased max attempts
           console.log(`World delete attempt ${attempt} failed with exception, retrying...`);
-          await new Promise(resolve => setTimeout(resolve, attempt * 300));
+          await new Promise(resolve => setTimeout(resolve, attempt * 500));
           return executeWorldDeletion(attempt + 1);
         }
         throw error;
@@ -175,7 +173,7 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
     console.log('World deleted successfully:', deletedWorld);
     
     // Add a small delay before resolving to ensure all state updates have time to propagate
-    await new Promise(resolve => setTimeout(resolve, 300));
+    await new Promise(resolve => setTimeout(resolve, 500));
     
   } catch (error) {
     console.error('Error in delete world process:', error);
