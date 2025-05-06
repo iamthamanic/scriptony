@@ -14,6 +14,7 @@ interface WorldDetailProps {
   onBack: () => void;
   onEditWorld: () => void;
   onDeleteWorld: () => void;
+  onDuplicateWorld?: () => void; // Added the missing prop with optional type
   onAddCategory: () => void;
   onEditCategory: (category: WorldCategory) => void;
   onDeleteCategory: (categoryId: string) => void;
@@ -25,6 +26,7 @@ const WorldDetail = ({
   onBack,
   onEditWorld,
   onDeleteWorld,
+  onDuplicateWorld,
   onAddCategory,
   onEditCategory,
   onDeleteCategory,
