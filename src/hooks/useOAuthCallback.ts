@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { handleDriveOAuthCallback } from '@/services/storage';
+import { DriveConnectionResponse } from '@/services/storage/googleDrive/oauthFlow';
 
 export const useOAuthCallback = () => {
   const [searchParams] = useSearchParams();
@@ -11,10 +12,13 @@ export const useOAuthCallback = () => {
 
   const processOAuthCallback = async (
     onSuccess: () => Promise<void>
-  ) => {
+  ): Promise<DriveConnectionResponse> => {
     const code = searchParams.get('code');
     const state = searchParams.get('state');
-    let result = { success: false, message: 'No callback parameters found' };
+    let result: DriveConnectionResponse = { 
+      success: false, 
+      message: 'No callback parameters found' 
+    };
     
     if (code && state) {
       try {
@@ -25,7 +29,7 @@ export const useOAuthCallback = () => {
         if (result.success) {
           toast({
             title: 'Erfolgreich verbunden',
-            description: `Google Drive wurde verknüpft (${result.email})`,
+            description: `Google Drive wurde verknüpft ${result.email ? `(${result.email})` : ''}`,
           });
           
           // Reload settings
