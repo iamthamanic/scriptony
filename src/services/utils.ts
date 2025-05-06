@@ -1,4 +1,3 @@
-
 import { Scene, EmotionalSignificance, TimeOfDay } from '@/types';
 
 export const handleApiError = (error: any) => {
@@ -50,11 +49,10 @@ export const convertDbProjectToApp = (dbProject: any) => {
     logline: dbProject.logline || '',
     genres: dbProject.genres || [],
     duration: parseInt(dbProject.duration) || 0,
-    inspirations: dbProject.inspirations ? 
+    inspirations: 
       (typeof dbProject.inspirations === 'string' ? 
         dbProject.inspirations.split(',').filter(Boolean) : 
-        dbProject.inspirations) : 
-      [],
+        dbProject.inspirations) || [],
     coverImage: dbProject.cover_image_url,
     narrativeStructure: dbProject.narrative_structure,
     createdAt: new Date(dbProject.created_at),
@@ -62,6 +60,7 @@ export const convertDbProjectToApp = (dbProject: any) => {
   };
 };
 
+// Helper function to normalize inspirations to ensure they're always in array format
 export const normalizeInspirations = (inspirations: string[] | string | undefined): string[] => {
   if (!inspirations) return [];
   

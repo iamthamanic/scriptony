@@ -71,21 +71,17 @@ const Index = () => {
     }
   };
 
-  const handleEditCharacterWrapper = (character: Character) => {
-    handleEditCharacter(character.id, {
-      name: character.name,
-      role: character.role,
-      description: character.description,
-      avatar: character.avatar
-    });
+  // Wrapper functions to match the function signatures
+  const handleEditCharacterWrapper = (characterId: string, data: any) => {
+    handleEditCharacter(characterId, data);
   };
 
-  const handleDeleteCharacterWrapper = (character: Character) => {
-    handleDeleteCharacter(character.id);
+  const handleDeleteCharacterWrapper = (characterId: string) => {
+    handleDeleteCharacter(characterId);
   };
 
-  const handleDeleteEpisodeWrapper = (episode: Episode) => {
-    handleDeleteEpisode(episode.id);
+  const handleDeleteEpisodeWrapper = (episodeId: string) => {
+    handleDeleteEpisode(episodeId);
   };
 
   const handleCreateOrEditEpisode = (data: any) => {
