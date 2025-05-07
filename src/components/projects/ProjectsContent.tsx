@@ -59,18 +59,15 @@ const ProjectsContent = ({
     );
   }
   
-  // Helper functions that properly map between the component props and CharacterList/EpisodeList expectations
-  // These functions take the expected types from CharacterList/EpisodeList and convert them to the format
+  // These adapter functions convert from Character/Episode objects to the parameter formats
   // expected by the parent component functions
   const handleEditCharacter = (character: Character) => {
-    // Create the form data object with the correct properties
     const formData: EditCharacterFormData = {
       name: character.name,
       role: character.role,
       description: character.description,
-      // Use type assertion to handle the avatar type correctly
-      // Since avatar could be string | null | undefined but not File at this point
-      avatar: character.avatar as string | undefined
+      // We know the avatar is a string or null here, not a File
+      avatar: character.avatar 
     };
     
     // Call the parent function with the ID and form data separately
