@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Loader2 } from "lucide-react";
 import { Project } from "@/types";
@@ -66,8 +65,9 @@ const ProjectsContent = ({
       name: character.name,
       role: character.role,
       description: character.description,
-      // Handle avatar correctly with proper type handling
-      avatar: character.avatar ?? undefined
+      // Handle avatar correctly - it can be string|null|undefined
+      // If it's a string, keep it; otherwise it should be undefined, not null
+      avatar: typeof character.avatar === 'string' ? character.avatar : undefined
     };
     
     // Call the parent function with the ID and form data separately
