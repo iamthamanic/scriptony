@@ -66,9 +66,8 @@ const ProjectsContent = ({
       name: character.name,
       role: character.role,
       description: character.description,
-      // For avatar, we need to handle that it can be string | File
-      // If it's a string URL, we can pass it directly as EditCharacterFormData allows string
-      avatar: character.avatar
+      // Handle the avatar properly - it can be string | File
+      avatar: character.avatar || ""
     };
     
     // Call the parent component function with the correct parameter types

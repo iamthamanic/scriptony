@@ -64,13 +64,14 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <ErrorProvider>
-          <AuthProvider>
-            <Toaster />
-            <Sonner />
-            <ErrorDisplay />
-            <BrowserRouter>
-              {/* The FeatureDetector registers routes automatically */}
-              <FeatureDetector />
+          <BrowserRouter>
+            {/* The FeatureDetector registers routes automatically */}
+            <FeatureDetector />
+            
+            <AuthProvider>
+              <Toaster />
+              <Sonner />
+              <ErrorDisplay />
               
               <div className="flex flex-col w-full min-h-screen">
                 <Routes>
@@ -147,8 +148,8 @@ const App = () => {
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </div>
-            </BrowserRouter>
-          </AuthProvider>
+            </AuthProvider>
+          </BrowserRouter>
         </ErrorProvider>
       </TooltipProvider>
     </QueryClientProvider>
