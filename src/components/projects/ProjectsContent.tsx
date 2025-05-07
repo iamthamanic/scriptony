@@ -1,5 +1,5 @@
 
-import React from "react";
+import React from 'react';
 import { Loader2 } from "lucide-react";
 import { Project } from "@/types";
 import ProjectSelector from "../ProjectSelector";
@@ -62,12 +62,13 @@ const ProjectsContent = ({
   // Diese Adapter-Funktionen konvertieren von Character/Episode-Objekten zu den Parameterformaten,
   // die von den Funktionen der übergeordneten Komponente erwartet werden
   const handleEditCharacter = (character: Character) => {
-    onEditCharacter(character.id, {
+    const data: EditCharacterFormData = {
       name: character.name,
       role: character.role,
       description: character.description,
-      avatar: character.avatar // Kann string | undefined sein, muss mit EditCharacterFormData kompatibel sein
-    });
+      avatar: character.avatar // string | undefined ist kompatibel mit EditCharacterFormData
+    };
+    onEditCharacter(character.id, data);
   };
 
   const handleDeleteCharacter = (character: Character) => {
