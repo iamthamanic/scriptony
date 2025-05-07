@@ -59,23 +59,27 @@ const ProjectsContent = ({
     );
   }
   
-  // Create a wrapper function that correctly transforms the Character object to the format required by onEditCharacter
+  // Create wrapper functions that match the expected function signatures
   const handleEditCharacter = (character: Character) => {
+    // Extract needed data from the character object to create EditCharacterFormData
     const formData: EditCharacterFormData = {
       name: character.name,
       role: character.role,
       description: character.description,
-      // Fix: Use type assertion to handle the avatar property correctly
-      avatar: character.avatar as string | undefined
+      // Use the correct typing for avatar - it should be string | undefined, not File
+      avatar: character.avatar || undefined
     };
+    // Call the parent component function with the correct parameter types
     onEditCharacter(character.id, formData);
   };
 
   const handleDeleteCharacter = (character: Character) => {
+    // Extract just the ID for the parent function
     onDeleteCharacter(character.id);
   };
 
   const handleDeleteEpisode = (episode: Episode) => {
+    // Extract just the ID for the parent function
     onDeleteEpisode(episode.id);
   };
   
@@ -130,7 +134,7 @@ const ProjectsContent = ({
             onEditScene={onEditScene}
             onDeleteScene={onDeleteScene}
             editingScene={null}
-            // Fix: Use our wrapper functions here that convert between the different parameter types
+            // Pass our wrapper functions that match the required signatures
             onEditCharacter={handleEditCharacter}
             onDeleteCharacter={handleDeleteCharacter}
             onEditEpisode={onEditEpisode}
