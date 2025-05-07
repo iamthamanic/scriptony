@@ -24,7 +24,7 @@ const NarrativeStructurePopover = ({
           <HelpCircle className="h-4 w-4 text-muted-foreground" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[350px] p-0" align="end">
+      <PopoverContent className="w-[400px] p-0" align="end">
         <div className="p-4">
           <NarrativeStructurePreview structureType={structureType} />
         </div>

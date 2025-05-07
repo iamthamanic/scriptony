@@ -64,11 +64,16 @@ export const useCreateProject = () => {
       });
 
       if (newProject) {
+        console.log("Project created successfully:", newProject);
+        
         // If a narrative structure was selected, generate scenes based on it
         if (data.narrativeStructure && data.narrativeStructure !== 'none' && newProject.id) {
+          console.log("Creating scenes for narrative structure:", data.narrativeStructure);
+          
           // Create default scenes based on the narrative structure
           let scenePromises: Promise<any>[] = [];
           const scenes = generateDefaultScenesForTemplate(data.narrativeStructure);
+          console.log("Generated scenes:", scenes);
 
           if (scenes && scenes.length > 0) {
             scenes.forEach((scene, index) => {
@@ -92,12 +97,15 @@ export const useCreateProject = () => {
                 characterIds: []
               };
               
+              console.log("Creating scene:", sceneData);
+              
               // Add to our list of promises
               scenePromises.push(createScene(sceneData));
             });
 
             // Wait for all scenes to be created
             const createdScenes = await Promise.all(scenePromises);
+            console.log("Created scenes:", createdScenes);
             newProject.scenes = createdScenes.filter(Boolean) as Scene[];
           }
         }
@@ -105,6 +113,7 @@ export const useCreateProject = () => {
         toast({
           title: "Project created",
           description: `${data.title} has been created successfully.`,
+          duration: 3000
         });
 
         return newProject;
@@ -115,6 +124,7 @@ export const useCreateProject = () => {
         title: "Error",
         description: "Failed to create project. Please try again.",
         variant: "destructive",
+        duration: 3000
       });
     } finally {
       setIsLoading(false);
