@@ -59,28 +59,24 @@ const ProjectsContent = ({
     );
   }
   
-  // These adapter functions convert from Character/Episode objects to the parameter formats
-  // expected by the parent component functions
+  // Diese Adapter-Funktionen konvertieren von Character/Episode-Objekten zu den Parameterformaten,
+  // die von den Funktionen der übergeordneten Komponente erwartet werden
   const handleEditCharacter = (character: Character) => {
-    const formData: EditCharacterFormData = {
+    onEditCharacter(character.id, {
       name: character.name,
       role: character.role,
       description: character.description,
-      // Fixed: Now correctly handling avatar as string | undefined
-      avatar: character.avatar || undefined
-    };
-    
-    // Call the parent function with the ID and form data separately
-    onEditCharacter(character.id, formData);
+      avatar: character.avatar // Kann string | undefined sein, muss mit EditCharacterFormData kompatibel sein
+    });
   };
 
   const handleDeleteCharacter = (character: Character) => {
-    // Pass just the ID to the parent function
+    // Übergebe nur die ID an die übergeordnete Funktion
     onDeleteCharacter(character.id);
   };
 
   const handleDeleteEpisode = (episode: Episode) => {
-    // Pass just the ID to the parent function
+    // Übergebe nur die ID an die übergeordnete Funktion
     onDeleteEpisode(episode.id);
   };
   
