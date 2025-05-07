@@ -59,14 +59,15 @@ const ProjectsContent = ({
     );
   }
   
-  // Fixed wrapper functions to match expected parameter types
+  // Korrigierte Wrapper-Funktionen mit den richtigen Parametertypen
   const handleEditCharacter = (character: Character) => {
-    onEditCharacter(character.id, {
+    const data: EditCharacterFormData = {
       name: character.name,
       role: character.role,
       description: character.description,
-      avatar: character.avatar as any // Using 'any' to bypass type error
-    });
+      avatar: character.avatar || undefined
+    };
+    onEditCharacter(character.id, data);
   };
 
   const handleDeleteCharacter = (character: Character) => {
@@ -150,3 +151,4 @@ const ProjectsContent = ({
 };
 
 export default ProjectsContent;
+
