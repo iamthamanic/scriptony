@@ -1,9 +1,10 @@
-
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "strict": true,
     "noImplicitAny": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "noEmitOnError": false,
+    "skipLibCheck": true
   }
 }
