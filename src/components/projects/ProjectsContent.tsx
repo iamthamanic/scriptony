@@ -65,9 +65,8 @@ const ProjectsContent = ({
       name: character.name,
       role: character.role,
       description: character.description,
-      // The issue is here - avatar needs to be passed as is without conversion
-      // We pass the string as is since EditCharacterFormData accepts string|File
-      avatar: character.avatar
+      // Pass avatar as is - EditCharacterFormData accepts string|File
+      avatar: character.avatar || undefined
     };
     onEditCharacter(character.id, formData);
   };
@@ -153,3 +152,4 @@ const ProjectsContent = ({
 };
 
 export default ProjectsContent;
+
