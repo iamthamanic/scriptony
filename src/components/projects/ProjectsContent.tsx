@@ -66,6 +66,7 @@ const ProjectsContent = ({
       name: character.name,
       role: character.role,
       description: character.description,
+      // Fixed: Now correctly handling avatar as string | undefined
       avatar: character.avatar || undefined
     };
     
