@@ -59,26 +59,31 @@ const ProjectsContent = ({
     );
   }
   
-  // Fix wrapper functions to correctly handle the types
+  // Helper functions that properly map between the component props and CharacterList/EpisodeList expectations
+  // These functions take the expected types from CharacterList/EpisodeList and convert them to the format
+  // expected by the parent component functions
   const handleEditCharacter = (character: Character) => {
-    // Create the form data with the correct types
+    // Create the form data object with the correct properties
     const formData: EditCharacterFormData = {
       name: character.name,
       role: character.role,
       description: character.description,
-      // Handle avatar correctly - it can be a string or undefined, but not File here
+      // Use type assertion to handle the avatar type correctly
+      // Since avatar could be string | null | undefined but not File at this point
       avatar: character.avatar as string | undefined
     };
     
-    // Now call the parent function with the correct parameters
+    // Call the parent function with the ID and form data separately
     onEditCharacter(character.id, formData);
   };
 
   const handleDeleteCharacter = (character: Character) => {
+    // Pass just the ID to the parent function
     onDeleteCharacter(character.id);
   };
 
   const handleDeleteEpisode = (episode: Episode) => {
+    // Pass just the ID to the parent function
     onDeleteEpisode(episode.id);
   };
   
