@@ -65,8 +65,8 @@ const ProjectsContent = ({
       name: character.name,
       role: character.role,
       description: character.description,
-      // Wenn avatar ein String ist, behalten wir ihn als String
-      avatar: typeof character.avatar === 'string' ? character.avatar : undefined
+      // Handle avatar correctly, it can be string or null
+      avatar: character.avatar || undefined
     };
     onEditCharacter(character.id, formData);
   };
@@ -130,10 +130,10 @@ const ProjectsContent = ({
             onEditScene={onEditScene}
             onDeleteScene={onDeleteScene}
             editingScene={null}
-            onEditCharacter={handleEditCharacter}
-            onDeleteCharacter={handleDeleteCharacter}
+            onEditCharacter={onEditCharacter}
+            onDeleteCharacter={onDeleteCharacter}
             onEditEpisode={onEditEpisode}
-            onDeleteEpisode={handleDeleteEpisode}
+            onDeleteEpisode={onDeleteEpisode}
             onNewEpisode={onNewEpisode}
             selectedEpisodeId={null}
             setSelectedEpisodeId={() => {}}
