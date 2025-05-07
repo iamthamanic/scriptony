@@ -66,8 +66,8 @@ const ProjectsContent = ({
       name: character.name,
       role: character.role,
       description: character.description,
-      // Type assertion to correctly handle avatar - it can be string|null|undefined but not File
-      avatar: character.avatar as string | undefined
+      // Handle avatar correctly with proper type handling
+      avatar: character.avatar ?? undefined
     };
     
     // Call the parent function with the ID and form data separately
@@ -135,10 +135,10 @@ const ProjectsContent = ({
             onEditScene={onEditScene}
             onDeleteScene={onDeleteScene}
             editingScene={null}
-            onEditCharacter={(character) => handleEditCharacter(character)}
-            onDeleteCharacter={(character) => handleDeleteCharacter(character)}
+            onEditCharacter={handleEditCharacter}
+            onDeleteCharacter={handleDeleteCharacter}
             onEditEpisode={onEditEpisode}
-            onDeleteEpisode={(episode) => handleDeleteEpisode(episode)}
+            onDeleteEpisode={handleDeleteEpisode}
             onNewEpisode={onNewEpisode}
             selectedEpisodeId={null}
             setSelectedEpisodeId={() => {}}
