@@ -45,9 +45,9 @@ const NarrativeStructurePreview = ({ structureType }: NarrativeStructurePreviewP
       {scenes.length > 0 && (
         <div className="space-y-3">
           <h4 className="text-sm font-medium">Example Scenes:</h4>
-          <div className="max-h-60 overflow-y-auto space-y-2">
+          <div className="max-h-80 overflow-y-auto space-y-2">
             {scenes.map((scene, index) => (
-              <Card key={index} className="p-0">
+              <Card key={index} className="p-0 border shadow-sm">
                 <CardHeader className="p-3 pb-0">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-sm">
@@ -61,7 +61,7 @@ const NarrativeStructurePreview = ({ structureType }: NarrativeStructurePreviewP
                   </div>
                 </CardHeader>
                 <CardContent className="p-3 pt-1">
-                  <CardDescription>{scene.description}</CardDescription>
+                  <CardDescription className="text-xs">{scene.description}</CardDescription>
                 </CardContent>
               </Card>
             ))}

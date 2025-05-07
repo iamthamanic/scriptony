@@ -7,6 +7,7 @@ import ProjectContent from "../ProjectContent";
 import EmptyState from "../EmptyState";
 import { Scene, Episode, Character } from "@/types";
 import { EditCharacterFormData } from "../EditCharacterModal";
+import { useToast } from "@/hooks/use-toast";
 
 interface ProjectsContentProps {
   isLoading: boolean;
@@ -47,11 +48,13 @@ const ProjectsContent = ({
   onDeleteEpisode,
   onNewProject
 }: ProjectsContentProps) => {
+  const { toast } = useToast();
+  
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
         <Loader2 className="h-12 w-12 animate-spin text-anime-purple mb-4" />
-        <p className="text-lg text-muted-foreground">Loading your projects...</p>
+        <p className="text-lg text-muted-foreground">Projekte werden geladen...</p>
       </div>
     );
   }
@@ -74,6 +77,20 @@ const ProjectsContent = ({
     onDeleteEpisode(episode.id);
   };
   
+  const handleDeleteProject = () => {
+    if (selectedProject) {
+      if (confirm(`Möchten Sie das Projekt "${selectedProject.title}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.`)) {
+        onDeleteProject();
+      }
+    } else {
+      toast({
+        title: "Fehler",
+        description: "Kein Projekt ausgewählt zum Löschen.",
+        variant: "destructive"
+      });
+    }
+  };
+  
   return (
     <>
       {projects.length > 0 && (
@@ -85,27 +102,46 @@ const ProjectsContent = ({
       )}
       
       {selectedProject ? (
-        <ProjectContent 
-          selectedProject={selectedProject}
-          isNewSceneModalOpen={false}
-          onCloseNewSceneModal={onNewScene}
-          onCreateScene={(data) => {}}
-          onEditScene={onEditScene}
-          onDeleteScene={onDeleteScene}
-          editingScene={null}
-          onEditCharacter={onEditCharacter}
-          onDeleteCharacter={onDeleteCharacter}
-          onEditEpisode={onEditEpisode}
-          onDeleteEpisode={onDeleteEpisode}
-          onNewEpisode={onNewEpisode}
-          selectedEpisodeId={null}
-          setSelectedEpisodeId={() => {}}
-        />
+        <div className="w-full">
+          <div className="mb-4 flex justify-between items-center">
+            <h2 className="text-2xl font-bold">{selectedProject.title}</h2>
+            <div className="flex gap-2">
+              <button 
+                className="px-3 py-1.5 bg-anime-purple text-white rounded hover:bg-anime-dark-purple"
+                onClick={onEditProject}
+              >
+                Bearbeiten
+              </button>
+              <button 
+                className="px-3 py-1.5 bg-red-600 text-white rounded hover:bg-red-700"
+                onClick={handleDeleteProject}
+              >
+                Löschen
+              </button>
+            </div>
+          </div>
+          <ProjectContent 
+            selectedProject={selectedProject}
+            isNewSceneModalOpen={false}
+            onCloseNewSceneModal={onNewScene}
+            onCreateScene={(data) => {}}
+            onEditScene={onEditScene}
+            onDeleteScene={onDeleteScene}
+            editingScene={null}
+            onEditCharacter={handleEditCharacter}
+            onDeleteCharacter={handleDeleteCharacter}
+            onEditEpisode={onEditEpisode}
+            onDeleteEpisode={handleDeleteEpisode}
+            onNewEpisode={onNewEpisode}
+            selectedEpisodeId={null}
+            setSelectedEpisodeId={() => {}}
+          />
+        </div>
       ) : (
         <EmptyState
-          title="No Projects Yet"
-          description="Start by creating your first anime project"
-          buttonText="Create First Project"
+          title="Keine Projekte vorhanden"
+          description="Erstellen Sie Ihr erstes Projekt"
+          buttonText="Erstes Projekt erstellen"
           onClick={onNewProject}
         />
       )}
