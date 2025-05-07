@@ -29,10 +29,10 @@ const NarrativeStructurePopover = ({
         <ScrollArea className="h-[400px] p-4">
           <div className="space-y-4">
             <h3 className="font-medium text-center sticky top-0 bg-background pt-2 pb-2 border-b">
-              {structureType === 'threeAct' ? 'Drei-Akt-Struktur' : 
-               structureType === 'heroJourney' ? 'Heldenreise' : 
-               structureType === 'saveTheCat' ? 'Save the Cat' :
-               structureType === 'sevenPointStructure' ? 'Sieben-Punkte-Struktur' : 
+              {structureType === 'three-act' ? 'Drei-Akt-Struktur' : 
+               structureType === 'hero-journey' ? 'Heldenreise' : 
+               structureType === 'save-the-cat' ? 'Save the Cat' :
+               structureType === 'seven-point' ? 'Sieben-Punkte-Struktur' : 
                'Narrative Struktur'}
             </h3>
             <NarrativeStructurePreview structureType={structureType} />
@@ -44,3 +44,4 @@ const NarrativeStructurePopover = ({
 };
 
 export default NarrativeStructurePopover;
+
