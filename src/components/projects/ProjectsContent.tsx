@@ -66,8 +66,8 @@ const ProjectsContent = ({
       name: character.name,
       role: character.role,
       description: character.description,
-      // Avatar can be string | File | undefined in EditCharacterFormData
-      avatar: character.avatar as string | undefined
+      // Only assign the avatar if it's a string, otherwise leave it undefined
+      avatar: typeof character.avatar === 'string' ? character.avatar : undefined
     };
     // Call the parent component function with the correct parameter types
     onEditCharacter(character.id, formData);
