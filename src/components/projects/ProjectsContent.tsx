@@ -135,10 +135,10 @@ const ProjectsContent = ({
             onEditScene={onEditScene}
             onDeleteScene={onDeleteScene}
             editingScene={null}
-            onEditCharacter={handleEditCharacter}
-            onDeleteCharacter={handleDeleteCharacter}
+            onEditCharacter={(character) => handleEditCharacter(character)}
+            onDeleteCharacter={(character) => handleDeleteCharacter(character)}
             onEditEpisode={onEditEpisode}
-            onDeleteEpisode={handleDeleteEpisode}
+            onDeleteEpisode={(episode) => handleDeleteEpisode(episode)}
             onNewEpisode={onNewEpisode}
             selectedEpisodeId={null}
             setSelectedEpisodeId={() => {}}
