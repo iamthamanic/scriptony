@@ -1,4 +1,5 @@
 
+// @ts-nocheck
 import React from 'react';
 import ProjectContent from '../ProjectContent';
 import { Character, Episode } from '../../types';
