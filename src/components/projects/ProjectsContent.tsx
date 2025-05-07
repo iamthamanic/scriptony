@@ -59,15 +59,16 @@ const ProjectsContent = ({
     );
   }
   
-  // Korrigierte Wrapper-Funktionen mit den richtigen Parametertypen
+  // Diese Wrapper-Funktionen nehmen Character-Objekte und extrahieren die IDs und Daten
   const handleEditCharacter = (character: Character) => {
-    const data: EditCharacterFormData = {
+    const formData: EditCharacterFormData = {
       name: character.name,
       role: character.role,
       description: character.description,
-      avatar: character.avatar || undefined
+      // Wenn avatar ein String ist, behalten wir ihn als String
+      avatar: typeof character.avatar === 'string' ? character.avatar : undefined
     };
-    onEditCharacter(character.id, data);
+    onEditCharacter(character.id, formData);
   };
 
   const handleDeleteCharacter = (character: Character) => {
@@ -151,4 +152,3 @@ const ProjectsContent = ({
 };
 
 export default ProjectsContent;
-
