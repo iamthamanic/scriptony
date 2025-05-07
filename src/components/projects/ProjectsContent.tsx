@@ -59,7 +59,7 @@ const ProjectsContent = ({
     );
   }
   
-  // Wrapper functions to handle type conversions
+  // Fixed wrapper functions to match expected parameter types
   const handleEditCharacter = (character: Character) => {
     onEditCharacter(character.id, {
       name: character.name,
