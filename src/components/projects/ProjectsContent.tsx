@@ -66,8 +66,7 @@ const ProjectsContent = ({
       name: character.name,
       role: character.role,
       description: character.description,
-      // Handle avatar correctly - use the string directly if it exists
-      avatar: character.avatar && typeof character.avatar === 'string' ? character.avatar : undefined
+      avatar: character.avatar || undefined
     };
     
     // Call the parent function with the ID and form data separately
