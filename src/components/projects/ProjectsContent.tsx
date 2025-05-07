@@ -59,30 +59,26 @@ const ProjectsContent = ({
     );
   }
   
-  // Create wrapper functions that match the expected function signatures
+  // Fix wrapper functions to correctly handle the types
   const handleEditCharacter = (character: Character) => {
-    // Extract needed data from the character object to create EditCharacterFormData
-    // Note: avatar must be a string or undefined for EditCharacterFormData
+    // Create the form data with the correct types
     const formData: EditCharacterFormData = {
       name: character.name,
       role: character.role,
       description: character.description,
-      avatar: character.avatar // This is already string | null | undefined
+      // Handle avatar correctly - it can be a string or undefined, but not File here
+      avatar: character.avatar as string | undefined
     };
     
-    // Call the parent component function with the ID and form data
+    // Now call the parent function with the correct parameters
     onEditCharacter(character.id, formData);
   };
 
-  // Wrapper for delete character function
   const handleDeleteCharacter = (character: Character) => {
-    // Extract just the ID for the parent function
     onDeleteCharacter(character.id);
   };
 
-  // Wrapper for delete episode function
   const handleDeleteEpisode = (episode: Episode) => {
-    // Extract just the ID for the parent function
     onDeleteEpisode(episode.id);
   };
   
