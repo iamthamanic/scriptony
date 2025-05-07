@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "tsc --project tsconfig.override.json && vite",
+    "build": "tsc --project tsconfig.override.json && vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -93,3 +93,4 @@
     "vite": "^5.4.1"
   }
 }
+
