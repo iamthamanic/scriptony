@@ -59,14 +59,15 @@ const ProjectsContent = ({
     );
   }
   
-  // Diese Wrapper-Funktionen nehmen Character-Objekte und extrahieren die IDs und Daten
+  // This wrapper function extracts ID and data from Character objects
   const handleEditCharacter = (character: Character) => {
     const formData: EditCharacterFormData = {
       name: character.name,
       role: character.role,
       description: character.description,
-      // Handle avatar correctly, it can be string or null
-      avatar: character.avatar || undefined
+      // The issue is here - avatar needs to be passed as is without conversion
+      // We pass the string as is since EditCharacterFormData accepts string|File
+      avatar: character.avatar
     };
     onEditCharacter(character.id, formData);
   };
@@ -130,10 +131,10 @@ const ProjectsContent = ({
             onEditScene={onEditScene}
             onDeleteScene={onDeleteScene}
             editingScene={null}
-            onEditCharacter={onEditCharacter}
-            onDeleteCharacter={onDeleteCharacter}
+            onEditCharacter={handleEditCharacter}
+            onDeleteCharacter={handleDeleteCharacter}
             onEditEpisode={onEditEpisode}
-            onDeleteEpisode={onDeleteEpisode}
+            onDeleteEpisode={handleDeleteEpisode}
             onNewEpisode={onNewEpisode}
             selectedEpisodeId={null}
             setSelectedEpisodeId={() => {}}
