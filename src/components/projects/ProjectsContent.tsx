@@ -67,7 +67,7 @@ const ProjectsContent = ({
       role: character.role,
       description: character.description,
       // Type assertion to correctly handle avatar - it can be string|null|undefined but not File
-      avatar: character.avatar as any // Using 'any' to bypass strict type checking
+      avatar: character.avatar as string | undefined
     };
     
     // Call the parent function with the ID and form data separately
