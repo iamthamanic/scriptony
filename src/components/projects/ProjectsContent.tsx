@@ -66,8 +66,8 @@ const ProjectsContent = ({
       name: character.name,
       role: character.role,
       description: character.description,
-      // Pass the avatar as is - can be string or undefined
-      avatar: character.avatar as string | undefined
+      // Use the proper type for avatar (string | undefined)
+      avatar: character.avatar || undefined
     };
     
     // Call the parent component function with the correct parameter types
