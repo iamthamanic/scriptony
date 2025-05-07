@@ -3,13 +3,12 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "scripts": {
-    "dev": "tsc --project tsconfig.override.json && vite",
-    "build": "tsc --project tsconfig.override.json && vite build",
-    "build:dev": "vite build --mode development",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
+   "scripts": {
+  "build": "vite build",
+  "dev":   "vite",
+  "build": "tsc --project tsconfig.override.json && vite build",
+  "dev":   "tsc --project tsconfig.override.json && vite"
+ }
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
     "@hookform/resolvers": "^3.9.0",
