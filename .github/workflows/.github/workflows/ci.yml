@@ -1,0 +1,45 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint check
+        run: npm run lint
+
+      - name: Format check
+        run: npm run format:check
+
+      - name: TypeScript check
+        run: npx tsc --noEmit --project tsconfig.override.json
+
+      - name: Run tests with coverage
+        run: npm test -- --coverage --check
+
+      - name: Security audit
+        run: npm audit
+
+      - name: Coverage gate
+        run: |
+          COVERAGE=$(jq '.total.statements.pct' coverage/coverage-summary.json)
+          if (( $(echo "$COVERAGE < 80" | bc -l) )); then
+            echo "Coverage ($COVERAGE%) < 80% — failing."
+            exit 1
+          fi
