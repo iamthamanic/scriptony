@@ -66,8 +66,8 @@ const ProjectsContent = ({
       name: character.name,
       role: character.role,
       description: character.description,
-      // Handle the avatar properly - it can be string | File
-      avatar: character.avatar || ""
+      // Pass the avatar as is - can be string or undefined
+      avatar: character.avatar as string | undefined
     };
     
     // Call the parent component function with the correct parameter types
