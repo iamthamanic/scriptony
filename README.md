@@ -1,7 +1,4 @@
-Test2
-testy
-tt
-ss yyyy
+# TEST build trigger
 # Welcome to your Lovable project
 
 ## Project info
