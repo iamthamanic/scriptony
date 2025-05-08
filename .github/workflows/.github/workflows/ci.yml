@@ -9,7 +9,7 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch: 
+  workflow_dispatch: {}
 
 jobs:
   build:
@@ -28,4 +28,5 @@ jobs:
 
       - name: Run build
         run: npm run build
+
         
