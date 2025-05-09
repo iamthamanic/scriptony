@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
 import { Clock } from 'lucide-react';
@@ -21,20 +21,31 @@ const Home = () => {
   // Get recent worlds
   const { 
     worlds, 
-    isLoading: worldsLoading, 
+    isLoading: worldsLoading,
+    hasLoadedOnce, 
     loadWorlds 
   } = useWorldsState(user?.id);
   
-  // Ensure worlds are loaded when component mounts
-  useEffect(() => {
+  // Memoize the loadWorlds function to prevent unnecessary rerenders
+  const debouncedLoadWorlds = useCallback(() => {
     console.log("Home component mount, calling loadWorlds");
     loadWorlds();
   }, [loadWorlds]);
+  
+  // Ensure worlds are loaded when component mounts, but only once
+  useEffect(() => {
+    if (user?.id) {
+      debouncedLoadWorlds();
+    }
+  }, [user?.id, debouncedLoadWorlds]);
 
   const recentProjects = projects.slice(0, 3);
   const recentWorlds = worlds.slice(0, 3);
 
-  console.log("Home render - worldsLoading:", worldsLoading, "worlds count:", worlds.length);
+  console.log("Home render - worldsLoading:", worldsLoading, "worlds count:", worlds.length, "hasLoadedOnce:", hasLoadedOnce);
+
+  // Show a loading state only on initial load
+  const showWorldsLoading = worldsLoading && !hasLoadedOnce;
 
   return (
     <div className="py-8 px-4 md:px-6 w-full space-y-8 animate-fade-in">
@@ -94,7 +105,7 @@ const Home = () => {
               </Button>
             </div>
             
-            {worldsLoading ? (
+            {showWorldsLoading ? (
               <p className="text-muted-foreground">Welten werden geladen...</p>
             ) : worlds.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

@@ -8,15 +8,18 @@ export function useWorldLoading(
   setWorlds: (worlds: any[]) => void,
   selectedWorldId: string | null,
   setSelectedWorldId: (id: string | null) => void,
-  setIsLoading: (loading: boolean) => void
+  setIsLoading: (loading: boolean) => void,
+  hasLoadedOnce: boolean = false,
+  setHasLoadedOnce: (loaded: boolean) => void = () => {}
 ) {
   const { toast } = useToast();
   const lastOperationTimestampRef = useRef<number | null>(null);
   const deleteCompletedAtRef = useRef<number | null>(null);
+  const loadingInProgressRef = useRef<boolean>(false);
   
   // Load worlds with cooldown protection
   const loadWorlds = async () => {
-    console.log("loadWorlds called, userId:", userId, "isLoading being set to true");
+    console.log("loadWorlds called, userId:", userId, "hasLoadedOnce:", hasLoadedOnce);
     
     // Prevent loading immediately after deletion to avoid flicker
     if (deleteCompletedAtRef.current && (Date.now() - deleteCompletedAtRef.current < 1500)) {
@@ -30,10 +33,17 @@ export function useWorldLoading(
       console.log("Operation rate limited");
       return;
     }
+    
+    // Prevent multiple concurrent load operations
+    if (loadingInProgressRef.current) {
+      console.log("Loading already in progress, skipping");
+      return;
+    }
+    
     lastOperationTimestampRef.current = now;
     
     if (!userId) {
-      console.log("No userId provided, setting worlds to empty array and isLoading to false");
+      console.log("No userId provided, setting worlds to empty array");
       setWorlds([]);
       setSelectedWorldId(null);
       setIsLoading(false);
@@ -41,13 +51,23 @@ export function useWorldLoading(
     }
     
     try {
-      setIsLoading(true);
+      // Only set loading to true if we haven't loaded data before
+      // This prevents the flash on subsequent loads
+      if (!hasLoadedOnce) {
+        setIsLoading(true);
+      }
+      
+      loadingInProgressRef.current = true;
       const worldsData = await fetchUserWorlds();
       console.log("Worlds fetched successfully:", worldsData.length);
       
-      // Add small delay before updating state to ensure smooth UI updates
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // Small delay only for first load to ensure UI is ready
+      if (!hasLoadedOnce) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      
       setWorlds(worldsData);
+      setHasLoadedOnce(true);
       
       if (selectedWorldId && worldsData.some(w => w.id === selectedWorldId)) {
         // Keep selected world if it exists in the loaded worlds
@@ -66,8 +86,8 @@ export function useWorldLoading(
       });
     } finally {
       // Always ensure loading state is cleared
-      console.log("Setting isLoading to false in finally block");
       setIsLoading(false);
+      loadingInProgressRef.current = false;
     }
   };
 
