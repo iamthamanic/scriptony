@@ -24,16 +24,7 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
   const [isDeleting, setIsDeleting] = useState(false);
   const [deletionError, setDeletionError] = useState<string | null>(null);
   
-  // Dialog'u yalnızca işlem devam etmiyorsa kapatabilme
-  const handleCloseDialog = useCallback(() => {
-    // Silme işlemi devam ediyorsa kapatmaya izin verme
-    if (!isDeleting) {
-      setDeletionError(null);
-      onClose();
-    }
-  }, [isDeleting, onClose]);
-  
-  // İletişim kutusu kapandığında silme durumunu sıfırla
+  // Reset state when dialog opens/closes
   useEffect(() => {
     if (!isOpen) {
       setIsDeleting(false);
@@ -41,48 +32,50 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
     }
   }, [isOpen]);
   
-  // Silme işlemini yönet ve kullanıcıya bildirmeden önce bitirme
   const handleDelete = useCallback(async () => {
-    if (isDeleting) return; // Çoklu tıklamaları engelle
+    if (isDeleting) return; // Prevent multiple clicks
     
     setIsDeleting(true);
     setDeletionError(null);
     
     try {
-      console.log(`"${worldName}" dünyasının silinme işlemi başlıyor...`);
-      
-      // Silme işlemini tamamla - bu asenkron
+      console.log(`Starting deletion of world "${worldName}"...`);
       await onDelete();
+      console.log("Deletion completed successfully");
       
-      // İşlem başarılı olduğunda state'i temizle ve dialog'u kapat
-      // Not: Dialog onDelete işleminden sonra kapatılır
-      setIsDeleting(false);
-      handleCloseDialog();
+      // The parent component should handle dialog closing after onDelete succeeds
+      // But we'll make sure it closes if there's any issue
+      setTimeout(() => {
+        if (isOpen) {
+          onClose();
+        }
+      }, 100);
       
     } catch (error) {
-      console.error("Dünya silinirken hata:", error);
+      console.error("Error during world deletion:", error);
       
-      // Hata mesajını kullanıcıya göster
-      let errorMessage = 'Dünya silinirken bir hata oluştu.';
-      if (error instanceof Error) {
-        errorMessage = `Hata: ${error.message}`;
-      }
+      const errorMessage = error instanceof Error 
+        ? `Error: ${error.message}` 
+        : 'An unexpected error occurred during deletion';
+        
       setDeletionError(errorMessage);
-      
-      // Silme durumunu sıfırla
       setIsDeleting(false);
     }
-  }, [isDeleting, onDelete, worldName, handleCloseDialog]);
+  }, [isDeleting, onDelete, worldName, onClose, isOpen]);
 
-  // Dialog kapalıysa null döndür
-  if (!isOpen) {
-    return null;
-  }
+  const handleClose = useCallback(() => {
+    // Only allow closing if not in progress
+    if (!isDeleting) {
+      onClose();
+    }
+  }, [isDeleting, onClose]);
+
+  if (!isOpen) return null;
 
   return (
     <AlertDialog open={isOpen} onOpenChange={(open) => {
       if (!open && !isDeleting) {
-        handleCloseDialog();
+        handleClose();
       }
     }}>
       <AlertDialogContent className="max-w-md">
