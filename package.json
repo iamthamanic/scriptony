@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "lint": "eslint \"src/**/*.{ts,tsx,js}\"",
+    "lint": "eslint . --ext .ts,.tsx,.js",
     "typecheck": "tsc --noEmit",
     "test": "jest --passWithNoTests",
     "test:ci": "jest --ci --coverage",
