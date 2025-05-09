@@ -26,7 +26,7 @@ export function useWorldsOperations(
   setHasLoadedOnce: (loaded: boolean) => void = () => {}
 ) {
   // Use our refactored hooks
-  const { loadWorlds } = useWorldLoading(
+  const { loadWorlds, setDeleteCompletedAt } = useWorldLoading(
     userId,
     setWorlds,
     selectedWorldId, 
@@ -71,11 +71,10 @@ export function useWorldsOperations(
     try {
       const result = await handleDeleteWorld(selectedWorld);
       
-      // Silme işlemi başarılı olduysa dialog'u kapat
+      // Mark deletion completion time for reload throttling
       if (deletionState === 'completed') {
-        setTimeout(() => {
-          setIsDeleteWorldDialogOpen(false);
-        }, 100);
+        console.log('Setting deletion completed timestamp');
+        setDeleteCompletedAt(Date.now());
       }
       
       return result;

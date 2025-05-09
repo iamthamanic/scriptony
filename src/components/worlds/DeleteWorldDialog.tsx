@@ -33,7 +33,10 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
   }, [isOpen]);
   
   const handleDelete = useCallback(async () => {
-    if (isDeleting) return; // Prevent multiple clicks
+    if (isDeleting) {
+      console.log('Deletion already in progress, ignoring click');
+      return;
+    }
     
     setIsDeleting(true);
     setDeletionError(null);
@@ -43,14 +46,8 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
       await onDelete();
       console.log("Deletion completed successfully");
       
-      // The parent component should handle dialog closing after onDelete succeeds
-      // But we'll make sure it closes if there's any issue
-      setTimeout(() => {
-        if (isOpen) {
-          onClose();
-        }
-      }, 100);
-      
+      // Do not close the dialog here, let the parent component handle it
+      // based on the deletion state from useWorldDeletion hook
     } catch (error) {
       console.error("Error during world deletion:", error);
       
@@ -59,14 +56,17 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
         : 'An unexpected error occurred during deletion';
         
       setDeletionError(errorMessage);
+    } finally {
       setIsDeleting(false);
     }
-  }, [isDeleting, onDelete, worldName, onClose, isOpen]);
+  }, [isDeleting, onDelete, worldName]);
 
-  const handleClose = useCallback(() => {
+  const handleCloseDialog = useCallback(() => {
     // Only allow closing if not in progress
     if (!isDeleting) {
       onClose();
+    } else {
+      console.log('Cannot close dialog while deletion is in progress');
     }
   }, [isDeleting, onClose]);
 
@@ -75,7 +75,7 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
   return (
     <AlertDialog open={isOpen} onOpenChange={(open) => {
       if (!open && !isDeleting) {
-        handleClose();
+        handleCloseDialog();
       }
     }}>
       <AlertDialogContent className="max-w-md">
