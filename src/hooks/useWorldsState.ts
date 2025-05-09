@@ -18,7 +18,9 @@ export function useWorldsState(userId: string | undefined) {
     core.setIsEditWorldModalOpen,
     core.setIsDeleteWorldDialogOpen,
     core.setIsCategoryModalOpen,
-    core.setSelectedCategory
+    core.setSelectedCategory,
+    core.hasLoadedOnce,
+    core.setHasLoadedOnce
   );
   
   const categoryOps = useCategoryOperations(

@@ -7,6 +7,7 @@ export function useWorldsCore(userId: string | undefined) {
   const [worlds, setWorlds] = useState<World[]>([]);
   const [selectedWorldId, setSelectedWorldId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(!!userId);
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
 
   // Modal states
   const [isNewWorldModalOpen, setIsNewWorldModalOpen] = useState(false);
@@ -24,6 +25,8 @@ export function useWorldsCore(userId: string | undefined) {
     selectedWorldId,
     isLoading,
     setIsLoading,
+    hasLoadedOnce,
+    setHasLoadedOnce,
     isNewWorldModalOpen,
     isEditWorldModalOpen,
     isDeleteWorldDialogOpen,

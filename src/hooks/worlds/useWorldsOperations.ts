@@ -21,7 +21,9 @@ export function useWorldsOperations(
   setIsEditWorldModalOpen: (open: boolean) => void,
   setIsDeleteWorldDialogOpen: (open: boolean) => void,
   setIsCategoryModalOpen: (open: boolean) => void,
-  setSelectedCategory: (category: any) => void
+  setSelectedCategory: (category: any) => void,
+  hasLoadedOnce: boolean = false,
+  setHasLoadedOnce: (loaded: boolean) => void = () => {}
 ) {
   // Use our refactored hooks
   const { loadWorlds } = useWorldLoading(
@@ -29,7 +31,9 @@ export function useWorldsOperations(
     setWorlds,
     selectedWorldId, 
     setSelectedWorldId,
-    setIsLoading
+    setIsLoading,
+    hasLoadedOnce,
+    setHasLoadedOnce
   );
 
   const { handleCreateWorld } = useWorldCreation(
@@ -65,8 +69,6 @@ export function useWorldsOperations(
   
   const wrappedHandleDeleteWorld = async () => {
     try {
-      // Silme işlemi başarıyla tamamlandığında dialog'u kapatma işlemi
-      // DeleteWorldDialog bileşeninde gerçekleştirilecek
       const result = await handleDeleteWorld(selectedWorld);
       
       // Silme işlemi başarılı olduysa dialog'u kapat
@@ -79,7 +81,6 @@ export function useWorldsOperations(
       return result;
     } catch (error) {
       console.error("Wrapped delete world error:", error);
-      // Hata durumunda dialog'u kapatma - bu işlem bileşen tarafında yönetiliyor
       return Promise.reject(error);
     }
   };
