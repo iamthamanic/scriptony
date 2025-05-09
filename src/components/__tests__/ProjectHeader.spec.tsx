@@ -2,6 +2,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import ProjectHeader from '../ProjectHeader';
+import { Project, NarrativeStructureType } from '@/types';
 
 // Mock der Komponenten-Props
 const mockProps = {
@@ -11,13 +12,16 @@ const mockProps = {
     type: 'movie',
     logline: 'Test logline',
     user_id: 'user123',
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
+    createdAt: new Date(),
+    updatedAt: new Date(),
     genres: [],
     scenes: [],
     characters: [],
-    episodes: []
-  },
+    episodes: [],
+    duration: 120,
+    inspirations: [],
+    narrativeStructure: 'three-act' as NarrativeStructureType,
+  } as Project,
   onNewScene: jest.fn(),
   onEditProject: jest.fn(),
   onNewCharacter: jest.fn(),
