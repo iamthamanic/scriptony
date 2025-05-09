@@ -2,7 +2,7 @@
 import React, { useState, useRef } from "react";
 import { useProjectState } from "../hooks/project/useProjectState";
 import { useAuth } from "@/contexts/AuthContext";
-import { Scene, Episode, EditProjectFormData, NewCharacterFormData, Character } from "../types";
+import { Scene, Episode, Character } from "../types";
 import ScriptAnalysisResults from "@/components/script-analysis/ScriptAnalysisResults";
 import ProjectModals from "../components/ProjectModals";
 import ProjectPageHeader from "@/components/projects/ProjectPageHeader";
@@ -41,6 +41,8 @@ const Index = () => {
   
   // File upload reference
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  console.log("Index rendering - projects count:", projects.length, "isLoading:", isLoading);
   
   // Script analysis 
   const {
