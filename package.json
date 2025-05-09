@@ -3,11 +3,17 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "scripts": {
-    "build": "tsc --project tsconfig.override.json && vite build",
-    "build:dev": "vite build --mode development",
-    "dev": "tsc --project tsconfig.override.json && vite"
-  },
+ "scripts": {
+  "lint": "eslint . --ext .ts,.tsx",
+  "typecheck": "tsc --noEmit",
+  "test": "jest --passWithNoTests",
+  "test:ci": "jest --ci --coverage",
+  "test:watch": "jest --watch",
+  "e2e": "cypress run",
+  "build": "tsc --project tsconfig.override.json && vite build",
+  "build:dev": "vite build --mode development",
+  "dev": "tsc --project tsconfig.override.json && vite"
+},
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
     "@hookform/resolvers": "^3.9.0",
