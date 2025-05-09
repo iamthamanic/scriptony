@@ -61,12 +61,30 @@ const Worldbuilding = () => {
   // Dialog closing handler - prevent closing during deletion
   const handleCloseDeleteDialog = useCallback(() => {
     // Only allow dialog closing if deletion is not in progress
-    if (deletionState !== 'deleting' && !isLoading) {
+    if (deletionState !== 'deleting') {
+      setIsDeleteWorldDialogOpen(false);
+    } else {
+      console.log("Cannot close dialog during deletion");
+    }
+  }, [deletionState, setIsDeleteWorldDialogOpen]);
+
+  // Lifecycle effect to close dialog when deletion completes
+  useEffect(() => {
+    if (deletionState === 'completed') {
+      console.log("Deletion completed, closing dialog");
       setIsDeleteWorldDialogOpen(false);
     }
-  }, [deletionState, isLoading, setIsDeleteWorldDialogOpen]);
+  }, [deletionState, setIsDeleteWorldDialogOpen]);
 
-  console.log("Worldbuilding render - isLoading:", isLoading, "worlds count:", worlds.length);
+  // Safety check: if loading stopped but dialog is still open, allow closing
+  useEffect(() => {
+    if (!isLoading && isDeleteWorldDialogOpen && deletionState === 'completed') {
+      console.log("Safety check: closing delete dialog after loading finished");
+      setIsDeleteWorldDialogOpen(false);
+    }
+  }, [isLoading, isDeleteWorldDialogOpen, deletionState, setIsDeleteWorldDialogOpen]);
+
+  console.log("Worldbuilding render - isLoading:", isLoading, "worlds count:", worlds.length, "deletionState:", deletionState);
 
   return (
     <div className="py-6 px-4 md:px-6 w-full">

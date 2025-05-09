@@ -6,7 +6,7 @@ import { isDevelopmentMode } from "@/utils/devMode";
  * Creates a timeout Promise with proper cleanup to prevent memory leaks
  * Using a shorter timeout to prevent long-hanging operations
  */
-export const createTimeout = (timeoutMs: number = 15000): { promise: Promise<never>, cancel: () => void } => {
+export const createTimeout = (timeoutMs: number = 10000): { promise: Promise<never>, cancel: () => void } => {
   let timeoutId: number;
   
   const promise = new Promise<never>((_, reject) => {
@@ -33,8 +33,8 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
     console.log('Development mode detected for world deletion');
   }
   
-  // Set a shorter timeout to prevent indefinite hanging (15 seconds)
-  const { promise: timeoutPromise, cancel: cancelTimeout } = createTimeout(15000);
+  // Set a shorter timeout to prevent indefinite hanging (10 seconds)
+  const { promise: timeoutPromise, cancel: cancelTimeout } = createTimeout(10000);
   
   // Flag to track operation completion for cleanup purposes
   let operationCompleted = false;
@@ -54,6 +54,8 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
     
     if (!worldCheck) {
       console.log('World not found in database, may already be deleted');
+      // Still consider this a success since the end goal (world not in DB) is achieved
+      operationCompleted = true;
       return;
     }
     
@@ -69,7 +71,7 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
       // Continue with deletion even if this fails
     }
     
-    // Delete categories 
+    // Delete categories first - this is important
     console.log('Deleting categories for world:', worldId);
     const { error: catError } = await customSupabase
       .from('world_categories')
@@ -77,9 +79,12 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
       .eq('world_id', worldId);
       
     if (catError) {
-      console.warn(`Failed to delete world categories: ${catError.message}`);
-      // Continue with deletion even if this fails
+      console.error(`Failed to delete world categories: ${catError.message}`);
+      throw new Error(`Failed to delete world categories: ${catError.message}`);
     }
+    
+    // Short delay to ensure categories are fully deleted before deleting world
+    await new Promise(resolve => setTimeout(resolve, 100));
     
     // Delete the world itself
     console.log('Now deleting world itself');
@@ -98,7 +103,7 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
     operationCompleted = true;
     
     // Add a small delay before resolving to ensure all state updates have time to propagate
-    await new Promise(resolve => setTimeout(resolve, 300));
+    await new Promise(resolve => setTimeout(resolve, 200));
     
   } catch (error) {
     console.error('Error in delete world process:', error);
