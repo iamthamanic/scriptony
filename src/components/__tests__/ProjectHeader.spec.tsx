@@ -1,11 +1,11 @@
 
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import ProjectHeader from '../projects/ProjectHeader';
+import ProjectHeader from '../ProjectHeader';
 
 // Mock der Komponenten-Props
 const mockProps = {
-  selectedProject: {
+  project: {
     id: '1',
     title: 'Test Project',
     type: 'movie',
@@ -18,10 +18,10 @@ const mockProps = {
     characters: [],
     episodes: []
   },
-  onEditProject: jest.fn(),
-  onDeleteProject: jest.fn(),
   onNewScene: jest.fn(),
+  onEditProject: jest.fn(),
   onNewCharacter: jest.fn(),
+  onDeleteProject: jest.fn(),
   onNewEpisode: jest.fn(),
 };
 
