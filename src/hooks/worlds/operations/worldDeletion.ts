@@ -83,7 +83,8 @@ export function useWorldDeletion(
         
         // Reset deletion state after a small delay
         setTimeout(() => {
-          if (deletionState !== 'deleting') {
+          // Fix the TypeScript error - check if state is NOT idle, not checking against 'deleting' specifically
+          if (deletionState !== 'idle') {
             setDeletionState('idle');
           }
         }, 250);

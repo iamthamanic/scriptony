@@ -76,14 +76,6 @@ const Worldbuilding = () => {
     }
   }, [deletionState, setIsDeleteWorldDialogOpen]);
 
-  // Safety check: if loading stopped but dialog is still open, allow closing
-  useEffect(() => {
-    if (!isLoading && isDeleteWorldDialogOpen && deletionState === 'completed') {
-      console.log("Safety check: closing delete dialog after loading finished");
-      setIsDeleteWorldDialogOpen(false);
-    }
-  }, [isLoading, isDeleteWorldDialogOpen, deletionState, setIsDeleteWorldDialogOpen]);
-
   console.log("Worldbuilding render - isLoading:", isLoading, "worlds count:", worlds.length, "deletionState:", deletionState);
 
   return (
