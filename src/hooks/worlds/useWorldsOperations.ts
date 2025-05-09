@@ -69,12 +69,16 @@ export function useWorldsOperations(
   
   const wrappedHandleDeleteWorld = async () => {
     try {
+      // Close the dialog when delete operation completes
       const result = await handleDeleteWorld(selectedWorld);
       
       // Mark deletion completion time for reload throttling
       if (deletionState === 'completed') {
         console.log('Setting deletion completed timestamp');
         setDeleteCompletedAt(Date.now());
+        
+        // Close the delete dialog when deletion completes
+        setIsDeleteWorldDialogOpen(false);
       }
       
       return result;

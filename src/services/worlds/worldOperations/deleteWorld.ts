@@ -4,9 +4,8 @@ import { isDevelopmentMode } from "@/utils/devMode";
 
 /**
  * Creates a timeout Promise with proper cleanup to prevent memory leaks
- * Using a shorter timeout to prevent long-hanging operations
  */
-export const createTimeout = (timeoutMs: number = 10000): { promise: Promise<never>, cancel: () => void } => {
+export const createTimeout = (timeoutMs: number = 15000): { promise: Promise<never>, cancel: () => void } => {
   let timeoutId: number;
   
   const promise = new Promise<never>((_, reject) => {
@@ -22,7 +21,7 @@ export const createTimeout = (timeoutMs: number = 10000): { promise: Promise<nev
 };
 
 /**
- * Delete a world and all its associated data with optimized error handling and fewer retries
+ * Delete a world and all its associated data with improved error handling
  */
 export const deleteWorld = async (worldId: string): Promise<void> => {
   console.log('Starting world deletion process for world:', worldId);
@@ -33,8 +32,8 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
     console.log('Development mode detected for world deletion');
   }
   
-  // Set a shorter timeout to prevent indefinite hanging (10 seconds)
-  const { promise: timeoutPromise, cancel: cancelTimeout } = createTimeout(10000);
+  // Set a timeout to prevent indefinite hanging (15 seconds)
+  const { promise: timeoutPromise, cancel: cancelTimeout } = createTimeout(15000);
   
   // Flag to track operation completion for cleanup purposes
   let operationCompleted = false;
@@ -84,7 +83,7 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
     }
     
     // Short delay to ensure categories are fully deleted before deleting world
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise(resolve => setTimeout(resolve, 200));
     
     // Delete the world itself
     console.log('Now deleting world itself');

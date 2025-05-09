@@ -45,9 +45,6 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
       console.log(`Starting deletion of world "${worldName}"...`);
       await onDelete();
       console.log("Deletion completed successfully");
-      
-      // Do not close the dialog here, let the parent component handle it
-      // based on the deletion state from useWorldDeletion hook
     } catch (error) {
       console.error("Error during world deletion:", error);
       
@@ -56,8 +53,7 @@ const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorld
         : 'An unexpected error occurred during deletion';
         
       setDeletionError(errorMessage);
-    } finally {
-      setIsDeleting(false);
+      setIsDeleting(false); // Reset deleting state on error
     }
   }, [isDeleting, onDelete, worldName]);
 
