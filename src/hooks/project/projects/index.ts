@@ -11,7 +11,8 @@ export const useProjects = () => {
     selectedProjectId,
     selectedProject,
     setSelectedProjectId,
-    isLoading
+    isLoading,
+    hasLoadedOnce
   } = useProjectData();
 
   const { handleCreateProject, isLoading: isCreating } = useCreateProject();
@@ -31,7 +32,8 @@ export const useProjects = () => {
     handleCreateProject,
     handleEditProject,
     handleDeleteProject,
-    isLoading: isLoading || isCreating
+    isLoading: isLoading || isCreating,
+    hasLoadedOnce
   };
 };
 

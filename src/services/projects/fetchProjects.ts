@@ -5,12 +5,18 @@ import { handleApiError } from "../utils";
 
 export const fetchUserProjects = async (): Promise<Project[]> => {
   try {
+    console.log("Fetching projects from Supabase");
     const { data: projectsData, error } = await customSupabase
       .from('projects')
       .select('*')
       .order('updated_at', { ascending: false });
       
-    if (error) throw error;
+    if (error) {
+      console.error("Error fetching projects:", error);
+      throw error;
+    }
+    
+    console.log("Projects fetched successfully:", projectsData?.length || 0);
     
     // Convert the database projects to the application Project type
     return projectsData.map(dbProject => ({
@@ -20,7 +26,7 @@ export const fetchUserProjects = async (): Promise<Project[]> => {
       videoFormat: dbProject.video_format as VideoFormat | undefined,
       logline: dbProject.logline || '',
       genres: (dbProject.genres || []) as Genre[],
-      duration: parseInt(dbProject.duration),
+      duration: parseInt(dbProject.duration || '0'),
       inspirations: dbProject.inspirations ? dbProject.inspirations.split(',').filter(Boolean) : [],
       coverImage: dbProject.cover_image_url || null,
       scenes: [],  // We'll fetch scenes separately
@@ -32,6 +38,7 @@ export const fetchUserProjects = async (): Promise<Project[]> => {
     }));
     
   } catch (error) {
+    console.error("Error in fetchUserProjects:", error);
     return handleApiError(error) ?? [];
   }
 };
