@@ -1,4 +1,3 @@
-
 /**
  * StorageProvider interface - defines the contract for all storage implementations
  * 
@@ -163,18 +162,9 @@ export abstract class AbstractStorageProvider implements StorageProvider {
       }
     }, intervalMs);
     
-    // Setup blur event handler with type casting for TypeScript compatibility
-    const handleWindowBlurCasted = (event: Event) => {
-      this.handleWindowBlur(getContentFn, getPathFn);
-    };
-    
-    // Setup beforeunload event handler with type casting for TypeScript compatibility
-    const handleBeforeUnloadCasted = (event: Event) => {
-      this.handleBeforeUnload(getContentFn, getPathFn);
-    };
-    
-    window.addEventListener('blur', handleWindowBlurCasted);
-    window.addEventListener('beforeunload', handleBeforeUnloadCasted);
+    // Fix: Properly type the event listeners with correct casting
+    window.addEventListener('blur', () => this.handleWindowBlur(getContentFn, getPathFn) as unknown as EventListener);
+    window.addEventListener('beforeunload', () => this.handleBeforeUnload(getContentFn, getPathFn) as unknown as EventListener);
   }
   
   /**

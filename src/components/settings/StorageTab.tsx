@@ -4,7 +4,7 @@ import { Cloud } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import GoogleDriveConnection from './storage/GoogleDriveConnection';
 import FileAccessInfo from './storage/FileAccessInfo';
-import { StorageProviderComponent } from '@/contexts/StorageContext';
+import { StorageProviderComponent } from '@/contexts/storage';
 import StorageStatus from '@/components/storage/StorageStatus';
 
 const StorageTab = () => {
