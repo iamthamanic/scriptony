@@ -1,9 +1,8 @@
-
 import { useToast } from "../use-toast";
 import { Scene, NewSceneFormData } from "../../types";
-import { createScene, deleteScene } from "../../services";
+import { createScene, deleteScene } from "../../services/scenes"; // Import directly from scenes service
 import { useAuth } from "@/contexts/AuthContext";
-import { uploadFileToStorage } from "@/services/storage"; // Import a utility for file upload
+import { uploadFileToStorage } from "@/services/storage"; // Import utility for file upload
 
 export const useScenes = (
   selectedProject: { id: string; scenes: Scene[] } | null,
@@ -17,7 +16,7 @@ export const useScenes = (
 
     try {
       // Create a copy of data to modify
-      const sceneData = { ...data };
+      const sceneData = { ...data } as any;
       
       // Make sure projectId is set in the data
       sceneData.projectId = selectedProject.id;
@@ -38,7 +37,7 @@ export const useScenes = (
       }
       
       // Now create the scene with the processed data
-      const createdScene = await createScene(sceneData as Partial<Scene>);
+      const createdScene = await createScene(sceneData);
       
       if (!createdScene) return;
 

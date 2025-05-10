@@ -1,28 +1,14 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { Scene, NewSceneFormData, TimeOfDay, EmotionalSignificance } from "../types";
 import { handleApiError, convertDbSceneToApp } from "./utils";
 
-export const createScene = async (sceneData: NewSceneFormData): Promise<Scene | null> => {
+export const createScene = async (sceneData: any): Promise<Scene | null> => {
   try {
-    // If there's a keyframe image, upload it first
-    let keyframeUrl = undefined;
+    // If there's a keyframe image, upload it first if it's a File object
+    let keyframeUrl = sceneData.keyframeImage;
     
-    if (sceneData.keyframeImage) {
-      const fileName = `${Date.now()}_${sceneData.keyframeImage.name}`;
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('project_assets')
-        .upload(`scene-keyframes/${fileName}`, sceneData.keyframeImage);
-        
-      if (uploadError) throw uploadError;
-      
-      // Get the public URL
-      const { data: urlData } = supabase.storage
-        .from('project_assets')
-        .getPublicUrl(`scene-keyframes/${fileName}`);
-        
-      keyframeUrl = urlData.publicUrl;
-    }
+    // The keyframeImage should already be a URL string at this point from the useScenes hook
+    // We don't need to upload it again here
     
     // Determine if this is an update or create
     const isUpdate = !!sceneData.id;
