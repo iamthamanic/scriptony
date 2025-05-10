@@ -1,14 +1,17 @@
 
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { FileText, FileCode, FilePdf } from 'lucide-react';
 
-// This is a stub component that would be implemented with the full FileTypeInfoCards functionality
 const FileTypeInfoCards = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-lg">PDF Files</CardTitle>
+          <div className="flex items-center gap-2">
+            <FilePdf className="h-5 w-5 text-red-500" />
+            <CardTitle className="text-lg">PDF Files</CardTitle>
+          </div>
         </CardHeader>
         <CardContent>
           <CardDescription>
@@ -19,7 +22,10 @@ const FileTypeInfoCards = () => {
       
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-lg">DOCX Files</CardTitle>
+          <div className="flex items-center gap-2">
+            <FileCode className="h-5 w-5 text-blue-500" />
+            <CardTitle className="text-lg">DOCX Files</CardTitle>
+          </div>
         </CardHeader>
         <CardContent>
           <CardDescription>
@@ -30,7 +36,10 @@ const FileTypeInfoCards = () => {
       
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-lg">TXT Files</CardTitle>
+          <div className="flex items-center gap-2">
+            <FileText className="h-5 w-5 text-gray-500" />
+            <CardTitle className="text-lg">TXT Files</CardTitle>
+          </div>
         </CardHeader>
         <CardContent>
           <CardDescription>
