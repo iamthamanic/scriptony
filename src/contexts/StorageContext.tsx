@@ -45,7 +45,7 @@ export const StorageProviderComponent: React.FC<StorageProviderProps> = ({
   children, 
   defaultProviderType = StorageProviderType.GOOGLE_DRIVE 
 }) => {
-  const [currentProvider, setCurrentProvider] = useState<StorageProvider | null>(null);
+  const [currentProvider, setCurrentProvider] = useState<IStorageProvider | null>(null);
   const [status, setStatus] = useState<StorageProviderStatus>({ connected: false });
   const [isInitializing, setIsInitializing] = useState<boolean>(true);
   const [projectInfo, setProjectInfo] = useState<{ id?: string, name?: string }>({});
@@ -73,7 +73,7 @@ export const StorageProviderComponent: React.FC<StorageProviderProps> = ({
     try {
       setIsInitializing(true);
       
-      let provider: StorageProvider;
+      let provider: IStorageProvider;
       
       switch (type) {
         case StorageProviderType.GOOGLE_DRIVE:
@@ -231,4 +231,3 @@ export const StorageProviderComponent: React.FC<StorageProviderProps> = ({
     </StorageContext.Provider>
   );
 };
-
