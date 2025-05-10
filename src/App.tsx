@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,7 +12,7 @@ import FeatureDetector from "@/components/admin/FeatureDetector";
 
 // Import pages
 import Index from "./pages/Index";
-import Projects from "./pages/Projects"; // Import the new Projects page
+import Projects from "./pages/Projects"; 
 import Home from "./pages/Home";
 import Upload from "./pages/Upload";
 import Account from "./pages/Account";
@@ -22,8 +21,9 @@ import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import Worldbuilding from "./pages/Worldbuilding";
 import CreativeGym from "./pages/CreativeGym";
+import Admin from "./pages/Admin"; // Import the new Admin page
 import AdminTests from "./pages/AdminTests";
-import AdminUsage from "./pages/AdminUsage";  // Import the new AdminUsage page
+import AdminUsage from "./pages/AdminUsage";
 
 // Import components
 import Topbar from "./components/navigation/Topbar";
@@ -150,6 +150,16 @@ const App = () => {
                       </AuthRoute>
                     } />
                     
+                    {/* New unified Admin Dashboard Route */}
+                    <Route path="/admin" element={
+                      <AuthRoute>
+                        <AuthenticatedLayout>
+                          <Admin />
+                        </AuthenticatedLayout>
+                      </AuthRoute>
+                    } />
+                    
+                    {/* Keep existing admin routes */}
                     <Route path="/admin/tests" element={
                       <AuthRoute>
                         <AuthenticatedLayout>
@@ -158,7 +168,6 @@ const App = () => {
                       </AuthRoute>
                     } />
                     
-                    {/* New Admin Usage Analytics Route */}
                     <Route path="/admin/usage" element={
                       <AuthRoute>
                         <AuthenticatedLayout>
