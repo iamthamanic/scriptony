@@ -1,7 +1,8 @@
 
 import React, { useState } from 'react';
 import { useCreativeGym } from '@/contexts/CreativeGymContext';
-import { Dumbbell, Zap, Clock, FileText, Wand2 } from 'lucide-react';
+import { FileText, Dumbbell, Clock, RotateCcw, Zap } from 'lucide-react';
+import { WandSparkles as Wand2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';

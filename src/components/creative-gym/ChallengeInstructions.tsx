@@ -2,7 +2,8 @@
 import React from 'react';
 import { Challenge } from '@/types/creative-gym';
 import { Card, CardContent } from '@/components/ui/card';
-import { Wand2, FileText, Dumbbell, Clock, Zap } from 'lucide-react';
+import { FileText, Dumbbell, Clock, RotateCcw } from 'lucide-react';
+import { WandSparkles as Wand2 } from 'lucide-react';
 
 interface ChallengeInstructionsProps {
   challenge: Challenge;
@@ -21,7 +22,7 @@ const ChallengeInstructions: React.FC<ChallengeInstructionsProps> = ({ challenge
       case 'time-puncher':
         return <Clock className="h-5 w-5 text-orange-500" />;
       case 'remix-mode':
-        return <Zap className="h-5 w-5 text-purple-500" />;
+        return <RotateCcw className="h-5 w-5 text-purple-500" />;
       default:
         return null;
     }
