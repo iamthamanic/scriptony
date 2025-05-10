@@ -8,6 +8,7 @@ import ComparisonSection from '@/components/landing/ComparisonSection';
 import PricingSection from '@/components/landing/PricingSection';
 import CTASection from '@/components/landing/CTASection';
 import Footer from '@/components/landing/Footer';
+import QuoteCarousel from '@/components/QuoteCarousel';
 
 const Landing = () => {
   return (
@@ -15,6 +16,7 @@ const Landing = () => {
       <HeroSection />
       <FeaturesSection />
       <MediaSection />
+      <QuoteCarousel />
       <FeatureListSection />
       <ComparisonSection />
       <PricingSection />
@@ -25,4 +27,3 @@ const Landing = () => {
 };
 
 export default Landing;
-// test commit
