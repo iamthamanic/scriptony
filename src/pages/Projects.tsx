@@ -91,7 +91,7 @@ const Projects = () => {
   
   const handleEditProjectSubmit = async (data: any) => {
     if (selectedProject) {
-      await editProject(selectedProject.id, data);
+      await editProject(data);
       setIsEditProjectModalOpen(false);
     }
   };
@@ -154,7 +154,7 @@ const Projects = () => {
           onNewScene={handleNewScene}
           onEditProject={handleOpenEditProject}
           onNewCharacter={handleNewCharacter}
-          onDeleteProject={() => handleDeleteProject(selectedProject.id)}
+          onDeleteProject={() => handleDeleteProject()}
           onNewEpisode={selectedProject.type === 'series' ? handleNewEpisode : undefined}
         />
       )}
