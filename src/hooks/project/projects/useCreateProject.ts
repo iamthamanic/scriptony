@@ -1,6 +1,7 @@
 
 import { useState } from "react";
-import { createProject, createScene } from "../../../services";
+import { createProject } from "../../../services";
+import { createScene } from "../../../services/projects";
 import { Project, ProjectType, NarrativeStructureType, Scene, TimeOfDay, Genre, EmotionalSignificance } from "../../../types";
 import { useToast } from "../../use-toast";
 import { useAuth } from "@/contexts/AuthContext";
