@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useCreativeGym } from '@/contexts/CreativeGymContext';
+import { useCreativeGym } from '@/contexts/creative-gym';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';

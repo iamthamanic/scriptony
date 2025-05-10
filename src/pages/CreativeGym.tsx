@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { useCreativeGym } from '@/contexts/CreativeGymContext';
+import { useCreativeGym } from '@/contexts/creative-gym';
 import { FileText, Dumbbell, Clock, RotateCcw, Zap } from 'lucide-react';
 import { WandSparkles as Wand2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
