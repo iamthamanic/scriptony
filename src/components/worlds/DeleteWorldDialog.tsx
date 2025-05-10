@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React from 'react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,100 +10,60 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { Loader2 } from 'lucide-react';
+import { World } from '@/types';
 
 interface DeleteWorldDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onDelete: () => Promise<void>;
-  worldName: string;
+  world: World | null;
 }
 
-const DeleteWorldDialog = ({ isOpen, onClose, onDelete, worldName }: DeleteWorldDialogProps) => {
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [deletionError, setDeletionError] = useState<string | null>(null);
-  
-  // Reset state when dialog opens/closes
-  useEffect(() => {
-    if (!isOpen) {
-      setIsDeleting(false);
-      setDeletionError(null);
-    }
-  }, [isOpen]);
-  
-  const handleDelete = useCallback(async () => {
-    if (isDeleting) {
-      console.log('Deletion already in progress, ignoring click');
-      return;
-    }
-    
-    setIsDeleting(true);
-    setDeletionError(null);
+const DeleteWorldDialog = ({
+  isOpen,
+  onClose,
+  onDelete,
+  world
+}: DeleteWorldDialogProps) => {
+  const [isDeleting, setIsDeleting] = React.useState(false);
+
+  const handleDelete = async () => {
+    if (!world) return;
     
     try {
-      console.log(`Starting deletion of world "${worldName}"...`);
+      setIsDeleting(true);
       await onDelete();
-      console.log("Deletion completed successfully");
     } catch (error) {
-      console.error("Error during world deletion:", error);
-      
-      const errorMessage = error instanceof Error 
-        ? `Error: ${error.message}` 
-        : 'An unexpected error occurred during deletion';
-        
-      setDeletionError(errorMessage);
-      setIsDeleting(false); // Reset deleting state on error
-    }
-  }, [isDeleting, onDelete, worldName]);
-
-  const handleCloseDialog = useCallback(() => {
-    // Only allow closing if not in progress
-    if (!isDeleting) {
+      console.error('Error deleting world:', error);
+    } finally {
+      setIsDeleting(false);
       onClose();
-    } else {
-      console.log('Cannot close dialog while deletion is in progress');
     }
-  }, [isDeleting, onClose]);
+  };
 
-  if (!isOpen) return null;
+  const worldName = world?.name || 'this world';
 
   return (
-    <AlertDialog open={isOpen} onOpenChange={(open) => {
-      if (!open && !isDeleting) {
-        handleCloseDialog();
-      }
-    }}>
-      <AlertDialogContent className="max-w-md">
+    <AlertDialog open={isOpen} onOpenChange={onClose}>
+      <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Dünyayı Sil</AlertDialogTitle>
+          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            "{worldName}" dünyasını silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.
+            This will permanently delete <strong>{worldName}</strong> and all of its associated categories and content. This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
-        
-        {deletionError && (
-          <div className="bg-destructive/20 p-3 rounded-md text-sm text-destructive">
-            {deletionError}
-          </div>
-        )}
-        
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isDeleting}>İptal</AlertDialogCancel>
-          <Button 
-            onClick={handleDelete}
-            variant="destructive"
+          <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={(e) => {
+              e.preventDefault();
+              handleDelete();
+            }}
             disabled={isDeleting}
+            className="bg-red-500 hover:bg-red-600"
           >
-            {isDeleting ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Siliniyor...
-              </>
-            ) : (
-              'Sil'
-            )}
-          </Button>
+            {isDeleting ? 'Deleting...' : 'Delete'}
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

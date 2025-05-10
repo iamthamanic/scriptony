@@ -1,14 +1,15 @@
 
 import React from 'react';
 import { useProjectState } from '@/hooks/project/useProjectState';
-import { useProjectModals } from '@/features/projects/hooks/useProjectModals';
-import { useFileUpload } from '@/features/projects/hooks/useFileUpload';
-import ProjectsContent from '@/features/projects/components/ProjectsContent';
-import ProjectPageHeader from '@/features/projects/components/ProjectPageHeader';
-import ProjectModals from '@/features/projects/components/ProjectModals';
+import { useProjectModals } from '@/hooks/project/useProjectModals';
+import { useFileUpload } from '@/hooks/project/useFileUpload';
+import ProjectsContent from '@/components/projects/ProjectsContent';
+import ProjectPageHeader from '@/components/projects/ProjectPageHeader';
+import ProjectModals from '@/components/projects/ProjectModals';
 import ProjectSelector from '@/components/ProjectSelector';
 import ProjectHeader from '@/components/ProjectHeader';
 import { EditCharacterFormData } from '@/components/EditCharacterModal';
+import { Scene } from '@/types';
 
 const ProjectsContainer = () => {
   // Get all project state from the hook
@@ -57,7 +58,7 @@ const ProjectsContainer = () => {
   } = useProjectModals();
 
   // Get file upload handlers
-  const { fileInputRef, handleFileChange, triggerFileUpload } = useFileUpload();
+  const { fileInputRef, handleFileChange } = useFileUpload();
 
   // Form submission handlers
   const handleCreateProjectSubmit = async (data: any) => {
@@ -98,13 +99,17 @@ const ProjectsContainer = () => {
     }
   };
 
+  // Fixed function to handle Scene edit properly
+  const handleEditSceneWrapper = (scene: Scene) => {
+    handleEditScene(scene);
+  };
+
   return (
     <div className="container mx-auto p-4 pt-6">
       <ProjectPageHeader 
         onNewProject={handleNewProject}
         fileInputRef={fileInputRef}
         handleFileChange={handleFileChange}
-        triggerFileUpload={triggerFileUpload}
       />
       
       {/* Show ProjectSelector only if we have projects */}
@@ -125,7 +130,7 @@ const ProjectsContainer = () => {
           onNewScene={handleNewScene}
           onEditProject={handleOpenEditProject}
           onNewCharacter={handleNewCharacter}
-          onDeleteProject={handleDeleteProject}
+          onDeleteProject={() => handleDeleteProject()}
           onNewEpisode={selectedProject.type === 'series' ? handleNewEpisode : undefined}
         />
       )}
@@ -141,9 +146,9 @@ const ProjectsContainer = () => {
         onEditProject={handleOpenEditProject}
         onNewCharacter={handleNewCharacter}
         onDeleteProject={handleDeleteProject}
-        onEditScene={handleEditScene}
-        onDeleteScene={(sceneId: string) => handleDeleteScene(sceneId)}
-        onEditCharacter={(characterId: string, data: EditCharacterFormData) => handleEditCharacter(characterId, data)}
+        onEditScene={handleEditSceneWrapper}
+        onDeleteScene={handleDeleteScene}
+        onEditCharacter={(characterId, data: EditCharacterFormData) => handleEditCharacter(characterId, data)}
         onDeleteCharacter={handleDeleteCharacter}
         onNewEpisode={handleNewEpisode}
         onEditEpisode={wrappedHandleEditEpisodeModal}

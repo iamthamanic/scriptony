@@ -20,9 +20,10 @@ export interface DetectedCharacter {
 export interface AnalysisResult {
   title: string;
   type: ProjectType;
-  narrativeStructure: NarrativeStructureType;
+  narrativeStructure?: NarrativeStructureType;
   scenes: DetectedScene[];
   characters: DetectedCharacter[];
-  genres: Genre[];
-  duration: number;
+  genres?: Genre[];
+  duration?: number;
+  logline?: string;
 }

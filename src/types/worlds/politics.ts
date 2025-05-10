@@ -1,33 +1,31 @@
 
 import { Json } from "@/integrations/supabase/types";
-import { CategoryItem } from "./items";
-
-// Politics category content with political systems
-export interface PoliticsContent {
-  systems: Array<PoliticalSystem & Record<string, Json>>;
-  [key: string]: Json; // Index signature to satisfy Json requirements
-}
-
-// Political system extends CategoryItem
-export interface PoliticalSystem extends CategoryItem {
-  government_type?: string;
-  leaders?: Leader[];
-  laws?: Law[];
-  [key: string]: any; // Index signature to satisfy Json requirements
-}
+import { CategoryItem, CustomField } from "./items";
 
 export interface Leader {
   id: string;
   name: string;
   title: string;
-  portrait_url?: string;
+  image_url?: string;
   description?: string;
-  [key: string]: any; // Index signature to satisfy Json requirements
+  customFields?: CustomField[];
+  [key: string]: any; // Index signature for Json compatibility
 }
 
-export interface Law {
+export interface PoliticalSystem {
   id: string;
   name: string;
-  description: string;
-  [key: string]: any; // Index signature to satisfy Json requirements
+  description?: string;
+  structure?: string;
+  leaders?: Leader[];
+  customFields?: CustomField[];
+  [key: string]: any; // Index signature for Json compatibility
 }
+
+export interface PoliticsContent {
+  systems: Array<PoliticalSystem & Record<string, Json>>;
+}
+
+export const createEmptyPoliticsContent = (): PoliticsContent => ({
+  systems: []
+});

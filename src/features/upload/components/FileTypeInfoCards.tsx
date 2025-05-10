@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileText, FileCode, FilePdf } from 'lucide-react';
+import { FileText, FileCode, File } from 'lucide-react';
 
 const FileTypeInfoCards = () => {
   return (
@@ -9,7 +9,7 @@ const FileTypeInfoCards = () => {
       <Card>
         <CardHeader className="pb-2">
           <div className="flex items-center gap-2">
-            <FilePdf className="h-5 w-5 text-red-500" />
+            <File className="h-5 w-5 text-red-500" />
             <CardTitle className="text-lg">PDF Files</CardTitle>
           </div>
         </CardHeader>

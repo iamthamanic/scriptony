@@ -4,14 +4,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useWorldsState } from "@/hooks/useWorldsState";
 import WorldsContent from "../components/WorldsContent";
 import WorldModals from "../components/WorldModals";
-import { Container } from "@/components/ui/container";
 
 const WorldbuildingPage = () => {
   const { user } = useAuth();
   const worldsState = useWorldsState(user?.id);
   
   return (
-    <Container>
+    <div className="container mx-auto">
       <div className="py-8 px-4 md:px-6 w-full animate-fade-in">
         <header className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Weltenbau</h1>
@@ -52,7 +51,7 @@ const WorldbuildingPage = () => {
           onSubmitCategory={worldsState.handleSubmitCategory}
         />
       </div>
-    </Container>
+    </div>
   );
 };
 

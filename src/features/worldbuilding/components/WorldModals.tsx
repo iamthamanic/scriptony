@@ -61,7 +61,7 @@ const WorldModals = ({
       <DeleteWorldDialog 
         isOpen={isDeleteWorldDialogOpen}
         onClose={onCloseDeleteWorldDialog}
-        onConfirm={onDeleteWorld}
+        onDelete={onDeleteWorld}
         world={selectedWorld}
       />
       

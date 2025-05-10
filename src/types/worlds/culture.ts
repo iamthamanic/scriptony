@@ -1,15 +1,21 @@
 
 import { Json } from "@/integrations/supabase/types";
-import { CategoryItem } from "./items";
+import { CategoryItem, CustomField } from "./items";
 
-// Culture category content with cultural elements
+export interface CultureElement {
+  id: string;
+  name: string;
+  description?: string;
+  category?: string;
+  significance?: string;
+  customFields?: CustomField[];
+  [key: string]: any; // Index signature for Json compatibility
+}
+
 export interface CultureContent {
   elements: Array<CultureElement & Record<string, Json>>;
-  [key: string]: Json; // Index signature to satisfy Json requirements
 }
 
-// Culture element extends CategoryItem
-export interface CultureElement extends CategoryItem {
-  element_type?: 'art' | 'tradition' | 'festival' | 'belief';
-  [key: string]: any; // Index signature to satisfy Json requirements
-}
+export const createEmptyCultureContent = (): CultureContent => ({
+  elements: []
+});
