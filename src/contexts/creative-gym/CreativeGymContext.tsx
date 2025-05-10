@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { ChallengeType, TrainingPlan } from '@/types/creative-gym';
+import { ChallengeType, TrainingPlan, DisciplineType } from '@/types/creative-gym';
 import { 
   CreativeGymContextType, 
   initialState 
@@ -42,6 +42,10 @@ export function CreativeGymProvider({ children }: { children: React.ReactNode })
       if (loadedState.trainingPlans) {
         dispatch({ type: 'SET_TRAINING_PLANS', payload: loadedState.trainingPlans });
       }
+
+      if (loadedState.disciplineChallenges) {
+        dispatch({ type: 'SET_DISCIPLINE_CHALLENGES', payload: loadedState.disciplineChallenges });
+      }
     }
   }, []);
   
@@ -51,9 +55,10 @@ export function CreativeGymProvider({ children }: { children: React.ReactNode })
       challenges: state.challenges,
       results: state.results,
       userProgress: state.userProgress,
-      trainingPlans: state.trainingPlans
+      trainingPlans: state.trainingPlans,
+      disciplineChallenges: state.disciplineChallenges
     });
-  }, [state.challenges, state.results, state.userProgress, state.trainingPlans]);
+  }, [state.challenges, state.results, state.userProgress, state.trainingPlans, state.disciplineChallenges]);
   
   // Context functions
   const startChallenge = (type: ChallengeType) => {
@@ -115,6 +120,19 @@ export function CreativeGymProvider({ children }: { children: React.ReactNode })
     
     dispatch({ type: 'ADD_TRAINING_PLAN', payload: newPlan });
   };
+
+  // New discipline challenge functions
+  const startDisciplineChallenge = (disciplineType: DisciplineType, challengeId: string) => {
+    // For future implementation: set active discipline challenge
+    console.log(`Starting discipline challenge: ${disciplineType} - ${challengeId}`);
+  };
+
+  const completeDisciplineChallenge = (challengeId: string, content?: string, attachments?: string[]) => {
+    dispatch({
+      type: 'COMPLETE_DISCIPLINE_CHALLENGE',
+      payload: { challengeId, content, attachments }
+    });
+  };
   
   return (
     <CreativeGymContext.Provider
@@ -123,7 +141,9 @@ export function CreativeGymProvider({ children }: { children: React.ReactNode })
         startChallenge,
         completeChallenge,
         cancelChallenge,
-        createTrainingPlan
+        createTrainingPlan,
+        startDisciplineChallenge,
+        completeDisciplineChallenge
       }}
     >
       {children}
