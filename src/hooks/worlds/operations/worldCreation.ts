@@ -1,7 +1,7 @@
 
 import { useToast } from "@/hooks/use-toast";
-import { createWorld, updateWorld } from "@/services/worlds";
-import { NewWorldFormData, World } from "@/types";
+import { createWorld } from "@/services/worlds";
+import { WorldFormData, World } from "@/types";
 
 export function useWorldCreation(
   worlds: World[],
@@ -11,7 +11,7 @@ export function useWorldCreation(
 ) {
   const { toast } = useToast();
 
-  const handleCreateWorld = async (data: NewWorldFormData) => {
+  const handleCreateWorld = async (data: WorldFormData) => {
     try {
       const newWorld = await createWorld(data);
       setWorlds([newWorld, ...worlds]);

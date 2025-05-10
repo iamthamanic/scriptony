@@ -1,9 +1,10 @@
 
 import React from 'react';
 import NewWorldModal from "./NewWorldModal";
+import EditWorldModal from "./EditWorldModal";
 import WorldCategoryModal from "./WorldCategoryModal";
 import DeleteWorldDialog from "./DeleteWorldDialog";
-import { World, WorldCategory, NewWorldFormData, WorldCategoryFormData } from "@/types";
+import { World, WorldCategory, WorldFormData, WorldCategoryFormData } from "@/types";
 
 interface WorldModalsProps {
   isNewWorldModalOpen: boolean;
@@ -14,8 +15,8 @@ interface WorldModalsProps {
   onCloseEditWorldModal: () => void;
   onCloseDeleteWorldDialog: () => void;
   onCloseCategoryModal: () => void;
-  onCreateWorld: (data: NewWorldFormData) => void;
-  onUpdateWorld: (data: NewWorldFormData) => void;
+  onCreateWorld: (data: WorldFormData) => void;
+  onUpdateWorld: (data: WorldFormData) => void;
   onDeleteWorld: () => Promise<void>;
   onCategorySubmit: (data: WorldCategoryFormData) => void;
   selectedWorld: World | null;
@@ -48,10 +49,11 @@ const WorldModals = ({
       
       {selectedWorld && (
         <>
-          <NewWorldModal
+          <EditWorldModal
             isOpen={isEditWorldModalOpen}
             onClose={onCloseEditWorldModal}
             onSubmit={onUpdateWorld}
+            world={selectedWorld}
           />
           
           <DeleteWorldDialog

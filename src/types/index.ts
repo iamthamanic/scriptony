@@ -12,9 +12,8 @@ export * from './worlds';
 export * from './admin';
 export * from './shots';
 
-// Re-export only specific types from script-analysis to avoid duplicate export
-import { DetectedScene, DetectedCharacter } from './script-analysis';
-export { DetectedScene, DetectedCharacter };
+// Export specific types from script-analysis to avoid duplicate export
+export type { DetectedScene, DetectedCharacter } from './script-analysis';
 
 // Re-export analysis types 
 export * from './analysis';

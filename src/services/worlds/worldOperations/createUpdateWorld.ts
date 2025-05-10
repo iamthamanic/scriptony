@@ -1,13 +1,13 @@
 
 import { customSupabase } from "@/integrations/supabase/customClient";
-import { World, NewWorldFormData, DEFAULT_WORLD_CATEGORIES } from "@/types/worlds";
+import { World, WorldFormData, DEFAULT_WORLD_CATEGORIES } from "@/types/worlds/base";
 import { mapDbWorldToAppWorld } from "../utils";
 import { getCurrentUser } from "./utils";
 
 /**
  * Create a new world with default categories
  */
-export const createWorld = async (data: NewWorldFormData): Promise<World> => {
+export const createWorld = async (data: WorldFormData): Promise<World> => {
   const { name, description, cover_image } = data;
   
   // Get the current user
@@ -74,7 +74,7 @@ export const createWorld = async (data: NewWorldFormData): Promise<World> => {
 /**
  * Update an existing world's information
  */
-export const updateWorld = async (worldId: string, data: NewWorldFormData): Promise<World> => {
+export const updateWorld = async (worldId: string, data: WorldFormData): Promise<World> => {
   const { name, description, cover_image } = data;
   
   const updateData: any = { name, description };

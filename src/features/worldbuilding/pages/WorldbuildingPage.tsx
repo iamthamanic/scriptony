@@ -39,7 +39,7 @@ const WorldbuildingPage = () => {
     if (user?.id) {
       loadWorlds();
     }
-  }, [user?.id]);
+  }, [user?.id, loadWorlds]);
 
   const handleAddCategory = () => {
     setSelectedCategory(null);
