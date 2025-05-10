@@ -1,6 +1,5 @@
 
-// Re-export all storage-related functionality
-export * from './userStorage';
-export * from './googleDrive';
 export * from './fileStorage';
-export * from './types';
+export * from './googleDrive';
+export * from './userStorage';
+export * from './fileUpload';

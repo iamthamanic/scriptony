@@ -1,3 +1,4 @@
+
 // Re-export all services from their respective modules
 export * from './projects';
 export * from './characters';
@@ -9,4 +10,4 @@ export * from './worlds';
 export * from './storage';
 export * from './database';
 
-// Add any additional services here
+// Note: We're not exporting createScene from scenes.ts to avoid conflicts
