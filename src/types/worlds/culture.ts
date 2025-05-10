@@ -8,12 +8,14 @@ export interface CultureElement {
   description?: string;
   category?: string;
   significance?: string;
-  customFields?: CustomField[];
+  element_type?: string;
+  customFields: CustomField[];
   [key: string]: any; // Index signature for Json compatibility
 }
 
 export interface CultureContent {
-  elements: Array<CultureElement & Record<string, Json>>;
+  elements: CultureElement[];
+  [key: string]: any; // Index signature for Json compatibility
 }
 
 export const createEmptyCultureContent = (): CultureContent => ({

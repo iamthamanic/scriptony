@@ -21,7 +21,7 @@ const EconomyEditor: React.FC<EconomyEditorProps> = ({ content, onChange }) => {
   // Initialize content structure safely
   const economyContent: EconomyContent = content && content.entities 
     ? content as EconomyContent 
-    : { entities: [] as Array<EconomicEntity & Record<string, Json>> };
+    : { entities: [] as EconomicEntity[] };
   
   // Create a working copy for local edits
   const [workingContent, setWorkingContent] = useState<EconomyContent>({
@@ -34,11 +34,12 @@ const EconomyEditor: React.FC<EconomyEditorProps> = ({ content, onChange }) => {
       name: 'Neue wirtschaftliche Einheit',
       description: '',
       customFields: [],
+      type: 'currency',
       entity_type: 'currency'
     };
     
     // Add to working copy only
-    const updatedEntities = [...workingContent.entities, newEntity as EconomicEntity & Record<string, Json>];
+    const updatedEntities = [...workingContent.entities, newEntity];
     setWorkingContent({
       ...workingContent,
       entities: updatedEntities
@@ -52,7 +53,7 @@ const EconomyEditor: React.FC<EconomyEditorProps> = ({ content, onChange }) => {
     try {
       // Update the working copy first
       const updatedEntities = workingContent.entities.map(entity => 
-        entity.id === updatedEntity.id ? updatedEntity as EconomicEntity & Record<string, Json> : entity
+        entity.id === updatedEntity.id ? updatedEntity : entity
       );
       
       // Create a new content object to trigger a proper update

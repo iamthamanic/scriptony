@@ -108,11 +108,11 @@ const LocationForm: React.FC<LocationFormProps> = ({
                 <Input 
                   id="coord-x"
                   type="number"
-                  value={editingLocation.coordinates?.x || 0}
+                  value={(editingLocation.coordinates?.x || 0).toString()}
                   onChange={(e) => handleLocationUpdate({
                     coordinates: {
-                      ...editingLocation.coordinates,
-                      x: parseInt(e.target.value) || 0
+                      x: parseInt(e.target.value) || 0,
+                      y: editingLocation.coordinates?.y || 0
                     }
                   })}
                 />
@@ -123,10 +123,10 @@ const LocationForm: React.FC<LocationFormProps> = ({
                 <Input 
                   id="coord-y"
                   type="number"
-                  value={editingLocation.coordinates?.y || 0}
+                  value={(editingLocation.coordinates?.y || 0).toString()}
                   onChange={(e) => handleLocationUpdate({
                     coordinates: {
-                      ...editingLocation.coordinates,
+                      x: editingLocation.coordinates?.x || 0,
                       y: parseInt(e.target.value) || 0
                     }
                   })}

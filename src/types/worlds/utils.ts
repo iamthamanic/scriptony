@@ -7,7 +7,7 @@ import { createEmptySocietyContent } from "./society";
 import { createEmptyCultureContent } from "./culture";
 import { Json } from "@/integrations/supabase/types";
 
-export const getEmptyCategoryContent = (type: WorldCategoryType): Json => {
+export const getEmptyCategoryContent = (type: WorldCategoryType): any => {
   switch (type) {
     case 'geography':
       return createEmptyGeographyContent();

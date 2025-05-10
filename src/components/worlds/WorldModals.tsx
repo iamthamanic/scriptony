@@ -58,7 +58,7 @@ const WorldModals = ({
             isOpen={isDeleteWorldDialogOpen}
             onClose={onCloseDeleteWorldDialog}
             onDelete={onDeleteWorld}
-            worldName={selectedWorld.name}
+            world={selectedWorld}
           />
           
           <WorldCategoryModal

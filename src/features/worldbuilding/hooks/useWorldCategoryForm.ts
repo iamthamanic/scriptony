@@ -10,7 +10,7 @@ interface UseWorldCategoryFormProps {
 export const useWorldCategoryForm = ({ category, isOpen }: UseWorldCategoryFormProps) => {
   const [formData, setFormData] = useState<WorldCategoryFormData>({
     name: '',
-    type: 'custom',
+    type: 'custom' as WorldCategoryType,
     icon: 'map',
     content: {}
   });
@@ -28,7 +28,7 @@ export const useWorldCategoryForm = ({ category, isOpen }: UseWorldCategoryFormP
     } else {
       setFormData({
         name: '',
-        type: 'custom',
+        type: 'custom' as WorldCategoryType,
         icon: 'map',
         content: {}
       });
