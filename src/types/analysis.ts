@@ -1,14 +1,16 @@
 
 import { Scene, Character, Project } from './index';
+import { Genre } from './genres';
+import { NarrativeStructureType } from './narrativeStructures/types';
 
 export interface AnalysisResult {
   title: string;
   type: string;
   logline?: string;
-  genres?: string[];
+  genres?: Genre[];
   scenes?: Scene[];
   characters?: Character[];
-  narrative_structure?: string;
+  narrative_structure?: NarrativeStructureType;
   duration?: number;
 }
 

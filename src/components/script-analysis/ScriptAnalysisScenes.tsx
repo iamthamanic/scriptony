@@ -14,6 +14,10 @@ interface ScriptAnalysisScenesProps {
 }
 
 const ScriptAnalysisScenes = ({ analysisResult }: ScriptAnalysisScenesProps) => {
+  if (!analysisResult.scenes) {
+    return null;
+  }
+
   return (
     <AccordionItem value="scenes">
       <AccordionTrigger className="text-sm font-medium">
@@ -30,13 +34,13 @@ const ScriptAnalysisScenes = ({ analysisResult }: ScriptAnalysisScenesProps) => 
               <div className="text-xs text-muted-foreground mt-1 line-clamp-2">
                 {scene.description}
               </div>
-              {scene.characters.length > 0 && (
+              {scene.characterIds && scene.characterIds.length > 0 && (
                 <div className="mt-1 flex flex-wrap gap-1">
-                  {scene.characters.slice(0, 3).map((char, idx) => (
-                    <Badge key={idx} variant="outline" className="text-xs">{char}</Badge>
+                  {scene.characterIds.slice(0, 3).map((charId, idx) => (
+                    <Badge key={idx} variant="outline" className="text-xs">{charId}</Badge>
                   ))}
-                  {scene.characters.length > 3 && (
-                    <Badge variant="outline" className="text-xs">+{scene.characters.length - 3}</Badge>
+                  {scene.characterIds.length > 3 && (
+                    <Badge variant="outline" className="text-xs">+{scene.characterIds.length - 3}</Badge>
                   )}
                 </div>
               )}

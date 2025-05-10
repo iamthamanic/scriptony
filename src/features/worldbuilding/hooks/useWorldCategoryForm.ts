@@ -43,16 +43,15 @@ export const useWorldCategoryForm = ({ category, isOpen }: UseWorldCategoryFormP
   const handleTypeChange = (value: string) => {
     // Ensure the value is a valid WorldCategoryType
     const newType = value as WorldCategoryType;
-    setFormData(prev => {
-      // Initialize appropriate content structure based on type
-      const content = getEmptyCategoryContent(newType);
-      
-      return { 
-        ...prev, 
-        type: newType,
-        content
-      };
-    });
+    
+    // Initialize appropriate content structure based on type
+    const content = getEmptyCategoryContent(newType);
+    
+    setFormData(prev => ({
+      ...prev,
+      type: newType,
+      content
+    }));
   };
 
   const handleContentChange = (newContent: any) => {

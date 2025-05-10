@@ -1,60 +1,93 @@
 
-import React from 'react';
-import { useAuth } from "@/contexts/AuthContext";
-import { useWorldsState } from "@/hooks/useWorldsState";
+import React, { useEffect } from 'react';
 import { Container } from "@/components/ui/container";
-import WorldsContent from "../components/WorldsContent";
-import WorldModals from "../components/WorldModals";
+import WorldsContent from "@/components/worlds/WorldsContent";
+import WorldModals from "@/components/worlds/WorldModals";
+import { useWorldsState } from "@/hooks/useWorldsState";
+import { useAuth } from "@/hooks/useAuthState";
+import { World, WorldCategory, WorldCategoryFormData } from "@/types";
 
 const WorldbuildingPage = () => {
   const { user } = useAuth();
   const worldsState = useWorldsState(user?.id);
+  const {
+    worlds,
+    selectedWorld,
+    isLoading,
+    isNewWorldModalOpen,
+    isEditWorldModalOpen,
+    isDeleteWorldDialogOpen,
+    isCategoryModalOpen,
+    selectedCategory,
+    setSelectedWorldId,
+    setIsNewWorldModalOpen,
+    setIsEditWorldModalOpen, 
+    setIsDeleteWorldDialogOpen,
+    setIsCategoryModalOpen,
+    handleCreateWorld,
+    handleUpdateWorld,
+    handleDeleteWorld,
+    handleCategorySubmit,
+    handleDeleteCategory,
+    handleReorderCategories,
+    loadWorlds,
+    setSelectedCategory,
+  } = worldsState;
+
+  // Load worlds on mount and when user changes
+  useEffect(() => {
+    if (user?.id) {
+      loadWorlds();
+    }
+  }, [user?.id]);
+
+  const handleAddCategory = () => {
+    setSelectedCategory(null);
+    setIsCategoryModalOpen(true);
+  };
   
+  const handleEditCategory = (category: WorldCategory) => {
+    setSelectedCategory(category);
+    setIsCategoryModalOpen(true);
+  };
+
   return (
-    <Container className="py-8">
-      <div className="animate-fade-in">
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Weltenbau</h1>
-          <p className="text-muted-foreground">
-            Erstelle und verwalte Welten für deine Geschichten
-          </p>
-        </header>
-        
-        <WorldsContent 
-          isLoading={worldsState.isLoading}
-          worlds={worldsState.worlds}
-          selectedWorld={worldsState.selectedWorld}
-          onSelectWorld={worldsState.setSelectedWorldId}
-          onNewWorld={() => worldsState.setIsNewWorldModalOpen(true)}
-          onEditWorld={() => worldsState.setIsEditWorldModalOpen(true)}
-          onDeleteWorld={() => worldsState.setIsDeleteWorldDialogOpen(true)}
-          onDuplicateWorld={worldsState.handleDuplicateWorld}
-          onAddCategory={() => worldsState.setSelectedCategory(null) || worldsState.setIsCategoryModalOpen(true)}
-          onEditCategory={(category) => {
-            worldsState.setSelectedCategory(category);
-            worldsState.setIsCategoryModalOpen(true);
-          }}
-          onDeleteCategory={worldsState.handleDeleteCategory}
-          onReorderCategories={worldsState.handleReorderCategories}
-        />
-        
-        <WorldModals
-          isNewWorldModalOpen={worldsState.isNewWorldModalOpen}
-          isEditWorldModalOpen={worldsState.isEditWorldModalOpen}
-          isDeleteWorldDialogOpen={worldsState.isDeleteWorldDialogOpen}
-          isCategoryModalOpen={worldsState.isCategoryModalOpen}
-          selectedWorld={worldsState.selectedWorld}
-          selectedCategory={worldsState.selectedCategory}
-          onCloseNewWorldModal={() => worldsState.setIsNewWorldModalOpen(false)}
-          onCloseEditWorldModal={() => worldsState.setIsEditWorldModalOpen(false)}
-          onCloseDeleteWorldDialog={() => worldsState.setIsDeleteWorldDialogOpen(false)}
-          onCloseCategoryModal={() => worldsState.setIsCategoryModalOpen(false)}
-          onCreateWorld={worldsState.handleCreateWorld}
-          onUpdateWorld={worldsState.handleUpdateWorld}
-          onDeleteWorld={worldsState.handleDeleteWorld}
-          onSubmitCategory={worldsState.handleCategorySubmit}
-        />
-      </div>
+    <Container className="py-6 px-4 md:px-6 w-full">
+      {/* Main content */}
+      <WorldsContent 
+        isLoading={isLoading}
+        worlds={worlds}
+        selectedWorld={selectedWorld}
+        onSelectWorld={setSelectedWorldId}
+        onNewWorld={() => setIsNewWorldModalOpen(true)}
+        onEditWorld={() => setIsEditWorldModalOpen(true)}
+        onDeleteWorld={() => setIsDeleteWorldDialogOpen(true)}
+        onAddCategory={handleAddCategory}
+        onEditCategory={handleEditCategory}
+        onDeleteCategory={handleDeleteCategory}
+        onReorderCategories={handleReorderCategories}
+      />
+      
+      {/* Modals */}
+      <WorldModals
+        isNewWorldModalOpen={isNewWorldModalOpen}
+        isEditWorldModalOpen={isEditWorldModalOpen}
+        isDeleteWorldDialogOpen={isDeleteWorldDialogOpen}
+        isCategoryModalOpen={isCategoryModalOpen}
+        onCloseNewWorldModal={() => setIsNewWorldModalOpen(false)}
+        onCloseEditWorldModal={() => setIsEditWorldModalOpen(false)}
+        onCloseDeleteWorldDialog={() => setIsDeleteWorldDialogOpen(false)}
+        onCloseCategoryModal={() => {
+          setIsCategoryModalOpen(false);
+          setSelectedCategory(null);
+        }}
+        onCreateWorld={handleCreateWorld}
+        onUpdateWorld={handleUpdateWorld}
+        onDeleteWorld={handleDeleteWorld}
+        onCategorySubmit={handleCategorySubmit}
+        selectedWorld={selectedWorld}
+        selectedCategory={selectedCategory}
+      />
     </Container>
   );
 };

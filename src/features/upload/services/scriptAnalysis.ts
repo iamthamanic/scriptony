@@ -1,6 +1,6 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import { AnalysisResult, DetectedScene, DetectedCharacter } from '@/types';
+import { AnalysisResult, Scene, Character, Genre, NarrativeStructureType, ProjectType } from '@/types';
 
 export const uploadAndAnalyzeScript = async (file: File): Promise<{ analysisResult: AnalysisResult }> => {
   try {
@@ -13,42 +13,74 @@ export const uploadAndAnalyzeScript = async (file: File): Promise<{ analysisResu
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // Create a mock analysis result based on the file name
-    const scene1: DetectedScene = {
+    // Create proper Scene objects for the mock data
+    const scene1: Scene = {
+      id: "scene-1",
+      projectId: "mock-project",
       sceneNumber: 1,
       location: "INTERIOR - LIVING ROOM",
       timeOfDay: "DAY",
+      timecodeStart: "00:00:00",
+      timecodeEnd: "00:01:30",
       description: "A character sits on a couch, reading a book.",
-      characters: ["ALEX"]
+      characterIds: ["ALEX"],
+      dialog: "",
+      transitions: "",
+      production_notes: "",
+      emotional_significance: "other",
+      emotional_notes: "",
+      createdAt: new Date(),
+      updatedAt: new Date()
     };
     
-    const scene2: DetectedScene = {
+    const scene2: Scene = {
+      id: "scene-2",
+      projectId: "mock-project",
       sceneNumber: 2,
       location: "EXTERIOR - PARK",
       timeOfDay: "EVENING",
+      timecodeStart: "00:01:30",
+      timecodeEnd: "00:03:00",
       description: "Two characters walk through a park, deep in conversation.",
-      characters: ["ALEX", "JAMIE"]
+      characterIds: ["ALEX", "JAMIE"],
+      dialog: "",
+      transitions: "",
+      production_notes: "",
+      emotional_significance: "other",
+      emotional_notes: "",
+      createdAt: new Date(),
+      updatedAt: new Date()
     };
 
-    const character1: DetectedCharacter = {
+    const character1: Character = {
+      id: "char-1",
+      projectId: "mock-project",
       name: "ALEX",
       role: "Protagonist",
-      description: "A thoughtful person in their 30s."
+      description: "A thoughtful person in their 30s.",
+      createdAt: new Date(),
+      updatedAt: new Date()
     };
     
-    const character2: DetectedCharacter = {
+    const character2: Character = {
+      id: "char-2",
+      projectId: "mock-project",
       name: "JAMIE",
       role: "Supporting Character",
-      description: "Alex's friend and confidant."
+      description: "Alex's friend and confidant.",
+      createdAt: new Date(),
+      updatedAt: new Date()
     };
     
     const analysisResult: AnalysisResult = {
       title: file.name.replace(/\.[^/.]+$/, ""),
-      type: "movie",
+      type: "movie" as ProjectType,
       logline: "A sample logline for the analyzed script.",
-      genres: ["drama"],
+      genres: ["drama"] as Genre[],
       scenes: [scene1, scene2],
-      characters: [character1, character2]
+      characters: [character1, character2],
+      narrative_structure: "three-act" as NarrativeStructureType,
+      duration: 90
     };
     
     console.log('Analysis complete:', analysisResult);
