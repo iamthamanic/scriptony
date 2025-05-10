@@ -2,13 +2,15 @@
 import { useContext, useCallback, useState } from 'react';
 import { StorageContext } from '@/contexts/StorageContext';
 import { StorageProviderType } from '@/lib/storage/StorageProvider';
+import { useTranslation } from 'react-i18next';
 
 export function useStorageProvider() {
   const context = useContext(StorageContext);
   const [lastSyncElapsed, setLastSyncElapsed] = useState<number | null>(null);
+  const { t } = useTranslation();
   
   if (!context) {
-    throw new Error('useStorageProvider must be used within a StorageProviderComponent');
+    throw new Error(t('errors.useStorageProvider'));
   }
   
   // Calculate time since last sync in seconds
@@ -38,8 +40,8 @@ export function useStorageProvider() {
     lastSyncElapsed,
     formattedSyncAge: lastSyncElapsed !== null 
       ? lastSyncElapsed < 60 
-        ? `${lastSyncElapsed}s ago`
-        : `${Math.floor(lastSyncElapsed / 60)}m ago`
+        ? t('storage.syncTime.seconds', { seconds: lastSyncElapsed })
+        : t('storage.syncTime.minutes', { minutes: Math.floor(lastSyncElapsed / 60) })
       : null
   };
 }

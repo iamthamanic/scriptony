@@ -1,3 +1,4 @@
+
 export default {
   common: {
     welcome: "Willkommen zurück",
