@@ -40,6 +40,55 @@ export function creativeGymReducer(state: CreativeGymState, action: CreativeGymA
       );
       return { ...state, trainingPlans: updatedPlans };
     }
+    case 'SET_DISCIPLINE_CHALLENGES':
+      return { ...state, disciplineChallenges: action.payload };
+    case 'ADD_DISCIPLINE_CHALLENGE':
+      return { ...state, disciplineChallenges: [...state.disciplineChallenges, action.payload] };
+    case 'COMPLETE_DISCIPLINE_CHALLENGE': {
+      const updatedDisciplineChallenges = state.disciplineChallenges.map(challenge =>
+        challenge.id === action.payload.challengeId
+          ? { 
+              ...challenge, 
+              completedAt: new Date(),
+              userContent: action.payload.content,
+              userAttachments: action.payload.attachments 
+            }
+          : challenge
+      );
+      
+      // Find the completed challenge to get its discipline type
+      const completedChallenge = state.disciplineChallenges.find(
+        challenge => challenge.id === action.payload.challengeId
+      );
+      
+      if (completedChallenge) {
+        const disciplineType = completedChallenge.disciplineType;
+        const currentCount = state.userProgress.completedDisciplines?.[disciplineType] || 0;
+        
+        // Update the completed disciplines count
+        const updatedCompletedDisciplines = {
+          ...state.userProgress.completedDisciplines,
+          [disciplineType]: currentCount + 1
+        };
+        
+        return {
+          ...state,
+          disciplineChallenges: updatedDisciplineChallenges,
+          userProgress: {
+            ...state.userProgress,
+            completedDisciplines: updatedCompletedDisciplines,
+            completedChallenges: state.userProgress.completedChallenges + 1,
+            totalChallenges: state.userProgress.totalChallenges + 1,
+            xp: state.userProgress.xp + 15 // Base XP for discipline challenges
+          }
+        };
+      }
+      
+      return {
+        ...state,
+        disciplineChallenges: updatedDisciplineChallenges
+      };
+    }
     case 'SET_LOADING':
       return { ...state, isLoading: action.payload };
     default:

@@ -1,6 +1,8 @@
 
 export type ChallengeType = 'prompt-forge' | 'style-lock' | 'constraint-bench' | 'time-puncher' | 'remix-mode';
 
+export type DisciplineType = 'comedy' | 'songwriting' | 'visual-arts' | 'photography' | 'filmmaking';
+
 export interface Challenge {
   id: string;
   title: string;
@@ -13,6 +15,21 @@ export interface Challenge {
   remixContent?: string;
   createdAt: Date;
   completedAt?: Date;
+}
+
+export interface DisciplineChallenge {
+  id: string;
+  title: string;
+  disciplineType: DisciplineType;
+  description: string;
+  instructions: string;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  estimatedTime?: string;
+  allowsUpload: boolean;
+  createdAt: Date;
+  completedAt?: Date;
+  userContent?: string;
+  userAttachments?: string[];
 }
 
 export interface ChallengeResult {
@@ -34,6 +51,7 @@ export interface UserProgress {
   streak: number; // Days in a row with completed challenges
   achievements: Achievement[];
   personalRecords: Record<string, number>; // e.g. {"fastest-completion": 120, "longest-streak": 7}
+  completedDisciplines?: Record<DisciplineType, number>; // Track completed challenges by discipline
 }
 
 export interface Achievement {

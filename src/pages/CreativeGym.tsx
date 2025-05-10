@@ -8,6 +8,9 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ChallengeRunner from '@/components/creative-gym/ChallengeRunner';
+import DisciplinesList from '@/components/creative-gym/DisciplinesList';
+import DisciplineChallenges from '@/components/creative-gym/DisciplineChallenges';
+import { DisciplineType } from '@/types/creative-gym';
 
 const CreativeGym = () => {
   const {
@@ -17,6 +20,7 @@ const CreativeGym = () => {
   } = useCreativeGym();
   
   const [selectedTab, setSelectedTab] = useState<string>('challenges');
+  const [selectedDiscipline, setSelectedDiscipline] = useState<DisciplineType | null>(null);
   
   // Progress calculation
   const progressToNextLevel = userProgress.xp % 100;
@@ -26,6 +30,14 @@ const CreativeGym = () => {
   if (activeChallengeId) {
     return <ChallengeRunner />;
   }
+  
+  const handleSelectDiscipline = (discipline: DisciplineType) => {
+    setSelectedDiscipline(discipline);
+  };
+  
+  const handleBackFromDiscipline = () => {
+    setSelectedDiscipline(null);
+  };
   
   return (
     <div className="py-8 px-4 md:px-6 w-full animate-fade-in">
@@ -74,8 +86,9 @@ const CreativeGym = () => {
           onValueChange={setSelectedTab}
           className="mb-8"
         >
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="challenges">Challenges</TabsTrigger>
+            <TabsTrigger value="artforms">Art Forms</TabsTrigger>
             <TabsTrigger value="training">Training Plans</TabsTrigger>
             <TabsTrigger value="achievements">Achievements</TabsTrigger>
           </TabsList>
@@ -195,7 +208,7 @@ const CreativeGym = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Zap className="h-5 w-5 text-purple-500" />
+                    <RotateCcw className="h-5 w-5 text-purple-500" />
                     Remix Mode
                   </CardTitle>
                   <CardDescription>
@@ -218,6 +231,18 @@ const CreativeGym = () => {
                 </CardFooter>
               </Card>
             </div>
+          </TabsContent>
+
+          {/* Art Forms Tab */}
+          <TabsContent value="artforms" className="mt-6">
+            {!selectedDiscipline ? (
+              <DisciplinesList onSelectDiscipline={handleSelectDiscipline} />
+            ) : (
+              <DisciplineChallenges 
+                disciplineType={selectedDiscipline} 
+                onBack={handleBackFromDiscipline} 
+              />
+            )}
           </TabsContent>
           
           {/* Training Plans Tab */}

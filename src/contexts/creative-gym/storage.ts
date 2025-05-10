@@ -7,7 +7,8 @@ export const saveStateToLocalStorage = (state: Partial<CreativeGymState>) => {
       challenges: state.challenges,
       results: state.results,
       userProgress: state.userProgress,
-      trainingPlans: state.trainingPlans
+      trainingPlans: state.trainingPlans,
+      disciplineChallenges: state.disciplineChallenges
     }));
   } catch (error) {
     console.error('Error saving Creative Gym state to localStorage:', error);
@@ -46,10 +47,17 @@ export const loadStateFromLocalStorage = (): Partial<CreativeGymState> | null =>
           scheduledFor: new Date(challenge.scheduledFor)
         }))
       })) || [];
+
+      const disciplineChallenges = parsedState.disciplineChallenges?.map((challenge: any) => ({
+        ...challenge,
+        createdAt: new Date(challenge.createdAt),
+        completedAt: challenge.completedAt ? new Date(challenge.completedAt) : undefined
+      })) || [];
       
       return {
         challenges,
         results,
+        disciplineChallenges,
         userProgress: parsedState.userProgress ? {
           ...parsedState.userProgress,
           achievements

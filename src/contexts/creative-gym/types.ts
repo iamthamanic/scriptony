@@ -1,9 +1,10 @@
 
-import { Challenge, ChallengeResult, UserProgress, TrainingPlan, ChallengeType } from '@/types/creative-gym';
+import { Challenge, ChallengeResult, UserProgress, TrainingPlan, ChallengeType, DisciplineChallenge, DisciplineType } from '@/types/creative-gym';
 
 // State interface
 export interface CreativeGymState {
   challenges: Challenge[];
+  disciplineChallenges: DisciplineChallenge[];
   results: ChallengeResult[];
   userProgress: UserProgress;
   trainingPlans: TrainingPlan[];
@@ -21,6 +22,9 @@ export type CreativeGymAction =
   | { type: 'SET_TRAINING_PLANS'; payload: TrainingPlan[] }
   | { type: 'ADD_TRAINING_PLAN'; payload: TrainingPlan }
   | { type: 'UPDATE_TRAINING_PLAN'; payload: { id: string, updates: Partial<TrainingPlan> } }
+  | { type: 'SET_DISCIPLINE_CHALLENGES'; payload: DisciplineChallenge[] }
+  | { type: 'ADD_DISCIPLINE_CHALLENGE'; payload: DisciplineChallenge }
+  | { type: 'COMPLETE_DISCIPLINE_CHALLENGE'; payload: { challengeId: string, content?: string, attachments?: string[] } }
   | { type: 'SET_LOADING'; payload: boolean };
 
 // Context interface
@@ -29,6 +33,8 @@ export interface CreativeGymContextType extends CreativeGymState {
   completeChallenge: (content: string) => void;
   cancelChallenge: () => void;
   createTrainingPlan: (plan: Omit<TrainingPlan, 'id'>) => void;
+  startDisciplineChallenge: (disciplineType: DisciplineType, challengeId: string) => void;
+  completeDisciplineChallenge: (challengeId: string, content?: string, attachments?: string[]) => void;
 }
 
 // Initial state
@@ -39,11 +45,19 @@ export const initialUserProgress: UserProgress = {
   completedChallenges: 0,
   streak: 0,
   achievements: [],
-  personalRecords: {}
+  personalRecords: {},
+  completedDisciplines: {
+    'comedy': 0,
+    'songwriting': 0,
+    'visual-arts': 0,
+    'photography': 0,
+    'filmmaking': 0
+  }
 };
 
 export const initialState: CreativeGymState = {
   challenges: [],
+  disciplineChallenges: [],
   results: [],
   userProgress: initialUserProgress,
   trainingPlans: [],
