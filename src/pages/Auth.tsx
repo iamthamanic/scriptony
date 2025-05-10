@@ -21,7 +21,12 @@ const Auth = () => {
       description="Sign in to your account to continue"
       footer={null}
     >
-      {/* Auth content will be rendered here */}
+      <div className="space-y-4">
+        {/* Auth form content will be rendered here */}
+        <p className="text-muted-foreground text-center">
+          Please sign in or register to continue
+        </p>
+      </div>
     </AuthContainer>
   );
 };

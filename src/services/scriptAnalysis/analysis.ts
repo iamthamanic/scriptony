@@ -1,5 +1,5 @@
 
-import { AnalysisResult } from '@/types';
+import { AnalysisResult, TimeOfDay } from '@/types';
 import { processScriptContent } from './sceneProcessing';
 import { determineProjectType, detectGenres, determineNarrativeStructure } from './genreDetection';
 import { detectScriptTitle } from './titleDetection';
@@ -28,14 +28,13 @@ export async function analyzeScriptText(text: string): Promise<AnalysisResult> {
   // Process script for scenes and characters
   const { scenes, characters, metrics } = processScriptContent(lines);
   
-  // Note: We'll need proper conversion of DetectedScene to Scene and DetectedCharacter to Character
-  // This is a placeholder - in a real implementation, you would map these properly
+  // Convert detected scenes to proper Scene objects
   result.scenes = scenes.map(s => ({
     id: `scene-${s.sceneNumber}`,
     projectId: 'temp-project',
     sceneNumber: s.sceneNumber,
     location: s.location,
-    timeOfDay: s.timeOfDay,
+    timeOfDay: s.timeOfDay.toLowerCase() as TimeOfDay,
     timecodeStart: '00:00:00',
     timecodeEnd: '00:00:00',
     description: s.description,
@@ -54,6 +53,7 @@ export async function analyzeScriptText(text: string): Promise<AnalysisResult> {
     specialEffects: ''
   }));
   
+  // Convert detected characters to proper Character objects
   result.characters = characters.map(c => ({
     id: `character-${c.name.replace(/\s+/g, '-').toLowerCase()}`,
     projectId: 'temp-project',
