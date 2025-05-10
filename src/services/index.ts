@@ -10,6 +10,13 @@ export * from './admin';
 export * from './worlds';
 export * from './storage';
 
-// Export from database.ts last to avoid conflicts
-// Note: createScene is explicitly excluded above to avoid conflicts
-export * from './database';
+// Export from database.ts last to avoid conflicts, but exclude createScene
+// to prevent conflicts with the one from projects module
+export { 
+  fetchUserProjects, fetchProjectDetails, 
+  deleteProject, updateProject,
+  deleteScene,
+  createCharacter, updateCharacter, deleteCharacter,
+  createEpisode, updateEpisode, deleteEpisode,
+  utils
+} from './database';
