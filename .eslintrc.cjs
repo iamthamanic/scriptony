@@ -10,7 +10,6 @@ module.exports = {
     react: { version: "detect" },
   },
   extends: [
-    // Basis-Regeln
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended"
@@ -20,9 +19,8 @@ module.exports = {
     "react"
   ],
   rules: {
-    // Deine individuellen Regeln hier
     "@typescript-eslint/no-explicit-any": "error",
     "@typescript-eslint/explicit-function-return-type": "warn",
-    // …
+    // … deine weiteren Regeln
   }
 };
