@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -21,6 +22,7 @@ import NotFound from "./pages/NotFound";
 import Worldbuilding from "./pages/Worldbuilding";
 import CreativeGym from "./pages/CreativeGym";
 import AdminTests from "./pages/AdminTests";
+import AdminUsage from "./pages/AdminUsage";  // Import the new AdminUsage page
 
 // Import components
 import Topbar from "./components/navigation/Topbar";
@@ -150,6 +152,15 @@ const App = () => {
                       <AuthRoute>
                         <AuthenticatedLayout>
                           <AdminTests />
+                        </AuthenticatedLayout>
+                      </AuthRoute>
+                    } />
+                    
+                    {/* New Admin Usage Analytics Route */}
+                    <Route path="/admin/usage" element={
+                      <AuthRoute>
+                        <AuthenticatedLayout>
+                          <AdminUsage />
                         </AuthenticatedLayout>
                       </AuthRoute>
                     } />

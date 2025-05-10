@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCreativeGym } from '@/contexts/creative-gym';
 import { FileText, Dumbbell, Clock, RotateCcw, Zap } from 'lucide-react';
 import { WandSparkles as Wand2 } from 'lucide-react';
@@ -11,12 +10,14 @@ import ChallengeRunner from '@/components/creative-gym/ChallengeRunner';
 import DisciplinesList from '@/components/creative-gym/DisciplinesList';
 import DisciplineChallenges from '@/components/creative-gym/DisciplineChallenges';
 import { DisciplineType } from '@/types/creative-gym';
+import { trackPageView, trackUsage } from '@/utils/trackUsage';
 
 const CreativeGym = () => {
   const {
     userProgress,
     activeChallengeId,
-    startChallenge
+    startChallenge,
+    completeChallenge
   } = useCreativeGym();
   
   const [selectedTab, setSelectedTab] = useState<string>('challenges');
@@ -37,6 +38,29 @@ const CreativeGym = () => {
   
   const handleBackFromDiscipline = () => {
     setSelectedDiscipline(null);
+  };
+  
+  // Add usage tracking
+  useEffect(() => {
+    // Track page view
+    trackPageView('creative_gym');
+  }, []);
+  
+  // Add challenge start tracking
+  const handleStartChallenge = (type: any) => {
+    // Track challenge start
+    trackUsage('creative_gym', 'challenge_started', { type });
+    startChallenge(type);
+  };
+  
+  // Add challenge complete tracking
+  const handleCompleteChallenge = (content: string) => {
+    // Track challenge completion
+    trackUsage('creative_gym', 'challenge_completed', {
+      challengeId: activeChallengeId,
+      contentLength: content.length
+    });
+    completeChallenge(content);
   };
   
   return (
@@ -115,7 +139,7 @@ const CreativeGym = () => {
                 </CardContent>
                 <CardFooter>
                   <Button 
-                    onClick={() => startChallenge('prompt-forge')}
+                    onClick={() => handleStartChallenge('prompt-forge')}
                     className="w-full bg-anime-purple hover:bg-anime-dark-purple"
                   >
                     Start Challenge
@@ -142,7 +166,7 @@ const CreativeGym = () => {
                 </CardContent>
                 <CardFooter>
                   <Button 
-                    onClick={() => startChallenge('style-lock')}
+                    onClick={() => handleStartChallenge('style-lock')}
                     className="w-full bg-blue-500 hover:bg-blue-600"
                   >
                     Start Challenge
@@ -169,7 +193,7 @@ const CreativeGym = () => {
                 </CardContent>
                 <CardFooter>
                   <Button 
-                    onClick={() => startChallenge('constraint-bench')}
+                    onClick={() => handleStartChallenge('constraint-bench')}
                     className="w-full bg-green-500 hover:bg-green-600"
                   >
                     Start Challenge
@@ -196,7 +220,7 @@ const CreativeGym = () => {
                 </CardContent>
                 <CardFooter>
                   <Button 
-                    onClick={() => startChallenge('time-puncher')}
+                    onClick={() => handleStartChallenge('time-puncher')}
                     className="w-full bg-orange-500 hover:bg-orange-600"
                   >
                     Start Challenge
@@ -223,7 +247,7 @@ const CreativeGym = () => {
                 </CardContent>
                 <CardFooter>
                   <Button 
-                    onClick={() => startChallenge('remix-mode')}
+                    onClick={() => handleStartChallenge('remix-mode')}
                     className="w-full bg-purple-500 hover:bg-purple-600"
                   >
                     Start Challenge

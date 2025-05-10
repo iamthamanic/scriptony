@@ -309,5 +309,49 @@ export default {
         category: "general"
       }
     ]
+  },
+  admin: {
+    usage: {
+      title: "Usage Analytics",
+      metrics: {
+        totalEvents: "Total Events",
+        last24Hours: "Last 24 Hours",
+        last7Days: "Last 7 Days",
+        uniqueUsers: "Unique Users"
+      },
+      filters: {
+        startDate: "Start Date",
+        endDate: "End Date",
+        feature: "Feature",
+        action: "Action",
+        allFeatures: "All Features",
+        allActions: "All Actions",
+        refresh: "Refresh",
+        export: "Export",
+        clear: "Clear"
+      },
+      charts: {
+        activityOverTime: "Activity Over Time",
+        usageBreakdown: "Usage Breakdown",
+        byFeature: "By Feature",
+        byAction: "By Action",
+        events: "Events",
+        count: "Count"
+      },
+      table: {
+        recentUsageData: "Recent Usage Data",
+        description: "The most recent user activities tracked in the system.",
+        feature: "Feature",
+        action: "Action",
+        userId: "User ID",
+        dateTime: "Date & Time",
+        context: "Context",
+        noData: "No usage data found",
+        showing: "Showing {{shown}} of {{total}} records. Export to CSV to view all data."
+      },
+      error: {
+        title: "Error Loading Usage Data",
+      }
+    }
   }
 };
