@@ -1,4 +1,3 @@
-
 export default {
   common: {
     welcome: "Willkommen zurück",
@@ -310,5 +309,49 @@ export default {
         category: "general"
       }
     ]
+  },
+  admin: {
+    usage: {
+      title: "Nutzungsanalyse",
+      metrics: {
+        totalEvents: "Gesamtereignisse",
+        last24Hours: "Letzte 24 Stunden",
+        last7Days: "Letzte 7 Tage",
+        uniqueUsers: "Eindeutige Nutzer"
+      },
+      filters: {
+        startDate: "Startdatum",
+        endDate: "Enddatum",
+        feature: "Funktion",
+        action: "Aktion",
+        allFeatures: "Alle Funktionen",
+        allActions: "Alle Aktionen",
+        refresh: "Aktualisieren",
+        export: "Exportieren",
+        clear: "Zurücksetzen"
+      },
+      charts: {
+        activityOverTime: "Aktivität im Zeitverlauf",
+        usageBreakdown: "Nutzungsaufschlüsselung",
+        byFeature: "Nach Funktion",
+        byAction: "Nach Aktion",
+        events: "Ereignisse",
+        count: "Anzahl"
+      },
+      table: {
+        recentUsageData: "Aktuelle Nutzungsdaten",
+        description: "Die neuesten im System erfassten Benutzeraktivitäten.",
+        feature: "Funktion",
+        action: "Aktion",
+        userId: "Benutzer-ID",
+        dateTime: "Datum & Uhrzeit",
+        context: "Kontext",
+        noData: "Keine Nutzungsdaten gefunden",
+        showing: "Anzeige von {{shown}} aus {{total}} Datensätzen. Exportieren Sie nach CSV, um alle Daten anzuzeigen."
+      },
+      error: {
+        title: "Fehler beim Laden der Nutzungsdaten",
+      }
+    }
   }
 };

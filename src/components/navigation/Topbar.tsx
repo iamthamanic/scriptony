@@ -1,7 +1,7 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, FileText, Globe, Upload, Settings, Menu, X, Dumbbell } from 'lucide-react';
+import { Home, FileText, Globe, Upload, Settings, Menu, X, Dumbbell, BarChart2, TestTube2 } from 'lucide-react';
 import Logo from '@/components/Logo';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { checkIsAdmin } from '@/utils/trackUsage';
 
 interface NavItemProps {
   to: string;
@@ -45,6 +46,7 @@ const NavItem = ({ to, icon: Icon, label, onClose }: NavItemProps) => {
 const Topbar = () => {
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   
   const navItems = [
     { to: "/home", icon: Home, label: "Home" },
@@ -53,6 +55,24 @@ const Topbar = () => {
     { to: "/creative-gym", icon: Dumbbell, label: "Creative Gym" },
     { to: "/upload", icon: Upload, label: "Upload" },
   ];
+  
+  // Admin nav items, only shown to admin users
+  const adminNavItems = [
+    { to: "/admin/usage", icon: BarChart2, label: "Usage Analytics" },
+    { to: "/admin/tests", icon: TestTube2, label: "Tests" },
+  ];
+  
+  // Check if user is admin
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      if (user) {
+        const admin = await checkIsAdmin();
+        setIsAdmin(admin);
+      }
+    };
+    
+    checkAdminStatus();
+  }, [user]);
   
   const closeSheet = () => setIsOpen(false);
 
@@ -66,6 +86,15 @@ const Topbar = () => {
         {/* Desktop Navigation - Centered with improved spacing */}
         <nav className="hidden md:flex items-center space-x-4 absolute left-1/2 transform -translate-x-1/2">
           {navItems.map((item) => (
+            <NavItem 
+              key={item.to} 
+              to={item.to}
+              label={item.label} 
+            />
+          ))}
+          
+          {/* Show admin links if user is admin */}
+          {isAdmin && adminNavItems.map((item) => (
             <NavItem 
               key={item.to} 
               to={item.to}
@@ -131,6 +160,25 @@ const Topbar = () => {
                         onClose={closeSheet}
                       />
                     ))}
+                    
+                    {/* Show admin links if user is admin */}
+                    {isAdmin && (
+                      <>
+                        <div className="border-t my-2 pt-2">
+                          <div className="px-4 py-1 text-xs font-semibold text-muted-foreground">Admin</div>
+                        </div>
+                        {adminNavItems.map((item) => (
+                          <NavItem 
+                            key={item.to} 
+                            to={item.to} 
+                            icon={item.icon} 
+                            label={item.label} 
+                            onClose={closeSheet}
+                          />
+                        ))}
+                      </>
+                    )}
+                    
                     {user && (
                       <NavItem 
                         to="/account" 

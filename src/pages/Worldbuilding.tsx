@@ -1,9 +1,9 @@
-
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 import { useWorldsState } from "@/hooks/useWorldsState";
 import WorldsContent from "../components/worlds/WorldsContent";
-import WorldModals from "../components/worlds/WorldModals";
+import WorldModals from "../components/worlds/WorldsModals";
+import { trackPageView } from '@/utils/trackUsage';
 
 const Worldbuilding = () => {
   const { user } = useAuth();
@@ -42,6 +42,11 @@ const Worldbuilding = () => {
       loadWorlds();
     }
   }, [user?.id, loadWorlds]);
+
+  // Add usage tracking
+  useEffect(() => {
+    trackPageView('worldbuilding');
+  }, []);
 
   const handleEditWorld = () => {
     if (!selectedWorld) return;

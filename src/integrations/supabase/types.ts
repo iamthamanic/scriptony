@@ -106,6 +106,33 @@ export type Database = {
           },
         ]
       }
+      feature_usage: {
+        Row: {
+          action: string
+          context: Json | null
+          created_at: string
+          feature: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          action: string
+          context?: Json | null
+          created_at?: string
+          feature: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          action?: string
+          context?: Json | null
+          created_at?: string
+          feature?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       mcp_tokens: {
         Row: {
           call_count: number
