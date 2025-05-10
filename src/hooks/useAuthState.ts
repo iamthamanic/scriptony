@@ -71,3 +71,6 @@ export const useAuth = () => {
     signOut
   };
 };
+
+// Add compatibility alias for code using useAuthState
+export const useAuthState = useAuth;
