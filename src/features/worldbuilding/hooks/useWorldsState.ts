@@ -1,9 +1,10 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { World, WorldCategory, NewWorldFormData, WorldCategoryFormData } from '@/types';
+import { World, WorldCategory, WorldFormData, WorldCategoryFormData, WorldCategoryType } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 import { v4 as uuidv4 } from 'uuid';
+import { Json } from '@/integrations/supabase/types';
 
 type DeletionState = 'idle' | 'deleting' | 'completed';
 
@@ -55,12 +56,20 @@ export const useWorldsState = (userId?: string) => {
         throw categoriesError;
       }
       
-      // Associate categories with their respective worlds
-      const populatedWorlds = worldsData.map(world => ({
+      // Associate categories with their respective worlds and convert dates
+      const populatedWorlds: World[] = worldsData.map(world => ({
         ...world,
+        created_at: new Date(world.created_at),
+        updated_at: new Date(world.updated_at),
         categories: categoriesData
           .filter(category => category.world_id === world.id)
           .sort((a, b) => a.order_index - b.order_index)
+          .map(cat => ({
+            ...cat,
+            type: cat.type as WorldCategoryType,
+            created_at: new Date(cat.created_at),
+            updated_at: new Date(cat.updated_at)
+          }))
       }));
       
       console.log("Loaded worlds:", populatedWorlds);
@@ -79,7 +88,7 @@ export const useWorldsState = (userId?: string) => {
   }, [userId, toast]);
 
   // Create a new world
-  const handleCreateWorld = async (data: NewWorldFormData) => {
+  const handleCreateWorld = async (data: WorldFormData) => {
     if (!userId) {
       toast({
         title: "Error",
@@ -106,9 +115,11 @@ export const useWorldsState = (userId?: string) => {
       }
       
       if (worldData && worldData.length > 0) {
-        // Add the new world to the state
+        // Add the new world to the state with proper date conversion
         const newWorld: World = {
           ...worldData[0],
+          created_at: new Date(worldData[0].created_at),
+          updated_at: new Date(worldData[0].updated_at),
           categories: [] // New world has no categories yet
         };
         
@@ -130,7 +141,7 @@ export const useWorldsState = (userId?: string) => {
   };
 
   // Update an existing world
-  const handleUpdateWorld = async (data: NewWorldFormData) => {
+  const handleUpdateWorld = async (data: WorldFormData) => {
     if (!selectedWorldId || !selectedWorld) {
       toast({
         title: "Error",
@@ -162,7 +173,8 @@ export const useWorldsState = (userId?: string) => {
             ? { 
                 ...world, 
                 name: data.name, 
-                description: data.description 
+                description: data.description,
+                updated_at: new Date()
               } 
             : world
         )
@@ -324,7 +336,7 @@ export const useWorldsState = (userId?: string) => {
         
         if (error) throw error;
         
-        // Update state
+        // Update state with proper type conversion
         setWorlds(prev => 
           prev.map(world => {
             if (world.id === selectedWorldId) {
@@ -335,9 +347,10 @@ export const useWorldsState = (userId?: string) => {
                     ? {
                         ...cat,
                         name: data.name,
-                        type: data.type,
+                        type: data.type as WorldCategoryType,
                         content: data.content || {},
                         icon: data.icon,
+                        updated_at: new Date()
                       }
                     : cat
                 )
@@ -355,7 +368,7 @@ export const useWorldsState = (userId?: string) => {
         // Create new category
         const newCategory = {
           name: data.name,
-          type: data.type,
+          type: data.type as WorldCategoryType,
           world_id: selectedWorldId,
           content: data.content || {},
           icon: data.icon,
@@ -370,13 +383,20 @@ export const useWorldsState = (userId?: string) => {
         if (error) throw error;
         
         if (categoryData && categoryData.length > 0) {
-          // Update state
+          // Update state with proper date conversion
+          const newCat = {
+            ...categoryData[0],
+            created_at: new Date(categoryData[0].created_at),
+            updated_at: new Date(categoryData[0].updated_at),
+            type: categoryData[0].type as WorldCategoryType
+          };
+          
           setWorlds(prev => 
             prev.map(world => {
               if (world.id === selectedWorldId) {
                 return {
                   ...world,
-                  categories: [...world.categories, categoryData[0]]
+                  categories: [...world.categories, newCat]
                 };
               }
               return world;

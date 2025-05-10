@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { AuthContainer } from '@/components/auth/AuthContainer';
+import AuthContainer from '@/components/auth/AuthContainer';
 import { useAuth } from '@/hooks/useAuthState';
 import { Navigate } from 'react-router-dom';
 
@@ -15,7 +15,15 @@ const Auth = () => {
     return <Navigate to="/projects" replace />;
   }
 
-  return <AuthContainer />;
+  return (
+    <AuthContainer 
+      title="Welcome"
+      description="Sign in to your account to continue"
+      footer={null}
+    >
+      {/* Auth content will be rendered here */}
+    </AuthContainer>
+  );
 };
 
 export default Auth;

@@ -9,8 +9,16 @@ export * from './camera';
 export * from './references';
 export * from './narrativeStructures/types';
 export * from './genres';
-// Export worlds but avoid re-exporting TimeOfDay from it
-export * from './worlds';
+
+// Export specific types from worlds module but avoid re-exporting TimeOfDay from it
+export type { 
+  World,
+  WorldCategory,
+  WorldCategoryType,
+  WorldFormData,
+  WorldCategoryFormData
+} from './worlds';
+
 export * from './admin';
 export * from './shots';
 
