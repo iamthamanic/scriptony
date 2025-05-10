@@ -8,7 +8,7 @@ import { WandSparkles as Wand2 } from 'lucide-react';
 import { FileText } from 'lucide-react';
 import { Dumbbell } from 'lucide-react';
 import { Clock } from 'lucide-react';
-import { useCreativeGym } from '@/contexts/CreativeGymContext';
+import { useCreativeGym } from '@/contexts/creative-gym';
 import { toast } from 'sonner';
 
 interface ChallengeCompletionProps {
