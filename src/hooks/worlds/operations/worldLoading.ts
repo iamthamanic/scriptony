@@ -1,7 +1,7 @@
 
 import { useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { fetchUserWorlds } from "@/services/worlds";
+import { fetchWorlds } from "@/services/worlds";
 
 export function useWorldLoading(
   userId: string | undefined,
@@ -58,7 +58,7 @@ export function useWorldLoading(
       }
       
       loadingInProgressRef.current = true;
-      const worldsData = await fetchUserWorlds();
+      const worldsData = await fetchWorlds(userId);
       console.log("Worlds fetched successfully:", worldsData.length);
       
       // Small delay only for first load to ensure UI is ready

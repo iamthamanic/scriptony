@@ -26,7 +26,7 @@ export const uploadAndAnalyzeScript = async (file: File): Promise<{ analysisResu
       characterIds: ["ALEX"],
       dialog: "",
       transitions: "",
-      production_notes: "",
+      productionNotes: "", // Fixed: production_notes -> productionNotes
       emotional_significance: "other",
       emotional_notes: "",
       createdAt: new Date(),
@@ -45,7 +45,7 @@ export const uploadAndAnalyzeScript = async (file: File): Promise<{ analysisResu
       characterIds: ["ALEX", "JAMIE"],
       dialog: "",
       transitions: "",
-      production_notes: "",
+      productionNotes: "", // Fixed: production_notes -> productionNotes
       emotional_significance: "other",
       emotional_notes: "",
       createdAt: new Date(),

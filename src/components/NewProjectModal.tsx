@@ -9,10 +9,11 @@ import { NewProjectFormData, ProjectType, Genre, VideoFormat, World } from '../t
 import { genreOptions, projectTypeOptions, videoFormatOptions } from '../utils/mockData';
 import { X, Plus, Upload } from 'lucide-react';
 import WorldSelector from './worlds/WorldSelector';
-import { fetchUserWorlds, createWorld } from '../services/worlds';
+import { fetchWorlds, createWorld } from '../services/worlds';
 import { useToast } from '@/hooks/use-toast';
 import NewWorldModal from './worlds/NewWorldModal';
 import NarrativeStructureSelector from './narrative-structures/NarrativeStructureSelector';
+import { supabase } from '@/integrations/supabase/client';
 
 interface NewProjectModalProps {
   isOpen: boolean;
@@ -41,8 +42,12 @@ const NewProjectModal = ({ isOpen, onClose, onSubmit }: NewProjectModalProps) =>
       // Load worlds when modal opens
       const loadWorlds = async () => {
         try {
-          const worldsData = await fetchUserWorlds();
-          setWorlds(worldsData);
+          // Replace with fetchUserWorlds when it's properly exported
+          const { data } = await supabase.auth.getUser();
+          if (data.user) {
+            const worldsData = await fetchWorlds(data.user.id);
+            setWorlds(worldsData);
+          }
         } catch (error) {
           console.error('Error loading worlds:', error);
         }
