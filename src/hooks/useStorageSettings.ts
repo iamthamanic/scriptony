@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
-import { getUserStorageSettings, UserStorageSettings } from '@/services/storage';
+import { getUserStorageSettings } from '@/services/storage';
+import { UserStorageSettings } from '@/services/storage/types';
 
 export const useStorageSettings = () => {
   const [settings, setSettings] = useState<UserStorageSettings | null>(null);

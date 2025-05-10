@@ -25,7 +25,7 @@ export const useScenes = (
       // If there's a keyframe image as a File, upload it first and get the URL
       if (sceneData.keyframeImage instanceof File) {
         const fileName = `${Date.now()}_${sceneData.keyframeImage.name}`;
-        const { data: uploadData, error: uploadError } = await uploadFileToStorage(
+        const { url, error: uploadError } = await uploadFileToStorage(
           'scene-keyframes',
           fileName,
           sceneData.keyframeImage
@@ -34,7 +34,7 @@ export const useScenes = (
         if (uploadError) throw uploadError;
         
         // Replace the File object with the URL string
-        sceneData.keyframeImage = uploadData.url;
+        sceneData.keyframeImage = url;
       }
       
       // Now create the scene with the processed data

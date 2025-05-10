@@ -8,6 +8,7 @@ export * from './scriptAnalysis';
 export * from './admin';
 export * from './worlds';
 export * from './storage';
-export * from './database';
 
-// Note: We're not exporting createScene from scenes.ts to avoid conflicts
+// Export from database.ts last to avoid conflicts
+// Note: createScene from scenes.ts will be overridden by database.ts
+export * from './database';
