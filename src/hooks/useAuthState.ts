@@ -1,46 +1,73 @@
 
-import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
-/**
- * Hook to manage authentication state (login, register, password reset)
- */
-export const useAuthState = () => {
-  const [isLogin, setIsLogin] = useState(true);
-  const [isPasswordReset, setIsPasswordReset] = useState(false);
-  const location = useLocation();
+interface User {
+  id: string;
+  email?: string;
+  user_metadata?: {
+    name?: string;
+  };
+}
+
+export const useAuth = () => {
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check if state has mode parameter to determine login or register
-    if (location.state?.mode === 'login') {
-      setIsLogin(true);
-      setIsPasswordReset(false);
-    } else if (location.state?.mode === 'register') {
-      setIsLogin(false);
-      setIsPasswordReset(false);
-    } else if (location.state?.mode === 'reset') {
-      setIsPasswordReset(true);
-      setIsLogin(false);
-    }
-  }, [location.state]);
+    // Check active session
+    const checkSession = async () => {
+      setIsLoading(true);
+      
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error("Error checking session:", error);
+          return;
+        }
+        
+        setUser(session?.user || null);
+      } catch (error) {
+        console.error("Unexpected error during session check:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    checkSession();
 
-  const toggleMode = () => {
-    if (isPasswordReset) {
-      setIsPasswordReset(false);
-      setIsLogin(true);
-    } else {
-      setIsLogin(!isLogin);
-    }
-  };
+    // Subscribe to auth changes
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null);
+      setIsLoading(false);
+    });
 
-  const togglePasswordReset = () => {
-    setIsPasswordReset(!isPasswordReset);
+    return () => {
+      // Cleanup subscription when component unmounts
+      authListener.subscription?.unsubscribe();
+    };
+  }, []);
+
+  const signOut = async () => {
+    setIsLoading(true);
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("Sign out error:", error);
+        throw error;
+      }
+    } catch (error) {
+      console.error("Unexpected error during sign out:", error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return {
-    isLogin,
-    isPasswordReset,
-    toggleMode,
-    togglePasswordReset
+    user,
+    isLoading,
+    signOut
   };
 };

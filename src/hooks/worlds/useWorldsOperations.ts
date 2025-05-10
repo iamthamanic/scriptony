@@ -30,20 +30,8 @@ export function useWorldsOperations(
       
       const worldsData = await fetchWorlds(userId);
       
-      // Convert date strings to Date objects and ensure type safety
-      const convertedWorlds: World[] = worldsData.map(world => ({
-        ...world,
-        created_at: new Date(world.created_at),
-        updated_at: new Date(world.updated_at),
-        categories: world.categories.map(cat => ({
-          ...cat,
-          type: cat.type as WorldCategoryType, // Cast to ensure type safety
-          created_at: new Date(cat.created_at),
-          updated_at: new Date(cat.updated_at)
-        }))
-      }));
-      
-      setWorlds(convertedWorlds);
+      // Ensure proper typing by converting data to World[] format
+      setWorlds(worldsData);
       setHasLoadedOnce(true);
     } catch (error) {
       console.error("Error fetching worlds:", error);
@@ -60,17 +48,9 @@ export function useWorldsOperations(
     try {
       setIsLoading(true);
       
-      const newWorld = await createWorld(userId, data);
+      const newWorld = await createWorld(data);
       
-      // Convert dates to Date objects
-      const worldWithDates = {
-        ...newWorld,
-        created_at: new Date(newWorld.created_at),
-        updated_at: new Date(newWorld.updated_at),
-        categories: [] // New worlds have no categories yet
-      };
-      
-      setWorlds(prev => [...prev, worldWithDates]);
+      setWorlds(prev => [...prev, newWorld]);
       setIsNewWorldModalOpen(false);
       toast.success("World created successfully");
       
@@ -91,18 +71,11 @@ export function useWorldsOperations(
     try {
       setIsLoading(true);
       
-      const updatedWorld = await updateWorld(userId, selectedWorldId, data);
+      const updatedWorld = await updateWorld(selectedWorldId, data);
       
       // Update state with the updated world
       setWorlds(prev => prev.map(world => 
-        world.id === selectedWorldId 
-          ? { 
-              ...world, 
-              ...updatedWorld, 
-              created_at: world.created_at,
-              updated_at: new Date(updatedWorld.updated_at)
-            } 
-          : world
+        world.id === selectedWorldId ? updatedWorld : world
       ));
       
       setIsEditWorldModalOpen(false);
@@ -122,7 +95,7 @@ export function useWorldsOperations(
     try {
       setIsLoading(true);
       
-      await deleteWorld(userId, selectedWorldId);
+      await deleteWorld(selectedWorldId);
       
       // Remove the deleted world from state
       setWorlds(prev => prev.filter(world => world.id !== selectedWorldId));

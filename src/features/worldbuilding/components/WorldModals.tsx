@@ -1,11 +1,10 @@
 
 import React from 'react';
-import { World, WorldCategory, WorldCategoryFormData } from "@/types";
+import { World, WorldCategory, WorldCategoryFormData, WorldFormData } from "@/types";
 import NewWorldModal from "@/components/worlds/NewWorldModal";
 import EditWorldModal from "@/components/worlds/EditWorldModal";
 import DeleteWorldDialog from "@/components/worlds/DeleteWorldDialog";
 import WorldCategoryModal from "@/components/worlds/WorldCategoryModal";
-import { NewWorldFormData } from "@/types/worlds/base";
 
 interface WorldModalsProps {
   isNewWorldModalOpen: boolean;
@@ -18,8 +17,8 @@ interface WorldModalsProps {
   onCloseEditWorldModal: () => void;
   onCloseDeleteWorldDialog: () => void;
   onCloseCategoryModal: () => void;
-  onCreateWorld: (data: NewWorldFormData) => Promise<void>;
-  onUpdateWorld: (data: any) => Promise<void>;
+  onCreateWorld: (data: WorldFormData) => Promise<void>;
+  onUpdateWorld: (data: WorldFormData) => Promise<void>;
   onDeleteWorld: () => Promise<void>;
   onSubmitCategory: (data: WorldCategoryFormData) => Promise<void>;
 }

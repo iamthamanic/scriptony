@@ -1,6 +1,6 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import { AnalysisResult, Scene, Character, Genre, NarrativeStructureType, ProjectType } from '@/types';
+import { AnalysisResult, Scene, Character, Genre, NarrativeStructureType, ProjectType, TimeOfDay } from '@/types';
 
 export const uploadAndAnalyzeScript = async (file: File): Promise<{ analysisResult: AnalysisResult }> => {
   try {
@@ -19,7 +19,7 @@ export const uploadAndAnalyzeScript = async (file: File): Promise<{ analysisResu
       projectId: "mock-project",
       sceneNumber: 1,
       location: "INTERIOR - LIVING ROOM",
-      timeOfDay: "DAY",
+      timeOfDay: "day" as TimeOfDay, // Fix the time of day to use lowercase
       timecodeStart: "00:00:00",
       timecodeEnd: "00:01:30",
       description: "A character sits on a couch, reading a book.",
@@ -38,7 +38,7 @@ export const uploadAndAnalyzeScript = async (file: File): Promise<{ analysisResu
       projectId: "mock-project",
       sceneNumber: 2,
       location: "EXTERIOR - PARK",
-      timeOfDay: "EVENING",
+      timeOfDay: "evening" as TimeOfDay, // Fix the time of day to use lowercase
       timecodeStart: "00:01:30",
       timecodeEnd: "00:03:00",
       description: "Two characters walk through a park, deep in conversation.",

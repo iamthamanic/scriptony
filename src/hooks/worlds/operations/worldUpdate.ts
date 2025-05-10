@@ -1,7 +1,7 @@
 
 import { useToast } from "@/hooks/use-toast";
 import { updateWorld } from "@/services/worlds";
-import { NewWorldFormData, World } from "@/types";
+import { WorldFormData, World } from "@/types";
 
 export function useWorldUpdate(
   worlds: World[],
@@ -10,7 +10,7 @@ export function useWorldUpdate(
 ) {
   const { toast } = useToast();
 
-  const handleUpdateWorld = async (selectedWorld: World | null, data: NewWorldFormData) => {
+  const handleUpdateWorld = async (selectedWorld: World | null, data: WorldFormData) => {
     if (!selectedWorld) return;
     
     try {

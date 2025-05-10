@@ -5,17 +5,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { NewWorldFormData } from '@/types';
+import { WorldFormData } from '@/types';
 import { Upload } from 'lucide-react';
 
 interface NewWorldModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: NewWorldFormData) => void;
+  onSubmit: (data: WorldFormData) => void;
 }
 
 const NewWorldModal = ({ isOpen, onClose, onSubmit }: NewWorldModalProps) => {
-  const [formData, setFormData] = useState<NewWorldFormData>({
+  const [formData, setFormData] = useState<WorldFormData>({
     name: '',
     description: '',
   });
