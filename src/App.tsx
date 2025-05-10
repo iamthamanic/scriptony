@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ErrorProvider } from "@/contexts/ErrorContext";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { CreativeGymProvider } from "@/contexts/CreativeGymContext";
 import { AuthRoute, PublicOnlyRoute } from "@/components/AuthRoute";
 import { ErrorDisplay } from "@/components/ErrorDisplay";
 import FeatureDetector from "@/components/admin/FeatureDetector";
@@ -19,6 +20,7 @@ import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import Worldbuilding from "./pages/Worldbuilding";
+import CreativeGym from "./pages/CreativeGym";
 import AdminTests from "./pages/AdminTests";
 
 // Import components
@@ -69,85 +71,95 @@ const App = () => {
             <FeatureDetector />
             
             <AuthProvider>
-              <Toaster />
-              <Sonner />
-              <ErrorDisplay />
-              
-              <div className="flex flex-col w-full min-h-screen">
-                <Routes>
-                  {/* Root route added to prevent 404 */}
-                  <Route path="/" element={
-                    <AuthRoute>
-                      <AuthenticatedLayout>
-                        <Home />
-                      </AuthenticatedLayout>
-                    </AuthRoute>
-                  } />
-                  
-                  {/* Public routes without topbar */}
-                  <Route path="/landing" element={<Landing />} />
-                  <Route path="/auth" element={
-                    <PublicOnlyRoute>
-                      <PageWithTransition>
-                        <Auth />
-                      </PageWithTransition>
-                    </PublicOnlyRoute>
-                  } />
-                  
-                  {/* All authenticated routes with the topbar */}
-                  
-                  <Route path="/home" element={
-                    <AuthRoute>
-                      <AuthenticatedLayout>
-                        <Home />
-                      </AuthenticatedLayout>
-                    </AuthRoute>
-                  } />
-                  
-                  <Route path="/projects" element={
-                    <AuthRoute>
-                      <AuthenticatedLayout>
-                        <Index />
-                      </AuthenticatedLayout>
-                    </AuthRoute>
-                  } />
-                  
-                  <Route path="/worldbuilding" element={
-                    <AuthRoute>
-                      <AuthenticatedLayout>
-                        <Worldbuilding />
-                      </AuthenticatedLayout>
-                    </AuthRoute>
-                  } />
-                  
-                  <Route path="/upload" element={
-                    <AuthRoute>
-                      <AuthenticatedLayout>
-                        <Upload />
-                      </AuthenticatedLayout>
-                    </AuthRoute>
-                  } />
-                  
-                  <Route path="/account" element={
-                    <AuthRoute>
-                      <AuthenticatedLayout>
-                        <Account />
-                      </AuthenticatedLayout>
-                    </AuthRoute>
-                  } />
-                  
-                  <Route path="/admin/tests" element={
-                    <AuthRoute>
-                      <AuthenticatedLayout>
-                        <AdminTests />
-                      </AuthenticatedLayout>
-                    </AuthRoute>
-                  } />
-                  
-                  {/* Catch-all route */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </div>
+              <CreativeGymProvider>
+                <Toaster />
+                <Sonner />
+                <ErrorDisplay />
+                
+                <div className="flex flex-col w-full min-h-screen">
+                  <Routes>
+                    {/* Root route added to prevent 404 */}
+                    <Route path="/" element={
+                      <AuthRoute>
+                        <AuthenticatedLayout>
+                          <Home />
+                        </AuthenticatedLayout>
+                      </AuthRoute>
+                    } />
+                    
+                    {/* Public routes without topbar */}
+                    <Route path="/landing" element={<Landing />} />
+                    <Route path="/auth" element={
+                      <PublicOnlyRoute>
+                        <PageWithTransition>
+                          <Auth />
+                        </PageWithTransition>
+                      </PublicOnlyRoute>
+                    } />
+                    
+                    {/* All authenticated routes with the topbar */}
+                    
+                    <Route path="/home" element={
+                      <AuthRoute>
+                        <AuthenticatedLayout>
+                          <Home />
+                        </AuthenticatedLayout>
+                      </AuthRoute>
+                    } />
+                    
+                    <Route path="/projects" element={
+                      <AuthRoute>
+                        <AuthenticatedLayout>
+                          <Index />
+                        </AuthenticatedLayout>
+                      </AuthRoute>
+                    } />
+                    
+                    <Route path="/worldbuilding" element={
+                      <AuthRoute>
+                        <AuthenticatedLayout>
+                          <Worldbuilding />
+                        </AuthenticatedLayout>
+                      </AuthRoute>
+                    } />
+                    
+                    <Route path="/creative-gym" element={
+                      <AuthRoute>
+                        <AuthenticatedLayout>
+                          <CreativeGym />
+                        </AuthenticatedLayout>
+                      </AuthRoute>
+                    } />
+                    
+                    <Route path="/upload" element={
+                      <AuthRoute>
+                        <AuthenticatedLayout>
+                          <Upload />
+                        </AuthenticatedLayout>
+                      </AuthRoute>
+                    } />
+                    
+                    <Route path="/account" element={
+                      <AuthRoute>
+                        <AuthenticatedLayout>
+                          <Account />
+                        </AuthenticatedLayout>
+                      </AuthRoute>
+                    } />
+                    
+                    <Route path="/admin/tests" element={
+                      <AuthRoute>
+                        <AuthenticatedLayout>
+                          <AdminTests />
+                        </AuthenticatedLayout>
+                      </AuthRoute>
+                    } />
+                    
+                    {/* Catch-all route */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </div>
+              </CreativeGymProvider>
             </AuthProvider>
           </BrowserRouter>
         </ErrorProvider>

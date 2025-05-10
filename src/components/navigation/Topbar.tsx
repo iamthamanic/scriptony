@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, FileText, Globe, Upload, Settings, Menu, X } from 'lucide-react';
+import { Home, FileText, Globe, Upload, Settings, Menu, X, Dumbbell } from 'lucide-react';
 import Logo from '@/components/Logo';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
@@ -50,6 +50,7 @@ const Topbar = () => {
     { to: "/home", icon: Home, label: "Home" },
     { to: "/projects", icon: FileText, label: "Skript-Projekte" },
     { to: "/worldbuilding", icon: Globe, label: "Worldbuilding" },
+    { to: "/creative-gym", icon: Dumbbell, label: "Creative Gym" },
     { to: "/upload", icon: Upload, label: "Upload" },
   ];
   
