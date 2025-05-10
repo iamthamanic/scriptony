@@ -8,7 +8,7 @@ export function useStorageProvider() {
   const [lastSyncElapsed, setLastSyncElapsed] = useState<number | null>(null);
   
   if (!context) {
-    throw new Error('useStorageProvider must be used within a StorageProvider');
+    throw new Error('useStorageProvider must be used within a StorageProviderComponent');
   }
   
   // Calculate time since last sync in seconds

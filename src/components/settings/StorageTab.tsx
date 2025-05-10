@@ -3,7 +3,7 @@ import React from 'react';
 import { Cloud } from 'lucide-react';
 import GoogleDriveConnection from './storage/GoogleDriveConnection';
 import FileAccessInfo from './storage/FileAccessInfo';
-import { StorageProvider as StorageProviderComponent } from '@/contexts/StorageContext';
+import { StorageProviderComponent } from '@/contexts/StorageContext';
 import StorageStatus from '@/components/storage/StorageStatus';
 
 const StorageTab = () => {

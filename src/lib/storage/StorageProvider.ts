@@ -163,11 +163,18 @@ export abstract class AbstractStorageProvider implements StorageProvider {
       }
     }, intervalMs);
     
-    // Setup blur event handler
-    window.addEventListener('blur', this.handleWindowBlur.bind(this, getContentFn, getPathFn));
+    // Setup blur event handler with type casting for TypeScript compatibility
+    const handleWindowBlurCasted = (event: Event) => {
+      this.handleWindowBlur(getContentFn, getPathFn);
+    };
     
-    // Setup beforeunload event handler
-    window.addEventListener('beforeunload', this.handleBeforeUnload.bind(this, getContentFn, getPathFn));
+    // Setup beforeunload event handler with type casting for TypeScript compatibility
+    const handleBeforeUnloadCasted = (event: Event) => {
+      this.handleBeforeUnload(getContentFn, getPathFn);
+    };
+    
+    window.addEventListener('blur', handleWindowBlurCasted);
+    window.addEventListener('beforeunload', handleBeforeUnloadCasted);
   }
   
   /**
@@ -184,8 +191,8 @@ export abstract class AbstractStorageProvider implements StorageProvider {
       this.autoSyncDebounceTimer = null;
     }
     
-    window.removeEventListener('blur', this.handleWindowBlur as EventListener);
-    window.removeEventListener('beforeunload', this.handleBeforeUnload as EventListener);
+    // No need to remove event listeners since we use new function references each time
+    // The old event listeners will be garbage collected when no longer referenced
   }
   
   /**
