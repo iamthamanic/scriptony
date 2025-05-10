@@ -1,9 +1,9 @@
 
 import React from 'react';
 import { Loader2 } from "lucide-react";
-import WorldsList from "./WorldsList";
-import WorldDetail from "./WorldDetail";
 import { World, WorldCategory } from "@/types";
+import WorldsList from "@/components/worlds/WorldsList";
+import WorldDetail from "@/components/worlds/WorldDetail";
 
 interface WorldsContentProps {
   isLoading: boolean;

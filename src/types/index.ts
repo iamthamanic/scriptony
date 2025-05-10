@@ -12,3 +12,4 @@ export * from './worlds';
 export * from './admin';
 export * from './shots';
 export * from './script-analysis';
+export * from './analysis';

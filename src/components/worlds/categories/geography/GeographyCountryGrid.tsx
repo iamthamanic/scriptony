@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Country } from "@/types";
+import { Country } from "@/types/worlds/geography";
 import GeographyCountryCard from './GeographyCountryCard';
 
 interface GeographyCountryGridProps {

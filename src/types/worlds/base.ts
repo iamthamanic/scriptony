@@ -26,16 +26,23 @@ export interface WorldCategory {
 }
 
 export type WorldCategoryType = 
+  | 'text'
   | 'geography' 
   | 'politics' 
   | 'economy' 
-  | 'society' 
+  | 'society'
   | 'religion' 
   | 'history' 
   | 'technology' 
   | 'nature' 
   | 'language' 
   | 'culture' 
+  | 'list'
+  | 'map'
+  | 'timeline'
+  | 'characters'
+  | 'gallery'
+  | 'table'
   | 'custom';
 
 export interface NewWorldFormData {
