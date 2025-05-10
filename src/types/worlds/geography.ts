@@ -1,22 +1,31 @@
 
 import { Json } from "@/integrations/supabase/types";
-import { CategoryItem } from "./items";
+import { CategoryItem, CustomField } from "./items";
 
-// Geography category content with countries and locations
+// Geography specific types
+export interface Location {
+  id: string;
+  name: string;
+  description?: string;
+  coordinates?: string;
+  customFields?: CustomField[];
+  [key: string]: any; // Index signature for Json compatibility
+}
+
+export interface Country {
+  id: string;
+  name: string;
+  description?: string;
+  flag_url?: string;
+  locations?: Location[];
+  customFields?: CustomField[];
+  [key: string]: any; // Index signature for Json compatibility
+}
+
 export interface GeographyContent {
   countries: Array<Country & Record<string, Json>>;
-  [key: string]: Json; // Index signature to satisfy Json requirements
 }
 
-// Country extends CategoryItem
-export interface Country extends CategoryItem {
-  flag_url?: string;
-  locations: Array<Location & Record<string, Json>>;
-  [key: string]: any; // Index signature to satisfy Json requirements
-}
-
-// Location extends CategoryItem
-export interface Location extends CategoryItem {
-  coordinates?: { x: number; y: number }; // For map positioning
-  [key: string]: any; // Index signature to satisfy Json requirements
-}
+export const createEmptyGeographyContent = (): GeographyContent => ({
+  countries: []
+});

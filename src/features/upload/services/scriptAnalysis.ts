@@ -1,6 +1,6 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import { AnalysisResult } from '@/types';
+import { AnalysisResult, DetectedScene, DetectedCharacter } from '@/types';
 
 export const uploadAndAnalyzeScript = async (file: File): Promise<{ analysisResult: AnalysisResult }> => {
   try {
@@ -14,51 +14,41 @@ export const uploadAndAnalyzeScript = async (file: File): Promise<{ analysisResu
     await new Promise(resolve => setTimeout(resolve, 2000));
     
     // Create a mock analysis result based on the file name
+    const scene1: DetectedScene = {
+      sceneNumber: 1,
+      location: "INTERIOR - LIVING ROOM",
+      timeOfDay: "DAY",
+      description: "A character sits on a couch, reading a book.",
+      characters: ["ALEX"]
+    };
+    
+    const scene2: DetectedScene = {
+      sceneNumber: 2,
+      location: "EXTERIOR - PARK",
+      timeOfDay: "EVENING",
+      description: "Two characters walk through a park, deep in conversation.",
+      characters: ["ALEX", "JAMIE"]
+    };
+
+    const character1: DetectedCharacter = {
+      name: "ALEX",
+      role: "Protagonist",
+      description: "A thoughtful person in their 30s."
+    };
+    
+    const character2: DetectedCharacter = {
+      name: "JAMIE",
+      role: "Supporting Character",
+      description: "Alex's friend and confidant."
+    };
+    
     const analysisResult: AnalysisResult = {
       title: file.name.replace(/\.[^/.]+$/, ""),
       type: "movie",
       logline: "A sample logline for the analyzed script.",
       genres: ["drama"],
-      scenes: [
-        {
-          id: "scene1",
-          scene_number: 1,
-          project_id: "temp-project",
-          location: "INTERIOR - LIVING ROOM",
-          time_of_day: "DAY",
-          description: "A character sits on a couch, reading a book.",
-          timecode_start: "00:00:00",
-          timecode_end: "00:01:30",
-          character_ids: ["char1"]
-        },
-        {
-          id: "scene2",
-          scene_number: 2,
-          project_id: "temp-project",
-          location: "EXTERIOR - PARK",
-          time_of_day: "EVENING",
-          description: "Two characters walk through a park, deep in conversation.",
-          timecode_start: "00:01:30",
-          timecode_end: "00:03:45",
-          character_ids: ["char1", "char2"]
-        }
-      ],
-      characters: [
-        {
-          id: "char1",
-          project_id: "temp-project",
-          name: "ALEX",
-          role: "Protagonist",
-          description: "A thoughtful person in their 30s."
-        },
-        {
-          id: "char2",
-          project_id: "temp-project",
-          name: "JAMIE",
-          role: "Supporting Character",
-          description: "Alex's friend and confidant."
-        }
-      ]
+      scenes: [scene1, scene2],
+      characters: [character1, character2]
     };
     
     console.log('Analysis complete:', analysisResult);

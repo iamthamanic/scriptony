@@ -1,16 +1,21 @@
 
 import { Json } from "@/integrations/supabase/types";
-import { CategoryItem } from "./items";
+import { CategoryItem, CustomField } from "./items";
 
-// Society category content with social groups
-export interface SocietyContent {
-  groups: Array<SocialGroup & Record<string, Json>>;
-  [key: string]: Json; // Index signature to satisfy Json requirements
-}
-
-// Social group extends CategoryItem
-export interface SocialGroup extends CategoryItem {
+export interface SocialGroup {
+  id: string;
+  name: string;
+  description?: string;
   population?: string;
   characteristics?: string[];
-  [key: string]: any; // Index signature to satisfy Json requirements
+  customFields?: CustomField[];
+  [key: string]: any; // Index signature for Json compatibility
 }
+
+export interface SocietyContent {
+  groups: Array<SocialGroup & Record<string, Json>>;
+}
+
+export const createEmptySocietyContent = (): SocietyContent => ({
+  groups: []
+});

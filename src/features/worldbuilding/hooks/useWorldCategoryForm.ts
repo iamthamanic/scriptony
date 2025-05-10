@@ -1,65 +1,70 @@
 
 import { useState, useEffect } from 'react';
-import { WorldCategory, WorldCategoryFormData } from '@/types';
+import { WorldCategory, WorldCategoryFormData, WorldCategoryType, getEmptyCategoryContent } from '@/types';
 
 interface UseWorldCategoryFormProps {
-  category?: WorldCategory;
+  category?: WorldCategory | null;
   isOpen: boolean;
 }
 
 export const useWorldCategoryForm = ({ category, isOpen }: UseWorldCategoryFormProps) => {
   const [formData, setFormData] = useState<WorldCategoryFormData>({
     name: '',
-    type: 'text',
-    icon: '',
+    type: 'custom',
+    icon: 'map',
     content: {}
   });
 
-  // Reset form when opening modal or changing category
+  // Initialize content based on category type
   useEffect(() => {
-    if (isOpen) {
-      if (category) {
-        setFormData({
-          name: category.name,
-          type: category.type,
-          icon: category.icon || '',
-          content: category.content || {}
-        });
-      } else {
-        // Reset form for new category
-        setFormData({
-          name: '',
-          type: 'text',
-          icon: '',
-          content: {}
-        });
-      }
+    if (category) {
+      setFormData({
+        id: category.id,
+        name: category.name,
+        type: category.type,
+        icon: category.icon || 'map',
+        content: category.content || getEmptyCategoryContent(category.type)
+      });
+    } else {
+      setFormData({
+        name: '',
+        type: 'custom',
+        icon: 'map',
+        content: {}
+      });
     }
   }, [category, isOpen]);
 
-  // Handle input change
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Handle type change
   const handleTypeChange = (value: string) => {
-    setFormData(prev => ({ 
-      ...prev, 
-      type: value,
-      // Reset content when changing type
-      content: {} 
-    }));
+    // Ensure the value is a valid WorldCategoryType
+    const newType = value as WorldCategoryType;
+    setFormData(prev => {
+      // Initialize appropriate content structure based on type
+      const content = getEmptyCategoryContent(newType);
+      
+      return { 
+        ...prev, 
+        type: newType,
+        content
+      };
+    });
   };
 
-  // Handle content change based on type
-  const handleContentChange = (content: any) => {
-    setFormData(prev => ({ ...prev, content }));
+  const handleContentChange = (newContent: any) => {
+    setFormData(prev => ({
+      ...prev,
+      content: newContent
+    }));
   };
 
   return {
     formData,
+    setFormData,
     handleChange,
     handleTypeChange,
     handleContentChange

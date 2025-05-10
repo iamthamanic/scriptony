@@ -1,23 +1,25 @@
 
-import { Json } from "@/integrations/supabase/types";
 import { WorldCategoryType } from "./base";
+import { createEmptyGeographyContent } from "./geography";
+import { createEmptyPoliticsContent } from "./politics";
+import { createEmptyEconomyContent } from "./economy";
+import { createEmptySocietyContent } from "./society";
+import { createEmptyCultureContent } from "./culture";
+import { Json } from "@/integrations/supabase/types";
 
-// Function to get the appropriate empty content structure based on category type
 export const getEmptyCategoryContent = (type: WorldCategoryType): Json => {
-  console.log("Creating empty content structure for type:", type);
-  
   switch (type) {
     case 'geography':
-      return { countries: [] } as Json;
+      return createEmptyGeographyContent();
     case 'politics':
-      return { systems: [] } as Json;
+      return createEmptyPoliticsContent();
     case 'economy':
-      return { entities: [] } as Json;
+      return createEmptyEconomyContent();
     case 'society':
-      return { groups: [] } as Json;
+      return createEmptySocietyContent();
     case 'culture':
-      return { elements: [] } as Json;
+      return createEmptyCultureContent();
     default:
-      return {} as Json;
+      return {};
   }
 };

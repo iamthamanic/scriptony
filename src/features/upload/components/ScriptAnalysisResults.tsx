@@ -92,7 +92,7 @@ const ScriptAnalysisResults = ({
                 {scenes.map((scene, index) => (
                   <div key={index} className="p-3">
                     <h3 className="font-medium">Scene {scene.sceneNumber}</h3>
-                    <p className="text-sm text-muted-foreground">{scene.location} - {scene.time_of_day}</p>
+                    <p className="text-sm text-muted-foreground">{scene.location} - {scene.timeOfDay}</p>
                     {scene.description && (
                       <p className="mt-1 text-sm">{scene.description}</p>
                     )}

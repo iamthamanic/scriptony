@@ -8,8 +8,8 @@ export interface World {
   description: string | null;
   cover_image_url: string | null;
   user_id: string;
-  created_at: Date;
-  updated_at: Date;
+  created_at: string | Date;  // Support both string and Date formats
+  updated_at: string | Date;  // Support both string and Date formats
   categories: WorldCategory[];
 }
 
@@ -21,8 +21,8 @@ export interface WorldCategory {
   content: Json | null;
   icon: string | null;
   order_index: number;
-  created_at: Date;
-  updated_at: Date;
+  created_at: string | Date;  // Support both string and Date formats
+  updated_at: string | Date;  // Support both string and Date formats
 }
 
 export type WorldCategoryType = 
