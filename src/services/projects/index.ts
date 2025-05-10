@@ -1,8 +1,7 @@
 
-// Re-export all project-related functions from the individual files
-export * from './fetchProjects';
+export { createProjectService as createProject } from './createProject';
+export { deleteProjectService as deleteProject } from './deleteProject';
+export { fetchUserProjects } from './fetchProjects';
+export { createSceneService as createScene } from './createScene';
+export { updateProjectService as updateProject } from './updateProject';
 export * from './projectDetails';
-export * from './createProject';
-export * from './createScene';
-export * from './updateProject';
-export * from './deleteProject';

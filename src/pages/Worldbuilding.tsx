@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+
+import React, { useEffect, useCallback } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 import { useWorldsState } from "@/hooks/useWorldsState";
 import WorldsContent from "../components/worlds/WorldsContent";
-import WorldModals from "../components/worlds/WorldsModals";
+import WorldModals from "@/components/worlds/WorldModals"; // Correct import path
 import { trackPageView } from '@/utils/trackUsage';
 
 const Worldbuilding = () => {
