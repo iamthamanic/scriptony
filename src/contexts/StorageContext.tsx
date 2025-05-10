@@ -1,12 +1,12 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { StorageProvider, StorageProviderStatus, StorageProviderType } from '@/lib/storage/StorageProvider';
+import { StorageProvider as IStorageProvider, StorageProviderStatus, StorageProviderType } from '@/lib/storage/StorageProvider';
 import { GoogleDriveProvider } from '@/lib/storage/GoogleDriveProvider';
 import { useOAuthCallback } from '@/hooks/useOAuthCallback';
 import { useToast } from '@/hooks/use-toast';
 
 interface StorageContextType {
-  provider: StorageProvider | null;
+  provider: IStorageProvider | null;
   status: StorageProviderStatus;
   isInitializing: boolean;
   connectProvider: (type: StorageProviderType) => Promise<boolean>;
@@ -40,7 +40,8 @@ interface StorageProviderProps {
   defaultProviderType?: StorageProviderType;
 }
 
-export const StorageProvider: React.FC<StorageProviderProps> = ({ 
+// Renamed from StorageProvider to StorageProviderComponent
+export const StorageProviderComponent: React.FC<StorageProviderProps> = ({ 
   children, 
   defaultProviderType = StorageProviderType.GOOGLE_DRIVE 
 }) => {
