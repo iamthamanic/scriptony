@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
-import { WorldCategory, WorldCategoryFormData, WorldCategoryType, getEmptyCategoryContent } from '@/types';
+import { WorldCategory, WorldCategoryFormData, WorldCategoryType } from '@/types';
+import { getEmptyCategoryContent } from '@/types/worlds/utils';
 
 interface UseWorldCategoryFormProps {
   category?: WorldCategory | null;

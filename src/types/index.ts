@@ -19,6 +19,9 @@ export type {
   WorldCategoryFormData
 } from './worlds';
 
+// Export the getEmptyCategoryContent function to fix the missing export error
+export { getEmptyCategoryContent } from './worlds/utils';
+
 export * from './admin';
 export * from './shots';
 
