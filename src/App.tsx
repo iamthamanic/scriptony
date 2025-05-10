@@ -13,6 +13,7 @@ import FeatureDetector from "@/components/admin/FeatureDetector";
 
 // Import pages
 import Index from "./pages/Index";
+import Projects from "./pages/Projects"; // Import the new Projects page
 import Home from "./pages/Home";
 import Upload from "./pages/Upload";
 import Account from "./pages/Account";
@@ -108,10 +109,11 @@ const App = () => {
                       </AuthRoute>
                     } />
                     
+                    {/* Use the new Projects component for the projects route */}
                     <Route path="/projects" element={
                       <AuthRoute>
                         <AuthenticatedLayout>
-                          <Index />
+                          <Projects />
                         </AuthenticatedLayout>
                       </AuthRoute>
                     } />
