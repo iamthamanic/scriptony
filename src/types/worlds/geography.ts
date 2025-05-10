@@ -7,8 +7,12 @@ export interface Location {
   id: string;
   name: string;
   description?: string;
-  coordinates?: string;
-  customFields?: CustomField[];
+  coordinates?: {
+    x: number;
+    y: number;
+  };
+  customFields: CustomField[];
+  cover_image_url?: string;
   [key: string]: any; // Index signature for Json compatibility
 }
 
@@ -18,14 +22,16 @@ export interface Country {
   description?: string;
   flag_url?: string;
   locations?: Location[];
-  customFields?: CustomField[];
+  customFields: CustomField[];
+  cover_image_url?: string;
   [key: string]: any; // Index signature for Json compatibility
 }
 
 export interface GeographyContent {
-  countries: Array<Country & Record<string, Json>>;
+  countries: Country[];
+  [key: string]: any; // Index signature for Json compatibility
 }
 
 export const createEmptyGeographyContent = (): GeographyContent => ({
-  countries: []
+  countries: [],
 });

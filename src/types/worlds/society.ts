@@ -8,12 +8,13 @@ export interface SocialGroup {
   description?: string;
   population?: string;
   characteristics?: string[];
-  customFields?: CustomField[];
+  customFields: CustomField[];
   [key: string]: any; // Index signature for Json compatibility
 }
 
 export interface SocietyContent {
-  groups: Array<SocialGroup & Record<string, Json>>;
+  groups: SocialGroup[];
+  [key: string]: any; // Index signature for Json compatibility
 }
 
 export const createEmptySocietyContent = (): SocietyContent => ({

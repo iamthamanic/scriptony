@@ -7,14 +7,15 @@ export interface EconomicEntity {
   name: string;
   description?: string;
   type: string;
-  currency?: string;
-  resources?: string[];
-  customFields?: CustomField[];
+  entity_type: string;
+  value?: string;
+  customFields: CustomField[];
   [key: string]: any; // Index signature for Json compatibility
 }
 
 export interface EconomyContent {
-  entities: Array<EconomicEntity & Record<string, Json>>;
+  entities: EconomicEntity[];
+  [key: string]: any; // Index signature for Json compatibility
 }
 
 export const createEmptyEconomyContent = (): EconomyContent => ({

@@ -18,12 +18,14 @@ export interface PoliticalSystem {
   description?: string;
   structure?: string;
   leaders?: Leader[];
-  customFields?: CustomField[];
+  customFields: CustomField[];
+  government_type?: string;
   [key: string]: any; // Index signature for Json compatibility
 }
 
 export interface PoliticsContent {
-  systems: Array<PoliticalSystem & Record<string, Json>>;
+  systems: PoliticalSystem[];
+  [key: string]: any; // Index signature for Json compatibility
 }
 
 export const createEmptyPoliticsContent = (): PoliticsContent => ({

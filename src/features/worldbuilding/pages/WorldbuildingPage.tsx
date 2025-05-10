@@ -2,6 +2,7 @@
 import React from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 import { useWorldsState } from "@/hooks/useWorldsState";
+import { Container } from "@/components/ui/container";
 import WorldsContent from "../components/WorldsContent";
 import WorldModals from "../components/WorldModals";
 
@@ -10,8 +11,8 @@ const WorldbuildingPage = () => {
   const worldsState = useWorldsState(user?.id);
   
   return (
-    <div className="container mx-auto">
-      <div className="py-8 px-4 md:px-6 w-full animate-fade-in">
+    <Container className="py-8">
+      <div className="animate-fade-in">
         <header className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Weltenbau</h1>
           <p className="text-muted-foreground">
@@ -23,13 +24,16 @@ const WorldbuildingPage = () => {
           isLoading={worldsState.isLoading}
           worlds={worldsState.worlds}
           selectedWorld={worldsState.selectedWorld}
-          onSelectWorld={worldsState.handleSelectWorld}
+          onSelectWorld={worldsState.setSelectedWorldId}
           onNewWorld={() => worldsState.setIsNewWorldModalOpen(true)}
           onEditWorld={() => worldsState.setIsEditWorldModalOpen(true)}
           onDeleteWorld={() => worldsState.setIsDeleteWorldDialogOpen(true)}
           onDuplicateWorld={worldsState.handleDuplicateWorld}
-          onAddCategory={() => worldsState.handleAddCategory()}
-          onEditCategory={worldsState.handleEditCategory}
+          onAddCategory={() => worldsState.setSelectedCategory(null) || worldsState.setIsCategoryModalOpen(true)}
+          onEditCategory={(category) => {
+            worldsState.setSelectedCategory(category);
+            worldsState.setIsCategoryModalOpen(true);
+          }}
           onDeleteCategory={worldsState.handleDeleteCategory}
           onReorderCategories={worldsState.handleReorderCategories}
         />
@@ -47,11 +51,11 @@ const WorldbuildingPage = () => {
           onCloseCategoryModal={() => worldsState.setIsCategoryModalOpen(false)}
           onCreateWorld={worldsState.handleCreateWorld}
           onUpdateWorld={worldsState.handleUpdateWorld}
-          onDeleteWorld={worldsState.handleDeleteWorldConfirm}
-          onSubmitCategory={worldsState.handleSubmitCategory}
+          onDeleteWorld={worldsState.handleDeleteWorld}
+          onSubmitCategory={worldsState.handleCategorySubmit}
         />
       </div>
-    </div>
+    </Container>
   );
 };
 
