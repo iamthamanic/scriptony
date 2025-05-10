@@ -44,10 +44,15 @@ export async function analyzeScriptText(text: string): Promise<AnalysisResult> {
     updatedAt: new Date(),
     dialog: '',
     transitions: '',
-    production_notes: '',
-    emotional_significance: 'other',
-    emotional_notes: ''
-  })) as any;
+    productionNotes: '',
+    emotionalSignificance: 'other',
+    emotionalNotes: '',
+    visualComposition: '',
+    lighting: '',
+    colorGrading: '',
+    soundDesign: '',
+    specialEffects: ''
+  }));
   
   result.characters = characters.map(c => ({
     id: `character-${c.name.replace(/\s+/g, '-').toLowerCase()}`,
@@ -57,7 +62,7 @@ export async function analyzeScriptText(text: string): Promise<AnalysisResult> {
     description: c.description,
     createdAt: new Date(),
     updatedAt: new Date()
-  })) as any;
+  }));
 
   // Determine project type based on detected patterns
   result.type = determineProjectType(metrics);

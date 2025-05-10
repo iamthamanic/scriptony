@@ -19,18 +19,23 @@ export const uploadAndAnalyzeScript = async (file: File): Promise<{ analysisResu
       projectId: "mock-project",
       sceneNumber: 1,
       location: "INTERIOR - LIVING ROOM",
-      timeOfDay: "day" as TimeOfDay, // Fix the time of day to use lowercase
+      timeOfDay: "day" as TimeOfDay, 
       timecodeStart: "00:00:00",
       timecodeEnd: "00:01:30",
       description: "A character sits on a couch, reading a book.",
       characterIds: ["ALEX"],
       dialog: "",
       transitions: "",
-      productionNotes: "", // Fixed: production_notes -> productionNotes
-      emotional_significance: "other",
-      emotional_notes: "",
+      productionNotes: "", 
+      emotionalSignificance: "other",
+      emotionalNotes: "",
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
+      visualComposition: "",
+      lighting: "",
+      colorGrading: "",
+      soundDesign: "",
+      specialEffects: ""
     };
     
     const scene2: Scene = {
@@ -38,18 +43,23 @@ export const uploadAndAnalyzeScript = async (file: File): Promise<{ analysisResu
       projectId: "mock-project",
       sceneNumber: 2,
       location: "EXTERIOR - PARK",
-      timeOfDay: "evening" as TimeOfDay, // Fix the time of day to use lowercase
+      timeOfDay: "evening" as TimeOfDay, 
       timecodeStart: "00:01:30",
       timecodeEnd: "00:03:00",
       description: "Two characters walk through a park, deep in conversation.",
       characterIds: ["ALEX", "JAMIE"],
       dialog: "",
       transitions: "",
-      productionNotes: "", // Fixed: production_notes -> productionNotes
-      emotional_significance: "other",
-      emotional_notes: "",
+      productionNotes: "",
+      emotionalSignificance: "other",
+      emotionalNotes: "",
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
+      visualComposition: "",
+      lighting: "",
+      colorGrading: "",
+      soundDesign: "",
+      specialEffects: ""
     };
 
     const character1: Character = {
