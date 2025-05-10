@@ -3,7 +3,11 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Trophy, PenTool, BookOpen, Home, RotateCcw } from 'lucide-react';
+import { Trophy, RotateCcw, Home } from 'lucide-react';
+import { WandSparkles as Wand2 } from 'lucide-react';
+import { FileText } from 'lucide-react';
+import { Dumbbell } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import { useCreativeGym } from '@/contexts/CreativeGymContext';
 import { toast } from 'sonner';
 
@@ -85,14 +89,14 @@ const ChallengeCompletion: React.FC<ChallengeCompletionProps> = ({ content, word
             className="py-6"
             variant="outline"
           >
-            <PenTool className="mr-2 h-5 w-5" />
+            <FileText className="mr-2 h-5 w-5" />
             Convert to Project
           </Button>
           <Button 
             onClick={() => navigate('/creative-gym')}
             className="py-6 bg-anime-purple hover:bg-anime-dark-purple"
           >
-            <BookOpen className="mr-2 h-5 w-5" />
+            <FileText className="mr-2 h-5 w-5" />
             Challenge History
           </Button>
         </div>
