@@ -2,8 +2,7 @@
 // Re-export all services from their respective modules
 export * from './projects';
 export * from './characters';
-// Export scenes without createScene to avoid conflicts
-export { deleteScene } from './scenes';
+// Don't export deleteScene here to avoid conflicts
 export * from './episodes';
 export * from './scriptAnalysis';
 export * from './admin';
@@ -15,8 +14,11 @@ export * from './storage';
 export { 
   fetchUserProjects, fetchProjectDetails, 
   deleteProject, updateProject,
-  deleteScene,
+  // deleteScene is already exported from './scenes', so we shouldn't re-export it here
   createCharacter, updateCharacter, deleteCharacter,
   createEpisode, updateEpisode, deleteEpisode,
   utils
 } from './database';
+
+// Export deleteScene from scenes module
+export { deleteScene } from './scenes';
