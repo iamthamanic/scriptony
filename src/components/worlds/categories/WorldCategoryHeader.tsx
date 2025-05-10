@@ -21,12 +21,10 @@ const WorldCategoryHeader: React.FC<WorldCategoryHeaderProps> = ({
   onDelete
 }) => {
   const getIconComponent = () => {
-    switch (category.type) {
-      case 'geography':
-        return <Map className="h-5 w-5" />;
-      default:
-        return <Globe className="h-5 w-5" />;
+    if (category.type === 'geography') {
+      return <Map className="h-5 w-5" />;
     }
+    return <Globe className="h-5 w-5" />;
   };
 
   return (

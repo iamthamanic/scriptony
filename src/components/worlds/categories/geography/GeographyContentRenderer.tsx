@@ -2,7 +2,7 @@
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { GeographyContent, Country } from "@/types";
+import { GeographyContent, Country } from "@/types/worlds/geography";
 import GeographyCountryGrid from './GeographyCountryGrid';
 
 interface GeographyContentRendererProps {

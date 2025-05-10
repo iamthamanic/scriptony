@@ -1,7 +1,8 @@
+
 import React from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { WorldCategoryType } from '@/types';
+import { WorldCategoryType } from '@/types/worlds';
 import CountryEditor from '../geography/CountryEditor';
 import PoliticsEditor from '../categories/politics/PoliticsEditor';
 import EconomyEditor from '../categories/economy/EconomyEditor';

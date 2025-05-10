@@ -1,128 +1,58 @@
 
-import React, { useEffect, useCallback } from 'react';
+import React from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 import { useWorldsState } from "@/hooks/useWorldsState";
 import WorldsContent from "../components/WorldsContent";
 import WorldModals from "../components/WorldModals";
-import { trackPageView } from '@/lib/trackUsage';
+import { Container } from "@/components/ui/container";
 
 const WorldbuildingPage = () => {
   const { user } = useAuth();
+  const worldsState = useWorldsState(user?.id);
   
-  const {
-    worlds,
-    selectedWorld,
-    selectedWorldId,
-    isLoading,
-    isNewWorldModalOpen,
-    isEditWorldModalOpen,
-    isDeleteWorldDialogOpen,
-    isCategoryModalOpen,
-    selectedCategory,
-    loadWorlds,
-    setSelectedWorldId,
-    setIsNewWorldModalOpen,
-    setIsEditWorldModalOpen, 
-    setIsDeleteWorldDialogOpen,
-    setIsCategoryModalOpen,
-    setSelectedCategory,
-    handleCreateWorld,
-    handleUpdateWorld,
-    handleDeleteWorld,
-    handleDuplicateWorld,
-    handleCategorySubmit,
-    handleDeleteCategory,
-    handleReorderCategories,
-    deletionState
-  } = useWorldsState(user?.id);
-
-  // Always load worlds when component mounts if user exists
-  useEffect(() => {
-    console.log("Worldbuilding component mounted, userId:", user?.id, "loading worlds");
-    if (user?.id) {
-      loadWorlds();
-    }
-  }, [user?.id, loadWorlds]);
-
-  // Add usage tracking
-  useEffect(() => {
-    trackPageView('worldbuilding');
-  }, []);
-
-  const handleEditWorld = () => {
-    if (!selectedWorld) return;
-    setIsEditWorldModalOpen(true);
-  };
-
-  const handleAddCategory = () => {
-    setSelectedCategory(null);
-    setIsCategoryModalOpen(true);
-  };
-
-  const handleEditCategory = (category: any) => {
-    setSelectedCategory(category);
-    setIsCategoryModalOpen(true);
-  };
-
-  // Dialog closing handler - prevent closing during deletion
-  const handleCloseDeleteDialog = useCallback(() => {
-    // Only allow dialog closing if deletion is not in progress
-    if (deletionState !== 'deleting') {
-      setIsDeleteWorldDialogOpen(false);
-    } else {
-      console.log("Cannot close dialog during deletion");
-    }
-  }, [deletionState, setIsDeleteWorldDialogOpen]);
-
-  // Lifecycle effect to close dialog when deletion completes
-  useEffect(() => {
-    if (deletionState === 'completed') {
-      console.log("Deletion completed, closing dialog");
-      setIsDeleteWorldDialogOpen(false);
-    }
-  }, [deletionState, setIsDeleteWorldDialogOpen]);
-
-  console.log("Worldbuilding render - isLoading:", isLoading, "worlds count:", worlds.length, "deletionState:", deletionState);
-
   return (
-    <div className="py-6 px-4 md:px-6 w-full">
-      {/* Main content */}
-      <WorldsContent 
-        isLoading={isLoading}
-        worlds={worlds}
-        selectedWorld={selectedWorld}
-        onSelectWorld={setSelectedWorldId}
-        onNewWorld={() => setIsNewWorldModalOpen(true)}
-        onEditWorld={handleEditWorld}
-        onDeleteWorld={() => setIsDeleteWorldDialogOpen(true)}
-        onDuplicateWorld={handleDuplicateWorld}
-        onAddCategory={handleAddCategory}
-        onEditCategory={handleEditCategory}
-        onDeleteCategory={handleDeleteCategory}
-        onReorderCategories={handleReorderCategories}
-      />
-      
-      {/* Modals */}
-      <WorldModals
-        isNewWorldModalOpen={isNewWorldModalOpen}
-        isEditWorldModalOpen={isEditWorldModalOpen}
-        isDeleteWorldDialogOpen={isDeleteWorldDialogOpen}
-        isCategoryModalOpen={isCategoryModalOpen}
-        onCloseNewWorldModal={() => setIsNewWorldModalOpen(false)}
-        onCloseEditWorldModal={() => setIsEditWorldModalOpen(false)}
-        onCloseDeleteWorldDialog={handleCloseDeleteDialog}
-        onCloseCategoryModal={() => {
-          setIsCategoryModalOpen(false);
-          setSelectedCategory(null);
-        }}
-        onCreateWorld={handleCreateWorld}
-        onUpdateWorld={handleUpdateWorld}
-        onDeleteWorld={handleDeleteWorld}
-        onCategorySubmit={handleCategorySubmit}
-        selectedWorld={selectedWorld}
-        selectedCategory={selectedCategory}
-      />
-    </div>
+    <Container>
+      <div className="py-8 px-4 md:px-6 w-full animate-fade-in">
+        <header className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">Weltenbau</h1>
+          <p className="text-muted-foreground">
+            Erstelle und verwalte Welten für deine Geschichten
+          </p>
+        </header>
+        
+        <WorldsContent 
+          isLoading={worldsState.isLoading}
+          worlds={worldsState.worlds}
+          selectedWorld={worldsState.selectedWorld}
+          onSelectWorld={worldsState.handleSelectWorld}
+          onNewWorld={() => worldsState.setIsNewWorldModalOpen(true)}
+          onEditWorld={() => worldsState.setIsEditWorldModalOpen(true)}
+          onDeleteWorld={() => worldsState.setIsDeleteWorldDialogOpen(true)}
+          onDuplicateWorld={worldsState.handleDuplicateWorld}
+          onAddCategory={() => worldsState.handleAddCategory()}
+          onEditCategory={worldsState.handleEditCategory}
+          onDeleteCategory={worldsState.handleDeleteCategory}
+          onReorderCategories={worldsState.handleReorderCategories}
+        />
+        
+        <WorldModals
+          isNewWorldModalOpen={worldsState.isNewWorldModalOpen}
+          isEditWorldModalOpen={worldsState.isEditWorldModalOpen}
+          isDeleteWorldDialogOpen={worldsState.isDeleteWorldDialogOpen}
+          isCategoryModalOpen={worldsState.isCategoryModalOpen}
+          selectedWorld={worldsState.selectedWorld}
+          selectedCategory={worldsState.selectedCategory}
+          onCloseNewWorldModal={() => worldsState.setIsNewWorldModalOpen(false)}
+          onCloseEditWorldModal={() => worldsState.setIsEditWorldModalOpen(false)}
+          onCloseDeleteWorldDialog={() => worldsState.setIsDeleteWorldDialogOpen(false)}
+          onCloseCategoryModal={() => worldsState.setIsCategoryModalOpen(false)}
+          onCreateWorld={worldsState.handleCreateWorld}
+          onUpdateWorld={worldsState.handleUpdateWorld}
+          onDeleteWorld={worldsState.handleDeleteWorldConfirm}
+          onSubmitCategory={worldsState.handleSubmitCategory}
+        />
+      </div>
+    </Container>
   );
 };
 
