@@ -152,7 +152,7 @@ const disciplineChallenges: Record<DisciplineType, DisciplineChallenge[]> = {
       title: 'One-Minute Internal Conflict Scene',
       disciplineType: 'filmmaking',
       description: 'Write a one-minute scene featuring a character with internal conflict',
-      instructions: 'Write a screenplay for a one-minute scene (approximately one page) that reveals a character's internal conflict without explicitly stating it. Focus on visual storytelling, subtext, and character actions.',
+      instructions: "Write a screenplay for a one-minute scene (approximately one page) that reveals a character's internal conflict without explicitly stating it. Focus on visual storytelling, subtext, and character actions.",
       difficulty: 'intermediate',
       estimatedTime: '30-45 minutes',
       allowsUpload: false,
