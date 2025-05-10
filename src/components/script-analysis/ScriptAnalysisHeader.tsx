@@ -3,8 +3,7 @@ import React from 'react';
 import { FilmIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { ProjectType, Genre } from '@/types';
-import { AnalysisResult } from '@/types';
+import { ProjectType, Genre, AnalysisResult } from '@/types';
 
 // Project type display labels
 const projectTypeLabels: Record<ProjectType, string> = {
@@ -38,6 +37,8 @@ interface ScriptAnalysisHeaderProps {
 }
 
 const ScriptAnalysisHeader = ({ analysisResult }: ScriptAnalysisHeaderProps) => {
+  const genres = analysisResult.genres || [];
+  
   return (
     <>
       <div className="flex items-start justify-between">
@@ -45,11 +46,11 @@ const ScriptAnalysisHeader = ({ analysisResult }: ScriptAnalysisHeaderProps) => 
           <h3 className="text-lg font-semibold">{analysisResult.title || 'Untitled Script'}</h3>
           <div className="flex items-center mt-1">
             <FilmIcon className="h-4 w-4 mr-1.5 text-muted-foreground" />
-            <span>{projectTypeLabels[analysisResult.type] || analysisResult.type}</span>
+            <span>{projectTypeLabels[analysisResult.type as ProjectType] || analysisResult.type}</span>
           </div>
         </div>
         <div className="flex flex-wrap gap-1 justify-end">
-          {analysisResult.genres.map(genre => (
+          {genres.map(genre => (
             <Badge key={genre} variant="secondary">{genreLabels[genre] || genre}</Badge>
           ))}
         </div>

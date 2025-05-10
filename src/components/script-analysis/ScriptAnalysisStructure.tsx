@@ -17,7 +17,9 @@ const ScriptAnalysisStructure = ({ analysisResult }: ScriptAnalysisStructureProp
       <div className="bg-muted rounded-md p-3 text-sm">
         <div className="flex justify-between">
           <span>Narrative Structure:</span>
-          <span className="font-medium">{analysisResult.narrativeStructure.replace('_', ' ')}</span>
+          <span className="font-medium">
+            {analysisResult.narrative_structure?.replace('_', ' ') || 'None'}
+          </span>
         </div>
         <div className="flex justify-between mt-1">
           <span>Duration:</span>
@@ -25,7 +27,7 @@ const ScriptAnalysisStructure = ({ analysisResult }: ScriptAnalysisStructureProp
         </div>
         <div className="flex justify-between mt-1">
           <span>Scene Count:</span>
-          <span className="font-medium">{analysisResult.scenes.length}</span>
+          <span className="font-medium">{analysisResult.scenes?.length || 0}</span>
         </div>
       </div>
     </div>

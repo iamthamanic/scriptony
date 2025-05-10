@@ -10,7 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Accordion } from '@/components/ui/accordion';
 import { Check } from 'lucide-react';
-import { AnalysisResult, ProjectType } from '@/types';
+import { AnalysisResult, ProjectType, Genre } from '@/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { NewProjectFormData } from '@/types';
 
@@ -43,10 +43,10 @@ const ScriptAnalysisResults = ({
     const formData: NewProjectFormData = {
       title: analysisResult.title,
       type: analysisResult.type as ProjectType,
-      logline: analysisResult.scenes[0]?.description.substring(0, 200) || '',
-      genres: analysisResult.genres,
+      logline: analysisResult.scenes?.[0]?.description.substring(0, 200) || '',
+      genres: (analysisResult.genres || []) as Genre[],
       duration: analysisResult.duration,
-      narrativeStructure: analysisResult.narrativeStructure,
+      narrativeStructure: analysisResult.narrative_structure,
       inspirations: [],
     };
     

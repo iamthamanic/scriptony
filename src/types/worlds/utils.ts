@@ -1,10 +1,10 @@
 
 import { WorldCategoryType } from "./base";
-import { createEmptyGeographyContent } from "./geography";
-import { createEmptyPoliticsContent } from "./politics";
-import { createEmptyEconomyContent } from "./economy";
-import { createEmptySocietyContent } from "./society";
-import { createEmptyCultureContent } from "./culture";
+import { createEmptyGeographyContent, GeographyContent } from "./geography";
+import { createEmptyPoliticsContent, PoliticsContent } from "./politics";
+import { createEmptyEconomyContent, EconomyContent } from "./economy";
+import { createEmptySocietyContent, SocietyContent } from "./society";
+import { createEmptyCultureContent, CultureContent } from "./culture";
 import { Json } from "@/integrations/supabase/types";
 
 export const getEmptyCategoryContent = (type: WorldCategoryType): any => {
