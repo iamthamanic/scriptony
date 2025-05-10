@@ -1,8 +1,8 @@
 
 import React from 'react';
 import { useProjectState } from '@/hooks/project/useProjectState';
-import { useProjectModals } from '@/hooks/project/useProjectModals';
-import { useFileUpload } from '@/hooks/project/useFileUpload';
+import { useProjectModals } from '@/features/projects/hooks/useProjectModals';
+import { useFileUpload } from '@/features/projects/hooks/useFileUpload';
 import ProjectsContent from '@/features/projects/components/ProjectsContent';
 import ProjectPageHeader from '@/features/projects/components/ProjectPageHeader';
 import ProjectModals from '@/features/projects/components/ProjectModals';
@@ -142,8 +142,8 @@ const ProjectsContainer = () => {
         onNewCharacter={handleNewCharacter}
         onDeleteProject={handleDeleteProject}
         onEditScene={handleEditScene}
-        onDeleteScene={handleDeleteScene}
-        onEditCharacter={(characterId, data: EditCharacterFormData) => handleEditCharacter(characterId, data)}
+        onDeleteScene={(sceneId: string) => handleDeleteScene(sceneId)}
+        onEditCharacter={(characterId: string, data: EditCharacterFormData) => handleEditCharacter(characterId, data)}
         onDeleteCharacter={handleDeleteCharacter}
         onNewEpisode={handleNewEpisode}
         onEditEpisode={wrappedHandleEditEpisodeModal}
