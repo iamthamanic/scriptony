@@ -1,31 +1,31 @@
-import { Suspense, lazy } from "react";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ErrorProvider } from "@/contexts/ErrorContext";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { CreativeGymProvider } from "@/contexts/creative-gym";
-import { AuthRoute, PublicOnlyRoute } from "@/components/AuthRoute";
-import { ErrorDisplay } from "@/components/ErrorDisplay";
-import FeatureDetector from "@/components/admin/FeatureDetector";
-import Topbar from "@/components/navigation/Topbar";
+import { Suspense, lazy } from 'react';
+import { Toaster } from '@/components/ui/toaster';
+import { Toaster as Sonner } from '@/components/ui/sonner';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { ErrorProvider } from '@/contexts/ErrorContext';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { CreativeGymProvider } from '@/contexts/creative-gym';
+import { AuthRoute, PublicOnlyRoute } from '@/components/AuthRoute';
+import { ErrorDisplay } from '@/components/ErrorDisplay';
+import FeatureDetector from '@/components/admin/FeatureDetector';
+import Topbar from '@/components/navigation/Topbar';
 
 // Lazy load pages - Code Splitting by route
-const Index = lazy(() => import("./pages/Index"));
-const Projects = lazy(() => import("./pages/Projects"));
-const Home = lazy(() => import("./pages/Home"));
-const Upload = lazy(() => import("./pages/Upload"));
-const Account = lazy(() => import("./pages/Account"));
-const Landing = lazy(() => import("./pages/Landing"));
-const Auth = lazy(() => import("./pages/Auth"));
-const NotFound = lazy(() => import("./pages/NotFound"));
-const Worldbuilding = lazy(() => import("./pages/Worldbuilding"));
-const CreativeGym = lazy(() => import("./pages/CreativeGym"));
-const Admin = lazy(() => import("./pages/Admin"));
-const AdminTests = lazy(() => import("./pages/AdminTests"));
-const AdminUsage = lazy(() => import("./pages/AdminUsage"));
+const _Index = lazy(() => import('./pages/Index'));
+const Projects = lazy(() => import('./pages/Projects'));
+const Home = lazy(() => import('./pages/Home'));
+const Upload = lazy(() => import('./pages/Upload'));
+const Account = lazy(() => import('./pages/Account'));
+const Landing = lazy(() => import('./pages/Landing'));
+const Auth = lazy(() => import('./pages/Auth'));
+const NotFound = lazy(() => import('./pages/NotFound'));
+const Worldbuilding = lazy(() => import('./pages/Worldbuilding'));
+const CreativeGym = lazy(() => import('./pages/CreativeGym'));
+const Admin = lazy(() => import('./pages/Admin'));
+const AdminTests = lazy(() => import('./pages/AdminTests'));
+const AdminUsage = lazy(() => import('./pages/AdminUsage'));
 
 const queryClient = new QueryClient({
   defaultOptions: {

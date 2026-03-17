@@ -1,15 +1,14 @@
-
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import ProjectHeader from '../ProjectHeader';
-import { Project, NarrativeStructureType } from '@/types';
+import type { Project } from '@/types';
 
 // Mock der Komponenten-Props
 const mockProps = {
   project: {
     id: '1',
     title: 'Test Project',
-    type: 'movie',
+    type: 'movie' as const,
     logline: 'Test logline',
     user_id: 'user123',
     createdAt: new Date(),
@@ -20,7 +19,7 @@ const mockProps = {
     episodes: [],
     duration: 120,
     inspirations: [],
-    narrativeStructure: 'three-act' as NarrativeStructureType,
+    narrativeStructure: 'three-act' as const,
   } as Project,
   onNewScene: jest.fn(),
   onEditProject: jest.fn(),
