@@ -1,192 +1,250 @@
+import { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ErrorProvider } from "@/contexts/ErrorContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CreativeGymProvider } from "@/contexts/creative-gym";
 import { AuthRoute, PublicOnlyRoute } from "@/components/AuthRoute";
 import { ErrorDisplay } from "@/components/ErrorDisplay";
 import FeatureDetector from "@/components/admin/FeatureDetector";
+import Topbar from "@/components/navigation/Topbar";
 
-// Import pages
-import Index from "./pages/Index";
-import Projects from "./pages/Projects"; 
-import Home from "./pages/Home";
-import Upload from "./pages/Upload";
-import Account from "./pages/Account";
-import Landing from "./pages/Landing";
-import Auth from "./pages/Auth";
-import NotFound from "./pages/NotFound";
-import Worldbuilding from "./pages/Worldbuilding";
-import CreativeGym from "./pages/CreativeGym";
-import Admin from "./pages/Admin"; // Import the new Admin page
-import AdminTests from "./pages/AdminTests";
-import AdminUsage from "./pages/AdminUsage";
-
-// Import components
-import Topbar from "./components/navigation/Topbar";
+// Lazy load pages - Code Splitting by route
+const Index = lazy(() => import("./pages/Index"));
+const Projects = lazy(() => import("./pages/Projects"));
+const Home = lazy(() => import("./pages/Home"));
+const Upload = lazy(() => import("./pages/Upload"));
+const Account = lazy(() => import("./pages/Account"));
+const Landing = lazy(() => import("./pages/Landing"));
+const Auth = lazy(() => import("./pages/Auth"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Worldbuilding = lazy(() => import("./pages/Worldbuilding"));
+const CreativeGym = lazy(() => import("./pages/CreativeGym"));
+const Admin = lazy(() => import("./pages/Admin"));
+const AdminTests = lazy(() => import("./pages/AdminTests"));
+const AdminUsage = lazy(() => import("./pages/AdminUsage"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: 1,
-      staleTime: 1000 * 60 * 5, // 5 minutes
+      staleTime: 1000 * 60 * 5,
       refetchOnWindowFocus: false,
     },
     mutations: {
-      retry: 0
-    }
-  }
+      retry: 0,
+    },
+  },
 });
 
-const PageWithTransition = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <div className="min-h-[calc(100vh-4rem)] pt-0 animate-fade-in">
-      {children}
-    </div>
-  );
-};
+// DRY: Reusable loading fallback
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+  </div>
+);
 
-// Authenticated layout that includes the Topbar
-const AuthenticatedLayout = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <>
-      <Topbar />
-      <PageWithTransition>
-        {children}
-      </PageWithTransition>
-    </>
-  );
-};
+// DRY: Wrapper for page transitions
+const PageWithTransition = ({ children }: { children: React.ReactNode }) => (
+  <div className="min-h-[calc(100vh-4rem)] pt-0 animate-fade-in">
+    {children}
+  </div>
+);
 
-const App = () => {
-  console.log("App rendering");
-  
-  return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <ErrorProvider>
-          <BrowserRouter>
-            {/* The FeatureDetector registers routes automatically */}
-            <FeatureDetector />
-            
-            <AuthProvider>
-              <CreativeGymProvider>
-                <Toaster />
-                <Sonner />
-                <ErrorDisplay />
-                
-                <div className="flex flex-col w-full min-h-screen">
-                  <Routes>
-                    {/* Root route added to prevent 404 */}
-                    <Route path="/" element={
+// DRY: Authenticated layout with Topbar
+const AuthenticatedLayout = ({ children }: { children: React.ReactNode }) => (
+  <>
+    <Topbar />
+    <PageWithTransition>{children}</PageWithTransition>
+  </>
+);
+
+// DRY: Lazy route wrapper with Suspense
+const LazyRoute = ({ children }: { children: React.ReactNode }) => (
+  <Suspense fallback={<PageLoader />}>{children}</Suspense>
+);
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <ErrorProvider>
+        <BrowserRouter>
+          <FeatureDetector />
+          <AuthProvider>
+            <CreativeGymProvider>
+              <Toaster />
+              <Sonner />
+              <ErrorDisplay />
+              <div className="flex flex-col w-full min-h-screen">
+                <Routes>
+                  {/* Root route */}
+                  <Route
+                    path="/"
+                    element={
                       <AuthRoute>
                         <AuthenticatedLayout>
-                          <Home />
+                          <LazyRoute>
+                            <Home />
+                          </LazyRoute>
                         </AuthenticatedLayout>
                       </AuthRoute>
-                    } />
-                    
-                    {/* Public routes without topbar */}
-                    <Route path="/landing" element={<Landing />} />
-                    <Route path="/auth" element={
+                    }
+                  />
+
+                  {/* Public routes */}
+                  <Route
+                    path="/landing"
+                    element={
+                      <LazyRoute>
+                        <Landing />
+                      </LazyRoute>
+                    }
+                  />
+                  <Route
+                    path="/auth"
+                    element={
                       <PublicOnlyRoute>
                         <PageWithTransition>
-                          <Auth />
+                          <LazyRoute>
+                            <Auth />
+                          </LazyRoute>
                         </PageWithTransition>
                       </PublicOnlyRoute>
-                    } />
-                    
-                    {/* All authenticated routes with the topbar */}
-                    
-                    <Route path="/home" element={
+                    }
+                  />
+
+                  {/* Authenticated routes */}
+                  <Route
+                    path="/home"
+                    element={
                       <AuthRoute>
                         <AuthenticatedLayout>
-                          <Home />
+                          <LazyRoute>
+                            <Home />
+                          </LazyRoute>
                         </AuthenticatedLayout>
                       </AuthRoute>
-                    } />
-                    
-                    {/* Use the new Projects component for the projects route */}
-                    <Route path="/projects" element={
+                    }
+                  />
+                  <Route
+                    path="/projects"
+                    element={
                       <AuthRoute>
                         <AuthenticatedLayout>
-                          <Projects />
+                          <LazyRoute>
+                            <Projects />
+                          </LazyRoute>
                         </AuthenticatedLayout>
                       </AuthRoute>
-                    } />
-                    
-                    <Route path="/worldbuilding" element={
+                    }
+                  />
+                  <Route
+                    path="/worldbuilding"
+                    element={
                       <AuthRoute>
                         <AuthenticatedLayout>
-                          <Worldbuilding />
+                          <LazyRoute>
+                            <Worldbuilding />
+                          </LazyRoute>
                         </AuthenticatedLayout>
                       </AuthRoute>
-                    } />
-                    
-                    <Route path="/creative-gym" element={
+                    }
+                  />
+                  <Route
+                    path="/creative-gym"
+                    element={
                       <AuthRoute>
                         <AuthenticatedLayout>
-                          <CreativeGym />
+                          <LazyRoute>
+                            <CreativeGym />
+                          </LazyRoute>
                         </AuthenticatedLayout>
                       </AuthRoute>
-                    } />
-                    
-                    <Route path="/upload" element={
+                    }
+                  />
+                  <Route
+                    path="/upload"
+                    element={
                       <AuthRoute>
                         <AuthenticatedLayout>
-                          <Upload />
+                          <LazyRoute>
+                            <Upload />
+                          </LazyRoute>
                         </AuthenticatedLayout>
                       </AuthRoute>
-                    } />
-                    
-                    <Route path="/account" element={
+                    }
+                  />
+                  <Route
+                    path="/account"
+                    element={
                       <AuthRoute>
                         <AuthenticatedLayout>
-                          <Account />
+                          <LazyRoute>
+                            <Account />
+                          </LazyRoute>
                         </AuthenticatedLayout>
                       </AuthRoute>
-                    } />
-                    
-                    {/* New unified Admin Dashboard Route */}
-                    <Route path="/admin" element={
+                    }
+                  />
+
+                  {/* Admin routes */}
+                  <Route
+                    path="/admin"
+                    element={
                       <AuthRoute>
                         <AuthenticatedLayout>
-                          <Admin />
+                          <LazyRoute>
+                            <Admin />
+                          </LazyRoute>
                         </AuthenticatedLayout>
                       </AuthRoute>
-                    } />
-                    
-                    {/* Keep existing admin routes */}
-                    <Route path="/admin/tests" element={
+                    }
+                  />
+                  <Route
+                    path="/admin/tests"
+                    element={
                       <AuthRoute>
                         <AuthenticatedLayout>
-                          <AdminTests />
+                          <LazyRoute>
+                            <AdminTests />
+                          </LazyRoute>
                         </AuthenticatedLayout>
                       </AuthRoute>
-                    } />
-                    
-                    <Route path="/admin/usage" element={
+                    }
+                  />
+                  <Route
+                    path="/admin/usage"
+                    element={
                       <AuthRoute>
                         <AuthenticatedLayout>
-                          <AdminUsage />
+                          <LazyRoute>
+                            <AdminUsage />
+                          </LazyRoute>
                         </AuthenticatedLayout>
                       </AuthRoute>
-                    } />
-                    
-                    {/* Catch-all route */}
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </div>
-              </CreativeGymProvider>
-            </AuthProvider>
-          </BrowserRouter>
-        </ErrorProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
-  );
-};
+                    }
+                  />
+
+                  {/* Catch-all */}
+                  <Route
+                    path="*"
+                    element={
+                      <LazyRoute>
+                        <NotFound />
+                      </LazyRoute>
+                    }
+                  />
+                </Routes>
+              </div>
+            </CreativeGymProvider>
+          </AuthProvider>
+        </BrowserRouter>
+      </ErrorProvider>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
 
 export default App;
