@@ -57,8 +57,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       
       toast.success(t('auth.success.registration') || "Registrierung erfolgreich! Bitte überprüfe deinen Posteingang.");
       onSuccess();
-    } catch (error: any) {
-      toast.error(error.message || t('auth.error.registration') || "Registrierung fehlgeschlagen. Bitte versuche es erneut.");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : t('auth.error.registration') || "Registrierung fehlgeschlagen. Bitte versuche es erneut.";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

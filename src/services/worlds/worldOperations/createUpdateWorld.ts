@@ -18,7 +18,7 @@ export const createWorld = async (data: WorldFormData): Promise<World> => {
   let cover_image_url = null;
   if (cover_image) {
     const fileName = `world-${Date.now()}-${cover_image.name}`;
-    const { error: uploadError, data: uploadData } = await customSupabase.storage
+    const { error: uploadError } = await customSupabase.storage
       .from('covers')
       .upload(fileName, cover_image);
       
@@ -77,12 +77,12 @@ export const createWorld = async (data: WorldFormData): Promise<World> => {
 export const updateWorld = async (worldId: string, data: WorldFormData): Promise<World> => {
   const { name, description, cover_image } = data;
   
-  const updateData: any = { name, description };
+  const updateData: Record<string, unknown> = { name, description };
   
   // Upload cover image if provided
   if (cover_image instanceof File) {
     const fileName = `world-${Date.now()}-${cover_image.name}`;
-    const { error: uploadError, data: uploadData } = await customSupabase.storage
+    const { error: uploadError } = await customSupabase.storage
       .from('covers')
       .upload(fileName, cover_image);
       

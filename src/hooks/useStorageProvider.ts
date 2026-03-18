@@ -1,7 +1,6 @@
 
 import { useContext, useCallback, useState } from 'react';
 import { StorageContext } from '@/contexts/storage';
-import { StorageProviderType } from '@/lib/storage/StorageProvider';
 import { useTranslation } from 'react-i18next';
 
 export function useStorageProvider() {

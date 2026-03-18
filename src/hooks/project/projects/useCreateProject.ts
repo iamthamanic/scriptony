@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { createProject } from "../../../services";
 import { createScene } from "../../../services/projects/createScene";
-import { Project, ProjectType, NarrativeStructureType, Scene, TimeOfDay, Genre, EmotionalSignificance } from "../../../types";
+import { ProjectType, NarrativeStructureType, Scene, TimeOfDay, Genre, EmotionalSignificance } from "../../../types";
 import { useToast } from "../../use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { narrativeStructureTemplates } from "@/types/narrativeStructures";
@@ -72,7 +72,7 @@ export const useCreateProject = () => {
           console.log("Creating scenes for narrative structure:", data.narrativeStructure);
           
           // Create default scenes based on the narrative structure
-          let scenePromises: Promise<any>[] = [];
+          const scenePromises: Promise<Scene>[] = [];
           const scenes = generateDefaultScenesForTemplate(data.narrativeStructure);
           console.log("Generated scenes:", scenes);
 

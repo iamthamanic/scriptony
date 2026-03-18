@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Country } from '@/types/worlds';
+import { Country, Location } from '@/types/worlds';
 import ImageUploader from './ImageUploader';
 import CustomFieldsEditor from './CustomFieldsEditor';
 import LocationEditor from './LocationEditor';
@@ -16,7 +16,7 @@ interface CountryFormProps {
   onCancel: () => void;
   onSave: (country: Country) => void;
   onAddLocation: () => void;
-  onUpdateLocation: (location: any) => void;
+  onUpdateLocation: (location: Location) => void;
   onDeleteLocation: (locationId: string) => void;
 }
 

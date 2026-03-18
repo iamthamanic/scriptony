@@ -1,7 +1,6 @@
 
 import { z } from "zod";
-import { basicTextSchema, titleSchema, descriptionSchema } from "./index";
-import type { Genre, ProjectType, VideoFormat } from "@/types";
+import { basicTextSchema, titleSchema } from "./index";
 import type { NarrativeStructureType } from "@/types";
 
 // Validate project types

@@ -7,11 +7,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { AnalysisResult, Character, Scene } from '@/types';
 
 interface ScriptAnalysisResultsProps {
   isOpen: boolean;
   onClose: () => void;
-  analysisResult: any;
+  analysisResult: AnalysisResult | null;
 }
 
 export const ScriptAnalysisResults: React.FC<ScriptAnalysisResultsProps> = ({
@@ -49,7 +50,7 @@ export const ScriptAnalysisResults: React.FC<ScriptAnalysisResultsProps> = ({
               <div>
                 <h3 className="text-lg font-semibold">Characters ({analysisResult.characters.length})</h3>
                 <ul className="list-disc pl-5 space-y-1">
-                  {analysisResult.characters.map((character: any, index: number) => (
+                  {analysisResult.characters.map((character: Character, index: number) => (
                     <li key={index}>{character.name}</li>
                   ))}
                 </ul>
@@ -60,7 +61,7 @@ export const ScriptAnalysisResults: React.FC<ScriptAnalysisResultsProps> = ({
               <div>
                 <h3 className="text-lg font-semibold">Scenes ({analysisResult.scenes.length})</h3>
                 <div className="space-y-2 mt-2">
-                  {analysisResult.scenes.map((scene: any, index: number) => (
+                  {analysisResult.scenes.map((scene: Scene, index: number) => (
                     <div key={index} className="p-3 border rounded-md">
                       <p className="font-semibold">Scene {index + 1}</p>
                       <p className="text-sm">{scene.description?.substring(0, 150)}...</p>

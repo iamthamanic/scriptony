@@ -3,17 +3,17 @@ import React, { useEffect } from 'react';
 import AppHeader from "../AppHeader";
 import WorldsContent from "./WorldsContent";
 import WorldModals from "./WorldModals";
-import { useWorldsState } from "@/hooks/useWorldsState";
+import { WorldCategory } from "@/types/worlds";
 
 interface WorldsContainerProps {
-  user: any;
+  user: unknown;
 }
 
 const WorldsContainer = ({ user }: WorldsContainerProps) => {
   const {
     worlds,
     selectedWorld,
-    selectedWorldId,
+    selectedWorldId: _selectedWorldId,
     isLoading,
     isNewWorldModalOpen,
     isEditWorldModalOpen,
@@ -38,6 +38,7 @@ const WorldsContainer = ({ user }: WorldsContainerProps) => {
   // Load worlds on mount and when user changes
   useEffect(() => {
     loadWorlds();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const handleEditWorld = () => {
@@ -50,7 +51,7 @@ const WorldsContainer = ({ user }: WorldsContainerProps) => {
     setIsCategoryModalOpen(true);
   };
 
-  const handleEditCategory = (category: any) => {
+  const handleEditCategory = (category: WorldCategory) => {
     setSelectedCategory(category);
     setIsCategoryModalOpen(true);
   };

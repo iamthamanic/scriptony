@@ -1,5 +1,6 @@
 
 import { CreativeGymState } from './types';
+import { Challenge, ChallengeResult, Achievement, TrainingPlan, PlannedChallenge, DisciplineChallenge } from '@/types/creative-gym';
 
 export const saveStateToLocalStorage = (state: Partial<CreativeGymState>) => {
   try {
@@ -22,33 +23,33 @@ export const loadStateFromLocalStorage = (): Partial<CreativeGymState> | null =>
       const parsedState = JSON.parse(savedState);
       
       // Convert string dates back to Date objects
-      const challenges = parsedState.challenges?.map((challenge: any) => ({
+      const challenges = parsedState.challenges?.map((challenge: Challenge) => ({
         ...challenge,
         createdAt: new Date(challenge.createdAt),
         completedAt: challenge.completedAt ? new Date(challenge.completedAt) : undefined
       })) || [];
       
-      const results = parsedState.results?.map((result: any) => ({
+      const results = parsedState.results?.map((result: ChallengeResult) => ({
         ...result,
         completedAt: new Date(result.completedAt)
       })) || [];
       
-      const achievements = parsedState.userProgress?.achievements?.map((achievement: any) => ({
+      const achievements = parsedState.userProgress?.achievements?.map((achievement: Achievement) => ({
         ...achievement,
         earnedAt: new Date(achievement.earnedAt)
       })) || [];
       
-      const trainingPlans = parsedState.trainingPlans?.map((plan: any) => ({
+      const trainingPlans = parsedState.trainingPlans?.map((plan: TrainingPlan) => ({
         ...plan,
         startDate: new Date(plan.startDate),
         endDate: plan.endDate ? new Date(plan.endDate) : undefined,
-        challenges: plan.challenges.map((challenge: any) => ({
+        challenges: plan.challenges.map((challenge: PlannedChallenge) => ({
           ...challenge,
           scheduledFor: new Date(challenge.scheduledFor)
         }))
       })) || [];
 
-      const disciplineChallenges = parsedState.disciplineChallenges?.map((challenge: any) => ({
+      const disciplineChallenges = parsedState.disciplineChallenges?.map((challenge: DisciplineChallenge) => ({
         ...challenge,
         createdAt: new Date(challenge.createdAt),
         completedAt: challenge.completedAt ? new Date(challenge.completedAt) : undefined

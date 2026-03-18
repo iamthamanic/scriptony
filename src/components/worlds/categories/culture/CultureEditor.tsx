@@ -10,7 +10,7 @@ import CultureElementForm from './CultureElementForm';
 import { Json } from '@/integrations/supabase/types';
 
 interface CultureEditorProps {
-  content: any;
+  content: unknown;
   onChange: (content: CultureContent) => void;
 }
 

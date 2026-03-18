@@ -174,7 +174,7 @@ export const generateScenePDF = (scene: Scene, project: Project): void => {
   }
   
   // Add page numbers
-  const pageCount = (doc as any).internal.getNumberOfPages();
+  const pageCount = (doc as { internal: { getNumberOfPages: () => number } }).internal.getNumberOfPages();
   for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i);
     doc.setFontSize(10);

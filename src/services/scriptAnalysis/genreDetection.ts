@@ -33,7 +33,7 @@ export function determineProjectType(metrics: {
 export function detectGenres(content: string): Genre[] {
   // Check for genre keywords in the content
   const matchedGenres = Object.entries(GENRE_KEYWORDS)
-    .filter(([genre, keywords]) => {
+    .filter(([_genre, keywords]) => {
       return keywords.some(keyword => new RegExp(`\\b${keyword}`, 'i').test(content));
     })
     .map(([genre]) => genre as Genre);

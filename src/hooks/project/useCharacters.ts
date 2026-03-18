@@ -1,6 +1,6 @@
 
 import { useToast } from "../use-toast";
-import { Character, CharacterWithAvatarFile, NewCharacterFormData, EditCharacterFormData } from "../../types";
+import { Character, CharacterWithAvatarFile, NewCharacterFormData, EditCharacterFormData, Project } from "../../types";
 import { createCharacter, updateCharacter, deleteCharacter } from "../../services/database";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -15,7 +15,7 @@ const convertToCharacter = (character: CharacterWithAvatarFile): Character => {
 
 export const useCharacters = (
   selectedProject: { id: string; characters: Character[] } | null,
-  updateProjects: (projectId: string, updater: (project: any) => any) => void
+  updateProjects: (projectId: string, updater: (project: Project) => Project) => void
 ) => {
   const { toast } = useToast();
   const { user } = useAuth();

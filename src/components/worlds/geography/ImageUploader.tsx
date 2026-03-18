@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Image, Trash2, Upload } from 'lucide-react';
 import { toast } from "sonner";
-import { uploadFile, handleUploadError } from "@/services/storage/fileStorage";
+import { uploadFile } from "@/services/storage/fileStorage";
 import DriveConnectionModal from '@/components/storage/DriveConnectionModal';
 
 interface ImageUploaderProps {
@@ -35,6 +35,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     return () => {
       console.log(`[${componentId}] ImageUploader (${category}) unmounted with final URL:`, imageUrl);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [componentId, category]);
   
   // Log when the URL changes
@@ -77,10 +78,11 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       if (!disableToast) {
         toast.success('Bild erfolgreich hochgeladen');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(`[${componentId}] Error uploading image for ${category}:`, error);
-      setError(error.message || 'Unbekannter Fehler');
-      toast.error(`Fehler beim Hochladen: ${error.message || 'Unbekannter Fehler'}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unbekannter Fehler';
+      setError(errorMessage);
+      toast.error(`Fehler beim Hochladen: ${errorMessage}`);
     } finally {
       setUploading(false);
     }

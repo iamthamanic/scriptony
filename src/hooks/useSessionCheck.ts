@@ -34,9 +34,10 @@ export const useSessionCheck = () => {
           toast.info(t('auth.alreadyLoggedIn'));
           navigate('/');
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error("Error checking authentication:", error);
-        setAuthError(`Authentication check failed: ${error.message}`);
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        setAuthError(`Authentication check failed: ${errorMessage}`);
       } finally {
         setLoading(false);
       }

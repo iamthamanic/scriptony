@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ArrowLeft, Clock, BarChart, Upload } from 'lucide-react';
+import { ArrowLeft, Clock, Upload } from 'lucide-react';
 import { DisciplineType, DisciplineChallenge } from '@/types/creative-gym';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';

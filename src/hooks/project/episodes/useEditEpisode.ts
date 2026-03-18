@@ -1,6 +1,6 @@
 
 import { useToast } from "../../use-toast";
-import { Episode, EditEpisodeFormData, EpisodeWithCoverImageFile } from "../../../types";
+import { Episode, EditEpisodeFormData, EpisodeWithCoverImageFile, Project } from "../../../types";
 
 // Helper function to safely convert EpisodeWithCoverImageFile to Episode
 const convertToEpisode = (episode: EpisodeWithCoverImageFile): Episode => {
@@ -13,7 +13,7 @@ const convertToEpisode = (episode: EpisodeWithCoverImageFile): Episode => {
 
 export const useEditEpisode = (
   selectedProject: { id: string; episodes: Episode[] } | null,
-  updateProjects: (projectId: string, updater: (project: any) => any) => void
+  updateProjects: (projectId: string, updater: (project: Project) => Project) => void
 ) => {
   const { toast } = useToast();
 

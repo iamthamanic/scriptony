@@ -10,7 +10,7 @@ interface CategoryFormProps {
   formData: WorldCategoryFormData;
   onNameChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onTypeChange: (value: string) => void;
-  onContentChange: (content: any) => void;
+  onContentChange: (content: unknown) => void;
   onSubmit: (e: React.FormEvent) => void;
   onClose: () => void;
   isEditing: boolean;

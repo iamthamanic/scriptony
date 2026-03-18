@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Shot, ShotType, CameraMovement, CameraPerspective, NewShotFormData } from '../../types';
+import { Shot, NewShotFormData } from '../../types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, Camera, X, Upload } from 'lucide-react';
 
@@ -56,7 +56,7 @@ const ShotEditor = ({
   onAddShot,
   onEditShot,
   onDeleteShot,
-  sceneId
+  sceneId: _sceneId
 }: ShotEditorProps) => {
   const [editingShot, setEditingShot] = useState<Shot | null>(null);
   const [showForm, setShowForm] = useState(false);

@@ -1,5 +1,4 @@
 
-import type { Scene } from '../scenes';
 import type { EmotionalSignificance } from '../common';
 
 export type NarrativeStructureType =
@@ -55,7 +54,7 @@ export interface StructureTemplate {
 }
 
 // Function to get structure options based on project type
-export const getStructureOptions = (projectType?: string, videoFormat?: string): NarrativeStructureOption[] => {
+export const getStructureOptions = (projectType?: string, _videoFormat?: string): NarrativeStructureOption[] => {
   // Common structures across all project types
   const common: NarrativeStructureOption[] = [
     { value: 'none', label: 'None', description: 'No specific narrative structure' }

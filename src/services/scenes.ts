@@ -1,11 +1,11 @@
 import { supabase } from "@/integrations/supabase/client";
-import { Scene, NewSceneFormData, TimeOfDay, EmotionalSignificance } from "../types";
+import { Scene, NewSceneFormData } from "../types";
 import { handleApiError, convertDbSceneToApp } from "./utils";
 
-export const createScene = async (sceneData: any): Promise<Scene | null> => {
+export const createScene = async (sceneData: NewSceneFormData): Promise<Scene | null> => {
   try {
     // If there's a keyframe image, upload it first if it's a File object
-    let keyframeUrl = sceneData.keyframeImage;
+    const keyframeUrl = sceneData.keyframeImage;
     
     // The keyframeImage should already be a URL string at this point from the useScenes hook
     // We don't need to upload it again here

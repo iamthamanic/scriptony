@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Edit, Trash2, ChevronDown, ChevronUp, MapPin } from 'lucide-react';
+import { Edit, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import { Country } from '@/types/worlds';
 
 interface CountryCardProps {

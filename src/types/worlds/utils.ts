@@ -5,9 +5,10 @@ import { createEmptyPoliticsContent, PoliticsContent } from "./politics";
 import { createEmptyEconomyContent, EconomyContent } from "./economy";
 import { createEmptySocietyContent, SocietyContent } from "./society";
 import { createEmptyCultureContent, CultureContent } from "./culture";
-import { Json } from "@/integrations/supabase/types";
 
-export const getEmptyCategoryContent = (type: WorldCategoryType): any => {
+type CategoryContent = GeographyContent | PoliticsContent | EconomyContent | SocietyContent | CultureContent | Record<string, never>;
+
+export const getEmptyCategoryContent = (type: WorldCategoryType): CategoryContent => {
   switch (type) {
     case 'geography':
       return createEmptyGeographyContent();

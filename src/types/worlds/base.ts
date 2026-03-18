@@ -26,7 +26,7 @@ export interface WorldCategoryFormData {
   name: string;
   type: WorldCategoryType;
   icon?: string;
-  content: any;
+  content: unknown;
 }
 
 // Define the base World interface

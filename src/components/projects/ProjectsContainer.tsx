@@ -9,6 +9,7 @@ import ProjectModals from '@/components/projects/ProjectModals';
 import ProjectSelector from '@/components/ProjectSelector';
 import ProjectHeader from '@/components/ProjectHeader';
 import { EditCharacterFormData } from '@/components/EditCharacterModal';
+import { NewProjectFormData, EditProjectFormData, NewSceneFormData, NewCharacterFormData, NewEpisodeFormData } from '@/types';
 
 const ProjectsContainer = () => {
   // Get all project state from the hook
@@ -40,8 +41,8 @@ const ProjectsContainer = () => {
     isEpisodeModalOpen,
     editingScene,
     editingEpisode,
-    selectedEpisodeId,
-    setSelectedEpisodeId,
+    selectedEpisodeId: _selectedEpisodeId,
+    setSelectedEpisodeId: _setSelectedEpisodeId,
     handleNewProject,
     handleOpenEditProject,
     handleNewScene,
@@ -60,29 +61,29 @@ const ProjectsContainer = () => {
   const { fileInputRef, handleFileChange } = useFileUpload();
 
   // Form submission handlers
-  const handleCreateProjectSubmit = async (data: any) => {
+  const handleCreateProjectSubmit = async (data: NewProjectFormData) => {
     await handleCreateProject(data);
     closeNewProject();
   };
   
-  const handleEditProjectSubmit = async (data: any) => {
+  const handleEditProjectSubmit = async (data: EditProjectFormData) => {
     if (selectedProject) {
       await handleEditProject(data);
       closeEditProject();
     }
   };
   
-  const handleCreateSceneSubmit = (data: any) => {
+  const handleCreateSceneSubmit = (data: NewSceneFormData) => {
     handleCreateScene(data);
     closeNewScene();
   };
   
-  const handleCreateCharacterSubmit = (data: any) => {
+  const handleCreateCharacterSubmit = (data: NewCharacterFormData) => {
     handleCreateCharacter(data);
     closeNewCharacter();
   };
   
-  const handleCreateOrEditEpisodeSubmit = (data: any) => {
+  const handleCreateOrEditEpisodeSubmit = (data: NewEpisodeFormData) => {
     if (editingEpisode) {
       handleEditEpisode(editingEpisode.id, data);
     } else {

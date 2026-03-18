@@ -10,7 +10,7 @@ import SocialGroupForm from './SocialGroupForm';
 import { Json } from '@/integrations/supabase/types';
 
 interface SocietyEditorProps {
-  content: any;
+  content: unknown;
   onChange: (content: SocietyContent) => void;
 }
 

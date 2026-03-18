@@ -25,7 +25,6 @@ const CharacterList = ({
   onEditCharacter,
   onDeleteCharacter 
 }: CharacterListProps) => {
-  const [isOpen, setIsOpen] = useState(false);
   const [editingCharacter, setEditingCharacter] = useState<Character | null>(null);
   const [characterToDelete, setCharacterToDelete] = useState<Character | null>(null);
 
@@ -33,7 +32,7 @@ const CharacterList = ({
     setEditingCharacter(character);
   };
 
-  const handleEditSubmit = (data: EditCharacterFormData) => {
+  const handleEditSubmit = (_data: EditCharacterFormData) => {
     if (editingCharacter) {
       onEditCharacter(editingCharacter);
       setEditingCharacter(null);

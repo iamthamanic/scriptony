@@ -1,7 +1,6 @@
 
 import { customSupabase } from "@/integrations/supabase/customClient";
 import { getCurrentUser } from "../worlds/worldOperations/utils";
-import { createTimeout } from "../worlds/worldOperations/utils";
 import { updateDriveSettings } from "./userStorage";
 
 // Base URL for Google API
@@ -99,7 +98,7 @@ export const handleDriveOAuthCallback = async (
     const scriptonyFolder = await createOrFindScriptonyMainFolder(tokenData.access_token);
     
     // Create Projects subfolder
-    const projectsFolder = await createOrFindScriptonySubfolder(
+    const _projectsFolder = await createOrFindScriptonySubfolder(
       tokenData.access_token,
       scriptonyFolder.id,
       'Projekte'

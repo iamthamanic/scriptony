@@ -1,29 +1,40 @@
+import { useCallback } from "react";
+import { authApi } from "@/api";
+import { useToast } from "./use-toast";
 
-import { useState } from "react";
-import { customSupabase } from "@/integrations/supabase/customClient";
-import { toast } from "sonner";
+export function useAuthActions() {
+  const { toast } = useToast();
 
-/**
- * Custom hook to provide authentication actions (sign out, etc.)
- */
-export const useAuthActions = () => {
-  const [loading, setLoading] = useState(false);
-
-  const signOut = async () => {
+  const handleSignOut = useCallback(async () => {
     try {
-      setLoading(true);
-      await customSupabase.auth.signOut();
-      toast.success("Successfully signed out");
-    } catch (error: any) {
+      const { error } = await authApi.signOut();
+      if (error) {
+        throw new Error(error.message);
+      }
+      toast.success("Abmeldung erfolgreich");
+    } catch (error: unknown) {
       console.error("Error signing out:", error);
-      toast.error("Failed to sign out");
-    } finally {
-      setLoading(false);
+      const errorMessage = error instanceof Error ? error.message : "Abmeldung fehlgeschlagen";
+      toast.error(errorMessage);
     }
-  };
+  }, [toast]);
+
+  const handlePasswordReset = useCallback(async (email: string) => {
+    try {
+      const { error } = await authApi.resetPassword(email);
+      if (error) {
+        throw new Error(error.message);
+      }
+      toast.success("Passwort-Reset-Link sent");
+    } catch (error: unknown) {
+      console.error("Password reset error:", error);
+      const errorMessage = error instanceof Error ? error.message : "Passwort-Reset fehlgeschlagen";
+      toast.error(errorMessage);
+    }
+  }, [toast]);
 
   return {
-    signOut,
-    loading
+    handleSignOut,
+    handlePasswordReset,
   };
-};
+}

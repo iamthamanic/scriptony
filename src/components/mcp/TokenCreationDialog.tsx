@@ -1,6 +1,5 @@
 
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { 
   Dialog,
@@ -24,7 +23,6 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 import { PlusIcon, Copy, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
 
 interface TokenCreationDialogProps {
   onSuccess?: () => void;
@@ -120,8 +118,8 @@ const TokenCreationDialog = ({ onSuccess }: TokenCreationDialogProps) => {
       if (onSuccess) {
         onSuccess();
       }
-    } catch (error: any) {
-      console.error('Failed to create token:', error);
+    } catch (_error) {
+      console.error('Failed to create token:', _error);
       toast.error('Fehler beim Erstellen des Tokens');
     } finally {
       setLoading(false);

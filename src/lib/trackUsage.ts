@@ -4,7 +4,7 @@ export const trackPageView = (page: string) => {
   // Here you would implement actual tracking code
 };
 
-export const trackUsage = (feature: string, action: string, data?: any) => {
+export const trackUsage = (feature: string, action: string, data?: unknown) => {
   console.log(`Usage tracked: ${feature} - ${action}`, data);
   // Here you would implement actual tracking code
 };

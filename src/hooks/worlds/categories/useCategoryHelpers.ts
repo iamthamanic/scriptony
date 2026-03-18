@@ -23,7 +23,7 @@ export function useCategoryHelpers() {
     }
     
     // Safe casting for object operations
-    const contentObj = content as Record<string, any>;
+    const contentObj = content as Record<string, unknown>;
     
     // Apply type-specific structure checks and fixes
     switch (type) {

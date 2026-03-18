@@ -28,9 +28,9 @@ interface ProjectsContentProps {
 const ProjectsContent: React.FC<ProjectsContentProps> = ({
   isLoading,
   projects,
-  selectedProjectId,
+  selectedProjectId: _selectedProjectId,
   selectedProject,
-  onSelectProject,
+  onSelectProject: _onSelectProject,
   onNewProject
 }) => {
   if (isLoading) {

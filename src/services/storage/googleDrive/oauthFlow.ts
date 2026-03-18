@@ -1,5 +1,4 @@
 
-import { customSupabase } from "@/integrations/supabase/customClient";
 import { updateDriveSettings } from "../userStorage";
 import { 
   GOOGLE_AUTH_URL,
@@ -129,7 +128,7 @@ export const handleDriveOAuthCallback = async (
       try {
         const errorJson = JSON.parse(errorText);
         errorDetails = errorJson.error_description || errorJson.error || errorText;
-      } catch (e) {
+      } catch (_e) {
         errorDetails = errorText;
       }
       

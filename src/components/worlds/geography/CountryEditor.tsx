@@ -5,7 +5,7 @@ import CountryList from './CountryList';
 import { useCountryEditor } from '@/hooks/worlds/useCountryEditor';
 
 interface CountryEditorProps {
-  content: any;
+  content: unknown;
   onChange: (content: GeographyContent) => void;
 }
 

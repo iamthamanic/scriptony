@@ -31,6 +31,7 @@ export const StorageProviderComponent: React.FC<StorageProviderProps> = ({
     }
     
     initializeProvider(defaultProviderType);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultProviderType]);
   
   // Handle OAuth callback if present
@@ -38,6 +39,7 @@ export const StorageProviderComponent: React.FC<StorageProviderProps> = ({
     if (hasCallback && currentProvider instanceof GoogleDriveProvider) {
       handleOAuthCallback();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasCallback, currentProvider]);
   
   const initializeProvider = async (type: StorageProviderType) => {

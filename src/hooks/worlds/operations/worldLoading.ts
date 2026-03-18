@@ -2,10 +2,11 @@
 import { useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { fetchWorlds } from "@/services/worlds";
+import { World } from "@/types";
 
 export function useWorldLoading(
   userId: string | undefined,
-  setWorlds: (worlds: any[]) => void,
+  setWorlds: (worlds: World[]) => void,
   selectedWorldId: string | null,
   setSelectedWorldId: (id: string | null) => void,
   setIsLoading: (loading: boolean) => void,

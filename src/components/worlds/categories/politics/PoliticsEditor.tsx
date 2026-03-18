@@ -10,7 +10,7 @@ import PoliticalSystemForm from './PoliticalSystemForm';
 import { Json } from '@/integrations/supabase/types';
 
 interface PoliticsEditorProps {
-  content: any;
+  content: unknown;
   onChange: (content: PoliticsContent) => void;
 }
 

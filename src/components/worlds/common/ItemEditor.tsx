@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CategoryItem, CustomField, FieldType } from '@/types/worlds';
+import { CategoryItem } from '@/types/worlds';
 import ImageUploader from '../geography/ImageUploader';
 import CustomFieldsEditor from '../geography/CustomFieldsEditor';
 

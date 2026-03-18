@@ -1,11 +1,12 @@
 
 import { customSupabase } from "@/integrations/supabase/customClient";
 import { handleApiError } from "../utils";
+import { Character, Episode, Scene } from "@/types";
 
 export const fetchProjectDetails = async (projectId: string): Promise<{
-  characters: any[],
-  episodes: any[],
-  scenes: any[]
+  characters: Character[],
+  episodes: Episode[],
+  scenes: Scene[]
 }> => {
   try {
     // Fetch characters

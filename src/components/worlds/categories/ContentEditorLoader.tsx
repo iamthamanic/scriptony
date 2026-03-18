@@ -11,8 +11,8 @@ import CultureEditor from '../categories/culture/CultureEditor';
 
 interface ContentEditorLoaderProps {
   type: WorldCategoryType;
-  content: any;
-  onChange: (content: any) => void;
+  content: unknown;
+  onChange: (content: unknown) => void;
 }
 
 const ContentEditorLoader: React.FC<ContentEditorLoaderProps> = ({ type, content, onChange }) => {
@@ -68,7 +68,7 @@ const ContentEditorLoader: React.FC<ContentEditorLoaderProps> = ({ type, content
             onChange={e => {
               try {
                 onChange(JSON.parse(e.target.value));
-              } catch (error) {
+              } catch (_error) {
                 // Invalid JSON, but we still keep the text
               }
             }}

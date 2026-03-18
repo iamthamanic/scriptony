@@ -24,7 +24,7 @@ const CultureElementForm: React.FC<CultureElementFormProps> = ({
         <Label htmlFor="element-type">Typ</Label>
         <Select
           value={editingElement.element_type}
-          onValueChange={(value: any) => setEditingElement({
+          onValueChange={(value: string) => setEditingElement({
             ...editingElement,
             element_type: value
           })}

@@ -1,12 +1,12 @@
 import { Scene, EmotionalSignificance, TimeOfDay } from '@/types';
 
-export const handleApiError = (error: any) => {
+export const handleApiError = (error: unknown) => {
   console.error("API Error:", error);
   // Additional error handling logic can be added here
   return null;
 };
 
-export const convertDbSceneToApp = (dbScene: any): Scene => {
+export const convertDbSceneToApp = (dbScene: Record<string, unknown>): Scene => {
   return {
     id: dbScene.id,
     projectId: dbScene.project_id,
@@ -40,7 +40,7 @@ export const convertDbSceneToApp = (dbScene: any): Scene => {
   };
 };
 
-export const convertDbProjectToApp = (dbProject: any) => {
+export const convertDbProjectToApp = (dbProject: Record<string, unknown>) => {
   return {
     id: dbProject.id,
     title: dbProject.title,

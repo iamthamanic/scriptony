@@ -1,7 +1,6 @@
 
 import { customSupabase } from "@/integrations/supabase/customClient";
 import { isDevelopmentMode, getDevModeUser } from "@/utils/devMode";
-import { toast } from "sonner";
 
 /**
  * Tracks a user action/feature usage and saves it to the database
@@ -10,16 +9,16 @@ import { toast } from "sonner";
  * @param context Additional contextual data as an object (will be stored as JSONB)
  */
 export const trackUsage = async (
-  feature: string, 
-  action: string, 
-  context?: Record<string, any>
+  feature: string,
+  action: string,
+  context?: Record<string, unknown>
 ): Promise<void> => {
   try {
     // Get the current user
-    const user = isDevelopmentMode() 
-      ? getDevModeUser() 
+    const user = isDevelopmentMode()
+      ? getDevModeUser()
       : (await customSupabase.auth.getUser()).data.user;
-    
+
     if (!user) {
       console.warn("Cannot track usage: No authenticated user");
       return;
@@ -52,7 +51,7 @@ export const trackUsage = async (
  * @param pageName Name of the page being viewed
  * @param context Additional context data
  */
-export const trackPageView = (pageName: string, context?: Record<string, any>) => {
+export const trackPageView = (pageName: string, context?: Record<string, unknown>) => {
   trackUsage(pageName, 'page_viewed', context);
   console.log(`Page viewed: ${pageName}`);
 };
@@ -74,12 +73,12 @@ export const checkIsAdmin = async (): Promise<boolean> => {
       .eq('user_id', (await customSupabase.auth.getUser()).data.user?.id)
       .eq('is_admin', true)
       .limit(1);
-    
+
     if (error) {
       console.error("Error checking admin status:", error);
       return false;
     }
-    
+
     return data && data.length > 0;
   } catch (err) {
     console.error("Failed to check admin status:", err);

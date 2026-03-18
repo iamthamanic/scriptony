@@ -1,12 +1,12 @@
 import { useToast } from "../use-toast";
-import { Scene, NewSceneFormData } from "../../types";
+import { Scene, NewSceneFormData, Project } from "../../types";
 import { createScene, deleteScene } from "../../services/scenes"; // Import directly from scenes service
 import { useAuth } from "@/contexts/AuthContext";
 import { uploadFileToStorage } from "@/services/storage"; // Import utility for file upload
 
 export const useScenes = (
   selectedProject: { id: string; scenes: Scene[] } | null,
-  updateProjects: (projectId: string, updater: (project: any) => any) => void
+  updateProjects: (projectId: string, updater: (project: Project) => Project) => void
 ) => {
   const { toast } = useToast();
   const { user } = useAuth();
@@ -16,7 +16,7 @@ export const useScenes = (
 
     try {
       // Create a copy of data to modify
-      const sceneData = { ...data } as any;
+      const sceneData: Record<string, unknown> = { ...data };
       
       // Make sure projectId is set in the data
       sceneData.projectId = selectedProject.id;

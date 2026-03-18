@@ -5,7 +5,7 @@ import WorldsContent from "@/components/worlds/WorldsContent";
 import WorldModals from "@/components/worlds/WorldModals";
 import { useWorldsState } from "@/hooks/useWorldsState";
 import { useAuth } from "@/hooks/useAuthState";
-import { World, WorldCategory, WorldCategoryFormData } from "@/types";
+import { WorldCategory } from "@/types";
 
 const WorldbuildingPage = () => {
   const { user } = useAuth();

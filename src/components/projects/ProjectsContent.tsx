@@ -1,7 +1,7 @@
 
 import React from 'react';
 import ProjectContent from '../ProjectContent';
-import { Character, Episode, Project, Scene } from '../../types';
+import { Project, Scene } from '../../types';
 import { EditCharacterFormData } from '../EditCharacterModal';
 
 interface ProjectsContentProps {
@@ -26,14 +26,14 @@ interface ProjectsContentProps {
 
 export default function ProjectsContent({
   isLoading,
-  projects,
-  selectedProjectId,
+  projects: _projects,
+  selectedProjectId: _selectedProjectId,
   selectedProject,
-  onSelectProject,
+  onSelectProject: _onSelectProject,
   onNewScene,
-  onEditProject,
-  onNewCharacter,
-  onDeleteProject,
+  onEditProject: _onEditProject,
+  onNewCharacter: _onNewCharacter,
+  onDeleteProject: _onDeleteProject,
   onEditScene,
   onDeleteScene,
   onEditCharacter,

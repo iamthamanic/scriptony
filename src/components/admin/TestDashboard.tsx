@@ -4,7 +4,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Separator } from '@/components/ui/separator';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
@@ -105,7 +104,7 @@ const TestStatusBadge = ({ status }: { status: string }) => {
 const TestDashboard: React.FC = () => {
   const [tests, setTests] = useState<TestDefinition[]>([]);
   const [results, setResults] = useState<TestResult[]>([]);
-  const [features, setFeatures] = useState<FeatureRegistry[]>([]);
+  const [features, _setFeatures] = useState<FeatureRegistry[]>([]);
   const [coverage, setCoverage] = useState<CoverageSummary | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [runningTest, setRunningTest] = useState<string | null>(null);
@@ -115,6 +114,7 @@ const TestDashboard: React.FC = () => {
   // Fetch all data on mount
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchData = async () => {
@@ -430,7 +430,7 @@ const TestDashboard: React.FC = () => {
                                   <h5 className="font-medium mb-2">Actions</h5>
                                   {test.actions?.length > 0 ? (
                                     <ul className="space-y-2">
-                                      {test.actions.map((action: any, index: number) => (
+                                      {test.actions.map((action: TestAction, index: number) => (
                                         <li key={index} className="text-sm">
                                           <span className="font-medium">{action.name || action.type}: </span>
                                           {action.target && <span className="text-muted-foreground">Target: {action.target}</span>}
@@ -447,7 +447,7 @@ const TestDashboard: React.FC = () => {
                                   <h5 className="font-medium mb-2">Assertions</h5>
                                   {test.assertions?.length > 0 ? (
                                     <ul className="space-y-2">
-                                      {test.assertions.map((assertion: any, index: number) => (
+                                      {test.assertions.map((assertion: TestAssertion, index: number) => (
                                         <li key={index} className="text-sm">
                                           <span className="font-medium">{assertion.name || assertion.type}: </span>
                                           {assertion.target && <span className="text-muted-foreground">Target: {assertion.target}</span>}

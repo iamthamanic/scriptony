@@ -36,7 +36,7 @@ export async function uploadAndAnalyzeScript(file: File): Promise<{analysisResul
     
     // Upload file to storage
     const filePath = `script-uploads/${Date.now()}_${file.name}`;
-    const { data: uploadData, error: uploadError } = await supabase.storage
+    const { error: uploadError } = await supabase.storage
       .from('project_assets')
       .upload(filePath, file);
     

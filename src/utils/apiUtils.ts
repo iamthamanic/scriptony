@@ -32,7 +32,7 @@ export const handleApiError = (
     errorMessage = error.message;
     errorDetails = error.stack || '';
   } else if (typeof error === 'object' && error !== null) {
-    const errorObj = error as any;
+    const errorObj = error as Record<string, unknown>;
     if (errorObj.message) errorMessage = errorObj.message;
     if (errorObj.details) errorDetails = errorObj.details;
     if (errorObj.code) errorCode = errorObj.code;

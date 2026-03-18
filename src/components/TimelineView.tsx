@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Scene } from '../types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CalendarDays, Clock, MapPin, Image } from 'lucide-react';
+import { CalendarDays, Clock, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface TimelineViewProps {
@@ -71,7 +71,7 @@ const TimelineView = ({ scenes, onSceneClick }: TimelineViewProps) => {
     <div className="mt-6 animate-fade-in">
       <h2 className="text-xl font-bold mb-4">Timeline View</h2>
       
-      <Tabs defaultValue="timecode" onValueChange={(val) => setSortBy(val as any)}>
+      <Tabs defaultValue="timecode" onValueChange={(val) => setSortBy(val as 'timecode' | 'location' | 'emotional')}>
         <TabsList className="mb-4">
           <TabsTrigger value="timecode" className="flex items-center gap-1">
             <Clock size={16} />

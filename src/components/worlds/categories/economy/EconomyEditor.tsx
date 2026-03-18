@@ -7,10 +7,9 @@ import { EconomicEntity, EconomyContent } from '@/types/worlds';
 import { toast } from "sonner";
 import EconomicEntityList from './EconomicEntityList';
 import EconomicEntityForm from './EconomicEntityForm';
-import { Json } from '@/integrations/supabase/types';
 
 interface EconomyEditorProps {
-  content: any;
+  content: unknown;
   onChange: (content: EconomyContent) => void;
 }
 

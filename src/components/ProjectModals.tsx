@@ -5,7 +5,7 @@ import EditProjectModal from './EditProjectModal';
 import NewSceneModal from './NewSceneModal';
 import NewCharacterModal from './NewCharacterModal';
 import EpisodeModal from './episodes/EpisodeModal';
-import { Project, Scene, Episode } from '../types';
+import { Project, Scene, Episode, NewProjectFormData, EditProjectFormData, NewSceneFormData, NewCharacterFormData, NewEpisodeFormData } from '../types';
 
 interface ProjectModalsProps {
   isNewProjectModalOpen: boolean;
@@ -18,11 +18,11 @@ interface ProjectModalsProps {
   onCloseNewScene: () => void;
   onCloseNewCharacter: () => void;
   onCloseEpisodeModal: () => void;
-  onCreateProject: (data: any) => void;
-  onEditProject: (data: any) => void;
-  onCreateScene: (data: any) => void;
-  onCreateCharacter: (data: any) => void;
-  onCreateOrEditEpisode: (data: any) => void;
+  onCreateProject: (data: NewProjectFormData) => void;
+  onEditProject: (data: EditProjectFormData) => void;
+  onCreateScene: (data: NewSceneFormData) => void;
+  onCreateCharacter: (data: NewCharacterFormData) => void;
+  onCreateOrEditEpisode: (data: NewEpisodeFormData) => void;
   selectedProject: Project | null;
   editingScene: Scene | null;
   editingEpisode: Episode | null;

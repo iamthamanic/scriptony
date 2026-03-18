@@ -1,5 +1,5 @@
 
-import { StructureTemplate, SceneTemplate } from './types';
+import { StructureTemplate } from './types';
 
 /**
  * Three-Act Structure narrative template

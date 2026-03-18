@@ -11,7 +11,7 @@ export const createCharacter = async (projectId: string, characterData: NewChara
     if (characterData.avatar) {
       const file = characterData.avatar as File;
       const fileName = `${Date.now()}_${file.name}`;
-      const { data: uploadData, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('project_assets')
         .upload(`character-avatars/${fileName}`, file);
         
@@ -65,7 +65,7 @@ export const updateCharacter = async (characterId: string, characterData: Partia
     if (characterData.avatar && typeof characterData.avatar !== 'string') {
       const file = characterData.avatar as File;
       const fileName = `${Date.now()}_${file.name}`;
-      const { data: uploadData, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('project_assets')
         .upload(`character-avatars/${fileName}`, file);
         

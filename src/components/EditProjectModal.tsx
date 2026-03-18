@@ -5,10 +5,9 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { EditProjectFormData, Project, ProjectType, Genre, VideoFormat } from '../types';
+import { EditProjectFormData, Project, ProjectType, Genre, VideoFormat, NarrativeStructureType } from '../types';
 import { genreOptions, projectTypeOptions, videoFormatOptions } from '../utils/mockData';
-import { X, Plus, Upload, HelpCircle } from 'lucide-react';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { X, Plus, Upload } from 'lucide-react';
 import NarrativeStructureSelector from './narrative-structures/NarrativeStructureSelector';
 
 interface EditProjectModalProps {
@@ -82,7 +81,7 @@ const EditProjectModal = ({ isOpen, onClose, onSubmit, project }: EditProjectMod
   };
 
   const handleNarrativeStructureChange = (value: string) => {
-    setFormData(prev => ({ ...prev, narrativeStructure: value as any }));
+    setFormData(prev => ({ ...prev, narrativeStructure: value as NarrativeStructureType }));
   };
 
   const handleGenreToggle = (genre: Genre) => {

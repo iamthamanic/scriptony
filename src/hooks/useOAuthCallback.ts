@@ -1,87 +1,68 @@
-import { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
-import { useToast } from '@/hooks/use-toast';
-import { handleDriveOAuthCallback } from '@/services/storage';
-import { DriveConnectionResponse } from '@/services/storage/googleDrive/oauthFlow';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
+import { authApi, apiClient } from "@/api";
 
-export const useOAuthCallback = () => {
-  const [searchParams] = useSearchParams();
+export function useOAuthCallback() {
   const navigate = useNavigate();
-  const { toast } = useToast();
-  const [connecting, setConnecting] = useState(false);
+  const { toast: uiToast } = useToast();
+  const [processing, setProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [errorDetails, setErrorDetails] = useState<string | null>(null);
 
-  const processOAuthCallback = async (
-    onSuccess: () => Promise<void>
-  ): Promise<DriveConnectionResponse> => {
-    const code = searchParams.get('code');
-    const state = searchParams.get('state');
-    let result: DriveConnectionResponse = { 
-      success: false, 
-      message: 'No callback parameters found' 
-    };
-    
-    if (code && state) {
-      try {
-        console.log("Processing OAuth callback with code and state");
-        setConnecting(true);
-        result = await handleDriveOAuthCallback(code, state);
-        
-        if (result.success) {
-          toast({
-            title: 'Erfolgreich verbunden',
-            description: `Google Drive wurde verknüpft ${result.email ? `(${result.email})` : ''}`,
-          });
-          
-          // Reload settings
-          await onSuccess();
-        } else {
-          toast({
-            title: 'Fehler bei der Verbindung',
-            description: result.message,
-            variant: 'destructive',
-          });
-        }
-      } catch (error) {
-        console.error('Error handling OAuth callback:', error);
-        toast({
-          title: 'Verbindungsfehler',
-          description: 'Fehler bei der Verbindung mit Google Drive',
-          variant: 'destructive',
-        });
-        
-        result = {
-          success: false,
-          message: error instanceof Error ? error.message : 'Unbekannter Fehler',
-          error: {
-            code: 'CALLBACK_EXCEPTION',
-            details: error instanceof Error ? error.message : 'Unknown error'
-          }
-        };
-      } finally {
-        setConnecting(false);
-        
-        // Check if we have an original URL to return to
-        const originalUrl = localStorage.getItem('driveOAuthOriginUrl');
-        localStorage.removeItem('driveOAuthOriginUrl');
-        
-        // Clean URL parameters - keep the tab parameter
-        if (originalUrl) {
-          // Try to go back to the original URL if possible
-          navigate(originalUrl);
-        } else {
-          // Default fallback - just clear the auth parameters
-          const newUrl = window.location.pathname + '?tab=storage';
-          window.history.replaceState({}, '', newUrl);
-        }
-      }
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+    const state = params.get("state");
+    const hasCallback = Boolean(code && state);
+
+    if (hasCallback) {
+      handleOAuthCallback(code!, state!);
     }
-    
-    return result;
-  };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function handleOAuthCallback(code: string, state: string) {
+    setProcessing(true);
+    setError(null);
+    setErrorDetails(null);
+
+    try {
+      const { data, error } = await authApi.handleOAuthCallback(code, state);
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      if (data) {
+        // Store token and update API client
+        localStorage.setItem("token", data.token);
+        apiClient.setToken(data.token);
+
+        toast.success("Anmeldung erfolgreich!", {
+          description: `Willkommen zurück, ${data.user.username}!`,
+        });
+
+        // Redirect to home page
+        navigate("/", { replace: true });
+      }
+    } catch (err: unknown) {
+      console.error("OAuth callback error:", err);
+      const errorMessage = err instanceof Error ? err.message : "Unbekannter Fehler";
+      setError("OAuth Verarbeitung fehlgeschlagen");
+      setErrorDetails(errorMessage);
+      uiToast.error("OAuth Verarbeitung fehlgeschlagen");
+    } finally {
+      setProcessing(false);
+    }
+  }
 
   return {
-    hasCallback: !!(searchParams.get('code') && searchParams.get('state')),
-    connecting,
-    processOAuthCallback,
+    processing,
+    error,
+    errorDetails,
+    hasCallback: processing || error !== null,
   };
-};
+}

@@ -2,11 +2,11 @@
 import { useCreateEpisode } from "./useCreateEpisode";
 import { useEditEpisode } from "./useEditEpisode";
 import { useDeleteEpisode } from "./useDeleteEpisode";
-import { Episode } from "../../../types";
+import { Episode, Project } from "../../../types";
 
 export const useEpisodes = (
   selectedProject: { id: string; episodes: Episode[] } | null,
-  updateProjects: (projectId: string, updater: (project: any) => any) => void
+  updateProjects: (projectId: string, updater: (project: Project) => Project) => void
 ) => {
   const handleCreateEpisode = useCreateEpisode(selectedProject, updateProjects);
   const handleEditEpisode = useEditEpisode(selectedProject, updateProjects);

@@ -1,10 +1,9 @@
 
 import React, { useEffect, useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Link, Navigate, useNavigate } from "react-router-dom";
-import { Shield, BarChart2, TestTube2 } from "lucide-react";
+import { Navigate, useNavigate } from "react-router-dom";
+import { Shield } from "lucide-react";
 import { checkIsAdmin } from "@/utils/trackUsage";
 import { trackPageView } from '@/utils/trackUsage';
 

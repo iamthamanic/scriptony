@@ -11,7 +11,7 @@ import { useShots } from '../../hooks/project/useShots';
 interface SceneTabsProps {
   scene: Scene;
   characters: Character[];
-  onUpdate: (field: string, value: any) => void;
+  onUpdate: (field: string, value: unknown) => void;
 }
 
 const SceneTabs = ({ scene, characters, onUpdate }: SceneTabsProps) => {

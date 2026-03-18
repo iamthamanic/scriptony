@@ -13,7 +13,7 @@ import FileTypeInfoCards from '@/features/upload/components/FileTypeInfoCards';
 import { useFileValidation } from '@/hooks/useFileValidation';
 
 const UploadPage = () => {
-  const { user } = useAuth();
+  const { user: _user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { validateFile } = useFileValidation();

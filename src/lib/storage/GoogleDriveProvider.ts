@@ -1,11 +1,10 @@
 
-import { AbstractStorageProvider, StorageProviderType, StorageProviderStatus } from './StorageProvider';
+import { AbstractStorageProvider, StorageProviderType } from './StorageProvider';
 import { 
   connectToGoogleDrive, 
   handleDriveOAuthCallback, 
   isDriveConnected, 
   getDriveConnectionStatus, 
-  refreshDriveToken, 
   uploadFileToDrive, 
   disconnectGoogleDrive 
 } from '@/services/storage';
@@ -205,7 +204,7 @@ export class GoogleDriveProvider extends AbstractStorageProvider {
    * Read file from Google Drive
    * Currently not implemented - will require additional API methods
    */
-  async readFile(path: string): Promise<Blob | string | null> {
+  async readFile(_path: string): Promise<Blob | string | null> {
     // Not implemented yet - will need additional Drive API methods
     console.warn('readFile not implemented for Google Drive provider');
     return null;
@@ -215,7 +214,7 @@ export class GoogleDriveProvider extends AbstractStorageProvider {
    * List files in Google Drive directory
    * Currently not implemented - will require additional API methods
    */
-  async listFiles(directory: string): Promise<string[]> {
+  async listFiles(_directory: string): Promise<string[]> {
     // Not implemented yet - will need additional Drive API methods
     console.warn('listFiles not implemented for Google Drive provider');
     return [];

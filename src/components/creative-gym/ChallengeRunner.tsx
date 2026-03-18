@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { useCreativeGym } from '@/contexts/creative-gym';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Separator } from '@/components/ui/separator';
 import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, Clock, Save, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -45,6 +44,7 @@ const ChallengeRunner: React.FC = () => {
     return () => {
       if (intervalId) clearInterval(intervalId);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeChallenge, startTime]);
   
   // If no active challenge, return early

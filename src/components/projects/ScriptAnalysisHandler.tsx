@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React from "react";
 import { useToast } from "@/hooks/use-toast";
 import { uploadAndAnalyzeScript } from "@/services/scriptAnalysis";
@@ -104,9 +105,9 @@ export const useScriptAnalysis = () => {
 
 // This is a utility component to manage script analysis
 const ScriptAnalysisHandler: React.FC<ScriptAnalysisHandlerProps> = ({ 
-  setIsAnalyzing,
-  setAnalysisResult, 
-  setIsAnalysisResultsOpen 
+  setIsAnalyzing: _setIsAnalyzing,
+  setAnalysisResult: _setAnalysisResult, 
+  setIsAnalysisResultsOpen: _setIsAnalysisResultsOpen 
 }) => {
   // This is a utility component that doesn't render anything
   return null;

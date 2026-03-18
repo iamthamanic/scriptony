@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { NewProjectFormData, ProjectType, Genre, VideoFormat, World } from '../types';
+import { NewProjectFormData, ProjectType, Genre, VideoFormat, World, NarrativeStructureType } from '../types';
 import { genreOptions, projectTypeOptions, videoFormatOptions } from '../utils/mockData';
 import { X, Plus, Upload } from 'lucide-react';
 import WorldSelector from './worlds/WorldSelector';
@@ -78,7 +78,7 @@ const NewProjectModal = ({ isOpen, onClose, onSubmit }: NewProjectModalProps) =>
   const handleNarrativeStructureChange = (value: string) => {
     setFormData(prev => ({ 
       ...prev, 
-      narrativeStructure: value as any 
+      narrativeStructure: value as NarrativeStructureType 
     }));
   };
 

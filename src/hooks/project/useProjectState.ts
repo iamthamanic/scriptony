@@ -3,6 +3,7 @@ import { useProjects } from "./useProjects";
 import { useCharacters } from "./useCharacters";
 import { useEpisodes } from "./useEpisodes";
 import { useScenes } from "./useScenes";
+import { Project } from "../../types";
 
 export const useProjectState = () => {
   const {
@@ -18,7 +19,7 @@ export const useProjectState = () => {
   } = useProjects();
 
   // Helper function to update projects
-  const updateProjects = (projectId: string, updater: (project: any) => any) => {
+  const updateProjects = (projectId: string, updater: (project: Project) => Project) => {
     setProjects(projects.map(project => 
       project.id === projectId ? updater(project) : project
     ));

@@ -4,10 +4,11 @@ import { Eye, EyeOff } from 'lucide-react';
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { FormControl } from "@/components/ui/form";
+
+import { ControllerRenderProps } from "react-hook-form";
 
 interface PasswordInputProps {
-  field: any;
+  field: ControllerRenderProps<{ password: string }, "password">;
   disabled?: boolean;
 }
 

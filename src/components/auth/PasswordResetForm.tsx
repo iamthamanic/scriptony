@@ -45,8 +45,9 @@ const PasswordResetForm: React.FC<PasswordResetFormProps> = ({ loading, setLoadi
         toast.success(t('auth.success.passwordResetEmail'));
         onSuccess();
       }
-    } catch (error: any) {
-      toast.error(error.message || t('auth.error.passwordReset'));
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : t('auth.error.passwordReset');
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

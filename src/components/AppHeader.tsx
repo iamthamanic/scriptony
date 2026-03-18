@@ -17,7 +17,7 @@ interface AppHeaderProps {
   accountName: string;
 }
 
-const AppHeader = ({ onNewProject, onUploadScript, accountName }: AppHeaderProps) => {
+const AppHeader = ({ onNewProject, onUploadScript, accountName: _accountName }: AppHeaderProps) => {
   const isWorldbuilding = window.location.pathname === '/worldbuilding';
   const { toast } = useToast();
   const fileInputRef = React.useRef<HTMLInputElement>(null);

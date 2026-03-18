@@ -17,23 +17,23 @@ const CreativeGymPage = () => {
     userProgress,
     activeChallengeId,
     startChallenge,
-    completeChallenge
+    completeChallenge: _completeChallenge
   } = useCreativeGym();
   
   const [selectedTab, setSelectedTab] = useState<string>('challenges');
   const [selectedDiscipline, setSelectedDiscipline] = useState<string | null>(null);
   
-  // If there's an active challenge, show the challenge interface
-  if (activeChallengeId) {
-    return <ChallengeRunner />;
-  }
-  
-  // Add usage tracking
+  // Add usage tracking - must be before any early returns
   useEffect(() => {
     // Track page view
     trackPageView('creative_gym');
   }, []);
-  
+
+  // If there's an active challenge, show the challenge interface
+  if (activeChallengeId) {
+    return <ChallengeRunner />;
+  }
+
   return (
     <div className="py-8 px-4 md:px-6 w-full animate-fade-in">
       <div className="max-w-6xl mx-auto">

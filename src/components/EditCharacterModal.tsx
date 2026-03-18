@@ -117,7 +117,7 @@ const EditCharacterModal = ({ isOpen, onClose, onSubmit, character }: EditCharac
             <FormField
               control={form.control}
               name="avatar"
-              render={({ field: { value, onChange, ...fieldProps } }) => (
+              render={({ field: { value: _value, onChange, ...fieldProps } }) => (
                 <FormItem>
                   <FormLabel>Character Image</FormLabel>
                   <FormControl>

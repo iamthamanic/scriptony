@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { useStorageProvider } from '@/hooks/useStorageProvider';
-import { StorageProviderType } from '@/lib/storage/StorageProvider';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Cloud, Check, Loader2, X } from 'lucide-react';

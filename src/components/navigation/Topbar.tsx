@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, FileText, Globe, Upload, Settings, Menu, X, Dumbbell, BarChart2, TestTube2, Shield } from 'lucide-react';
+import { Home, FileText, Globe, Upload, Settings, Menu, X, Dumbbell, Shield } from 'lucide-react';
 import Logo from '@/components/Logo';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
@@ -21,7 +21,7 @@ interface NavItemProps {
 
 const NavItem = ({ to, icon: Icon, label, onClose }: NavItemProps) => {
   const location = useLocation();
-  const isActive = location.pathname === to;
+  const _isActive = location.pathname === to;
 
   return (
     <NavLink 

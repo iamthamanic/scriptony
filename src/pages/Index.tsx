@@ -22,8 +22,8 @@ type NewProjectFormData = z.infer<typeof newProjectSchema>;
 
 const Index = () => {
   const navigate = useNavigate();
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [_projects, _setProjects] = useState([]);
+  const [_loading, _setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Setup form with react-hook-form
@@ -34,6 +34,7 @@ const Index = () => {
       type: "movie" // Using the correct ProjectType enum value
     }
   });
+  const _newProjectForm = newProjectForm;
 
   useEffect(() => {
     const loadProjects = async () => {
@@ -54,10 +55,10 @@ const Index = () => {
   }, []);
 
   // Handle form submission
-  const onSubmit = async (data: NewProjectFormData) => {
+  const onSubmit = async (_data: NewProjectFormData) => {
     try {
       // Implementation for project creation
-      console.log('Creating project:', data);
+      console.log('Creating project:', _data);
       // After project creation, navigate to projects page
       navigate('/projects');
     } catch (err) {
@@ -65,6 +66,7 @@ const Index = () => {
       setError('Failed to create project. Please try again.');
     }
   };
+  const _onSubmit = onSubmit;
 
   return (
     <div className="container mx-auto p-6">

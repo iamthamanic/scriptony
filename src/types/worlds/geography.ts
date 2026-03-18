@@ -1,7 +1,4 @@
 
-import { Json } from "@/integrations/supabase/types";
-import { CategoryItem, CustomField } from "./items";
-
 // Geography specific types
 export interface Location {
   id: string;
@@ -13,7 +10,7 @@ export interface Location {
   };
   customFields: CustomField[];
   cover_image_url?: string;
-  [key: string]: any; // Index signature for Json compatibility
+  [key: string]: unknown; // Index signature for Json compatibility
 }
 
 export interface Country {
@@ -24,12 +21,12 @@ export interface Country {
   locations?: Location[];
   customFields: CustomField[];
   cover_image_url?: string;
-  [key: string]: any; // Index signature for Json compatibility
+  [key: string]: unknown; // Index signature for Json compatibility
 }
 
 export interface GeographyContent {
   countries: Country[];
-  [key: string]: any; // Index signature for Json compatibility
+  [key: string]: unknown; // Index signature for Json compatibility
 }
 
 export const createEmptyGeographyContent = (): GeographyContent => ({

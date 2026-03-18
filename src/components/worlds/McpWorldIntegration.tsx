@@ -5,9 +5,7 @@ import { Code2Icon } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import McpManager from '../mcp/McpManager';
 
-interface McpWorldIntegrationProps {}
-
-const McpWorldIntegration: React.FC<McpWorldIntegrationProps> = () => {
+const McpWorldIntegration: React.FC = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>

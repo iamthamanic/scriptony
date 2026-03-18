@@ -1,10 +1,8 @@
 
-import { Json } from "@/integrations/supabase/types";
-
 /**
  * Helper to preserve image URLs and other special properties during JSON transformations
  */
-export const preserveImageProperties = (obj: any): any => {
+export const preserveImageProperties = (obj: unknown): unknown => {
   // Handle null, undefined, and primitive values
   if (obj === null || obj === undefined || typeof obj !== 'object') {
     return obj;
@@ -16,7 +14,7 @@ export const preserveImageProperties = (obj: any): any => {
   }
   
   // For objects, preserve special properties and process nested objects
-  const result = { ...obj };
+  const result = { ...(obj as Record<string, unknown>) };
   
   // List of special properties to explicitly preserve
   const specialProperties = [
@@ -51,7 +49,7 @@ export const preserveImageProperties = (obj: any): any => {
 /**
  * Safely serialize and deserialize JSON while preserving image URLs
  */
-export const safeJsonTransform = (data: any): any => {
+export const safeJsonTransform = (data: unknown): unknown => {
   try {
     // Check if data is null, undefined, or not an object
     if (data === null || data === undefined || typeof data !== 'object') {

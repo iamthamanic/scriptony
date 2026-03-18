@@ -1,53 +1,113 @@
-
-import React, { createContext, useContext } from "react";
-import type { Session, User, AuthError } from "@supabase/supabase-js";
-import { useAuthListener } from "@/hooks/useAuthListener";
-import { useAuthActions } from "@/hooks/useAuthActions";
-import { useErrorContext } from '@/contexts/ErrorContext';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { authApi, apiClient, User, Session } from "@/api";
 
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
+  signUp: (email: string, password: string, username: string) => Promise<void>;
+  signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
-  authError: AuthError | null;
+  signInWithGoogle: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType>({
-  user: null,
-  session: null,
-  loading: true,
-  signOut: async () => {},
-  authError: null
-});
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const useAuth = () => useContext(AuthContext);
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Use our custom hooks to manage auth state and actions
-  const { user, session, loading, authError } = useAuthListener();
-  const { signOut } = useAuthActions();
-  const { addError } = useErrorContext();
-  
-  // Log auth error to error context if present
-  React.useEffect(() => {
-    if (authError) {
-      addError({
-        message: "Authentication Error",
-        details: `Failed to retrieve session: ${authError.message}`,
-        code: authError.code,
-        severity: 'warning'
-      });
+  useEffect(() => {
+    checkSession();
+  }, []);
+
+  async function checkSession() {
+    try {
+      const { data, error } = await authApi.getSession();
+      if (error) {
+        console.error("Session check failed:", error);
+        setUser(null);
+        setSession(null);
+        apiClient.setToken(null);
+      } else {
+        setUser(data?.user || null);
+        setSession(data?.session || null);
+        // Token storage is handled by the API client
+        if (data?.user) {
+          apiClient.setToken(localStorage.getItem("token"));
+        }
+      }
+    } catch (error) {
+      console.error("Session check error:", error);
+      setUser(null);
+      setSession(null);
+      apiClient.setToken(null);
+    } finally {
+      setLoading(false);
     }
-  }, [authError, addError]);
+  }
 
-  const value = {
-    user,
-    session,
-    loading,
-    signOut,
-    authError
-  };
+  async function signUp(email: string, password: string, username: string) {
+    const { data, error } = await authApi.signUp(email, password, username);
+    if (error) {
+      throw new Error(error.message);
+    }
+    if (data) {
+      setUser(data.user);
+      setSession(data.session);
+      localStorage.setItem("token", data.token);
+      apiClient.setToken(data.token);
+    }
+  }
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-};
+  async function signIn(email: string, password: string) {
+    const { data, error } = await authApi.signIn(email, password);
+    if (error) {
+      throw new Error(error.message);
+    }
+    if (data) {
+      setUser(data.user);
+      setSession(data.session);
+      localStorage.setItem("token", data.token);
+      apiClient.setToken(data.token);
+    }
+  }
+
+  async function signOut() {
+    await authApi.signOut();
+    setUser(null);
+    setSession(null);
+    localStorage.removeItem("token");
+    apiClient.setToken(null);
+  }
+
+  async function signInWithGoogle() {
+    await authApi.signInWithGoogle();
+    // Redirect happens in authApi
+  }
+
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        session,
+        loading,
+        signUp,
+        signIn,
+        signOut,
+        signInWithGoogle,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+}

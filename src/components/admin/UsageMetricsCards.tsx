@@ -2,7 +2,6 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity, Calendar, BarChart2, Users } from "lucide-react";
-import { FeatureUsage } from '@/hooks/useUsageData';
 
 interface MetricsCardsProps {
   totalEvents: number;

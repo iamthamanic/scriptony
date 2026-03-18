@@ -21,7 +21,7 @@ interface AppSidebarProps {
 
 const AppSidebar: React.FC<AppSidebarProps> = ({ onOpenAccountSettings }) => {
   const location = useLocation();
-  const { user } = useAuth();
+  const { user: _user } = useAuth();
   
   const navigationItems = [
     {

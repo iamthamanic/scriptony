@@ -41,7 +41,7 @@ const EnhancedCustomFieldsEditor: React.FC<EnhancedCustomFieldsEditorProps> = ({
     setNewFieldType(FieldType.TEXT);
   };
 
-  const handleUpdateField = (id: string, key: keyof CustomField, value: any) => {
+  const handleUpdateField = (id: string, key: keyof CustomField, value: unknown) => {
     const updatedFields = customFields.map(field => {
       if (field.id === id) {
         const updatedField = { ...field, [key]: value };

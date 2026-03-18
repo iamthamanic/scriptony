@@ -54,6 +54,7 @@ export const useAuthCallback = () => {
       
       handleOAuthCallback();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleOAuthCallback = async () => {
@@ -100,11 +101,12 @@ export const useAuthCallback = () => {
         // This might be a case where user needs to try again
         toast.error(t('auth.error.noSession'));
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error processing OAuth response:", err);
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       
       // Customized error message for connection refused
-      if (err.message?.includes('connection refused') || err.message?.includes('Network Error')) {
+      if (errorMessage.includes('connection refused') || errorMessage.includes('Network Error')) {
         setAuthError(`Connection to authentication service failed. This could be due to network issues or incorrect configuration.`);
       } else {
         setAuthError(`OAuth processing failed: ${err.message}`);

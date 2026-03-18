@@ -17,7 +17,6 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import { FeatureUsage } from '@/hooks/useUsageData';
 
 interface UsageChartsProps {
   dailyActivity: { date: string; count: number }[];

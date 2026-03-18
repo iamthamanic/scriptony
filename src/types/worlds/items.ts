@@ -1,6 +1,4 @@
 
-import { Json } from "@/integrations/supabase/types";
-
 // Field type definitions
 export enum FieldType {
   TEXT = 'text',
@@ -17,7 +15,7 @@ export interface CategoryItem {
   cover_image_url?: string;
   symbol_image_url?: string;
   customFields: CustomField[];
-  [key: string]: any; // Index signature to satisfy Json requirements
+  [key: string]: unknown; // Index signature to satisfy Json requirements
 }
 
 // Extended CustomField interface with field type support
@@ -27,7 +25,7 @@ export interface CustomField {
   type: FieldType;
   value: string;
   options?: FieldOption[]; // For dropdown fields
-  [key: string]: any; // Index signature to satisfy Json requirements
+  [key: string]: unknown; // Index signature to satisfy Json requirements
 }
 
 // Options for dropdown fields
@@ -35,7 +33,7 @@ export interface FieldOption {
   id: string;
   label: string;
   value: string;
-  [key: string]: any; // Index signature to satisfy Json requirements
+  [key: string]: unknown; // Index signature to satisfy Json requirements
 }
 
 // Helper function to create a new custom field

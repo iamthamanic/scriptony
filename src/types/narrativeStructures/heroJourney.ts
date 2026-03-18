@@ -1,5 +1,5 @@
 
-import { StructureTemplate, SceneTemplate } from './types';
+import { StructureTemplate } from './types';
 
 /**
  * Hero's Journey narrative structure template

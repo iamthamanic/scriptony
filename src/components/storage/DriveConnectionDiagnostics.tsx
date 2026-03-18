@@ -30,6 +30,7 @@ const DriveConnectionDiagnostics: React.FC<DriveConnectionDiagnosticsProps> = ({
       setEnvInfo(getEnvironmentInfo());
       runTests();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
   
   const runTests = async () => {
@@ -48,11 +49,11 @@ const DriveConnectionDiagnostics: React.FC<DriveConnectionDiagnosticsProps> = ({
     
     // Test Google connectivity
     try {
-      const response = await fetch('https://accounts.google.com/favicon.ico', { 
+      await fetch('https://accounts.google.com/favicon.ico', { 
         mode: 'no-cors' 
       });
       tests.googleConnectivity = true;
-    } catch (error) {
+    } catch {
       tests.googleConnectivity = false;
     }
     

@@ -22,7 +22,7 @@ export const updateProject = async (projectId: string, projectData: Partial<Proj
     if (projectData.coverImage && typeof projectData.coverImage !== 'string') {
       const file = projectData.coverImage as File;
       const fileName = `${Date.now()}_${file.name}`;
-      const { data: uploadData, error: uploadError } = await customSupabase.storage
+      const { error: uploadError } = await customSupabase.storage
         .from('project_assets')
         .upload(`project-covers/${fileName}`, file);
         

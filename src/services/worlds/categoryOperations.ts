@@ -61,12 +61,12 @@ export const updateWorldCategory = async (categoryId: string, data: WorldCategor
   
   // Explicitly log image URLs to verify they're preserved
   if (type === 'geography' && processedContent.countries && Array.isArray(processedContent.countries)) {
-    processedContent.countries.forEach((country: any, index: number) => {
+    processedContent.countries.forEach((country: Record<string, unknown>, index: number) => {
       console.log(`Country ${index} (${country.name}) - flag_url:`, country.flag_url);
       console.log(`Country ${index} (${country.name}) - cover_image_url:`, country.cover_image_url);
       
       if (country.locations && Array.isArray(country.locations)) {
-        country.locations.forEach((location: any, locIndex: number) => {
+        country.locations.forEach((location: Record<string, unknown>, locIndex: number) => {
           console.log(`Location ${locIndex} (${location.name}) - cover_image_url:`, location.cover_image_url);
         });
       }

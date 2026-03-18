@@ -1,5 +1,4 @@
 
-import { supabase } from '@/integrations/supabase/client';
 import { AnalysisResult, Scene, Character, Genre, NarrativeStructureType, ProjectType, TimeOfDay } from '@/types';
 
 export const uploadAndAnalyzeScript = async (file: File): Promise<{ analysisResult: AnalysisResult }> => {

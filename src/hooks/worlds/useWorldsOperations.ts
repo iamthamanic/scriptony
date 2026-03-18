@@ -1,8 +1,6 @@
 
-import { useState } from 'react';
-import { World, WorldFormData, WorldCategory, WorldCategoryFormData, WorldCategoryType } from "@/types";
+import { World, WorldFormData, WorldCategory } from "@/types";
 import { toast } from "sonner";
-import { Json } from "@/integrations/supabase/types";
 import { fetchWorlds, createWorld, updateWorld, deleteWorld } from "@/services/worlds";
 
 export function useWorldsOperations(

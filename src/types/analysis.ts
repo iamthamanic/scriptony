@@ -1,5 +1,5 @@
 
-import { Scene, Character, Project } from './index';
+import { Scene, Character } from './index';
 import { Genre } from './genres';
 import { NarrativeStructureType } from './narrativeStructures/types';
 

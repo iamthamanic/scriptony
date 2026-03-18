@@ -1,7 +1,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 
-export type McpResponse<T = any> = {
+export type McpResponse<T = unknown> = {
   success: boolean;
   data?: T;
   error?: string;
@@ -54,7 +54,7 @@ export class McpClient {
   /**
    * Execute a function through the MCP API
    */
-  async execute(functionName: string, args: any = {}): Promise<McpResponse> {
+  async execute(functionName: string, args: Record<string, unknown> = {}): Promise<McpResponse> {
     if (!this.apiKey) {
       return { 
         success: false, 

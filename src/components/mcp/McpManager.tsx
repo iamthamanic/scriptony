@@ -31,12 +31,12 @@ interface Manifest {
 const McpManager: React.FC = () => {
   const [apiKey, setApiKey] = useState<string>('');
   const [manifest, setManifest] = useState<Manifest | null>(null);
-  const [status, setStatus] = useState<any>(null);
+  const [status, setStatus] = useState<unknown>(null);
   const [loadingManifest, setLoadingManifest] = useState<boolean>(false);
   const [loadingStatus, setLoadingStatus] = useState<boolean>(false);
   const [selectedFunction, setSelectedFunction] = useState<string | null>(null);
-  const [functionArgs, setFunctionArgs] = useState<Record<string, any>>({});
-  const [executeResult, setExecuteResult] = useState<any>(null);
+  const [functionArgs, setFunctionArgs] = useState<Record<string, unknown>>({});
+  const [executeResult, setExecuteResult] = useState<unknown>(null);
   const [executing, setExecuting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   
@@ -93,7 +93,7 @@ const McpManager: React.FC = () => {
     setExecuteResult(null);
   };
   
-  const handleArgChange = (name: string, value: any) => {
+  const handleArgChange = (name: string, value: unknown) => {
     setFunctionArgs(prev => ({ ...prev, [name]: value }));
   };
   

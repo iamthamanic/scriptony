@@ -8,6 +8,7 @@ import {
 
 const TOAST_LIMIT = 5;
 const TOAST_REMOVE_DELAY = 1000000;
+const _TOAST_REMOVE_DELAY = TOAST_REMOVE_DELAY;
 
 type ToasterToast = ToastProps & {
   id: string;
@@ -16,7 +17,7 @@ type ToasterToast = ToastProps & {
   action?: ToastActionElement;
 };
 
-const actionTypes = {
+const _actionTypes = {
   ADD_TOAST: "ADD_TOAST",
   UPDATE_TOAST: "UPDATE_TOAST",
   DISMISS_TOAST: "DISMISS_TOAST",

@@ -24,7 +24,7 @@ const WorldDetail = ({
   onAddCategory,
   onEditCategory,
   onDeleteCategory,
-  onReorderCategories
+  onReorderCategories: _onReorderCategories
 }: WorldDetailProps) => {
   return (
     <div className="space-y-6">

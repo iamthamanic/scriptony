@@ -1,6 +1,5 @@
 
 import { z } from "zod";
-import { basicTextSchema } from "./index";
 
 // Login form validation
 export const loginSchema = z.object({

@@ -22,7 +22,7 @@ const SceneList = ({
   onExportPDF, 
   onDeleteScene, 
   characters,
-  selectedEpisodeId = null,
+  selectedEpisodeId: _selectedEpisodeId = null,
   showEpisodeFilter = false,
   episodes = []
 }: SceneListProps) => {

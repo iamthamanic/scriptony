@@ -47,7 +47,7 @@ const TokenList = () => {
         addSuffix: true,
         locale: de
       });
-    } catch (e) {
+    } catch (_e) {
       return dateString;
     }
   };
@@ -63,8 +63,8 @@ const TokenList = () => {
         }
         
         setTokens(data.data);
-      } catch (error: any) {
-        console.error('Failed to fetch tokens:', error);
+      } catch (_error) {
+        console.error('Failed to fetch tokens:', _error);
         toast.error('Fehler beim Laden der Tokens');
       } finally {
         setLoading(false);
@@ -89,8 +89,8 @@ const TokenList = () => {
       ));
       
       toast.success(`Token ${!currentStatus ? 'aktiviert' : 'deaktiviert'}`);
-    } catch (error: any) {
-      console.error('Failed to update token status:', error);
+    } catch (_error) {
+      console.error('Failed to update token status:', _error);
       toast.error('Fehler beim Aktualisieren des Tokens');
     }
   };
@@ -112,8 +112,8 @@ const TokenList = () => {
       
       setTokens(prev => prev.filter(token => token.id !== id));
       toast.success('Token gelöscht');
-    } catch (error: any) {
-      console.error('Failed to delete token:', error);
+    } catch (_error) {
+      console.error('Failed to delete token:', _error);
       toast.error('Fehler beim Löschen des Tokens');
     }
   };

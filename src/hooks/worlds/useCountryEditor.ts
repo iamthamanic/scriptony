@@ -7,7 +7,7 @@ import { Json } from '@/integrations/supabase/types';
 import { safeJsonTransform, preserveImageProperties } from "@/utils/jsonPreserver";
 
 interface UseCountryEditorProps {
-  content: any;
+  content: unknown;
   onChange: (content: GeographyContent) => void;
 }
 

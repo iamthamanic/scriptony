@@ -55,7 +55,7 @@ export const useWorldCategoryForm = ({ category, isOpen }: UseWorldCategoryFormP
     }));
   };
 
-  const handleContentChange = (newContent: any) => {
+  const handleContentChange = (newContent: unknown) => {
     setFormData(prev => ({
       ...prev,
       content: newContent

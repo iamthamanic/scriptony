@@ -38,7 +38,7 @@ export const refreshDriveToken = async (refreshToken: string): Promise<{
       try {
         const errorJson = JSON.parse(errorText);
         errorDetails = errorJson.error_description || errorJson.error || errorText;
-      } catch (e) {
+      } catch (_e) {
         errorDetails = errorText;
       }
       

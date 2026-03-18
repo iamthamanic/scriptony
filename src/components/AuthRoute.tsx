@@ -12,7 +12,6 @@ interface AuthRouteProps {
 export const AuthRoute: React.FC<AuthRouteProps> = ({ children }) => {
   const { user, loading } = useAuth();
   const location = useLocation();
-  const navigate = useNavigate();
   const devMode = isDevelopmentMode();
   
   // Show notification when dev mode is active

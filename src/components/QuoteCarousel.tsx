@@ -24,7 +24,7 @@ const QuoteCarousel: React.FC<QuoteCarouselProps> = ({
   const quotes = t('quotes.items', {
     returnObjects: true
   }) as Quote[];
-  const [api, setApi] = useState<any>(null);
+  const [api, setApi] = useState<unknown>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Set up autoplay

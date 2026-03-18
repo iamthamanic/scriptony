@@ -9,7 +9,7 @@ const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiO
 
 // Create a custom client with development mode header when needed
 const createCustomClient = () => {
-  const options: any = {
+  const options: { auth: { persistSession: boolean; autoRefreshToken: boolean }; global?: { headers: Record<string, string> } } = {
     auth: {
       persistSession: true,
       autoRefreshToken: true,

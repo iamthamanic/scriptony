@@ -1,4 +1,4 @@
-import { ProjectType, Genre, TimeOfDay, EmotionalSignificance, VideoFormat } from "../types";
+import { Genre } from "../types";
 import { projectTypes, genres, timesOfDay, emotionalSignificances, videoFormats } from "./constants";
 import { NarrativeStructureType } from "@/types";
 
@@ -87,7 +87,7 @@ export const getRandomEntry = <T>(array: T[]): T | undefined => {
   return array[randomIndex];
 };
 
-export const generateDefaultSceneForTemplate = (structureType: NarrativeStructureType) => {
+export const generateDefaultSceneForTemplate = (_structureType: NarrativeStructureType) => {
   // Basic scene template
   const sceneTemplates = [
     {

@@ -8,7 +8,7 @@ import { StorageProviderComponent } from '@/contexts/storage';
 import StorageStatus from '@/components/storage/StorageStatus';
 
 const StorageTab = () => {
-  const [connectionError, setConnectionError] = React.useState<{code: string, details: string} | undefined>(undefined);
+  const [connectionError, _setConnectionError] = React.useState<{code: string, details: string} | undefined>(undefined);
   const { t } = useTranslation();
 
   return (

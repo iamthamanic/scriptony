@@ -13,36 +13,41 @@ export const generateChallenge = (type: ChallengeType): Challenge => {
   };
   
   switch (type) {
-    case 'prompt-forge':
+    case 'prompt-forge': {
       const prompts = getRandomPrompts();
       newChallenge.title = `Forge a Scene with: ${prompts.join(', ')}`;
       newChallenge.description = `Create a compelling scene using these words: ${prompts.join(', ')}`;
       newChallenge.prompts = prompts;
       break;
-    case 'style-lock':
+    }
+    case 'style-lock': {
       const style = getRandomStyle();
       newChallenge.title = `Write in ${style} Style`;
       newChallenge.description = `Create content mimicking the style of ${style}`;
       newChallenge.style = style;
       break;
-    case 'constraint-bench':
+    }
+    case 'constraint-bench': {
       const constraints = getRandomConstraints();
       newChallenge.title = `Write with Constraints: ${constraints[0]}`;
       newChallenge.description = `Write a scene while following these constraints: ${constraints.join(', ')}`;
       newChallenge.constraints = constraints;
       break;
-    case 'time-puncher':
+    }
+    case 'time-puncher': {
       const duration = getRandomDuration();
       newChallenge.title = `${duration / 60}-Minute Speed Challenge`;
       newChallenge.description = `Write as much as you can in ${duration / 60} minutes`;
       newChallenge.duration = duration;
       break;
-    case 'remix-mode':
+    }
+    case 'remix-mode': {
       const remixContent = getRemixContent();
       newChallenge.title = 'Remix This Content';
       newChallenge.description = 'Transform the provided content into something new and creative';
       newChallenge.remixContent = remixContent;
       break;
+    }
   }
   
   return newChallenge;

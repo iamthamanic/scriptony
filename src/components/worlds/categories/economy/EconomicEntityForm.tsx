@@ -25,7 +25,7 @@ const EconomicEntityForm: React.FC<EconomicEntityFormProps> = ({
         <Label htmlFor="entity-type">Typ</Label>
         <Select
           value={editingEntity.entity_type}
-          onValueChange={(value: any) => setEditingEntity({
+          onValueChange={(value: string) => setEditingEntity({
             ...editingEntity,
             entity_type: value
           })}

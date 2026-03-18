@@ -3,14 +3,14 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AnalysisResult } from '@/types';
+import { AnalysisResult, NewProjectFormData } from '@/types';
 import { Check, X } from 'lucide-react';
 
 interface ScriptAnalysisResultsProps {
   isOpen: boolean;
   onClose: () => void;
   analysisResult: AnalysisResult | null;
-  onCreateProject: (data: any) => void;
+  onCreateProject: (data: NewProjectFormData) => void;
   isLoading: boolean;
 }
 

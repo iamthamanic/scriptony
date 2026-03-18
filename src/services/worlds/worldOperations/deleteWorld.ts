@@ -33,7 +33,7 @@ export const deleteWorld = async (worldId: string): Promise<void> => {
   }
   
   // Set a timeout to prevent indefinite hanging (15 seconds)
-  const { promise: timeoutPromise, cancel: cancelTimeout } = createTimeout(15000);
+  const { promise: _timeoutPromise, cancel: cancelTimeout } = createTimeout(15000);
   
   // Flag to track operation completion for cleanup purposes
   let operationCompleted = false;

@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { Scene, Episode, Character } from '../types';
+import React from 'react';
+import { Scene, Episode, Character, NewSceneFormData, ProjectType } from '../types';
 import SceneList from './SceneList';
 import CharacterList from './CharacterList';
 import EpisodeList from './episodes/EpisodeList';
@@ -17,7 +17,7 @@ interface ProjectContentProps {
   } | null;
   isNewSceneModalOpen: boolean;
   onCloseNewSceneModal: () => void;
-  onCreateScene: (data: any) => void;
+  onCreateScene: (data: NewSceneFormData) => void;
   onEditScene: (scene: Scene) => void;
   onDeleteScene: (scene: Scene) => void;
   editingScene: Scene | null;
@@ -58,7 +58,7 @@ const ProjectContent = ({
       name: character.name,
       role: character.role,
       description: character.description,
-      avatar: character.avatar as any // Using 'any' to bypass type error
+      avatar: character.avatar
     });
   };
 
@@ -136,7 +136,7 @@ const ProjectContent = ({
           isOpen={isNewSceneModalOpen}
           onClose={onCloseNewSceneModal}
           onSubmit={onCreateScene}
-          projectType={selectedProject.type as any} // Using 'any' to bypass type error - will need to fix this type properly
+          projectType={selectedProject.type as ProjectType}
           lastSceneNumber={getLastSceneNumber()}
           editScene={editingScene}
           characters={selectedProject.characters || []}

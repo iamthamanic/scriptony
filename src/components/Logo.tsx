@@ -12,7 +12,7 @@ const Logo: React.FC<LogoProps> = ({
   size = 'md',
   showText = true
 }) => {
-  const { t } = useTranslation();
+  const { t: _t } = useTranslation();
   const devMode = isDevelopmentMode();
   
   const dimensions = {

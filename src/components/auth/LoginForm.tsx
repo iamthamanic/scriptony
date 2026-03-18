@@ -48,7 +48,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ loading, setLoading, onFor
       
       toast.success(t('auth.success.login'));
       navigate('/');
-    } catch (error: any) {
+    } catch (_error) {
       toast.error(t('auth.error.login'));
     } finally {
       setLoading(false);

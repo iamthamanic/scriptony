@@ -3,8 +3,6 @@ import { useState, useCallback, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { World, WorldCategory, WorldFormData, WorldCategoryFormData, WorldCategoryType } from '@/types';
 import { useToast } from '@/hooks/use-toast';
-import { v4 as uuidv4 } from 'uuid';
-import { Json } from '@/integrations/supabase/types';
 
 type DeletionState = 'idle' | 'deleting' | 'completed';
 

@@ -36,6 +36,8 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'warn',
       // Allow ts-ignore for now
       '@typescript-eslint/ban-ts-comment': 'off',
+      // Disable problematic rule due to version conflict
+      '@typescript-eslint/no-unused-expressions': 'off',
     },
   }
 );

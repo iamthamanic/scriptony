@@ -1,6 +1,6 @@
 
 import { useToast } from "../use-toast";
-import { Episode, EpisodeWithCoverImageFile, NewEpisodeFormData, EditEpisodeFormData } from "../../types";
+import { Episode, EpisodeWithCoverImageFile, NewEpisodeFormData, EditEpisodeFormData, Project } from "../../types";
 import { createEpisode, updateEpisode, deleteEpisode } from "../../services/database";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -15,7 +15,7 @@ const convertToEpisode = (episode: EpisodeWithCoverImageFile): Episode => {
 
 export const useEpisodes = (
   selectedProject: { id: string; episodes: Episode[] } | null,
-  updateProjects: (projectId: string, updater: (project: any) => any) => void
+  updateProjects: (projectId: string, updater: (project: Project) => Project) => void
 ) => {
   const { toast } = useToast();
   const { user } = useAuth();

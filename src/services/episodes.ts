@@ -11,7 +11,7 @@ export const createEpisode = async (projectId: string, episodeData: NewEpisodeFo
     if (episodeData.coverImage) {
       const file = episodeData.coverImage as File;
       const fileName = `${Date.now()}_${file.name}`;
-      const { data: uploadData, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('project_assets')
         .upload(`episode-covers/${fileName}`, file);
         
@@ -65,7 +65,7 @@ export const updateEpisode = async (episodeId: string, episodeData: Partial<Epis
     if (episodeData.coverImage && typeof episodeData.coverImage !== 'string') {
       const file = episodeData.coverImage as File;
       const fileName = `${Date.now()}_${file.name}`;
-      const { data: uploadData, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('project_assets')
         .upload(`episode-covers/${fileName}`, file);
         

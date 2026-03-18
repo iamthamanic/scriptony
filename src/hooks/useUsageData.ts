@@ -16,7 +16,7 @@ export interface FeatureUsage {
   user_id: string;
   feature: string;
   action: string;
-  context: Record<string, any>;
+  context: Record<string, unknown>;
   created_at: string;
 }
 

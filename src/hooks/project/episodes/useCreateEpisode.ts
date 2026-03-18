@@ -1,10 +1,10 @@
 
 import { useToast } from "../../use-toast";
-import { Episode, NewEpisodeFormData } from "../../../types";
+import { Episode, NewEpisodeFormData, Project } from "../../../types";
 
 export const useCreateEpisode = (
   selectedProject: { id: string; episodes: Episode[] } | null,
-  updateProjects: (projectId: string, updater: (project: any) => any) => void
+  updateProjects: (projectId: string, updater: (project: Project) => Project) => void
 ) => {
   const { toast } = useToast();
 
