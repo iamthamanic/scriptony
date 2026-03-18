@@ -1,138 +1,77 @@
+import { storageApi } from "@/api";
 
-import { uploadFileToDrive, isDriveConnected } from './googleDrive';
-import { toast } from 'sonner';
-
-/**
- * Interface for file upload options
- */
-export interface FileUploadOptions {
-  projectId?: string;
-  projectName?: string;
-  category?: string;
+export interface UploadOptions {
+  bucket?: string;
+  path?: string;
+  contentType?: string;
 }
 
-/**
- * Interface for upload result
- */
-export interface FileUploadResult {
-  success: boolean;
-  fileUrl?: string;
-  filePath?: string;
-  fileId?: string;
-  error?: string;
-  requiresDriveConnection?: boolean;
+export interface UploadResult {
+  url: string;
+  path: string;
 }
 
-/**
- * Unified file upload service - handles the proper storage method
- */
-export const uploadFile = async (
+export async function uploadFile(
   file: File,
-  options: FileUploadOptions = {}
-): Promise<FileUploadResult> => {
+  options: UploadOptions = {}
+): Promise<UploadResult> {
+  const bucket = options.bucket || "uploads";
+  const path = options.path || `${Date.now()}_${file.name}`;
+
   try {
-    // First check if Drive connection is required
-    const driveRequired = await checkDriveConnectionRequired();
-    
-    if (driveRequired) {
-      return {
-        success: false,
-        requiresDriveConnection: true,
-        error: 'Google Drive Verbindung erforderlich'
-      };
+    const { data, error } = await storageApi.uploadFile(bucket, file, path);
+
+    if (error) {
+      throw error;
     }
-    
-    // Check if we have project info for proper folder structure
-    if (!options.projectId && !options.projectName) {
-      // Use general uploads folder without project association
-      const result = await uploadToGeneralFolder(file, options.category);
-      return {
-        success: true,
-        fileUrl: result.fileUrl,
-        filePath: result.filePath,
-        fileId: result.fileId
-      };
+
+    if (!data) {
+      throw new Error("Upload failed: No data returned");
     }
-    
-    // Upload to a project folder
-    const result = await uploadToProjectFolder(
-      file, 
-      options.projectId || 'unknown',
-      options.projectName || 'Untitled'
-    );
-    
+
     return {
-      success: true,
-      fileUrl: result.fileUrl,
-      filePath: result.filePath,
-      fileId: result.fileId
+      url: data.url,
+      path: data.path,
     };
-    
   } catch (error) {
-    console.error('Upload error:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unbekannter Fehler beim Upload'
-    };
+    console.error("Error uploading file:", error);
+    throw new Error(`Upload failed: ${error instanceof Error ? error.message : "Unknown error"}`);
   }
-};
+}
 
-/**
- * Upload file to a specific project folder
- */
-const uploadToProjectFolder = async (
-  file: File,
-  projectId: string,
-  projectName: string
-): Promise<{ fileUrl: string, filePath: string, fileId: string }> => {
-  const result = await uploadFileToDrive(file, projectId, projectName);
-  
-  return {
-    fileUrl: result.fileUrl,
-    filePath: result.filePath,
-    fileId: result.fileId
-  };
-};
+export async function getPublicUrl(bucket: string, path: string): Promise<string> {
+  try {
+    return await storageApi.getPublicUrl(bucket, path);
+  } catch (error) {
+    console.error("Error getting public URL:", error);
+    throw new Error(`Failed to get public URL: ${error instanceof Error ? error.message : "Unknown error"}`);
+  }
+}
 
-/**
- * Upload file to general folder (not associated with a project)
- */
-const uploadToGeneralFolder = async (
-  file: File,
-  category: string = 'general'
-): Promise<{ fileUrl: string, filePath: string, fileId: string }> => {
-  // For general uploads, we use a special category folder
-  const result = await uploadFileToDrive(file, 'general', `_${category}`);
-  
-  return {
-    fileUrl: result.fileUrl,
-    filePath: result.filePath,
-    fileId: result.fileId
-  };
-};
-
-/**
- * Check if user can upload files (Drive connected)
- */
-export const canUploadFiles = async (): Promise<boolean> => {
-  return await isDriveConnected();
-};
-
-/**
- * Shows a toast with error message if upload fails
- */
-export const handleUploadError = (result: FileUploadResult) => {
-  if (!result.success) {
-    if (result.requiresDriveConnection) {
-      toast.error('Google Drive Verbindung erforderlich', {
-        description: 'Bitte verbinde dein Google Drive Konto, um Dateien hochladen zu können.'
-      });
-    } else {
-      toast.error('Upload fehlgeschlagen', {
-        description: result.error || 'Ein unbekannter Fehler ist aufgetreten.'
-      });
+export async function deleteFile(bucket: string, path: string): Promise<void> {
+  try {
+    const { error } = await storageApi.deleteFile(bucket, path);
+    if (error) {
+      throw error;
     }
-    return true;
+  } catch (error) {
+    console.error("Error deleting file:", error);
+    throw new Error(`Delete failed: ${error instanceof Error ? error.message : "Unknown error"}`);
   }
-  return false;
-};
+}
+
+export async function listFiles(bucket: string, prefix?: string): Promise<string[]> {
+  try {
+    const { data, error } = await storageApi.listFiles(bucket, prefix);
+    if (error) {
+      throw error;
+    }
+    return data || [];
+  } catch (error) {
+    console.error("Error listing files:", error);
+    throw new Error(`List failed: ${error instanceof Error ? error.message : "Unknown error"}`);
+  }
+}
+
+// Re-export API for direct access
+export { storageApi } from "@/api";
