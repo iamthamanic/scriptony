@@ -1,46 +1,89 @@
+/**
+ * Storage Provider Hook
+ * Replaces Supabase storage with MinIO API
+ */
 
-import { useContext, useCallback, useState } from 'react';
-import { StorageContext } from '@/contexts/storage';
-import { useTranslation } from 'react-i18next';
+import { useState, useCallback, useContext, createContext, ReactNode } from "react";
+import { storageApi, UploadResponse } from "@/api";
+
+type StorageProviderType = "supabase" | "google-drive" | "minio";
+
+interface StorageContextType {
+  provider: StorageProviderType;
+  uploadFile: (file: File, bucket: string, path?: string) => Promise<UploadResponse>;
+  getPublicUrl: (bucket: string, path: string) => Promise<string>;
+  deleteFile: (bucket: string, path: string) => Promise<void>;
+  isLoading: boolean;
+}
+
+const StorageContext = createContext<StorageContextType | undefined>(undefined);
+
+export function StorageProvider({ children }: { children: ReactNode }) {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const uploadFile = useCallback(
+    async (file: File, bucket: string, path?: string): Promise<UploadResponse> => {
+      setIsLoading(true);
+      try {
+        const { data, error } = await storageApi.uploadFile(bucket, file, path);
+        if (error) {
+          throw error;
+        }
+        if (!data) {
+          throw new Error("Upload failed: No data returned");
+        }
+        return data;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    []
+  );
+
+  const getPublicUrl = useCallback(
+    async (bucket: string, path: string): Promise<string> => {
+      return storageApi.getPublicUrl(bucket, path);
+    },
+    []
+  );
+
+  const deleteFile = useCallback(
+    async (bucket: string, path: string): Promise<void> => {
+      setIsLoading(true);
+      try {
+        const { error } = await storageApi.deleteFile(bucket, path);
+        if (error) {
+          throw error;
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    []
+  );
+
+  return (
+    <StorageContext.Provider
+      value={{
+        provider: "minio",
+        uploadFile,
+        getPublicUrl,
+        deleteFile,
+        isLoading,
+      }}
+    >
+      {children}
+    </StorageContext.Provider>
+  );
+}
 
 export function useStorageProvider() {
   const context = useContext(StorageContext);
-  const [lastSyncElapsed, setLastSyncElapsed] = useState<number | null>(null);
-  const { t } = useTranslation();
-  
-  if (!context) {
-    throw new Error(t('errors.useStorageProvider'));
+  if (context === undefined) {
+    throw new Error("useStorageProvider must be used within a StorageProvider");
   }
-  
-  // Calculate time since last sync in seconds
-  const updateSyncElapsed = useCallback(() => {
-    const lastSync = context.status.lastSync;
-    if (!lastSync) {
-      setLastSyncElapsed(null);
-      return null;
-    }
-    
-    const elapsed = Math.floor((Date.now() - lastSync.getTime()) / 1000);
-    setLastSyncElapsed(elapsed);
-    return elapsed;
-  }, [context.status.lastSync]);
-  
-  // Setup polling for elapsed time updates
-  useState(() => {
-    if (!context.status.lastSync) return;
-    
-    const interval = setInterval(updateSyncElapsed, 1000);
-    
-    return () => clearInterval(interval);
-  });
-  
-  return {
-    ...context,
-    lastSyncElapsed,
-    formattedSyncAge: lastSyncElapsed !== null 
-      ? lastSyncElapsed < 60 
-        ? t('storage.syncTime.seconds', { seconds: lastSyncElapsed })
-        : t('storage.syncTime.minutes', { minutes: Math.floor(lastSyncElapsed / 60) })
-      : null
-  };
+  return context;
 }
+
+// Re-export storage API for direct use
+export { storageApi } from "@/api";
