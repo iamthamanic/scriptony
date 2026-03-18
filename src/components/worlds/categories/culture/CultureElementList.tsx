@@ -2,9 +2,9 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { CultureElement } from '@/types/worlds';
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "../components/ui/card";
 import { ChevronDown, ChevronUp, Pencil, Trash2 } from 'lucide-react';
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "../components/ui/badge";
 
 interface CultureElementListProps {
   elements: CultureElement[];

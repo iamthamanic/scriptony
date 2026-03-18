@@ -1,7 +1,7 @@
 
 import { useRef } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { fetchWorlds } from "@/services/worlds";
+import { useToast } from "../hooks/use-toast";
+import { fetchWorlds } from "../services/worlds";
 import { World } from "@/types";
 
 export function useWorldLoading(

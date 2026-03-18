@@ -2,8 +2,8 @@
 
 import React, { createContext, useContext } from "react";
 import type { Session, User, AuthError } from "@supabase/supabase-js";
-import { useAuthListener } from "@/hooks/useAuthListener";
-import { useAuthActions } from "@/hooks/useAuthActions";
+import { useAuthListener } from "../hooks/useAuthListener";
+import { useAuthActions } from "../hooks/useAuthActions";
 import { useErrorContext } from '@/contexts/ErrorContext';
 
 interface AuthContextType {

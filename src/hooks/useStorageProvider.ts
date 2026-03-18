@@ -4,7 +4,7 @@
  */
 
 import { useState, useCallback, useContext, createContext, ReactNode } from "react";
-import { storageApi, UploadResponse } from "@/api";
+import { storageApi, UploadResponse } from "../api";
 
 type StorageProviderType = "supabase" | "google-drive" | "minio";
 
@@ -86,4 +86,4 @@ export function useStorageProvider() {
 }
 
 // Re-export storage API for direct use
-export { storageApi } from "@/api";
+export { storageApi } from "../api";

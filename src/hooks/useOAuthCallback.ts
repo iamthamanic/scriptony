@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "./use-toast";
 import { toast } from "sonner";
-import { authApi, apiClient } from "@/api";
+import { authApi, apiClient } from "../api";
 
 export function useOAuthCallback() {
   const navigate = useNavigate();

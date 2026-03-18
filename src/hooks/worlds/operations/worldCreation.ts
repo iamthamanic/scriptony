@@ -1,6 +1,6 @@
 
-import { useToast } from "@/hooks/use-toast";
-import { createWorld } from "@/services/worlds";
+import { useToast } from "../hooks/use-toast";
+import { createWorld } from "../services/worlds";
 import { WorldFormData, World } from "@/types";
 
 export function useWorldCreation(

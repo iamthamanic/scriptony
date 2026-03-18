@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Button } from "@/components/ui/button";
+import { Button } from "../components/ui/button";
 import { Plus, Upload } from "lucide-react";
 import Logo from "./Logo";
 import {
@@ -8,8 +8,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
-import { useToast } from "@/hooks/use-toast";
+} from "../components/ui/dropdown-menu";
+import { useToast } from "../hooks/use-toast";
 
 interface AppHeaderProps {
   onNewProject: () => void;

@@ -1,9 +1,9 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "../components/ui/alert";
 import { Info } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "../components/ui/separator";
 
 import GoogleLoginButton from '@/components/auth/GoogleLoginButton';
 import { LoginForm } from '@/components/auth/LoginForm';

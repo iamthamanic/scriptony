@@ -8,8 +8,8 @@ import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Sheet, SheetContent, SheetTrigger } from "../components/ui/sheet";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../components/ui/tooltip";
 import { checkIsAdmin } from '@/utils/trackUsage';
 
 interface NavItemProps {

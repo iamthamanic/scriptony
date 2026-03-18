@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "../components/ui/card";
 import { WorldCategory } from "@/types";
 import WorldCategoryHeader from './categories/WorldCategoryHeader';
 import WorldCategoryContent from './categories/WorldCategoryContent';

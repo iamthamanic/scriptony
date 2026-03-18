@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { SocialGroup } from "@/types/worlds";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "../components/ui/card";
 
 interface SocialGroupGridProps {
   groups: SocialGroup[];

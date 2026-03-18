@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Button } from "@/components/ui/button";
+import { Button } from "../components/ui/button";
 import { Edit } from "lucide-react";
 import { WorldCategory } from "@/types";
 import ContentRenderer from './ContentRenderer';

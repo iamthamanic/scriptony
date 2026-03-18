@@ -1,9 +1,9 @@
 /* eslint-disable react-refresh/only-export-components */
 import React from "react";
-import { useToast } from "@/hooks/use-toast";
-import { uploadAndAnalyzeScript } from "@/services/scriptAnalysis";
+import { useToast } from "../hooks/use-toast";
+import { uploadAndAnalyzeScript } from "../services/scriptAnalysis";
 import { AnalysisResult } from "@/types";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 
 interface ScriptAnalysisHandlerProps {
   setIsAnalyzing: React.Dispatch<React.SetStateAction<boolean>>;

@@ -1,8 +1,8 @@
 import { useToast } from "../use-toast";
 import { Scene, NewSceneFormData, Project } from "../../types";
 import { createScene, deleteScene } from "../../services/scenes"; // Import directly from scenes service
-import { useAuth } from "@/contexts/AuthContext";
-import { uploadFileToStorage } from "@/services/storage"; // Import utility for file upload
+import { useAuth } from "../contexts/AuthContext";
+import { uploadFileToStorage } from "../services/storage"; // Import utility for file upload
 
 export const useScenes = (
   selectedProject: { id: string; scenes: Scene[] } | null,

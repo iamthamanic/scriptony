@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { authApi } from "@/api";
+import { authApi } from "../api";
 import { useToast } from "./use-toast";
 
 export function useAuthActions() {

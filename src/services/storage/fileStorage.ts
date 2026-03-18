@@ -1,4 +1,4 @@
-import { storageApi } from "@/api";
+import { storageApi } from "../../api";
 
 export interface UploadOptions {
   bucket?: string;
@@ -74,4 +74,4 @@ export async function listFiles(bucket: string, prefix?: string): Promise<string
 }
 
 // Re-export API for direct access
-export { storageApi } from "@/api";
+export { storageApi } from "../api";

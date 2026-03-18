@@ -1,7 +1,7 @@
 
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "../hooks/use-toast";
 import { World, WorldCategory, WorldCategoryFormData, getEmptyCategoryContent } from "@/types/worlds";
-import { createWorldCategory, updateWorldCategory, deleteWorldCategory, updateCategoryOrder } from "@/services/worlds";
+import { createWorldCategory, updateWorldCategory, deleteWorldCategory, updateCategoryOrder } from "../services/worlds";
 import { useCategoryHelpers } from "./useCategoryHelpers";
 import { Json } from "@/integrations/supabase/types";
 import { preserveImageProperties } from "@/utils/jsonPreserver";

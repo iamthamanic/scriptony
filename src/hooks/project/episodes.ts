@@ -2,7 +2,7 @@
 import { useToast } from "../use-toast";
 import { Episode, EpisodeWithCoverImageFile, NewEpisodeFormData, EditEpisodeFormData, Project } from "../../types";
 import { createEpisode, updateEpisode, deleteEpisode } from "../../services/database";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 
 // Helper function to safely convert EpisodeWithCoverImageFile to Episode
 const convertToEpisode = (episode: EpisodeWithCoverImageFile): Episode => {

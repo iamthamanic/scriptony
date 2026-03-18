@@ -2,7 +2,7 @@
 import { Project } from "../../../types";
 import { useToast } from "../../use-toast";
 import { deleteProject } from "../../../services/database";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 
 export const useDeleteProject = (
   projects: Project[],

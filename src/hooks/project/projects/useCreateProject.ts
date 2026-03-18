@@ -4,7 +4,7 @@ import { createProject } from "../../../services";
 import { createScene } from "../../../services/projects/createScene";
 import { ProjectType, NarrativeStructureType, Scene, TimeOfDay, Genre, EmotionalSignificance } from "../../../types";
 import { useToast } from "../../use-toast";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 import { narrativeStructureTemplates } from "@/types/narrativeStructures";
 
 // Function to generate scenes based on a narrative structure template

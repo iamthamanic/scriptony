@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Button } from "@/components/ui/button";
+import { Button } from "../components/ui/button";
 import { SortAsc, Save } from "lucide-react";
 import { WorldCategory } from "@/types";
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';

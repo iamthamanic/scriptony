@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Character } from '../types';
-import { Button } from "@/components/ui/button";
+import { Button } from "../components/ui/button";
 import { Check, User } from 'lucide-react';
 
 interface CharacterSelectorProps {

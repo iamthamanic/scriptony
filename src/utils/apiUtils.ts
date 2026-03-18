@@ -1,5 +1,5 @@
 
-import { toast } from "@/hooks/use-toast";
+import { toast } from "../hooks/use-toast";
 import { useErrorContext } from '@/contexts/ErrorContext';
 
 interface ApiErrorOptions {

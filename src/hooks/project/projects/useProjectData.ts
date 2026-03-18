@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { Project } from "../../../types";
 import { useToast } from "../../use-toast";
 import { fetchUserProjects, fetchProjectDetails } from "../../../services/database";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 
 export const useProjectData = () => {
   const [projects, setProjects] = useState<Project[]>([]);

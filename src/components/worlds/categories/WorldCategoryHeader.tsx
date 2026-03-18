@@ -1,8 +1,8 @@
 
 import React from 'react';
-import { CardTitle } from "@/components/ui/card";
+import { CardTitle } from "../components/ui/card";
 import { Edit, Trash2, ChevronDown, ChevronUp, Globe, Map } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "../components/ui/button";
 import { WorldCategory } from "@/types";
 
 interface WorldCategoryHeaderProps {

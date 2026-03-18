@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { toast } from "sonner";
 
 import { customSupabase } from "@/integrations/supabase/customClient";
-import { Button } from "@/components/ui/button";
+import { Button } from "../components/ui/button";
 import { Loader2, AlertTriangle, Link } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
 import { getAuthRedirectURI, getEnvironmentInfo } from '@/services/auth/redirects';
 import { getClientId } from '@/services/storage/googleDrive/utils';
 

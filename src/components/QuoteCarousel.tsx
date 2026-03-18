@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
-import { Card, CardContent } from "@/components/ui/card";
+import { Carousel, CarouselContent, CarouselItem } from "../components/ui/carousel";
+import { Card, CardContent } from "../components/ui/card";
 import { cn } from '@/lib/utils';
 interface Quote {
   text: string;

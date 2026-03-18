@@ -1,7 +1,7 @@
 
 import { useState, useCallback } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { deleteWorld } from "@/services/worlds";
+import { useToast } from "../hooks/use-toast";
+import { deleteWorld } from "../services/worlds";
 import { World } from "@/types";
 
 // Simplified deletion states

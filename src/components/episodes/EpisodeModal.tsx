@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle } from "../components/ui/dialog";
+import { Button } from "../components/ui/button";
 import { Episode, NewEpisodeFormData, EditEpisodeFormData } from "../../types";
 import EpisodeImageUpload from "./EpisodeImageUpload";
 import EpisodeFormFields from "./EpisodeFormFields";

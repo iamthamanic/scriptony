@@ -1,10 +1,10 @@
 
 import React from 'react';
-import { Button } from "@/components/ui/button";
+import { Button } from "../components/ui/button";
 import { ChevronLeft, Edit, Trash2, MoreHorizontal, Copy } from "lucide-react";
 import { World } from "@/types";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "../components/ui/dropdown-menu";
+import { Badge } from "../components/ui/badge";
 
 interface WorldHeaderProps {
   world: World;

@@ -3,7 +3,7 @@ import React from 'react';
 import { WorldCategory } from "@/types/worlds";
 import { GeographyContent } from "@/types/worlds/geography";
 import { Json } from "@/integrations/supabase/types";
-import { Textarea } from "@/components/ui/textarea";
+import { Textarea } from "../components/ui/textarea";
 import GeographyContentRenderer from './geography/GeographyContentRenderer';
 import PoliticsContentRenderer from './politics/PoliticsContentRenderer';
 import EconomyContentRenderer from './economy/EconomyContentRenderer';

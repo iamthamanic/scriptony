@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import SceneCard from "./SceneCard";
 import { Scene, Character, Episode } from "../types";
-import { Button } from "@/components/ui/button";
+import { Button } from "../components/ui/button";
 import { Film } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 
 interface SceneListProps {
   scenes: Scene[];

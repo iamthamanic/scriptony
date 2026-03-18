@@ -1,7 +1,7 @@
 
 /* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { toast } from "@/hooks/use-toast";
+import { toast } from "../hooks/use-toast";
 
 export interface AppError {
   id: string;

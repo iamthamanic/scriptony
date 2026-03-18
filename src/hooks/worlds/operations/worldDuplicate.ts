@@ -1,6 +1,6 @@
 
-import { useToast } from "@/hooks/use-toast";
-import { duplicateWorld } from "@/services/worlds";
+import { useToast } from "../hooks/use-toast";
+import { duplicateWorld } from "../services/worlds";
 import { World } from "@/types";
 
 export function useWorldDuplicate(

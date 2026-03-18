@@ -1,7 +1,7 @@
 
 import React, { ReactNode, useEffect } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 import { isDevelopmentMode } from "@/utils/devMode";
 import { toast } from "sonner";
 
