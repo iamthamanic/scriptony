@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Activity, Calendar, BarChart2, Users } from "lucide-react";
 
 interface MetricsCardsProps {

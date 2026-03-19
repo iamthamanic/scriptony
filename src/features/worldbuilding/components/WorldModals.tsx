@@ -1,10 +1,10 @@
 
 import React from 'react';
 import { World, WorldCategory, WorldCategoryFormData, WorldFormData } from "@/types";
-import NewWorldModal from "../components/worlds/NewWorldModal";
-import EditWorldModal from "../components/worlds/EditWorldModal";
-import DeleteWorldDialog from "../components/worlds/DeleteWorldDialog";
-import WorldCategoryModal from "../components/worlds/WorldCategoryModal";
+import NewWorldModal from "../../../components/worlds/NewWorldModal";
+import EditWorldModal from "../../../components/worlds/EditWorldModal";
+import DeleteWorldDialog from "../../../components/worlds/DeleteWorldDialog";
+import WorldCategoryModal from "../../../components/worlds/WorldCategoryModal";
 
 interface WorldModalsProps {
   isNewWorldModalOpen: boolean;

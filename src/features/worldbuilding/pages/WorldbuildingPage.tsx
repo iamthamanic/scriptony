@@ -1,10 +1,10 @@
 
 import React, { useEffect } from 'react';
-import { Container } from "../components/ui/container";
-import WorldsContent from "../components/worlds/WorldsContent";
-import WorldModals from "../components/worlds/WorldModals";
+import { Container } from "../../../components/ui/container";
+import WorldsContent from "../components/WorldsContent";
+import WorldModals from "../components/WorldModals";
 import { useWorldsState } from "../hooks/useWorldsState";
-import { useAuth } from "../hooks/useAuthState";
+import { useAuth } from "../../../hooks/useAuthState";
 import { WorldCategory } from "@/types";
 
 const WorldbuildingPage = () => {

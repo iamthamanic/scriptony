@@ -2,7 +2,7 @@
 import { Project, ProjectWithCoverImageFile, EditProjectFormData } from "../../../types";
 import { useToast } from "../../use-toast";
 import { updateProject } from "../../../services/database";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../../../contexts/AuthContext";
 
 // Helper function to normalize inspirations to ensure they're always in array format
 const normalizeInspirations = (inspirations: string[] | string | undefined): string[] => {

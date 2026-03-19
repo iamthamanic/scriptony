@@ -1,8 +1,3 @@
-/**
- * Storage Provider Hook
- * Replaces Supabase storage with MinIO API
- */
-
 import { useState, useCallback, useContext, createContext, ReactNode } from "react";
 import { storageApi, UploadResponse } from "../api";
 
@@ -85,5 +80,4 @@ export function useStorageProvider() {
   return context;
 }
 
-// Re-export storage API for direct use
 export { storageApi } from "../api";

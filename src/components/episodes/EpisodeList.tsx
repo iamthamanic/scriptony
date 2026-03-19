@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Button } from "../components/ui/button";
+import { Button } from "../ui/button";
 import { Video, Plus } from "lucide-react";
 import { Episode } from "../../types";
 import DeleteEpisodeDialog from "../DeleteEpisodeDialog";

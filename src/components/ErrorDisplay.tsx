@@ -1,10 +1,10 @@
 
 import React from 'react';
 import { useErrorContext } from '@/contexts/ErrorContext';
-import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { XCircle, AlertCircle, AlertTriangle } from "lucide-react";
-import { Button } from "../components/ui/button";
-import { ScrollArea } from "../components/ui/scroll-area";
+import { Button } from "./ui/button";
+import { ScrollArea } from "./ui/scroll-area";
 
 export const ErrorDisplay = () => {
   const { errors, clearError, clearAllErrors } = useErrorContext();

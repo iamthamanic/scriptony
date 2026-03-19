@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { SocialGroup } from '@/types/worlds';
-import { Card, CardContent, CardHeader } from "../components/ui/card";
+import { Card, CardContent, CardHeader } from "../../../ui/card";
 import { ChevronDown, ChevronUp, Pencil, Trash2 } from 'lucide-react';
 
 interface SocialGroupListProps {

@@ -2,7 +2,7 @@
 import { useToast } from "../use-toast";
 import { Character, CharacterWithAvatarFile, NewCharacterFormData, EditCharacterFormData, Project } from "../../types";
 import { createCharacter, updateCharacter, deleteCharacter } from "../../services/database";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 
 // Helper function to safely convert CharacterWithAvatarFile to Character
 const convertToCharacter = (character: CharacterWithAvatarFile): Character => {

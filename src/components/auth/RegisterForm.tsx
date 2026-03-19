@@ -4,8 +4,8 @@ import { toast } from "sonner";
 import { useTranslation } from 'react-i18next';
 
 import { customSupabase } from "@/integrations/supabase/customClient";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 import { 
   Form,
   FormControl,
@@ -14,7 +14,7 @@ import {
   FormLabel,
   FormMessage,
   FormDescription
-} from "../components/ui/form";
+} from "../ui/form";
 import { PasswordInput } from './PasswordInput';
 import { useValidatedForm } from '@/hooks/useValidatedForm';
 import { registerSchema, type RegisterFormValues } from '@/validation/authSchemas';

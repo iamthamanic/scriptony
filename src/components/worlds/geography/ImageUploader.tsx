@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Image, Trash2, Upload } from 'lucide-react';
 import { toast } from "sonner";
-import { uploadFile } from "../services/storage/fileStorage";
+import { uploadFile } from "../../../services/storage/fileStorage";
 import DriveConnectionModal from '@/components/storage/DriveConnectionModal';
 
 interface ImageUploaderProps {

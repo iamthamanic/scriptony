@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { customSupabase } from "@/integrations/supabase/customClient";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 import { 
   Form,
   FormControl,
@@ -14,7 +14,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage
-} from "../components/ui/form";
+} from "../ui/form";
 import { PasswordInput } from './PasswordInput';
 import { useValidatedForm } from '@/hooks/useValidatedForm';
 import { loginSchema, type LoginFormValues } from '@/validation/authSchemas';

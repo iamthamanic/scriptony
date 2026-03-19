@@ -4,7 +4,7 @@ import {
   Toast,
   ToastActionElement,
   ToastProps,
-} from "../components/ui/toast";
+} from "../../components/ui/toast";
 
 const TOAST_LIMIT = 5;
 const TOAST_REMOVE_DELAY = 1000000;

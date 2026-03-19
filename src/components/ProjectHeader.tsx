@@ -1,8 +1,8 @@
 
 import React from "react";
 import { Project } from "../types";
-import { Button } from "../components/ui/button";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "../components/ui/dropdown-menu";
+import { Button } from "./ui/button";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "./ui/dropdown-menu";
 import { FilePlus, Edit, Trash2, Plus, UserPlus } from "lucide-react";
 
 interface ProjectHeaderProps {

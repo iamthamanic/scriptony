@@ -1,8 +1,8 @@
 
 import React from 'react';
 import { CultureElement } from "@/types/worlds";
-import { Card, CardContent } from "../components/ui/card";
-import { Badge } from "../components/ui/badge";
+import { Card, CardContent } from "../../../ui/card";
+import { Badge } from "../../../ui/badge";
 
 interface CultureElementGridProps {
   elements: CultureElement[];

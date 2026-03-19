@@ -1,7 +1,7 @@
 
 import { World, WorldFormData, WorldCategory } from "@/types";
 import { toast } from "sonner";
-import { fetchWorlds, createWorld, updateWorld, deleteWorld } from "../services/worlds";
+import { fetchWorlds, createWorld, updateWorld, deleteWorld } from "../../services/worlds";
 
 export function useWorldsOperations(
   userId: string | undefined,

@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { toast } from "sonner";
 
 import { customSupabase } from "@/integrations/supabase/customClient";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 import { 
   Form,
   FormControl,
@@ -13,7 +13,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage
-} from "../components/ui/form";
+} from "../ui/form";
 import { useValidatedForm } from '@/hooks/useValidatedForm';
 import { passwordResetSchema, type PasswordResetFormValues } from '@/validation/authSchemas';
 

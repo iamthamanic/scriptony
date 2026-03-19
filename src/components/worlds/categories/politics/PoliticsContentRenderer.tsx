@@ -1,7 +1,7 @@
 
 import React from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
-import { Textarea } from "../components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../ui/tabs";
+import { Textarea } from "../../../ui/textarea";
 import { PoliticalSystem } from "@/types/worlds";
 import PoliticalSystemGrid from './PoliticalSystemGrid';
 
