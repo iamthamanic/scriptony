@@ -60,6 +60,11 @@ services:
       - MINIO_USE_SSL=${MINIO_USE_SSL:-false}
     volumes:
       - api-uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
 
   # Optional: Traefik reverse proxy (recommended for multiple domains)
   # Uncomment to use Traefik instead of nginx
@@ -110,7 +115,56 @@ networks:
   scriptony-network:
     driver: bridge
 
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: scriptony-postgres
+    restart: unless-stopped
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    networks:
+      - scriptony-network
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-scriptony}
+      - POSTGRES_USER=${DB_USER:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${POSTGRES_DB:-scriptony}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MinIO Object Storage
+  minio:
+    image: minio/minio:latest
+    container_name: scriptony-minio
+    restart: unless-stopped
+    ports:
+      - "${MINIO_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    networks:
+      - scriptony-network
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY:-minioadmin}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY:-minioadmin}
+    volumes:
+      - minio-data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+networks:
+  scriptony-network:
+    driver: bridge
+
 volumes:
   api-uploads:
   traefik-certs:
     # Uncomment if using Traefik
+  postgres-data:
+  minio-data:
