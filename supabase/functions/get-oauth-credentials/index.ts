@@ -52,13 +52,13 @@ serve(async (req) => {
     // Determine which credentials to return based on service parameter
     if (service === "auth") {
       // Google Auth credentials
-      clientId = "1021623717075-t1ugq54l5omei2nn73a63r7vlae2cggk.apps.googleusercontent.com";
-      clientSecret = "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";
+      clientId = Deno.env.get("GOOGLE_AUTH_CLIENT_ID") ?? "YOUR_GOOGLE_AUTH_CLIENT_ID.apps.googleusercontent.com";
+      clientSecret = Deno.env.get("GOOGLE_AUTH_CLIENT_SECRET") ?? "YOUR_GOOGLE_AUTH_CLIENT_SECRET";
       console.log("Returning Auth credentials (ID starting with):", clientId.substring(0, 12) + "...");
     } else {
       // Default to Google Drive credentials
-      clientId = "336644646972-6ku9cjco0scifhu85qnmgquh8o6gj10c.apps.googleusercontent.com";
-      clientSecret = "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";
+      clientId = Deno.env.get("GOOGLE_DRIVE_CLIENT_ID") ?? "YOUR_GOOGLE_DRIVE_CLIENT_ID.apps.googleusercontent.com";
+      clientSecret = Deno.env.get("GOOGLE_DRIVE_CLIENT_SECRET") ?? "YOUR_GOOGLE_DRIVE_CLIENT_SECRET";
       console.log("Returning Drive credentials (ID starting with):", clientId.substring(0, 12) + "...");
     }
 
