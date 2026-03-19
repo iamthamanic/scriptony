@@ -1,4 +1,4 @@
-import { FastifyInstance, FastifyPluginOptions } from 'fastify';
+import { FastifyInstance, FastifyPluginOptions, FastifyRequest, FastifyReply } from 'fastify';
 import * as Minio from 'minio';
 
 // MinIO client setup
@@ -14,7 +14,7 @@ const bucketName = process.env.MINIO_BUCKET || 'scriptony-uploads';
 
 export async function storageRoutes(app: FastifyInstance, options: FastifyPluginOptions) {
   // Upload file
-  app.post('/upload', { preHandler: [app.authenticate] }, async (request, reply) => {
+  app.post('/upload', { preHandler: [app.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const data = await request.file();
       if (!data) {
@@ -34,8 +34,15 @@ export async function storageRoutes(app: FastifyInstance, options: FastifyPlugin
       const timestamp = Date.now();
       const filename = path ? `${path}/${timestamp}-${data.filename}` : `${timestamp}-${data.filename}`;
       
+      // Collect file buffer
+      const chunks: Buffer[] = [];
+      for await (const chunk of data.file) {
+        chunks.push(chunk);
+      }
+      const buffer = Buffer.concat(chunks);
+      
       // Upload to MinIO
-      await minioClient.putObject(targetBucket, filename, data.file, data.filesize, {
+      await minioClient.putObject(targetBucket, filename, buffer, buffer.length, {
         'Content-Type': data.mimetype,
       });
       
@@ -52,8 +59,8 @@ export async function storageRoutes(app: FastifyInstance, options: FastifyPlugin
     }
   });
   
-  // Get public URL
-  app.get('/url', { preHandler: [app.authenticate] }, async (request, reply) => {
+  // Get public URL (presigned)
+  app.get('/url', { preHandler: [app.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const { bucket, path } = request.query as { bucket: string; path: string };
       const targetBucket = bucket || bucketName;
@@ -67,8 +74,26 @@ export async function storageRoutes(app: FastifyInstance, options: FastifyPlugin
     }
   });
   
+  // Get public URL (direct)
+  app.get('/public-url', { preHandler: [app.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const { bucket, path } = request.query as { bucket: string; path: string };
+      const targetBucket = bucket || bucketName;
+      const minioEndpoint = process.env.MINIO_ENDPOINT || 'localhost';
+      const minioPort = process.env.MINIO_PORT || '9000';
+      const protocol = process.env.MINIO_USE_SSL === 'true' ? 'https' : 'http';
+      
+      const url = `${protocol}://${minioEndpoint}:${minioPort}/${targetBucket}/${path}`;
+      
+      return { url };
+    } catch (error) {
+      app.log.error(error);
+      return reply.status(500).send({ error: 'Failed to generate URL' });
+    }
+  });
+  
   // Delete file
-  app.delete('/delete', { preHandler: [app.authenticate] }, async (request, reply) => {
+  app.delete('/delete', { preHandler: [app.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const { bucket, path } = request.body as { bucket: string; path: string };
       const targetBucket = bucket || bucketName;

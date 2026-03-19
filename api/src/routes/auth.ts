@@ -1,4 +1,4 @@
-import { FastifyInstance, FastifyPluginOptions } from 'fastify';
+import { FastifyInstance, FastifyPluginOptions, FastifyRequest, FastifyReply } from 'fastify';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
@@ -18,7 +18,7 @@ const signinSchema = z.object({
 
 export async function authRoutes(app: FastifyInstance, options: FastifyPluginOptions) {
   // Sign up
-  app.post('/signup', async (request, reply) => {
+  app.post('/signup', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const { email, password, username } = signupSchema.parse(request.body);
       
@@ -73,7 +73,7 @@ export async function authRoutes(app: FastifyInstance, options: FastifyPluginOpt
   });
   
   // Sign in
-  app.post('/signin', async (request, reply) => {
+  app.post('/signin', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const { email, password } = signinSchema.parse(request.body);
       
@@ -122,7 +122,7 @@ export async function authRoutes(app: FastifyInstance, options: FastifyPluginOpt
   });
   
   // Sign out
-  app.post('/signout', { preHandler: [app.authenticate] }, async (request, reply) => {
+  app.post('/signout', { preHandler: [app.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const { sessionId } = request.user as { sessionId: string };
       
@@ -138,7 +138,7 @@ export async function authRoutes(app: FastifyInstance, options: FastifyPluginOpt
   });
   
   // Get session
-  app.get('/session', { preHandler: [app.authenticate] }, async (request, reply) => {
+  app.get('/session', { preHandler: [app.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const { userId } = request.user as { userId: string };
       
@@ -176,25 +176,25 @@ export async function authRoutes(app: FastifyInstance, options: FastifyPluginOpt
   });
   
   // Google OAuth (placeholder)
-  app.get('/google', async (request, reply) => {
+  app.get('/google', async (request: FastifyRequest, reply: FastifyReply) => {
     // TODO: Implement Google OAuth
     return { url: 'https://accounts.google.com/o/oauth2/v2/auth?...' };
   });
   
   // OAuth callback (placeholder)
-  app.post('/callback', async (request, reply) => {
+  app.post('/callback', async (request: FastifyRequest, reply: FastifyReply) => {
     // TODO: Implement OAuth callback
     return { error: 'Not implemented' };
   });
   
   // Reset password (placeholder)
-  app.post('/reset-password', async (request, reply) => {
+  app.post('/reset-password', async (request: FastifyRequest, reply: FastifyReply) => {
     // TODO: Implement password reset
     return { success: true };
   });
   
   // Update password (placeholder)
-  app.post('/update-password', { preHandler: [app.authenticate] }, async (request, reply) => {
+  app.post('/update-password', { preHandler: [app.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
     // TODO: Implement password update
     return { success: true };
   });
