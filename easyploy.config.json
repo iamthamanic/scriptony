@@ -1,0 +1,103 @@
+{
+  "name": "scriptony",
+  "version": "1.0.0",
+  "description": "Scriptony - Script Writer & World Building App",
+  "template": "custom",
+  "deployment": {
+    "provider": "ssh",
+    "host": "${SSH_HOST}",
+    "user": "${SSH_USER}",
+    "privateKey": "${SSH_PRIVATE_KEY}",
+    "deployPath": "/var/www/scriptony",
+    "preDeploy": [
+      "git pull origin main",
+      "npm ci",
+      "npm run build"
+    ],
+    "postDeploy": [
+      "docker-compose down",
+      "docker-compose up -d --build",
+      "docker system prune -f"
+    ]
+  },
+  "services": {
+    "frontend": {
+      "type": "docker",
+      "dockerfile": "./Dockerfile",
+      "port": 8080,
+      "env": {
+        "VITE_API_URL": "http://localhost:3000"
+      }
+    },
+    "backend": {
+      "type": "docker",
+      "dockerfile": "./api/Dockerfile",
+      "port": 3000,
+      "env": {
+        "PORT": "3000",
+        "NODE_ENV": "production",
+        "DATABASE_URL": "${DATABASE_URL}",
+        "JWT_SECRET": "${JWT_SECRET}",
+        "MINIO_ENDPOINT": "${MINIO_ENDPOINT}",
+        "MINIO_ACCESS_KEY": "${MINIO_ACCESS_KEY}",
+        "MINIO_SECRET_KEY": "${MINIO_SECRET_KEY}"
+      }
+    },
+    "database": {
+      "type": "postgres",
+      "version": "15",
+      "port": 5432,
+      "env": {
+        "POSTGRES_DB": "scriptony",
+        "POSTGRES_USER": "${DB_USER}",
+        "POSTGRES_PASSWORD": "${DB_PASSWORD}"
+      },
+      "volumes": [
+        "postgres-data:/var/lib/postgresql/data"
+      ]
+    },
+    "storage": {
+      "type": "minio",
+      "port": 9000,
+      "consolePort": 9001,
+      "env": {
+        "MINIO_ROOT_USER": "${MINIO_ACCESS_KEY}",
+        "MINIO_ROOT_PASSWORD": "${MINIO_SECRET_KEY}"
+      },
+      "volumes": [
+        "minio-data:/data"
+      ]
+    }
+  },
+  "nginx": {
+    "enabled": true,
+    "domain": "${DOMAIN}",
+    "ssl": {
+      "enabled": true,
+      "provider": "letsencrypt"
+    },
+    "proxy": {
+      "/": "http://localhost:8080",
+      "/api/": "http://localhost:3000"
+    }
+  },
+  "healthChecks": {
+    "frontend": {
+      "path": "/",
+      "port": 8080,
+      "interval": "30s"
+    },
+    "backend": {
+      "path": "/health",
+      "port": 3000,
+      "interval": "30s"
+    }
+  },
+  "backups": {
+    "database": {
+      "enabled": true,
+      "schedule": "0 2 * * *",
+      "retention": "7d"
+    }
+  }
+}
