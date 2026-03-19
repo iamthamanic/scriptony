@@ -63,13 +63,14 @@ jobs:
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH || '/var/www/scriptony' }}
         run: |
           echo "🚀 Deploying to production..."
           
           # Connect to server and pull latest changes
           ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
             set -e
-            cd /var/www/scriptony || exit 1
+            cd $DEPLOY_PATH || exit 1
             
             echo 'Pulling latest changes...'
             git pull origin main
@@ -95,7 +96,7 @@ jobs:
           message: |
             ✅ Scriptony deployed successfully!
             
-            🌐 https://scriptony.raccoova.com
+            🌐 https://${{ secrets.DOMAIN || 'localhost' }}
             
             Commit: ${{ github.sha }}
             By: ${{ github.actor }}

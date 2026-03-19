@@ -1,7 +1,13 @@
 version: '3.8'
 
+# Configurable via .env file or environment variables:
+# - DOMAIN: Your domain (default: localhost)
+# - FRONTEND_PORT: Frontend exposed port (default: 8080)
+# - BACKEND_PORT: Backend exposed port (default: 3000)
+# - BACKEND_HOST: Backend container name (default: scriptony-api)
+
 services:
-  # Frontend (React app)
+  # Frontend (React app with nginx)
   scriptony-frontend:
     build:
       context: .
@@ -9,15 +15,20 @@ services:
     container_name: scriptony-frontend
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "${FRONTEND_PORT:-8080}:80"
     networks:
       - scriptony-network
     depends_on:
       - scriptony-api
     environment:
-      - VITE_API_URL=http://scriptony-api:3000
+      - BACKEND_HOST=${BACKEND_HOST:-scriptony-api}
+      - BACKEND_PORT=${BACKEND_PORT:-3000}
+      - VITE_API_URL=http://${BACKEND_HOST:-scriptony-api}:${BACKEND_PORT:-3000}
+    # Substitute env vars in nginx config at runtime
+    command: /bin/sh -c "envsubst '\$${BACKEND_HOST} \$${BACKEND_PORT}' < /etc/nginx/conf.d/default.conf > /etc/nginx/conf.d/default.conf.tmp && mv /etc/nginx/conf.d/default.conf.tmp /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
 
-  # Backend (Fastify API) - assuming backend code is in ../scriptony-api or similar
+  # Backend (Fastify API)
+  # Note: Backend code should be in ./api directory or provide your own Dockerfile
   scriptony-api:
     build:
       context: ./api
@@ -25,7 +36,7 @@ services:
     container_name: scriptony-api
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "${BACKEND_PORT:-3000}:3000"
     networks:
       - scriptony-network
     environment:
@@ -42,28 +53,58 @@ services:
       - GOOGLE_DRIVE_CLIENT_SECRET=${GOOGLE_DRIVE_CLIENT_SECRET}
       # MinIO / S3
       - MINIO_ENDPOINT=${MINIO_ENDPOINT}
+      - MINIO_PORT=${MINIO_PORT:-9000}
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
-      - MINIO_BUCKET=${MINIO_BUCKET}
+      - MINIO_BUCKET=${MINIO_BUCKET:-scriptony-uploads}
+      - MINIO_USE_SSL=${MINIO_USE_SSL:-false}
     volumes:
       - api-uploads:/app/uploads
 
-  # Optional: Nginx reverse proxy for SSL
-  nginx:
-    image: nginx:alpine
-    container_name: scriptony-nginx
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/ssl:/etc/nginx/ssl:ro
-      - ./nginx/prod.conf:/etc/nginx/conf.d/default.conf:ro
-    networks:
-      - scriptony-network
-    depends_on:
-      - scriptony-frontend
-      - scriptony-api
+  # Optional: Traefik reverse proxy (recommended for multiple domains)
+  # Uncomment to use Traefik instead of nginx
+  # traefik:
+  #   image: traefik:v2.10
+  #   container_name: traefik
+  #   restart: unless-stopped
+  #   command:
+  #     - --api.insecure=true
+  #     - --providers.docker=true
+  #     - --entrypoints.web.address=:80
+  #     - --entrypoints.websecure.address=:443
+  #     - --certificatesresolvers.letsencrypt.acme.tlschallenge=true
+  #     - --certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL:-admin@example.com}
+  #     - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
+  #     - traefik-certs:/letsencrypt
+  #   networks:
+  #     - scriptony-network
+
+  # Optional: SSL nginx (for Let's Encrypt)
+  # Uncomment if you want nginx to handle SSL instead of using external proxy
+  # nginx-ssl:
+  #   image: nginx:alpine
+  #   container_name: scriptony-nginx-ssl
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./nginx/ssl:/etc/nginx/ssl:ro
+  #     - ./nginx/prod.conf.template:/etc/nginx/templates/default.conf.template:ro
+  #   networks:
+  #     - scriptony-network
+  #   depends_on:
+  #     - scriptony-frontend
+  #     - scriptony-api
+  #   environment:
+  #     - DOMAIN=${DOMAIN:-localhost}
+  #     - BACKEND_HOST=${BACKEND_HOST:-scriptony-api}
+  #     - BACKEND_PORT=${BACKEND_PORT:-3000}
 
 networks:
   scriptony-network:
@@ -71,3 +112,5 @@ networks:
 
 volumes:
   api-uploads:
+  traefik-certs:
+    # Uncomment if using Traefik
