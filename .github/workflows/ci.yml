@@ -34,9 +34,6 @@ jobs:
       - name: Build
         run: bun run build
 
-  # ============================================
-  # DEPLOY TO PRODUCTION (main branch)
-  # ============================================
   deploy-prod:
     needs: ci
     runs-on: ubuntu-latest
@@ -49,59 +46,33 @@ jobs:
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "\${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
+          ssh-keyscan -H \${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
 
       - name: Deploy to production server
         env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: \${{ secrets.SSH_HOST }}
+          SSH_USER: \${{ secrets.SSH_USER }}
         run: |
           echo "🚀 Deploying to PRODUCTION..."
-
-          # Connect to server and deploy
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \$SSH_USER@\$SSH_HOST "
             set -e
             cd /root/scriptony-prod || (echo 'Creating prod directory...' && mkdir -p /root/scriptony-prod && cd /root/scriptony-prod && git clone git@github.com:iamthamanic/scriptonyapp.git .)
-
-            echo 'Pulling latest changes from main...'
             git pull origin main
-
-            echo 'Creating/updating .env...'
             cat > .env << 'ENVEOF'
-          DATABASE_URL=${{ secrets.DATABASE_URL }}
-          JWT_SECRET=${{ secrets.JWT_SECRET }}
-          MINIO_SECRET_KEY=${{ secrets.MINIO_SECRET_KEY }}
-          DOMAIN=${{ secrets.DOMAIN }}
+          DATABASE_URL=\${{ secrets.DATABASE_URL }}
+          JWT_SECRET=\${{ secrets.JWT_SECRET }}
+          MINIO_SECRET_KEY=\${{ secrets.MINIO_SECRET_KEY }}
+          DOMAIN=\${{ secrets.DOMAIN }}
           POSTGRES_DB=scriptony
           ENVEOF
-
-            echo 'Stopping old containers...'
             docker-compose down || true
-
-            echo 'Building and starting containers...'
             docker-compose up -d --build
-
-            echo 'Cleaning up old images...'
             docker system prune -f || true
-
             echo '✅ Production deployment complete!'
           "
 
-      - name: Telegram notification (success)
-        if: success()
-        run: |
-          echo "✅ Scriptony PROD deployed successfully to https://${{ secrets.DOMAIN }}"
-
-      - name: Telegram notification (failure)
-        if: failure()
-        run: |
-          echo "❌ Scriptony PROD deployment failed!"
-
-  # ============================================
-  # DEPLOY TO TEST (develop branch)
-  # ============================================
   deploy-test:
     needs: ci
     runs-on: ubuntu-latest
@@ -114,56 +85,31 @@ jobs:
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "\${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
+          ssh-keyscan -H \${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
 
       - name: Deploy to test server
         env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: \${{ secrets.SSH_HOST }}
+          SSH_USER: \${{ secrets.SSH_USER }}
         run: |
           echo "🧪 Deploying to TEST environment..."
-
-          # Connect to server and deploy
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \$SSH_USER@\$SSH_HOST "
             set -e
             cd /root/scriptony-test || (echo 'Creating test directory...' && mkdir -p /root/scriptony-test && cd /root/scriptony-test && git clone -b develop git@github.com:iamthamanic/scriptonyapp.git .)
-
-            echo 'Pulling latest changes from develop...'
             git pull origin develop
-
-            echo 'Creating/updating .env...'
             cat > .env << 'ENVEOF'
-          DATABASE_URL=${{ secrets.DATABASE_URL }}
-          JWT_SECRET=${{ secrets.JWT_SECRET }}
-          MINIO_SECRET_KEY=${{ secrets.MINIO_SECRET_KEY }}
+          DATABASE_URL=\${{ secrets.DATABASE_URL }}
+          JWT_SECRET=\${{ secrets.JWT_SECRET }}
+          MINIO_SECRET_KEY=\${{ secrets.MINIO_SECRET_KEY }}
           DOMAIN=test.scriptony.raccoova.com
           POSTGRES_DB=scriptony_test
           ENVEOF
-
-            # Adjust docker-compose for test (different DB name)
             sed -i 's/scriptony_postgres/scriptony_postgres_test/g' docker-compose.yml || true
             sed -i 's/scriptony-minio/scriptony-minio-test/g' docker-compose.yml || true
-
-            echo 'Stopping old containers...'
             docker-compose down || true
-
-            echo 'Building and starting containers...'
             docker-compose up -d --build
-
-            echo 'Cleaning up old images...'
             docker system prune -f || true
-
             echo '✅ Test deployment complete!'
           "
-
-      - name: Telegram notification (success)
-        if: success()
-        run: |
-          echo "🧪 Scriptony TEST deployed successfully to https://test.scriptony.raccoova.com"
-
-      - name: Telegram notification (failure)
-        if: failure()
-        run: |
-          echo "❌ Scriptony TEST deployment failed!"
