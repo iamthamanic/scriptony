@@ -22,7 +22,7 @@ export type Database = Record<string, unknown>;
  */
 export const supabase = {
   auth: {
-    onAuthStateChange: (callback: (event: string, session: Session | null) => void) => {
+    onAuthStateChange: (_callback: (event: string, session: Session | null) => void) => {
       console.warn("supabase.auth.onAuthStateChange is deprecated. Use authApi directly.");
       // Return a mock subscription
       return {
