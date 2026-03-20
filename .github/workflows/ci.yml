@@ -9,7 +9,7 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -39,11 +39,14 @@ jobs:
         run: npm audit --audit-level=moderate
         continue-on-error: true
 
-  deploy:
+  # ============================================
+  # DEPLOY TO PRODUCTION (main branch)
+  # ============================================
+  deploy-prod:
     needs: ci
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -56,58 +59,122 @@ jobs:
       - name: Add host to known hosts
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_HOST }} $(cat ~/.ssh/known_hosts 2>/dev/null || echo '')" > ~/.ssh/known_hosts
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
 
       - name: Deploy to production server
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
-          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH || '/var/www/scriptony' }}
         run: |
-          echo "🚀 Deploying to production..."
-          
-          # Connect to server and pull latest changes
+          echo "🚀 Deploying to PRODUCTION..."
+
+          # Connect to server and deploy
           ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
             set -e
-            cd $DEPLOY_PATH || exit 1
-            
-            echo 'Pulling latest changes...'
+            cd /root/scriptony-prod || (echo 'Creating prod directory...' && mkdir -p /root/scriptony-prod && cd /root/scriptony-prod && git clone git@github.com:iamthamanic/scriptonyapp.git .)
+
+            echo 'Pulling latest changes from main...'
             git pull origin main
-            
-            echo 'Stopping containers...'
-            docker-compose down
-            
+
+            echo 'Creating/updating .env...'
+            cat > .env << 'ENVEOF'
+          DATABASE_URL=${{ secrets.DATABASE_URL }}
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
+          MINIO_SECRET_KEY=${{ secrets.MINIO_SECRET_KEY }}
+          DOMAIN=${{ secrets.DOMAIN }}
+          POSTGRES_DB=scriptony
+          ENVEOF
+
+            echo 'Stopping old containers...'
+            docker-compose down || true
+
             echo 'Building and starting containers...'
             docker-compose up -d --build
-            
+
             echo 'Cleaning up old images...'
-            docker system prune -f
-            
-            echo '✅ Deployment complete!'
+            docker system prune -f || true
+
+            echo '✅ Production deployment complete!'
           "
 
       - name: Telegram notification (success)
         if: success()
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.TELEGRAM_CHAT_ID }}
-          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          message: |
-            ✅ Scriptony deployed successfully!
-            
-            🌐 https://${{ secrets.DOMAIN || 'localhost' }}
-            
-            Commit: ${{ github.sha }}
-            By: ${{ github.actor }}
+        run: |
+          echo "✅ Scriptony PROD deployed successfully to https://${{ secrets.DOMAIN }}"
 
       - name: Telegram notification (failure)
         if: failure()
-        uses: appleboy/telegram-action@master
+        run: |
+          echo "❌ Scriptony PROD deployment failed!"
+
+  # ============================================
+  # DEPLOY TO TEST (develop branch)
+  # ============================================
+  deploy-test:
+    needs: ci
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
         with:
-          to: ${{ secrets.TELEGRAM_CHAT_ID }}
-          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          message: |
-            ❌ Scriptony deployment failed!
-            
-            Check logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add host to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      - name: Deploy to test server
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+        run: |
+          echo "🧪 Deploying to TEST environment..."
+
+          # Connect to server and deploy
+          ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
+            set -e
+            cd /root/scriptony-test || (echo 'Creating test directory...' && mkdir -p /root/scriptony-test && cd /root/scriptony-test && git clone -b develop git@github.com:iamthamanic/scriptonyapp.git .)
+
+            echo 'Pulling latest changes from develop...'
+            git pull origin develop
+
+            echo 'Creating/updating .env...'
+            cat > .env << 'ENVEOF'
+          DATABASE_URL=${{ secrets.DATABASE_URL }}
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
+          MINIO_SECRET_KEY=${{ secrets.MINIO_SECRET_KEY }}
+          DOMAIN=test.scriptony.raccoova.com
+          POSTGRES_DB=scriptony_test
+          ENVEOF
+
+            # Adjust docker-compose for test (different DB name)
+            sed -i 's/scriptony_postgres/scriptony_postgres_test/g' docker-compose.yml || true
+            sed -i 's/scriptony-minio/scriptony-minio-test/g' docker-compose.yml || true
+
+            echo 'Stopping old containers...'
+            docker-compose down || true
+
+            echo 'Building and starting containers...'
+            docker-compose up -d --build
+
+            echo 'Cleaning up old images...'
+            docker system prune -f || true
+
+            echo '✅ Test deployment complete!'
+          "
+
+      - name: Telegram notification (success)
+        if: success()
+        run: |
+          echo "🧪 Scriptony TEST deployed successfully to https://test.scriptony.raccoova.com"
+
+      - name: Telegram notification (failure)
+        if: failure()
+        run: |
+          echo "❌ Scriptony TEST deployment failed!"
